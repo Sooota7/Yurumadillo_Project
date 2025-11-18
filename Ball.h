@@ -1,0 +1,54 @@
+#pragma once
+
+//Ball.h
+
+#include	<d3d11.h>
+#include	<DirectXMath.h>
+#include	"direct3d.h"
+using namespace DirectX;
+
+#include	"model.h"
+
+#define BALL_SPEEDMAX (2.0f)
+#define BALL_RADIUS (0.2f)
+#define GENSUI (0.98f)
+#define STOP_VELO (0.0002f)
+
+void	BallInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+void	BallFinalize();
+void	BallUpdate();
+void	BallDraw();
+
+XMFLOAT3 GetBallPosition();
+
+
+//ボールの状態
+enum BALL_STATE
+{
+	BALL_STATE_IDLE = 0,	//何もしない
+	BALL_STATE_MOVE,		//移動
+	BALL_STATE_DIRECTION,	//方向指示
+	BALL_STATE_POWER,		//威力指示
+};
+
+//ボール構造体
+class BALL
+{
+	public:
+		XMFLOAT3	Position;	//表示座標
+		XMFLOAT3	Rotation;	//回転角
+		XMFLOAT3	Scaling;	//拡大率
+		XMFLOAT3	Velocity;	//速度
+		XMFLOAT3	Acceleration;	// 落下速度
+
+		BALL_STATE	State;		//状態
+		MODEL*		Model;		//モデルデータ
+
+};
+
+BALL* GetBall();
+
+
+
+
+
