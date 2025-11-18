@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>C:\Users\SugimoriHALSouta\Desktop\DX22\20251112DX22ライトBall\20251112DX22ライトBall\x64\Debug\20240425_DX21_ウィンドウ作成版.exe</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
+  <ContentFiles>
+    <ContentFile>
+      <FullPath>C:\Users\SugimoriHALSouta\Desktop\DX22\20251112DX22ライトBall\20251112DX22ライトBall\shader_pixel_2d.cso</FullPath>
+    </ContentFile>
+    <ContentFile>
+      <FullPath>C:\Users\SugimoriHALSouta\Desktop\DX22\20251112DX22ライトBall\20251112DX22ライトBall\shader_vertex_2d.cso</FullPath>
+    </ContentFile>
+  </ContentFiles>
+  <SatelliteDlls />
+  <NonRecipeFileRefs />
+</Project>
