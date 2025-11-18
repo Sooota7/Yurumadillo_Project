@@ -12,6 +12,7 @@ using namespace DirectX;
 #include "player.h"
 #include "Effect.h"
 #include "score.h"
+//henkouTest
 
 
 // 注意！初期化で外部から設定されるもの。Release不要。
