@@ -86,7 +86,7 @@ void GAME::Game_Update()
 	m_Ball.BallUpdate();
 	Field_Update();
 
-	
+	// ƒRƒŠƒWƒ‡ƒ“‚ÍÕ“Ë‚·‚é‰Â”\«‚ ‚è
 	collision.BallFieldCollision(&m_Ball);
 
 	//Player_Update();
