@@ -9,6 +9,7 @@
 
 #include "fade.h"
 #include "shader.h"
+//aaa
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
