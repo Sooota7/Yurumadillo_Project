@@ -27,4 +27,8 @@ enum COLLISION_HIT
 
 };
 
-float	BallFieldCollision();
+class COLLISION
+{
+public:
+	float	BallFieldCollision(BALL* pBall/*, MAPDATA* pField*/);
+};

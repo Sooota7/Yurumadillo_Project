@@ -1,376 +1,375 @@
-
-#include <d3d11.h>
-#include <DirectXMath.h>
-using namespace DirectX;
-#include "direct3d.h"
-#include "shader.h"
-//#include "debug_ostream.h"
-#include "sprite.h"
-#include "keyboard.h"
-
-#include "Block.h"
-#include "player.h"
-#include "Effect.h"
-#include "score.h"
-//henkouTest 2
-
-
-// ’ˆÓI‰Šú‰»‚ÅŠO•”‚©‚çİ’è‚³‚ê‚é‚à‚ÌBRelease•s—vB
-static ID3D11Device* g_pDevice = nullptr;
-static ID3D11DeviceContext* g_pContext = nullptr;
-
-static ID3D11ShaderResourceView* g_Texture[4]{};
-static BLOCK g_Block[BLOCK_ROWS][BLOCK_COLS]{};//‰¡‚É6ŒÂ@c‚É13ŒÂ
-
-static BLOCK_STATE g_BlockState{};
-static int g_BlockStateCount{};
-
-//ƒXƒNƒ[ƒ‹’l‚Ì‰Šú‰»
-static	XMFLOAT2	ScrollOffset = XMFLOAT2(POSITION_OFFSET_X, POSITION_OFFSET_Y);
-
-
-
-//‰Šú‰»
-void Block_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	// ƒfƒoƒCƒX‚ÆƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚Ì•Û‘¶
-	g_pDevice = pDevice;
-	g_pContext = pContext;
-
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
-	TexMetadata metadata;
-	ScratchImage image;
-
-	LoadFromWICFile(L"Asset\\Texture\\Spade.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[0]);
-	assert(g_Texture[0]);
-
-	LoadFromWICFile(L"Asset\\Texture\\Clover.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[1]);
-	assert(g_Texture[1]);
-
-	LoadFromWICFile(L"Asset\\Texture\\Diamond.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[2]);
-	assert(g_Texture[2]);
-
-	LoadFromWICFile(L"Asset\\Texture\\Heart.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[3]);
-	assert(g_Texture[3]);
-
-
-
-	//ƒuƒƒbƒN‰Šú‰»
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			//g_Block[y][x].Enable = true;	//ƒfƒoƒbƒO—p
-			g_Block[y][x].Enable = false;
-			g_Block[y][x].Type = 0;
-
-		}
-
-	}
-
-	g_BlockState = BLOCK_STATE_IDLE;
-	g_BlockStateCount = 0;
-}
-
-//I—¹
-void Block_Finalize()
-{
-	for (int i = 0; i < 4; i++)
-	{
-		g_Texture[i]->Release();
-	}
-}
-
-//XV
-void Block_Update()
-{
-
-	switch (g_BlockState)
-	{
-	case BLOCK_STATE_IDLE:	//‚Ğ‚Ü
-		break;
-
-	case BLOCK_STATE_ERASE_IDLE://Á–Å’†
-		g_BlockStateCount++;	//Ø‚è‘Ö‚¦ƒEƒFƒCƒgƒCƒ“ƒNƒŠƒƒ“ƒg
-		if (g_BlockStateCount >= 30)//“K“–‚É‘Ò‚Â
-		{
-			Block_StackBlock();	//—‰ºˆ—
-		}
-		break;
-
-	case BLOCK_STATE_STACK_IDLE://—‰º’†
-		g_BlockStateCount++;
-		if (g_BlockStateCount >= 30)
-		{
-			Block_EraseBlock();//Á–Åƒ`ƒFƒbƒN
-		}
-		break;
-
-	default:
-		break;
-	}
-}
-
-//•\¦
-void Block_Draw()
-{
-
-	// ‰æ–ÊƒTƒCƒYæ“¾
-	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
-	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
-
-	// ƒVƒF[ƒ_[‚ğ•`‰æƒpƒCƒvƒ‰ƒCƒ“‚Éİ’è
-	Shader_Begin();
-
-	// ’¸“_ƒVƒF[ƒ_[‚É2D•ÏŠ·s—ñ‚ğİ’è
-	XMMATRIX	Projection = XMMatrixOrthographicOffCenterLH(
-		0.0f,
-		SCREEN_WIDTH,
-		SCREEN_HEIGHT,
-		0.0f,
-		0.0f,
-		1.0f);
-
-
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable)//ƒuƒƒbƒN‚ª‚ ‚ê‚Î
-			{	//”z—ñ‚ÌŒ`‚É•\¦‚·‚é
-
-				g_pContext->PSSetShaderResources(0, 1, &g_Texture[g_Block[y][x].Type]);
-
-
-				XMFLOAT2 pos = XMFLOAT2(x*BLOCK_WIDTH+(BLOCK_WIDTH*0.5f), y* BLOCK_HEIGHT+(BLOCK_HEIGHT*0.5f));
-				XMFLOAT2 size = XMFLOAT2(BLOCK_WIDTH, BLOCK_HEIGHT);
-				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-				//•½sˆÚ“® •\¦À•W
-				XMMATRIX	Translation =
-					XMMatrixTranslation(pos.x,pos.y, 0.0f);
-				//‰ñ“]
-				XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
-				//Šg‘å—¦i0‚Í‚¾‚ßj
-				XMMATRIX	Scaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-				//ƒ[ƒ‹ƒhs—ñ
-				XMMATRIX	World = Scaling * Rotation * Translation;
-
-				//ƒXƒNƒ[ƒ‹—ps—ñì¬
-				//XMMATRIX	mat = XMMatrixIdentity();//s—ñ‚Ì‰Šú‰»i’PˆÊs—ñj
-				XMMATRIX	mat = XMMatrixTranslation(ScrollOffset.x, ScrollOffset.y, 0.0f);
-				//’¸“_•ÏŠ·s—ñ
-				mat = World * mat * Projection;
-
-				//ƒVƒF[ƒ_[‚Ös—ñ‚ğƒZƒbƒg
-				Shader_SetMatrix(mat);
-
-				SetBlendState(BLENDSTATE_ALFA);
-				DrawSprite(size, col, 0, 1, 1);
-			}
-		}
-	}
-}
-
-//ƒuƒƒbƒN‚ğ”z—ñ‚ÉƒZƒbƒg
-void Block_SetBlock(int x, int y, int Type)
-{
-	//”z—ñ‚Ì”ÍˆÍ“à‚©H
-	if (x < 0 || x >= BLOCK_COLS || y < 0 || y >= BLOCK_ROWS)
-	{
-		return;
-	}
-
-	g_Block[y][x].Enable = true;
-	g_Block[y][x].Erase = false;
-	g_Block[y][x].Type = Type;
-
-}
-
-//ƒuƒƒbƒN‚ğ”z—ñ‚©‚çæ“¾
-BLOCK Block_GetBlock(int x, int y)
-{
-	BLOCK dummy =	//ƒ_ƒ~[ƒuƒƒbƒN
-	{
-		false,
-		false,
-		0,
-	};
-
-	if (x < 0 || x >= BLOCK_COLS  ||  y < 0 || y >= BLOCK_ROWS)
-	{
-		return dummy;//”z—ñ”ÍˆÍŠO‚Ìê‡‚Íƒ_ƒ~[ƒuƒƒbƒN‚ğ•Ô‚·
-	}
-
-	return g_Block[y][x];
-}
-
-
-//Á–Åƒ`ƒFƒbƒN
-void Block_EraseBlock()
-{
-	bool	erase = false;		//Á–Å”­¶ƒtƒ‰ƒO
-
-	int		type = -1;		//ƒuƒƒbƒN‚Ìí—Ş
-	int		count = 0;		//“¯‚¶F‚ª•À‚ñ‚Å‚¢‚é”
-
-	//‰¡•ûŒüƒ`ƒFƒbƒN
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0 ; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable == true)//ƒuƒƒbƒN‚ª‘¶İ‚·‚é
-			{
-				if (g_Block[y][x].Type == type)//type‚Æ“¯‚¶ƒuƒƒbƒN
-				{
-					count++;	//•À‚ñ‚Å‚¢‚é”{‚P
-
-					if (count >= 2)//F‚ª3‚ÂˆÈã•À‚ñ‚Å‚¢‚é
-					{
-						for (int i = x; i > x - 3; i--)
-						{	//è‘O‚É3‚Â•ª‘k‚Á‚ÄÁ‹ƒtƒ‰ƒO‚ğtrue‚É‚µ‚Ä‚¢‚­
-							g_Block[y][i].Erase = true;
-						}
-						erase = true;	//Á–Å”­¶ƒtƒ‰ƒOON
-						AddScore(10);	//ƒXƒRƒA‚É‚P‚O‚O“_‰ÁZ‚·‚é
-					}
-				}
-				else
-				{//type‚ÆˆÙ‚È‚éƒuƒƒbƒN‚¾‚Á‚½ê‡
-					type = g_Block[y][x].Type;	//ƒ`ƒFƒbƒN‚·‚éí—Ş‚ğXV
-					count = 0;					//•À‚ñ‚Å‚¢‚é”ƒŠƒZƒbƒg
-				}
-			}
-			else
-			{//ƒuƒƒbƒN‚ª–³‚¢ê‡
-				type = -1;
-				count = 0;
-			}
-
-		}
-		type = -1;
-		count = 0;
-
-	}
-
-	//cƒ`ƒFƒbƒN
-	type = -1;
-	count = 0;
-
-	for (int x = 0; x < BLOCK_COLS; x++)
-	{
-		for (int y = 0; y < BLOCK_ROWS; y++)
-		{
-
-			if (g_Block[y][x].Enable == true)//ƒuƒƒbƒN‚ª‘¶İ‚·‚é
-			{
-				if (g_Block[y][x].Type == type)//type‚Æ“¯‚¶ƒuƒƒbƒN
-				{
-					count++;	//•À‚ñ‚Å‚¢‚é”{‚P
-
-					if (count >= 2)//F‚ª3‚ÂˆÈã•À‚ñ‚Å‚¢‚é
-					{
-						for (int i = y; i > y - 3; i--)
-						{	//è‘O‚É3‚Â•ª‘k‚Á‚ÄÁ‹ƒtƒ‰ƒO‚ğtrue‚É‚µ‚Ä‚¢‚­
-							g_Block[i][x].Erase = true;
-						}
-						erase = true;	//Á–Å”­¶ƒtƒ‰ƒOON
-						AddScore(10);
-					}
-				}
-				else
-				{//type‚ÆˆÙ‚È‚éƒuƒƒbƒN‚¾‚Á‚½ê‡
-					type = g_Block[y][x].Type;	//ƒ`ƒFƒbƒN‚·‚éí—Ş‚ğXV
-					count = 0;					//•À‚ñ‚Å‚¢‚é”ƒŠƒZƒbƒg
-				}
-			}
-			else
-			{//ƒuƒƒbƒN‚ª–³‚¢ê‡
-				type = -1;
-				count = 0;
-			}
-		}
-		type = -1;
-		count = 0;
-
-	}
-
-
-	//Á–Åó‘Ô‚ÌƒuƒƒbƒN‚Ìíœ•ƒGƒtƒFƒNƒg”­¶
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Erase)//Á–Å‚·‚é—\’è‚ÌƒuƒƒbƒN
-			{
-				g_Block[y][x].Enable = false;
-				g_Block[y][x].Erase = false;
-
-				//ƒGƒtƒFƒNƒg”­¶—\’è
-				XMFLOAT2	position;
-				position = XMFLOAT2(x * BLOCK_WIDTH + (BLOCK_WIDTH * 0.5f), 
-									y * BLOCK_HEIGHT + (BLOCK_HEIGHT * 0.5f));
-
-				CreateEffect(position);
-
-			}
-
-		}
-	}
-
-	if (erase == true)
-	{//Á–Å‚ª”­¶‚µ‚½
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_ERASE_IDLE;
-		g_BlockStateCount = 0;
-	}
-	else
-	{//Á–Å‚Í–³‚©‚Á‚½
-		Player_Create();		//V‚µ‚¢ƒvƒŒƒCƒ„[”­¶
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
-		g_BlockStateCount = 0;
-	}
-
-}
-
-//ƒuƒƒbƒN—‰º
-void Block_StackBlock()
-{
-	bool stack = false;	//—‰ºˆ—OFF
-
-	for (int y = BLOCK_ROWS - 1; y > 0; y--)//‰º‚©‚çã‚ÉŒ©‚Ä‚¢‚­
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable == false)//ƒuƒƒbƒN‚ª–³‚¢
-			{
-				for (int ys = y - 1; ys >= 0; ys--)//1‚ÁŒÂã‚©‚çÅã•”‚Ü‚Å
-				{
-					if (g_Block[ys][x].Enable == true)
-					{
-						g_Block[y][x] = g_Block[ys][x];	//1‚Âã‚Ì\‘¢‘Ì‚ğ‰º‚ÖƒRƒs[
-						g_Block[ys][x].Enable = false;	//ƒRƒs[‚µ‚½‚ç‹ó‚É‚È‚é
-						stack = true;					//—‰ºˆ—”­¶
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	if (stack == true)
-	{	//—‰ºˆ—‚ª‚ ‚Á‚½ê‡
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_STACK_IDLE;
-		g_BlockStateCount = 0;
-	}
-	else
-	{	//—‰ºˆ—‚ª–³‚©‚Á‚½ê‡
-		Player_Create();
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
-		g_BlockStateCount = 0;
-	}
-
-}
+//
+//#include <d3d11.h>
+//#include <DirectXMath.h>
+//using namespace DirectX;
+//#include "direct3d.h"
+//#include "shader.h"
+////#include "debug_ostream.h"
+//#include "sprite.h"
+//#include "keyboard.h"
+//
+//#include "Block.h"
+//#include "player.h"
+//#include "Effect.h"
+//#include "score.h"
+//
+//
+//// æ³¨æ„ï¼åˆæœŸåŒ–ã§å¤–éƒ¨ã‹ã‚‰è¨­å®šã•ã‚Œã‚‹ã‚‚ã®ã€‚Releaseä¸è¦ã€‚
+//static ID3D11Device* g_pDevice = nullptr;
+//static ID3D11DeviceContext* g_pContext = nullptr;
+//
+//static ID3D11ShaderResourceView* g_Texture[4]{};
+//static BLOCK g_Block[BLOCK_ROWS][BLOCK_COLS]{};//æ¨ªã«6å€‹ã€€ç¸¦ã«13å€‹
+//
+//static BLOCK_STATE g_BlockState{};
+//static int g_BlockStateCount{};
+//
+////ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å€¤ã®åˆæœŸåŒ–
+//static	XMFLOAT2	ScrollOffset = XMFLOAT2(POSITION_OFFSET_X, POSITION_OFFSET_Y);
+//
+//
+//
+////åˆæœŸåŒ–
+//void Block_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+//{
+//	// ãƒ‡ãƒã‚¤ã‚¹ã¨ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã®ä¿å­˜
+//	g_pDevice = pDevice;
+//	g_pContext = pContext;
+//
+//	// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
+//	TexMetadata metadata;
+//	ScratchImage image;
+//
+//	LoadFromWICFile(L"Asset\\Texture\\Spade.png", WIC_FLAGS_NONE, &metadata, image);
+//	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[0]);
+//	assert(g_Texture[0]);
+//
+//	LoadFromWICFile(L"Asset\\Texture\\Clover.png", WIC_FLAGS_NONE, &metadata, image);
+//	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[1]);
+//	assert(g_Texture[1]);
+//
+//	LoadFromWICFile(L"Asset\\Texture\\Diamond.png", WIC_FLAGS_NONE, &metadata, image);
+//	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[2]);
+//	assert(g_Texture[2]);
+//
+//	LoadFromWICFile(L"Asset\\Texture\\Heart.png", WIC_FLAGS_NONE, &metadata, image);
+//	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[3]);
+//	assert(g_Texture[3]);
+//
+//
+//
+//	//ãƒ–ãƒ­ãƒƒã‚¯åˆæœŸåŒ–
+//	for (int y = 0; y < BLOCK_ROWS; y++)
+//	{
+//		for (int x = 0; x < BLOCK_COLS; x++)
+//		{
+//			//g_Block[y][x].Enable = true;	//ãƒ‡ãƒãƒƒã‚°ç”¨
+//			g_Block[y][x].Enable = false;
+//			g_Block[y][x].Type = 0;
+//
+//		}
+//
+//	}
+//
+//	g_BlockState = BLOCK_STATE_IDLE;
+//	g_BlockStateCount = 0;
+//}
+//
+////çµ‚äº†
+//void Block_Finalize()
+//{
+//	for (int i = 0; i < 4; i++)
+//	{
+//		g_Texture[i]->Release();
+//	}
+//}
+//
+////æ›´æ–°
+//void Block_Update()
+//{
+//
+//	switch (g_BlockState)
+//	{
+//	case BLOCK_STATE_IDLE:	//ã²ã¾
+//		break;
+//
+//	case BLOCK_STATE_ERASE_IDLE://æ¶ˆæ»…ä¸­
+//		g_BlockStateCount++;	//åˆ‡ã‚Šæ›¿ãˆã‚¦ã‚§ã‚¤ãƒˆã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+//		if (g_BlockStateCount >= 30)//é©å½“ã«å¾…ã¤
+//		{
+//			Block_StackBlock();	//è½ä¸‹å‡¦ç†
+//		}
+//		break;
+//
+//	case BLOCK_STATE_STACK_IDLE://è½ä¸‹ä¸­
+//		g_BlockStateCount++;
+//		if (g_BlockStateCount >= 30)
+//		{
+//			Block_EraseBlock();//æ¶ˆæ»…ãƒã‚§ãƒƒã‚¯
+//		}
+//		break;
+//
+//	default:
+//		break;
+//	}
+//}
+//
+////è¡¨ç¤º
+//void Block_Draw()
+//{
+//
+//	// ç”»é¢ã‚µã‚¤ã‚ºå–å¾—
+//	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
+//	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
+//
+//	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’æç”»ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã«è¨­å®š
+//	Shader_Begin();
+//
+//	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã«2Då¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+//	XMMATRIX	Projection = XMMatrixOrthographicOffCenterLH(
+//		0.0f,
+//		SCREEN_WIDTH,
+//		SCREEN_HEIGHT,
+//		0.0f,
+//		0.0f,
+//		1.0f);
+//
+//
+//	for (int y = 0; y < BLOCK_ROWS; y++)
+//	{
+//		for (int x = 0; x < BLOCK_COLS; x++)
+//		{
+//			if (g_Block[y][x].Enable)//ãƒ–ãƒ­ãƒƒã‚¯ãŒã‚ã‚Œã°
+//			{	//é…åˆ—ã®å½¢ã«è¡¨ç¤ºã™ã‚‹
+//
+//				g_pContext->PSSetShaderResources(0, 1, &g_Texture[g_Block[y][x].Type]);
+//
+//
+//				XMFLOAT2 pos = XMFLOAT2(x*BLOCK_WIDTH+(BLOCK_WIDTH*0.5f), y* BLOCK_HEIGHT+(BLOCK_HEIGHT*0.5f));
+//				XMFLOAT2 size = XMFLOAT2(BLOCK_WIDTH, BLOCK_HEIGHT);
+//				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+//
+//				//å¹³è¡Œç§»å‹• è¡¨ç¤ºåº§æ¨™
+//				XMMATRIX	Translation =
+//					XMMatrixTranslation(pos.x,pos.y, 0.0f);
+//				//å›è»¢
+//				XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
+//				//æ‹¡å¤§ç‡ï¼ˆ0ã¯ã ã‚ï¼‰
+//				XMMATRIX	Scaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+//				//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—
+//				XMMATRIX	World = Scaling * Rotation * Translation;
+//
+//				//ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ç”¨è¡Œåˆ—ä½œæˆ
+//				//XMMATRIX	mat = XMMatrixIdentity();//è¡Œåˆ—ã®åˆæœŸåŒ–ï¼ˆå˜ä½è¡Œåˆ—ï¼‰
+//				XMMATRIX	mat = XMMatrixTranslation(ScrollOffset.x, ScrollOffset.y, 0.0f);
+//				//é ‚ç‚¹å¤‰æ›è¡Œåˆ—
+//				mat = World * mat * Projection;
+//
+//				//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
+//				Shader_SetMatrix(mat);
+//
+//				SetBlendState(BLENDSTATE_ALFA);
+//				DrawSprite(size, col, 0, 1, 1);
+//			}
+//		}
+//	}
+//}
+//
+////ãƒ–ãƒ­ãƒƒã‚¯ã‚’é…åˆ—ã«ã‚»ãƒƒãƒˆ
+//void Block_SetBlock(int x, int y, int Type)
+//{
+//	//é…åˆ—ã®ç¯„å›²å†…ã‹ï¼Ÿ
+//	if (x < 0 || x >= BLOCK_COLS || y < 0 || y >= BLOCK_ROWS)
+//	{
+//		return;
+//	}
+//
+//	g_Block[y][x].Enable = true;
+//	g_Block[y][x].Erase = false;
+//	g_Block[y][x].Type = Type;
+//
+//}
+//
+////ãƒ–ãƒ­ãƒƒã‚¯ã‚’é…åˆ—ã‹ã‚‰å–å¾—
+//BLOCK Block_GetBlock(int x, int y)
+//{
+//	BLOCK dummy =	//ãƒ€ãƒŸãƒ¼ãƒ–ãƒ­ãƒƒã‚¯
+//	{
+//		false,
+//		false,
+//		0,
+//	};
+//
+//	if (x < 0 || x >= BLOCK_COLS  ||  y < 0 || y >= BLOCK_ROWS)
+//	{
+//		return dummy;//é…åˆ—ç¯„å›²å¤–ã®å ´åˆã¯ãƒ€ãƒŸãƒ¼ãƒ–ãƒ­ãƒƒã‚¯ã‚’è¿”ã™
+//	}
+//
+//	return g_Block[y][x];
+//}
+//
+//
+////æ¶ˆæ»…ãƒã‚§ãƒƒã‚¯
+//void Block_EraseBlock()
+//{
+//	bool	erase = false;		//æ¶ˆæ»…ç™ºç”Ÿãƒ•ãƒ©ã‚°
+//
+//	int		type = -1;		//ãƒ–ãƒ­ãƒƒã‚¯ã®ç¨®é¡
+//	int		count = 0;		//åŒã˜è‰²ãŒä¸¦ã‚“ã§ã„ã‚‹æ•°
+//
+//	//æ¨ªæ–¹å‘ãƒã‚§ãƒƒã‚¯
+//	for (int y = 0; y < BLOCK_ROWS; y++)
+//	{
+//		for (int x = 0 ; x < BLOCK_COLS; x++)
+//		{
+//			if (g_Block[y][x].Enable == true)//ãƒ–ãƒ­ãƒƒã‚¯ãŒå­˜åœ¨ã™ã‚‹
+//			{
+//				if (g_Block[y][x].Type == type)//typeã¨åŒã˜ãƒ–ãƒ­ãƒƒã‚¯
+//				{
+//					count++;	//ä¸¦ã‚“ã§ã„ã‚‹æ•°ï¼‹ï¼‘
+//
+//					if (count >= 2)//è‰²ãŒ3ã¤ä»¥ä¸Šä¸¦ã‚“ã§ã„ã‚‹
+//					{
+//						for (int i = x; i > x - 3; i--)
+//						{	//æ‰‹å‰ã«3ã¤åˆ†é¡ã£ã¦æ¶ˆå»ãƒ•ãƒ©ã‚°ã‚’trueã«ã—ã¦ã„ã
+//							g_Block[y][i].Erase = true;
+//						}
+//						erase = true;	//æ¶ˆæ»…ç™ºç”Ÿãƒ•ãƒ©ã‚°ON
+//						AddScore(10);	//ã‚¹ã‚³ã‚¢ã«ï¼‘ï¼ï¼ç‚¹åŠ ç®—ã™ã‚‹
+//					}
+//				}
+//				else
+//				{//typeã¨ç•°ãªã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã ã£ãŸå ´åˆ
+//					type = g_Block[y][x].Type;	//ãƒã‚§ãƒƒã‚¯ã™ã‚‹ç¨®é¡ã‚’æ›´æ–°
+//					count = 0;					//ä¸¦ã‚“ã§ã„ã‚‹æ•°ãƒªã‚»ãƒƒãƒˆ
+//				}
+//			}
+//			else
+//			{//ãƒ–ãƒ­ãƒƒã‚¯ãŒç„¡ã„å ´åˆ
+//				type = -1;
+//				count = 0;
+//			}
+//
+//		}
+//		type = -1;
+//		count = 0;
+//
+//	}
+//
+//	//ç¸¦ãƒã‚§ãƒƒã‚¯
+//	type = -1;
+//	count = 0;
+//
+//	for (int x = 0; x < BLOCK_COLS; x++)
+//	{
+//		for (int y = 0; y < BLOCK_ROWS; y++)
+//		{
+//
+//			if (g_Block[y][x].Enable == true)//ãƒ–ãƒ­ãƒƒã‚¯ãŒå­˜åœ¨ã™ã‚‹
+//			{
+//				if (g_Block[y][x].Type == type)//typeã¨åŒã˜ãƒ–ãƒ­ãƒƒã‚¯
+//				{
+//					count++;	//ä¸¦ã‚“ã§ã„ã‚‹æ•°ï¼‹ï¼‘
+//
+//					if (count >= 2)//è‰²ãŒ3ã¤ä»¥ä¸Šä¸¦ã‚“ã§ã„ã‚‹
+//					{
+//						for (int i = y; i > y - 3; i--)
+//						{	//æ‰‹å‰ã«3ã¤åˆ†é¡ã£ã¦æ¶ˆå»ãƒ•ãƒ©ã‚°ã‚’trueã«ã—ã¦ã„ã
+//							g_Block[i][x].Erase = true;
+//						}
+//						erase = true;	//æ¶ˆæ»…ç™ºç”Ÿãƒ•ãƒ©ã‚°ON
+//						AddScore(10);
+//					}
+//				}
+//				else
+//				{//typeã¨ç•°ãªã‚‹ãƒ–ãƒ­ãƒƒã‚¯ã ã£ãŸå ´åˆ
+//					type = g_Block[y][x].Type;	//ãƒã‚§ãƒƒã‚¯ã™ã‚‹ç¨®é¡ã‚’æ›´æ–°
+//					count = 0;					//ä¸¦ã‚“ã§ã„ã‚‹æ•°ãƒªã‚»ãƒƒãƒˆ
+//				}
+//			}
+//			else
+//			{//ãƒ–ãƒ­ãƒƒã‚¯ãŒç„¡ã„å ´åˆ
+//				type = -1;
+//				count = 0;
+//			}
+//		}
+//		type = -1;
+//		count = 0;
+//
+//	}
+//
+//
+//	//æ¶ˆæ»…çŠ¶æ…‹ã®ãƒ–ãƒ­ãƒƒã‚¯ã®å‰Šé™¤ï¼†ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿ
+//	for (int y = 0; y < BLOCK_ROWS; y++)
+//	{
+//		for (int x = 0; x < BLOCK_COLS; x++)
+//		{
+//			if (g_Block[y][x].Erase)//æ¶ˆæ»…ã™ã‚‹äºˆå®šã®ãƒ–ãƒ­ãƒƒã‚¯
+//			{
+//				g_Block[y][x].Enable = false;
+//				g_Block[y][x].Erase = false;
+//
+//				//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç™ºç”Ÿäºˆå®š
+//				XMFLOAT2	position;
+//				position = XMFLOAT2(x * BLOCK_WIDTH + (BLOCK_WIDTH * 0.5f), 
+//									y * BLOCK_HEIGHT + (BLOCK_HEIGHT * 0.5f));
+//
+//				CreateEffect(position);
+//
+//			}
+//
+//		}
+//	}
+//
+//	if (erase == true)
+//	{//æ¶ˆæ»…ãŒç™ºç”Ÿã—ãŸ
+//		g_BlockState = BLOCK_STATE::BLOCK_STATE_ERASE_IDLE;
+//		g_BlockStateCount = 0;
+//	}
+//	else
+//	{//æ¶ˆæ»…ã¯ç„¡ã‹ã£ãŸ
+//		Player_Create();		//æ–°ã—ã„ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç™ºç”Ÿ
+//		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
+//		g_BlockStateCount = 0;
+//	}
+//
+//}
+//
+////ãƒ–ãƒ­ãƒƒã‚¯è½ä¸‹
+//void Block_StackBlock()
+//{
+//	bool stack = false;	//è½ä¸‹å‡¦ç†OFF
+//
+//	for (int y = BLOCK_ROWS - 1; y > 0; y--)//ä¸‹ã‹ã‚‰ä¸Šã«è¦‹ã¦ã„ã
+//	{
+//		for (int x = 0; x < BLOCK_COLS; x++)
+//		{
+//			if (g_Block[y][x].Enable == false)//ãƒ–ãƒ­ãƒƒã‚¯ãŒç„¡ã„
+//			{
+//				for (int ys = y - 1; ys >= 0; ys--)//1ã£å€‹ä¸Šã‹ã‚‰æœ€ä¸Šéƒ¨ã¾ã§
+//				{
+//					if (g_Block[ys][x].Enable == true)
+//					{
+//						g_Block[y][x] = g_Block[ys][x];	//1ã¤ä¸Šã®æ§‹é€ ä½“ã‚’ä¸‹ã¸ã‚³ãƒ”ãƒ¼
+//						g_Block[ys][x].Enable = false;	//ã‚³ãƒ”ãƒ¼ã—ãŸã‚‰ç©ºã«ãªã‚‹
+//						stack = true;					//è½ä¸‹å‡¦ç†ç™ºç”Ÿ
+//						break;
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	if (stack == true)
+//	{	//è½ä¸‹å‡¦ç†ãŒã‚ã£ãŸå ´åˆ
+//		g_BlockState = BLOCK_STATE::BLOCK_STATE_STACK_IDLE;
+//		g_BlockStateCount = 0;
+//	}
+//	else
+//	{	//è½ä¸‹å‡¦ç†ãŒç„¡ã‹ã£ãŸå ´åˆ
+//		Player_Create();
+//		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
+//		g_BlockStateCount = 0;
+//	}
+//
+//}

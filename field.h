@@ -24,6 +24,10 @@ enum FIELD
 //MAPデータ構造体
 class MAPDATA
 {
+private:
+	//	BOMB* m_Bomb;
+
+
 	public:
 		XMFLOAT3	pos;	//ブロックの座標
 		FIELD		no;		//ブロックの種類
