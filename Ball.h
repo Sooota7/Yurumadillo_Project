@@ -14,13 +14,6 @@ using namespace DirectX;
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
 
-void	BallInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-void	BallFinalize();
-void	BallUpdate();
-void	BallDraw();
-
-XMFLOAT3 GetBallPosition();
-
 
 //ボールの状態
 enum BALL_STATE
@@ -34,19 +27,46 @@ enum BALL_STATE
 //ボール構造体
 class BALL
 {
-	public:
-		XMFLOAT3	Position;	//表示座標
-		XMFLOAT3	Rotation;	//回転角
-		XMFLOAT3	Scaling;	//拡大率
-		XMFLOAT3	Velocity;	//速度
-		XMFLOAT3	Acceleration;	// 落下速度
+private:
+	XMFLOAT3	m_Position;	//表示座標
+	XMFLOAT3	m_Rotation;	//回転角
+	XMFLOAT3	m_Scaling;	//拡大率
+	XMFLOAT3	m_Velocity;	//速度
+	XMFLOAT3	m_Acceleration;	// 落下速度
 
-		BALL_STATE	State;		//状態
-		MODEL*		Model;		//モデルデータ
+	BALL_STATE	m_State;		//状態
+	MODEL* m_Model;		//モデルデータ
 
+//	BOMB* m_Bomb;
+
+private:
+	void	Ball_Idle();
+	void	Ball_Move();
+	void	Ball_Power();
+	void	Ball_Direction();
+
+public:
+	void	BallInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	BallFinalize();
+	void	BallUpdate();
+	void	BallDraw();
+
+	void SetBallPosition(XMFLOAT3 pos) { m_Position = pos; };
+	XMFLOAT3 GetBallPosition() { return m_Position; };
+
+	void SetBallRotation(XMFLOAT3 rotate) { m_Rotation = rotate; };
+	XMFLOAT3 GetBallRotation() { return m_Rotation; };
+
+	void SetBallScaling(XMFLOAT3 sca) { m_Scaling = sca; };
+	XMFLOAT3 GetBallScaling() { return m_Scaling; };
+
+	void SetBallVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
+	XMFLOAT3 GetBallVelocity() { return m_Velocity; };
+
+	BALL* GetBall();
 };
 
-BALL* GetBall();
+
 
 
 

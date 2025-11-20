@@ -11,13 +11,9 @@
 #include "fade.h"
 
 
-//グローバル変数
-static	SCENE	g_Scene = SCENE_NONE;	//現在のシーン番号
-
-
-void	Manager_Initialize()
+void	MANAGER::Manager_Initialize()
 { 
-	Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+	//Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 
 	////本来はtitleの初期化でフェードインをセットする
 	//XMFLOAT4 color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -26,100 +22,108 @@ void	Manager_Initialize()
 
 
 	//本来の形
-	Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
 
-
-
 }
 
-void	Manager_Finalize()
+void	MANAGER::Manager_Finalize()
 { 
-	Fade_Finalize();
+	m_Fade.Fade_Finalize();
 	SetScene(SCENE_NONE);
+
+
+
 }
 
-void	Manager_Update()
+void	MANAGER::Manager_Update()
 {
-	switch (g_Scene)	//現在シーンのアップデート関数を呼び出す
+	switch (m_Scene)	//現在シーンのアップデート関数を呼び出す
 	{
-		case SCENE_NONE:
-			break;
-		case SCENE_TITLE:
-			Title_Update();	
-			break;
-		case SCENE_GAME:
-			Game_Update();
-			break;
-		case SCENE_RESULT:
-			Result_Update();
-			break;
-		default:
-			break;
+	case SCENE_NONE:
+		break;
+	case SCENE_TITLE:
+		m_Title.Title_Update();
+		break;
+	case SCENE_GAME:
+		m_Game.Game_Update();
+		break;
+	case SCENE_RESULT:
+		m_Result.Result_Update();
+		break;
+	default:
+		break;
 	}
 
-	Fade_Update();
+	m_Fade.Fade_Update();
+
+	if (m_Fade.GetFadeState() == FADE_OUT && m_Fade.Fade_GetColorW() > 1.0f)
+	{
+		SetScene(m_Fade.Fade_GetScene());
+	}
+
+
 
 }
 
-void	Manager_Draw()
+void	MANAGER::Manager_Draw()
 { 
-	switch (g_Scene)	//現在シーンの描画関数を呼び出す
+	switch (m_Scene)	//現在シーンの描画関数を呼び出す
 	{
 		case SCENE_NONE:
 			break;
 		case SCENE_TITLE:
-			Title_Draw();	
+			m_Title.Title_Draw();	
 			break;
 		case SCENE_GAME:
-			Game_Draw();
+			m_Game.Game_Draw();
 			break;
 		case SCENE_RESULT:
-			Result_Draw();
+			m_Result.Result_Draw();
 			break;
 		default:
 			break;
 	}
 
-	Fade_Draw();
+	m_Fade.Fade_Draw();
 
 }
 
-void	SetScene(SCENE scene) //シーンを切り替える
+void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 {
 	//実行中のシーンを終了させる
-	switch (g_Scene)	//現在シーンの終了関数を呼び出す
+	switch (m_Scene)	//現在シーンの終了関数を呼び出す
 	{
 		case SCENE_NONE:
 			break;
 		case SCENE_TITLE:
-			Title_Finalize();	
+			m_Title.Title_Finalize();
 			break;
 		case SCENE_GAME:
-			Game_Finalize();
+			m_Game.Game_Finalize();
 			break;
 		case SCENE_RESULT:
-			Result_Finalize();
+			m_Result.Result_Finalize();
 			break;
 		default:
 			break;
 	}
 
-	g_Scene = scene;	//指定のシーンへ切り替える
+	m_Scene = scene;	//指定のシーンへ切り替える
 
 	//次のシーンを初期化する
-	switch (g_Scene)	//現在シーンの初期化関数を呼び出す
+	switch (m_Scene)	//現在シーンの初期化関数を呼び出す
 	{
 		case SCENE_NONE:
 			break;
 		case SCENE_TITLE:
-			Title_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+			m_Title.Title_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(),&m_Fade);
 			break;
 		case SCENE_GAME:
-			Game_Initialize( Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+			m_Game.Game_Initialize( Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 			break;
 		case SCENE_RESULT:
-			Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+			m_Result.Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
 			break;
 		default:
 			break;

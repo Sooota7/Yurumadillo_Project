@@ -25,12 +25,13 @@ LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	Camera_Initialize();	//カメラ初期化
+	
+	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
+	Camera_Initialize(m_Ball.GetBallPosition());	//カメラ初期化
 	Field_Initialize(pDevice, pContext); // フィールドの初期化
-	BallInitialize(pDevice, pContext); // ボールの初期化
-
+	
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
@@ -38,7 +39,6 @@ void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
 
-	
 
 
 
@@ -65,10 +65,10 @@ void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 }
 
-void Game_Finalize()
+void GAME::Game_Finalize()
 {
 	Field_Finalize();	// フィールドの終了処理
-	BallFinalize();	// ボールの終了処理
+	m_Ball.BallFinalize();	// ボールの終了処理
 	//Block_Finalize();
 	//Player_Finalize();	// ポリゴンの終了処理
 	//Effect_Finalize();
@@ -79,13 +79,16 @@ void Game_Finalize()
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
-void Game_Update()
+void GAME::Game_Update()
 {
 	//更新処理
-	Camera_Update();	//カメラ更新処理
-	BallUpdate();
+	Camera_Update(m_Ball.GetBallPosition());	//カメラ更新処理
+	m_Ball.BallUpdate();
 	Field_Update();
+
 	
+	collision.BallFieldCollision(&m_Ball);
+
 	//Player_Update();
 	//Block_Update();
 	//Effect_Update();
@@ -94,7 +97,7 @@ void Game_Update()
 
 }
 
-void Game_Draw()
+void GAME::Game_Draw()
 { 
 	Light.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
@@ -102,7 +105,7 @@ void Game_Draw()
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
 	Field_Draw();
-	BallDraw();
+	m_Ball.BallDraw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF

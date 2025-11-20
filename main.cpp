@@ -106,6 +106,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	//ウィンドウ内部の更新要求
 	UpdateWindow(hWnd);
 
+	MANAGER manager;
 
 	Direct3D_Initialize(hWnd);
 	Keyboard_Initialize();
@@ -116,7 +117,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 
 
-	Manager_Initialize();
+	manager.Manager_Initialize();
 
 
 	/////////////////////////////////
@@ -161,11 +162,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 #endif
 
 				//更新処理
-				Manager_Update();
+				manager.Manager_Update();
 
 				//描画処理
 				Direct3D_Clear();
-				Manager_Draw();
+				manager.Manager_Draw();
 				Direct3D_Present();
 				keycopy();
 
@@ -175,7 +176,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		}
 	} while (msg.message != WM_QUIT);
 	
-	Manager_Finalize();
+	manager.Manager_Finalize();
 
 
 	UninitAudio();		//サウンドの終了
