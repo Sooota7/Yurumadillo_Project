@@ -30,7 +30,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	
 	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Ball.GetBallPosition());	//カメラ初期化
-	Field_Initialize(pDevice, pContext); // フィールドの初期化
+	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
 	
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -43,7 +43,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
-	PlayAudio(g_BgmID, true);	//再生開始（ループあり）
+	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
 	//PlayAudio(g_BgmID);			//再生開始（ループなし）
 	//PlayAudio(g_BgmID, false);	//再生開始（ループなし）
 
@@ -67,7 +67,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 void GAME::Game_Finalize()
 {
-	Field_Finalize();	// フィールドの終了処理
+	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Ball.BallFinalize();	// ボールの終了処理
 	//Block_Finalize();
 	//Player_Finalize();	// ポリゴンの終了処理
@@ -84,11 +84,11 @@ void GAME::Game_Update()
 	//更新処理
 	Camera_Update(m_Ball.GetBallPosition());	//カメラ更新処理
 	m_Ball.BallUpdate();
-	Field_Update();
+	m_Map.Field_Update();
+
+	collision.BallFieldCollision(&m_Ball,&m_Map);
 
 	
-	collision.BallFieldCollision(&m_Ball);
-
 	//Player_Update();
 	//Block_Update();
 	//Effect_Update();
@@ -104,7 +104,7 @@ void GAME::Game_Draw()
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
-	Field_Draw();
+	m_Map.Field_Draw();
 	m_Ball.BallDraw();
 
 	//2D描画

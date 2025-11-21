@@ -11,7 +11,7 @@ class GAME
 {
 private:
 	BALL m_Ball;
-	MAPDATA m_map;
+	MAPDATA m_Map;
 	CAMERA m_Camera;
 //	BOMB m_Bomb;
 //	ENEMY m_Enemy;
