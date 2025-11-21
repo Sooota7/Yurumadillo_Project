@@ -21,14 +21,14 @@ void	BALL::BallInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	m_Model = ModelLoad("asset\\model\\ball.fbx");
 
-	m_Position = XMFLOAT3(0.0f, 2.2f, 0.0f);
+	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
 
 	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
-	m_State = BALL_STATE::BALL_STATE_DIRECTION;
+	m_State = BALL_STATE::BALL_STATE_MOVE;
 
 	g_StopTime = 0.0f;
 

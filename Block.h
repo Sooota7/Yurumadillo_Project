@@ -1,30 +1,44 @@
-//#pragma once
-//
-//class BLOCK
-//{
-//	public:
-//		bool Enable;	//ブロックがあるかないか
-//		bool Erase;		//消滅予定フラグ
-//		int Type;		//ブロック種別
-//};
-//
-//enum BLOCK_STATE
-//{
-//	BLOCK_STATE_IDLE,			//ひま
-//	BLOCK_STATE_ERASE_IDLE,		//消滅中
-//	BLOCK_STATE_STACK_IDLE,		//落下中
-//
-//};
-//
-////メイン処理関数
-//void Block_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-//void Block_Finalize();
-//void Block_Update();
-//void Block_Draw();
-//
-////サブ処理関数
-//void Block_SetBlock(int x, int y, int Type);
-//BLOCK Block_GetBlock(int x, int y);
-//void Block_EraseBlock();
-//void Block_StackBlock();
-//
+
+//field.h
+#pragma once
+
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include "direct3d.h"
+#include "sprite.h"
+#include "shader.h"
+using namespace DirectX;
+
+// マクロ定義
+#define		BOX_RADIUS		(0.5f)
+
+//MAP構成ブロックの種類
+enum FIELD
+{
+	FIELD_BOX = 0,
+
+	FIELD_OBT_0, // 障害物
+
+	FIELD_MAX
+};
+
+//MAPデータ構造体
+class MAP
+{
+private:
+	//	BOMB* m_Bomb;
+	XMFLOAT3	position;	//ブロックの座標
+	FIELD		no;		//ブロックの種類
+	//その他必要な物は追加する
+
+public:
+
+	void MapData_Initialize(XMFLOAT3 pPos, FIELD pNo);
+	void MapData_Finalize(void);
+	void MapData_Update(void);
+
+	MAP* GetFieldMap();
+	FIELD MapData_GetNo() { return no; };
+	XMFLOAT3 MapData_GetPosition() { return position; };
+};
+

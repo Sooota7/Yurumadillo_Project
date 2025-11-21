@@ -30,5 +30,5 @@ enum COLLISION_HIT
 class COLLISION
 {
 public:
-	float	BallFieldCollision(BALL* pBall/*, MAPDATA* pField*/);
+	float	BallFieldCollision(BALL* pBall, MAPDATA* pField);
 };
