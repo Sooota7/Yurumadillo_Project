@@ -3,189 +3,189 @@
 #include "camera.h"
 #include "model.h"
 
-MODEL* Model[FIELD_MAX] = { NULL };//ƒfƒoƒbƒO
+MODEL* Model[FIELD_MAX] = { NULL };//ï¿½fï¿½oï¿½bï¿½O
 
 
-//ƒOƒ[ƒoƒ‹•Ï”
+//ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
 static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
 
 #define		BOX_NUM_VERTEX (24)
 
 
-//BOX’¸“_ƒf[ƒ^
+//BOXï¿½ï¿½ï¿½_ï¿½fï¿½[ï¿½^
 static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 {
 	//-Z
-	{//’¸“_‚O@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_ï¿½Oï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_‚P@RIGHT-TOP
-		XMFLOAT3(0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_ï¿½Pï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_‚Q@LEFT-BOTTOM
-		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_ï¿½Qï¿½@LEFT-BOTTOM
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_3@RIGHT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_3ï¿½@RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
 
-	//+X–Ê
-	{//’¸“_4@LEFT-TOP
-		XMFLOAT3(0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	//+Xï¿½ï¿½
+	{//ï¿½ï¿½ï¿½_4ï¿½@LEFT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_5@RIGHT-TOP
-		XMFLOAT3(0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_5ï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_6@LEFT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_6ï¿½@LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_7@RIGHT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_7ï¿½@RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
 
 	//+Z
 
-	{//’¸“_8@RIGHT-TOP
-		XMFLOAT3(0.5f, 0.5f, 0.5f),//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//F
-		XMFLOAT2(0.0f,0.0f)//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_8ï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f, 0.5f, 0.5f),//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//ï¿½F
+		XMFLOAT2(0.0f,0.0f)//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_9@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_9ï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_10@LEFT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_10ï¿½@LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_11@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_11ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
 	//-X
 
-	{//’¸“_12@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_12ï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_13@LEFT-BOTTOM
-		XMFLOAT3(-0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_13ï¿½@LEFT-BOTTOM
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_14@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_14ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
-	{//’¸“_15@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,1.0f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//ï¿½ï¿½ï¿½_15ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
 	},
 
 	//+Y
 
-	{//’¸“_16 LEFT-TOP
+	{//ï¿½ï¿½ï¿½_16 LEFT-TOP
 		XMFLOAT3(-0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.0f)
 	},
-	{//’¸“_17 RIGHT-TOP
+	{//ï¿½ï¿½ï¿½_17 RIGHT-TOP
 		XMFLOAT3(0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.0f)
 	},
-	{//’¸“_18 LEFT-BOTTOM
+	{//ï¿½ï¿½ï¿½_18 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.25f)
 	},
-	{//’¸“_19 RIGHT-BOTTOM
+	{//ï¿½ï¿½ï¿½_19 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.25f)
 	},
-	//-Y–Ê
-	{//’¸“_20 LEFT-TOP
+	//-Yï¿½ï¿½
+	{//ï¿½ï¿½ï¿½_20 LEFT-TOP
 		XMFLOAT3(-0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.75f)
 	},
-	{//’¸“_21 RIGHT-TOP
+	{//ï¿½ï¿½ï¿½_21 RIGHT-TOP
 		XMFLOAT3(0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.75f)
 	},
-	{//’¸“_22 LEFT-BOTTOM
+	{//ï¿½ï¿½ï¿½_22 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,1.0f)
 	},
-	{//’¸“_23 RIGHT-BOTTOM
+	{//ï¿½ï¿½ï¿½_23 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,1.0f)
 	},
 
-	//Œã‚Å‘‚¦‚Ü‚·
+	//ï¿½ï¿½Å‘ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
 };
 
-//ƒCƒ“ƒfƒbƒNƒX”z—ñ
+//ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½zï¿½ï¿½
 static UINT Box_idxdata[6 * 6] =
 {
-	 0, 1, 2, 2, 1, 3,	//-Z–Ê
-	 4, 5, 6, 6, 5, 7,	//+X–Ê
-	 8, 9,10,10, 9,11,	//+Z–Ê
-	12,13,14,14,13,15,	//-X–Ê
-	16,17,18,18,17,19,	//+Y–Ê
-	20,21,22,22,21,23,	//-Y–Ê
+	 0, 1, 2, 2, 1, 3,	//-Zï¿½ï¿½
+	 4, 5, 6, 6, 5, 7,	//+Xï¿½ï¿½
+	 8, 9,10,10, 9,11,	//+Zï¿½ï¿½
+	12,13,14,14,13,15,	//-Xï¿½ï¿½
+	16,17,18,18,17,19,	//+Yï¿½ï¿½
+	20,21,22,22,21,23,	//-Yï¿½ï¿½
 };
 
 void MAP::MapData_Initialize(XMFLOAT3 pPos,FIELD pNo)
@@ -205,7 +205,7 @@ void  MAP::MapData_Update(void)
 }
 
 
-////BOXƒf[ƒ^‚ðì¬‚·‚é
+////BOXï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
 //void CreateBox()
 //{
 //
@@ -213,6 +213,6 @@ void  MAP::MapData_Update(void)
 
 MAP* MAP::GetFieldMap()
 {
-	//return Map‚Æ‚à‘‚¯‚é‚ª”z—ñ‚Æ•ª‚©‚è‚¸‚ç‚¢‚©‚à
+	//return Mapï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚ªï¿½zï¿½ï¿½Æ•ï¿½ï¿½ï¿½ï¿½è‚¸ï¿½ç‚¢ï¿½ï¿½ï¿½ï¿½
 	return this;
 }
