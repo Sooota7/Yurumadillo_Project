@@ -6,6 +6,7 @@
 #include "Ball.h"
 #include "collision.h"
 #include "camera.h"
+#include "EnemyNormal.h"
 
 class GAME
 {
@@ -14,7 +15,7 @@ private:
 	MAPDATA m_Map;
 	CAMERA m_Camera;
 //	BOMB m_Bomb;
-//	ENEMY m_Enemy;
+	ENEMY_NORMAL m_EnemyNormal;
 
 	COLLISION collision;
 

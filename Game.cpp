@@ -31,7 +31,8 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Ball.GetBallPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
-	
+	m_EnemyNormal.Initialize(pDevice, pContext);
+
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
@@ -69,6 +70,7 @@ void GAME::Game_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Ball.BallFinalize();	// ボールの終了処理
+	m_EnemyNormal.Finalize();
 	//Block_Finalize();
 	//Player_Finalize();	// ポリゴンの終了処理
 	//Effect_Finalize();
@@ -84,10 +86,12 @@ void GAME::Game_Update()
 	//更新処理
 	Camera_Update(m_Ball.GetBallPosition());	//カメラ更新処理
 	m_Ball.BallUpdate();
+	m_EnemyNormal.Update();
 	m_Map.Field_Update();
 
 	collision.BallFieldCollision(&m_Ball,&m_Map);
-
+	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
+	collision.BallEnemyCollision(&m_Ball, &m_EnemyNormal);
 	
 	//Player_Update();
 	//Block_Update();
@@ -106,6 +110,7 @@ void GAME::Game_Draw()
 	Camera_Draw();		//Drawの最初で呼ぶ！
 	m_Map.Field_Draw();
 	m_Ball.BallDraw();
+	m_EnemyNormal.Draw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
