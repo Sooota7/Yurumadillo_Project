@@ -13,6 +13,8 @@ using namespace DirectX;
 #include	"field.h"
 #include	"Ball.h"
 
+#include    "player.h"
+
 #define COE		(0.5f)
 
 
@@ -30,5 +32,5 @@ enum COLLISION_HIT
 class COLLISION
 {
 public:
-	float	BallFieldCollision(BALL* pBall, MAPDATA* pField);
+	float	PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField);
 };
