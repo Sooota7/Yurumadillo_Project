@@ -5,12 +5,14 @@
 
 
 
-float	COLLISION::BallFieldCollision(BALL* pBall, MAPDATA* pField)
+float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 {
 	float		hit = 0.0f;				// ヒットした方向
-	//BALL*		Ball = GetBall();		// ボールの情報
-	XMFLOAT3 BallPos = pBall->GetBallPosition();
-	XMFLOAT3 BallVel = pBall->GetBallVelocity();
+	//PLAYER*		Player = GetPlayer();		// ボールの情報
+	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
+	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
+	bool PlayerJump = pPlayer->GetPlayerJump();
+
 	MAP*	Map = pField->GetFieldMap();	// マップ
 	int			i = 0;
 
@@ -30,42 +32,42 @@ float	COLLISION::BallFieldCollision(BALL* pBall, MAPDATA* pField)
 		}
 
 		// 壁としての判定処理
-		if (mapPos.y - BOX_RADIUS < BallPos.y &&
-			BallPos.y < BoxTop - 0.1f)
+		if (mapPos.y - BOX_RADIUS < PlayerPos.y &&
+			PlayerPos.y < BoxTop - 0.1f)
 		{
-			if (mapPos.z - BOX_RADIUS < BallPos.z &&
-				BallPos.z < mapPos.z + BOX_RADIUS)
+			if (mapPos.z - BOX_RADIUS < PlayerPos.z &&
+				PlayerPos.z < mapPos.z + BOX_RADIUS)
 			{
-				if (mapPos.x - BOX_RADIUS < BallPos.x + BALL_RADIUS &&
-					BallPos.x < mapPos.x - BOX_RADIUS)
+				if (mapPos.x - BOX_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
+					PlayerPos.x < mapPos.x - BOX_RADIUS)
 				{//BOXの-X面にぶつかったので座標の補正
-					BallPos.x += (mapPos.x - BOX_RADIUS) - (BallPos.x + BALL_RADIUS);
-					BallVel.x *= -COE; //移動ベクトルの反転
+					PlayerPos.x += (mapPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
+					PlayerVel.x *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_3;
 				}
-				else if (mapPos.x + BOX_RADIUS > BallPos.x - BALL_RADIUS &&
-					BallPos.x > mapPos.x + BOX_RADIUS)
+				else if (mapPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
+					PlayerPos.x > mapPos.x + BOX_RADIUS)
 				{//BOXの+X面にぶつかった
-					BallPos.x += (mapPos.x + BOX_RADIUS) - (BallPos.x - BALL_RADIUS);
-					BallVel.x *= -COE;
+					PlayerPos.x += (mapPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
+					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
 				}
 			}
-			else if (mapPos.x - BOX_RADIUS < BallPos.x &&
-				BallPos.x < mapPos.x + BOX_RADIUS)
+			else if (mapPos.x - BOX_RADIUS < PlayerPos.x &&
+				PlayerPos.x < mapPos.x + BOX_RADIUS)
 			{
-				if (mapPos.z - BOX_RADIUS < BallPos.z + BALL_RADIUS &&
-					BallPos.z < mapPos.z - BOX_RADIUS)
+				if (mapPos.z - BOX_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
+					PlayerPos.z < mapPos.z - BOX_RADIUS)
 				{//BOXの-Z面にぶつかったので座標の補正
-					BallPos.z += (mapPos.z - BOX_RADIUS) - (BallPos.z + BALL_RADIUS);
-					BallVel.z *= -COE; //移動ベクトルの反転
+					PlayerPos.z += (mapPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
+					PlayerVel.z *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_0;
 				}
-				else if (mapPos.z + BOX_RADIUS > BallPos.z - BALL_RADIUS &&
-					BallPos.z > mapPos.z + BOX_RADIUS)
+				else if (mapPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
+					PlayerPos.z > mapPos.z + BOX_RADIUS)
 				{//BOXの+Z面にぶつかった
-					BallPos.z += (mapPos.z + BOX_RADIUS) - (BallPos.z - BALL_RADIUS);
-					BallVel.z *= -COE;
+					PlayerPos.z += (mapPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
+					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
 				}
 			}
@@ -73,33 +75,37 @@ float	COLLISION::BallFieldCollision(BALL* pBall, MAPDATA* pField)
 		//地面として判定処理
 		else
 		{
-			if (mapPos.z - BOX_RADIUS < BallPos.z &&
-				BallPos.z < mapPos.z + BOX_RADIUS)
+			if (mapPos.z - BOX_RADIUS < PlayerPos.z &&
+				PlayerPos.z < mapPos.z + BOX_RADIUS)
 			{
-				if (mapPos.x - BOX_RADIUS < BallPos.x &&
-					BallPos.x < mapPos.x + BOX_RADIUS)
+				if (mapPos.x - BOX_RADIUS < PlayerPos.x &&
+					PlayerPos.x < mapPos.x + BOX_RADIUS)
 				{
-					if (mapPos.y - BOX_RADIUS < BallPos.y + BALL_RADIUS &&
-						BallPos.y < mapPos.y - BOX_RADIUS)
+					if (mapPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
+						PlayerPos.y < mapPos.y - BOX_RADIUS)
 					{//BOXの-X面にぶつかったので座標の補正
-						BallPos.y += (mapPos.y - BOX_RADIUS) - (BallPos.y + BALL_RADIUS);
-						BallVel.y *= -COE; //移動ベクトルの反転
+						PlayerPos.y += (mapPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
+						PlayerVel.y *= -COE; //移動ベクトルの反転
 						//hit = 
 					}
-					else if (BoxTop > BallPos.y - BALL_RADIUS &&
-						BallPos.y > BoxTop)
+					else if (BoxTop > PlayerPos.y - PLAYER_RADIUS &&
+						PlayerPos.y > BoxTop)
 					{//BOXの+X面にぶつかった
-						BallPos.y += (BoxTop)-(BallPos.y - BALL_RADIUS);
-						BallVel.y = BallVel.y * (-COE * 1.0f);
+						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
+						PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
 						hit = COLLISION_HIT::HIT_GROUND;
+						if (PlayerJump == false)
+						{
+							PlayerJump = true;
+						}
 					}
 				}
 			}
 		}
 
-
-		pBall->SetBallPosition(BallPos);
-		pBall->SetBallVelocity(BallVel);
+		pPlayer->SetPlayerJump(PlayerJump);
+		pPlayer->SetPlayerPosition(PlayerPos);
+		pPlayer->SetPlayerVelocity(PlayerVel);
 
 		i++;
 	}

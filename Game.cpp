@@ -25,7 +25,7 @@ LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
 	
 	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
@@ -40,7 +40,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
 
-
+	m_Manager = manager;
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
@@ -90,9 +90,15 @@ void GAME::Game_Update()
 	m_Map.Field_Update();
 
 	collision.BallFieldCollision(&m_Ball,&m_Map);
-	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
-	collision.BallEnemyCollision(&m_Ball, &m_EnemyNormal);
-	
+
+	//キー入力チェック
+//スタートボタンが押されたらシーンを切り替え
+//フェード処理中はキーを受け付けない
+	if (Keyboard_IsKeyDownTrigger(KK_P))
+	{
+		m_Manager->SetScene(SCENE_PAUSE);
+	}
+
 	//Player_Update();
 	//Block_Update();
 	//Effect_Update();
