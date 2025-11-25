@@ -7,6 +7,7 @@
 
 #include "Game.h"
 #include "Title.h"
+#include "Pause.h"
 #include "Result.h"
 #include "fade.h"
 
@@ -48,6 +49,9 @@ void	MANAGER::Manager_Update()
 	case SCENE_GAME:
 		m_Game.Game_Update();
 		break;
+	case SCENE_PAUSE:
+		m_Pause.Pause_Update();
+		break;
 	case SCENE_RESULT:
 		m_Result.Result_Update();
 		break;
@@ -78,6 +82,9 @@ void	MANAGER::Manager_Draw()
 		case SCENE_GAME:
 			m_Game.Game_Draw();
 			break;
+		case SCENE_PAUSE:
+			m_Pause.Pause_Draw();
+			break;
 		case SCENE_RESULT:
 			m_Result.Result_Draw();
 			break;
@@ -100,7 +107,13 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			m_Title.Title_Finalize();
 			break;
 		case SCENE_GAME:
-			m_Game.Game_Finalize();
+			if (scene != SCENE_PAUSE)
+			{
+				m_Game.Game_Finalize();
+			}
+		break;		
+		case SCENE_PAUSE:
+			m_Pause.Pause_Finalize();
 			break;
 		case SCENE_RESULT:
 			m_Result.Result_Finalize();
@@ -120,7 +133,18 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			m_Title.Title_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(),&m_Fade);
 			break;
 		case SCENE_GAME:
-			m_Game.Game_Initialize( Direct3D_GetDevice(), Direct3D_GetDeviceContext());
+			if (!m_GameInitialized)
+			{
+				m_Game.Game_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_GameInitialized = true;
+			}
+		break;		
+		case SCENE_PAUSE:
+			m_Pause.Pause_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
 			break;
 		case SCENE_RESULT:
 			m_Result.Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);

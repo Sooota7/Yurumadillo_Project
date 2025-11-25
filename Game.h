@@ -7,23 +7,22 @@
 #include "collision.h"
 #include "camera.h"
 
-#include "player.h"
-
+class MANAGER;
 
 class GAME
 {
 private:
-	//BALL m_Ball;
+	MANAGER* m_Manager;
+	BALL m_Ball;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
-	PLAYER m_Player;
 //	BOMB m_Bomb;
 //	ENEMY m_Enemy;
 
 	COLLISION collision;
 
 public:
-	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Game_Finalize();
 	void Game_Update();
 	void Game_Draw();

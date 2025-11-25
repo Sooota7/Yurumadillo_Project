@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "Title.h"
+#include "Pause.h"
 #include "Result.h"
 #include "fade.h"
 #include "dictionary.h"
@@ -19,8 +20,9 @@ private:
 	//ÉVÅ[Éì
 	TITLE m_Title;
 	GAME  m_Game;
+	PAUSE m_Pause;
 	RESULT m_Result;
-
+	bool m_GameInitialized = false;
 
 public:
 	void	Manager_Initialize();
