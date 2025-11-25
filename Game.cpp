@@ -49,7 +49,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	//ƒ‰ƒCƒg‰Šú‰»
 	XMFLOAT4	para;
-	
+
 	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//ŠÂ‹«Œõ‚ÌF
 	Light.SetAmbient(para);
 
