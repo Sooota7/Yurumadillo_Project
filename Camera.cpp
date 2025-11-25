@@ -4,8 +4,9 @@
 
 #include	"Camera.h"
 #include	"keyboard.h"
-#include	"Ball.h"
+//#include	"Ball.h"
 
+#include "player.h"
 //グローバル変数
 static	CAMERA	CameraObject;
 
@@ -56,14 +57,14 @@ void	Camera_Update(XMFLOAT3 BallPos)
 
 	//注視点を中心にカメラの位置を回転（Y軸回転）
 	float	Rotation = 0.0f;
-	if (Keyboard_IsKeyDown(KK_A))
+	/*if (Keyboard_IsKeyDown(KK_A))
 	{
 		Rotation = 1.0f;
 	}
 	if (Keyboard_IsKeyDown(KK_D))
 	{
 		Rotation = -1.0f;
-	}
+	}*/
 
 	//注視点からカメラへのベクトル
 	XMFLOAT2	vec;

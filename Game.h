@@ -7,12 +7,16 @@
 #include "collision.h"
 #include "camera.h"
 
+#include "player.h"
+
+
 class GAME
 {
 private:
-	BALL m_Ball;
+	//BALL m_Ball;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
+	PLAYER m_Player;
 //	BOMB m_Bomb;
 //	ENEMY m_Enemy;
 
