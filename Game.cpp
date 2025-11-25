@@ -28,11 +28,12 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
 	
-	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
-	Camera_Initialize(m_Ball.GetBallPosition());	//カメラ初期化
+	//m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
+	m_Player.Player_Initialize(pDevice, pContext); // プレイヤー初期化
+
+	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
 	
-	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
 	//Score_Initialize(pDevice, pContext);//スコア初期化
@@ -68,9 +69,9 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 void GAME::Game_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
-	m_Ball.BallFinalize();	// ボールの終了処理
+	m_Player.Player_Finalize(); // プレイヤーの終了処理
+	//m_Ball.BallFinalize();	// ボールの終了処理
 	//Block_Finalize();
-	//Player_Finalize();	// ポリゴンの終了処理
 	//Effect_Finalize();
 	//Score_Finalize();
 	//Polygon3D_Finalize();
@@ -82,11 +83,15 @@ void GAME::Game_Finalize()
 void GAME::Game_Update()
 {
 	//更新処理
-	Camera_Update(m_Ball.GetBallPosition());	//カメラ更新処理
-	m_Ball.BallUpdate();
+	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
+	
+	//m_Ball.BallUpdate();
+	m_Player.Player_Update(); // プレイヤー更新処理
 	m_Map.Field_Update();
+	
 
-	collision.BallFieldCollision(&m_Ball,&m_Map);
+	collision.PlayerFieldCollision(&m_Player, &m_Map);
+	//collision.BallFieldCollision(&m_Ball,&m_Map);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -96,7 +101,6 @@ void GAME::Game_Update()
 		m_Manager->SetScene(SCENE_PAUSE);
 	}
 
-	//Player_Update();
 	//Block_Update();
 	//Effect_Update();
 	//Score_Update();
@@ -111,8 +115,10 @@ void GAME::Game_Draw()
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
+	m_Player.Player_Draw();
 	m_Map.Field_Draw();
-	m_Ball.BallDraw();
+	
+	//m_Ball.BallDraw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
@@ -122,7 +128,6 @@ void GAME::Game_Draw()
 
 
 	//Block_Draw();
-	//Player_Draw();
 	//Effect_Draw();
 	//Score_Draw();
 

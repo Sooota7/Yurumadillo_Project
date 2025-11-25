@@ -3,6 +3,7 @@
 #pragma once
 
 #include "direct3d.h"
+#include "player.h"
 #include "Ball.h"
 #include "collision.h"
 #include "camera.h"
@@ -13,6 +14,7 @@ class GAME
 {
 private:
 	MANAGER* m_Manager;
+	PLAYER m_Player;
 	BALL m_Ball;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
