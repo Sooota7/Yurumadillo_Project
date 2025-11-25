@@ -3,11 +3,17 @@
 #define _BONB_H_
 
 
+<<<<<<< HEAD
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "direct3d.h"
 #include "sprite.h"
 #include "shader.h"
+=======
+#include	<d3d11.h>
+#include	<DirectXMath.h>
+#include	"direct3d.h"
+>>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 using namespace DirectX;
 
 #include	"model.h"
@@ -26,7 +32,11 @@ private:
 	const int limitTime{ 5 };
 
 
+<<<<<<< HEAD
 	BOMBSOURCE	m_Bomb[BOMB_NUM_MAX];
+=======
+	BOMBSOURCE	m_bomb[BOMB_NUM_MAX];
+>>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 	MODEL*		m_Model[BOMB_MAX] = { NULL };//デバッグ
 
 public:

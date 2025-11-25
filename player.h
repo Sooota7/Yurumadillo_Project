@@ -1,36 +1,84 @@
-
-
 #pragma once
 
-#include <d3d11.h>
+//Player.h
 
-//プレイヤーステート
-enum PIECE_STATE
+#include	<d3d11.h>
+#include	<DirectXMath.h>
+#include	"direct3d.h"
+using namespace DirectX;
+
+#include	"model.h"
+#include    "bombSource.h"
+
+#define PLAYER_SPEEDMAX (0.05f)      //最高速度
+#define PLAYER_RADIUS (0.2f)
+#define GENSUI (0.98f)
+#define STOP_VELO (0.0002f)
+#define PLAYER_ACCELERATION (0.01f)  //加速度
+#define PLAYER_GRAVITY (0.02f)       //重力
+#define PLAYER_JUMP (0.3f)           //ジャンプ力
+#define PLAYER_DEATH (-3.0f)         //これ以上下に行くと死
+#define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
+
+//ボールの状態
+enum PLAYER_STATE
 {
-	PIECE_STATE_IDLE = 0,	//何もしない
-	PIECE_STATE_MOVE,		//移動中
-	PIECE_STATE_GROUND_IDLE,	//着地中
-	PIECE_STATE_MISS_IDLE,		//ミス発生
-
+	PLAYER_STATE_IDLE = 0,	//何もしない
+	PLAYER_STATE_MOVE,		//移動
+	PLAYER_STATE_RESPAWN,   //リスポーン
+	
 };
 
-//落下ブロック
-class PIECE
+//ボール構造体
+class PLAYER
 {
-	public:
-		XMFLOAT2		Position;	//表示座標
-		int				Type[3];	//色種別
-		PIECE_STATE		State;		//状態
+private:
+	XMFLOAT3	m_Position;	//表示座標
+	XMFLOAT3	m_Rotation;	//回転角
+	XMFLOAT3	m_Scaling;	//拡大率
+	XMFLOAT3	m_Velocity;	//速度
+	XMFLOAT3	m_Acceleration;	// 落下速度
 
-		int				StateCount;	//ステート切り替わりウェイト
+	PLAYER_STATE	m_State;		//状態
+	MODEL* m_Model[2];		//モデルデータ
 
+	 BOMBSOURCE* m_Bomb;
+
+	 bool JumpCount;
+
+private:
+	void	Player_Idle();
+	void	Player_Move();
+	void    Player_BombMagic(BOMBSOURCE* pBomb);
+	void    Player_Respawn();
+
+public:
+	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Player_Finalize();
+	void	Player_Update();
+	void	Player_Draw();
+
+	void SetPlayerPosition(XMFLOAT3 pos) { m_Position = pos; };
+	XMFLOAT3 GetPlayerPosition() { return m_Position; };
+
+	void SetPlayerRotation(XMFLOAT3 rotate) { m_Rotation = rotate; };
+	XMFLOAT3 GetPlayerRotation() { return m_Rotation; };
+
+	void SetPlayerScaling(XMFLOAT3 sca) { m_Scaling = sca; };
+	XMFLOAT3 GetPlayerScaling() { return m_Scaling; };
+
+	void SetPlayerVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
+	XMFLOAT3 GetPlayerVelocity() { return m_Velocity; };
+
+	void SetPlayerJump(bool jump) { JumpCount = jump; };
+	BOOL GetPlayerJump() { return JumpCount; };
+
+	PLAYER* GetPlayer();
 };
 
-void Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-void Player_Finalize(void);
-void Player_Update();
-void Player_Draw(void);
 
-void Player_Create();	//新しいブロックを作る
-void Player_Move();		//移動処理
+
+
+
+
 

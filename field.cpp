@@ -1,287 +1,225 @@
 
 #include "field.h"
-#include "Camera.h"
-
-#include "model.h"
-
-
-
-MODEL* Model[FIELD_MAX] = { NULL };
-
+#include "camera.h"
 
 //グローバル変数
-static	ID3D11Device* g_pDevice = NULL;
-static	ID3D11DeviceContext* g_pContext = NULL;
+static ID3D11Device* g_pDevice = NULL;
+static ID3D11DeviceContext* g_pContext = NULL;
 //頂点バッファ
-static	ID3D11Buffer* g_VertexBuffer = NULL;
+static ID3D11Buffer* g_VertexBuffer = NULL;
 //インデックスバッファ
-static	ID3D11Buffer* g_IndexBuffer = NULL;
+static ID3D11Buffer* g_IndexBuffer = NULL;
 //テクスチャ変数
 static ID3D11ShaderResourceView* g_Texture;
 
-#define		BOX_NUM_VERTEX	(24)
+#define		BOX_NUM_VERTEX (24)
 
 //BOX作成関数
-void	CreateBox();
+void CreateBox();
+
+int GetMap(int x,int y,int z)
+{
+	switch (z)
+	{
+	case(0):
+		return Field_pos_row[y][x];
+
+		break;
+	case(1):
+		return Field_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return Field_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 
 //BOX頂点データ
-static	Vertex3D	Box_vdata[BOX_NUM_VERTEX] =
+static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 {
-	//-Z面
-	{//頂点0 LEFT-TOP
-		XMFLOAT3(-0.5f, 0.5f, -0.5f),		//座標
-		XMFLOAT3(0.0f, 0.0f, -1.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),	//カラー
-		XMFLOAT2(0.0f,0.0f)					//テクスチャ座標
+	//-Z
+	{//頂点０　LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点1 RIHGT-TOP
-		XMFLOAT3(0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f, 0.0f, -1.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.0f)
+	{//頂点１　RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点2 LEFT-BOTTOM
-		XMFLOAT3(-0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.0f, 0.0f, -1.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,1.0f)
+	{//頂点２　LEFT-BOTTOM
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
 	},
-	{//頂点3 RIHGT-BOTTOM
-		XMFLOAT3(0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.0f, 0.0f, -1.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,1.0f)
+	{//頂点3　RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
 	},
+
 	//+X面
-	{//頂点4 LEFT-TOP
-		XMFLOAT3(0.5f, 0.5f, -0.5f),
-		XMFLOAT3(1.0f, 0.0f, 0.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,0.0f)
+	{//頂点4　LEFT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点5 RIGHT-TOP
-		XMFLOAT3(0.5f, 0.5f, 0.5f),
-		XMFLOAT3(1.0f, 0.0f, 0.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.0f)
+	{//頂点5　RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点6 LEFT-BOTTOM
-		XMFLOAT3(0.5f, -0.5f, -0.5f),
-		XMFLOAT3(1.0f, 0.0f, 0.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,1.0f)
+	{//頂点6　LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
 	},
-	{//頂点7 RIGHT-BOTTM
-		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(1.0f, 0.0f, 0.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,1.0f)
+	{//頂点7　RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
 	},
-	//+Z面
-	{//頂点8 LEFT-TOP
-		XMFLOAT3(0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.0f, 1.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,0.0f)
+
+	//+Z
+
+	{//頂点8　RIGHT-TOP
+		XMFLOAT3(0.5f, 0.5f, 0.5f),//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//色
+		XMFLOAT2(0.0f,0.0f)//テクスチャ座標
 	},
-	{//頂点9 RIGHT-TOP
-		XMFLOAT3(-0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.0f, 1.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.0f)
+	{//頂点9　LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点10 LEFT-BOTTOM
-		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.0f, 1.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,1.0f)
+	{//頂点10　LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),	//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
 	},
-	{//頂点11 RIGHT-BOTTOM
-		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.0f, 0.0f, 1.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,1.0f)
+	{//頂点11　RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
 	},
-	//-X面
-	{//頂点12 LEFT-TOP
-		XMFLOAT3(-0.5f, 0.5f, 0.5f),
-		XMFLOAT3(-1.0f, 0.0f, 0.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,0.0f)
+	//-X
+
+	{//頂点12　LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点13 RIGHT-TOP
-		XMFLOAT3(-0.5f, 0.5f, -0.5f),
-		XMFLOAT3(-1.0f, 0.0f, 0.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.0f)
+	{//頂点13　LEFT-BOTTOM
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
 	},
-	{//頂点14 LEFT-BOTTOM
-		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(-1.0f, 0.0f, 0.0f),		//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,1.0f)
+	{//頂点14　RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
 	},
-	{//頂点15 RIGHT-BOTTOM
-		XMFLOAT3(-0.5f, -0.5f, -0.5f),
-		XMFLOAT3(-1.0f, 0.0f, 0.0f),			//法線
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,1.0f)
+	{//頂点15　RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//座標
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
+		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
 	},
-	//+Y面
+
+	//+Y
+
 	{//頂点16 LEFT-TOP
 		XMFLOAT3(-0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f, 1.0f, 0.0f),			//法線
+		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.0f)
 	},
 	{//頂点17 RIGHT-TOP
 		XMFLOAT3(0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f, 1.0f, 0.0f),			//法線
+		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.0f)
 	},
-	{//頂点17 LEFT-BOTTOM
+	{//頂点18 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f, 1.0f, 0.0f),			//法線
+		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.25f)
 	},
 	{//頂点19 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f, 1.0f, 0.0f),			//法線
+		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.25f)
 	},
 	//-Y面
 	{//頂点20 LEFT-TOP
 		XMFLOAT3(-0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f, 0.5f, 0.5f),			//法線
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.75f)
 	},
 	{//頂点21 RIGHT-TOP
 		XMFLOAT3(0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f, 0.5f, 0.5f),			//法線
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.75f)
 	},
 	{//頂点22 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f, 0.5f, 0.5f),			//法線
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,1.0f)
 	},
 	{//頂点23 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f, 0.5f, 0.5f),			//法線
+		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,1.0f)
 	},
-
+	
+	//後で増えます
+	
 };
-static UINT	Box_idxdata[6 * 6] =
+
+//インデックス配列
+static UINT Box_idxdata[6 * 6] =
 {
-	 0,  1,  2,  2,  1,  3,		//-Z面
-	 4,  5,  6,  6,  5,  7,		//+X面
-	 8,  9, 10, 10,  9, 11,		//-Z面
-	12, 13, 14, 14, 13, 15,		//-X面
-	16, 17, 18, 18, 17, 19,		//+Y面
-	20, 21, 22, 22, 21, 23,		//-Y面
+	 0, 1, 2, 2, 1, 3,	//-Z面
+	 4, 5, 6, 6, 5, 7,	//+X面
+	 8, 9,10,10, 9,11,	//+Z面
+	12,13,14,14,13,15,	//-X面
+	16,17,18,18,17,19,	//+Y面
+	20,21,22,22,21,23,	//-Y面
 };
 
-//マップデータ配列
-MAPDATA		Map[] =
-{
-	{XMFLOAT3(0.0f, -0.5f, 0.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(-5.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3(-5.0f, 0.5f, 1.0f), FIELD_OBT_0},//START
-	{XMFLOAT3(-3.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3(-2.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3(-1.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3(-0.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3( 1.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3( 2.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3( 3.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3( 4.0f, -0.5f, 1.0f), FIELD_BOX},//START
-	{XMFLOAT3( 5.0f, -0.5f, 1.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(-5.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(-5.0f, 0.5f, 2.0f), FIELD_OBT_0},//START
-	{XMFLOAT3(-4.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(-4.0f, 0.5f, 2.0f), FIELD_OBT_0},//START
-//	{XMFLOAT3(-3.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(-2.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(-1.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(-0.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(1.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(2.0f, -0.5f, 2.0f), FIELD_BOX},//START
-//	{XMFLOAT3(3.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(4.0f, -0.5f, 2.0f), FIELD_BOX},//START
-	{XMFLOAT3(5.0f, -0.5f, 2.0f), FIELD_BOX},//START
-
-//	{XMFLOAT3(-5.0f, -0.5f, 3.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-4.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(-3.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(-2.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(-1.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(-0.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(1.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(2.0f, -0.5f, 3.0f), FIELD_BOX},//START
-	{XMFLOAT3(3.0f, -0.5f, 3.0f), FIELD_BOX},//START
-//	{XMFLOAT3(4.0f, -0.5f, 3.0f), FIELD_BOX},//START
-//	{XMFLOAT3(5.0f, -0.5f, 3.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(-5.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(-4.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(-3.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(-2.0f, -0.5f, 4.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-1.0f, -0.5f, 4.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-0.0f, -0.5f, 4.0f), FIELD_BOX},//START
-//	{XMFLOAT3(1.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(2.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(3.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(4.0f, -0.5f, 4.0f), FIELD_BOX},//START
-	{XMFLOAT3(5.0f, -0.5f, 4.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(-5.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(-4.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(-3.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(-2.0f, -0.5f, 5.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-1.0f, -0.5f, 5.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-0.0f, -0.5f, 5.0f), FIELD_BOX},//START
-//	{XMFLOAT3(1.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(2.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(3.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(4.0f, -0.5f, 5.0f), FIELD_BOX},//START
-	{XMFLOAT3(5.0f, -0.5f, 5.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(-5.0f, -0.5f, 6.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-4.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(-3.0f, -0.5f, 6.0f), FIELD_BOX},//START
-//	{XMFLOAT3(-2.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(-1.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(-0.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(1.0f, -0.5f, 6.0f), FIELD_BOX},//START
-//	{XMFLOAT3(2.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(3.0f, -0.5f, 6.0f), FIELD_BOX},//START
-//	{XMFLOAT3(4.0f, -0.5f, 6.0f), FIELD_BOX},//START
-	{XMFLOAT3(5.0f, -0.5f, 6.0f), FIELD_BOX},//START
-
-	{XMFLOAT3(0.0f, -0.5f, 7.0f), FIELD_BOX},//GOAL
-
-
-
-	{XMFLOAT3(2.0f, -1.0f, 5.0f), FIELD_MAX}//MAPデータ終了
-};
-
-
-
-
-void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	//Test = ModelLoad("asset\\model\\test.fbx");//デバッグ
-
 
 
 	g_pDevice = pDevice;
@@ -295,23 +233,79 @@ void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);
 
+	int a = 0;
+
+	for (int q = 0; q < 3; q++)
+	{
+		for (int i = 0; i < FIELD_WIDTH_Z; i++)
+		{
+			for (int l = 0; l < FIELD_WIDTH_X; l++)
+			{
+
+				switch (GetMap(l, i, q))
+				{
+				case 0:
+					break;
+				case 1:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l,q,i),FIELD_BOX);
+
+					break;
+				case 2:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_0);;
+					break;
+				}
+
+				a++;
+			}
+		}
+	}
+	m_Map[a].MapData_Initialize( XMFLOAT3(2.0,-1.0f,5.0f),FIELD_MAX );
+	//for (int i = 0; i < BOX_POS_Y; i++)
+	//{
+	//	for (int l = 0; l < BOX_POS_X; l++)
+	//	{
+	//		if (i == (BOX_POS_Y - 1) && l == (BOX_POS_X - 1))
+	//		{
+	//			Map[a] = { XMFLOAT3(2.0,-1.0f,5.0f),FIELD_MAX };
+	//		}
+	//		else
+	//		{
+	//			switch ((int)Box_pos[1][l][i])
+	//			{
+	//			case 0:
+	//				break;
+	//			case 1:
+	//				Map[a] = { XMFLOAT3(l,0,i),FIELD_BOX };
+
+	//				break;
+	//			case 2:
+	//				Map[a] = { XMFLOAT3(l,1,i),FIELD_OBT_0 };
+	//				break;
+	//			}
+	//		}
+	//		a++;
+	//	}
+	//}
+
 	//ブロックの作成
 	for (int i = 0; i < FIELD_MAX; i++)
 	{
 		switch (i)
 		{
-			case FIELD_BOX:
-				CreateBox();
-				break;
-			case FIELD_OBT_0:	// 障害物0
-				Model[i] = ModelLoad("asset\\model\\tree.fbx");
-				break;
-		}
+		case FIELD_BOX:
+			CreateBox();
+			break;
 
+		case FIELD_OBT_0://障害物0
+			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
+			break;
+
+		}
 	}
 
 }
-void Field_Finalize(void)
+
+void  MAPDATA::Field_Finalize(void)
 {
 	for (int i = 0; i < FIELD_MAX; i++)
 	{
@@ -320,59 +314,68 @@ void Field_Finalize(void)
 			ModelRelease(Model[i]);
 			Model[i] = NULL;
 		}
+
 	}
-	
 
 	SAFE_RELEASE(g_VertexBuffer);
 	SAFE_RELEASE(g_IndexBuffer);
 	SAFE_RELEASE(g_Texture);
-
 }
-void Field_Draw(void)
-{ 
+
+void  MAPDATA::Field_Draw(void)
+{
 	//シェーダーを描画パイプラインへ設定
 	Shader_Begin();
+
 
 	//プロジェクション行列作成
 	XMMATRIX	Projection = GetProjectionMatrix();
 	//ビュー行列作成
 	XMMATRIX	View = GetViewMatrix();
 	//先にVP変換行列を作っておく
-	XMMATRIX VP = View * Projection;
+	XMMATRIX	VP = View * Projection;
 
 	//MAPの表示
 	int i = 0;
+
 	static float rot = 0.0f;
-	rot -= 0.0f;
-	while (Map[i].no != FIELD_MAX)
+	rot -= 0.5f;
+
+	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
+		XMFLOAT3 mapPos = m_Map[i].MapData_GetPosition();
+
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
-			1.0f, 1.0f, 1.0f
+			1.0f,
+			1.0f,
+			1.0f
 		);
 		//平行移動行列の作成
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
-			Map[i].pos.x, Map[i].pos.y, Map[i].pos.z
+			mapPos.x,
+			mapPos.y,
+			mapPos.z
 		);
+		
 		//回転行列の作成
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
-//			XMConvertToRadians(0.0f),
-			XMConvertToRadians(rot),
+			XMConvertToRadians(0.0f),
+			//XMConvertToRadians(rot),
+			//XMConvertToRadians(rot),
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
 		//ワールド行列の作成
-		XMMATRIX	World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
 		//最終的な変換行列を作成
-		XMMATRIX	WVP = World * VP;	//(VP = View * Projection)
-
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
 		//DirectXへ行列をセット
-		Shader_SetWorldMatrix(World);
 		Shader_SetMatrix(WVP);
-		
+
 		//テクスチャをセット
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
@@ -387,40 +390,38 @@ void Field_Draw(void)
 		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		if (Map[i].no == FIELD_BOX)
+		//描画リクエスト
+		if (m_Map[i].MapData_GetNo() == FIELD_BOX)
 		{
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
-		else
+		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_0)
 		{
-			ModelDraw(Model[Map[i].no]);
+			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
 		}
-
-		//ModelDraw(Test);//デバッグ
-
 		i++;
 	}
 
-
 }
 
-void Field_Update(void) 
+void  MAPDATA::Field_Update(void)
 {
-
 }
+
 
 //BOXデータを作成する
 void CreateBox()
 {
 	{
 		//頂点バッファ作成
-		D3D11_BUFFER_DESC	bd;
-		ZeroMemory(&bd, sizeof(bd));//０でクリア
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));//0でクリア
 		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.ByteWidth = sizeof(Vertex3D) * BOX_NUM_VERTEX;//格納できる頂点数*頂点サイズ
+		bd.ByteWidth = sizeof(Vertex3D) * BOX_NUM_VERTEX; //格納できる頂点数*頂点サイズ
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		g_pDevice->CreateBuffer(&bd, NULL, &g_VertexBuffer);
+
 
 		//頂点データを頂点バッファへコピーする
 		D3D11_MAPPED_SUBRESOURCE msr;
@@ -435,16 +436,17 @@ void CreateBox()
 
 	//インデックスバッファ作成
 	{
-		D3D11_BUFFER_DESC	bd;
-		ZeroMemory(&bd, sizeof(bd));//０でクリア
+		//頂点バッファ作成
+		D3D11_BUFFER_DESC bd;
+		ZeroMemory(&bd, sizeof(bd));//0でクリア
 		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.ByteWidth = sizeof(UINT) * 6 * 6;
+		bd.ByteWidth = sizeof(UINT) * 6 * 6; //格納できる頂点数*頂点サイズ
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		g_pDevice->CreateBuffer(&bd, NULL, &g_IndexBuffer);
 
 		//インデックスバッファへ書き込み
-		D3D11_MAPPED_SUBRESOURCE   msr;
+		D3D11_MAPPED_SUBRESOURCE msr;
 		g_pContext->Map(g_IndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		UINT* index = (UINT*)msr.pData;
 
@@ -454,10 +456,10 @@ void CreateBox()
 
 	}
 
-
 }
 
-MAPDATA* GetFieldMap()
+MAP* MAPDATA::GetFieldMap()
 {
-	return &Map[0];
+	//return Mapとも書けるが配列と分かりずらいかも
+	return m_Map->GetFieldMap();
 }

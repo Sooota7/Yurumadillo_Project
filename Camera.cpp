@@ -4,14 +4,15 @@
 
 #include	"Camera.h"
 #include	"keyboard.h"
-#include	"Ball.h"
+//#include	"Ball.h"
 
+#include "player.h"
 //グローバル変数
 static	CAMERA	CameraObject;
 
 XMFLOAT3		g_BallPosOld;//<<<<<<<<<<<<<<
 
-void	Camera_Initialize()
+void	Camera_Initialize(XMFLOAT3 BallPos)
 { 
 	CameraObject.Position = XMFLOAT3(0.0f, 3.0f, -4.0f);
 	CameraObject.AtPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -24,7 +25,7 @@ void	Camera_Initialize()
 	CameraObject.NearClip = 0.5f;
 	CameraObject.FarClip = 1000.0f;
 
-	g_BallPosOld = GetBallPosition();//<<<<<<<<<<<<<<<<
+	g_BallPosOld = BallPos;//<<<<<<<<<<<<<<<<
 
 }
 
@@ -32,11 +33,11 @@ void	Camera_Finalize()
 {
 	return;
 }
-void	Camera_Update()
+void	Camera_Update(XMFLOAT3 BallPos)
 {
 	//ボールの座標取得<<<<<<<<<<<<<<<<<<<<<<
 	XMFLOAT3	pos = g_BallPosOld;
-	g_BallPosOld = GetBallPosition();
+	g_BallPosOld = BallPos;
 
 	//前回のボールと現在のボールの座標の差分<<<<<<<<<<<<<<<
 	pos.x = g_BallPosOld.x - pos.x;
@@ -56,14 +57,14 @@ void	Camera_Update()
 
 	//注視点を中心にカメラの位置を回転（Y軸回転）
 	float	Rotation = 0.0f;
-	if (Keyboard_IsKeyDown(KK_A))
+	/*if (Keyboard_IsKeyDown(KK_A))
 	{
 		Rotation = 1.0f;
 	}
 	if (Keyboard_IsKeyDown(KK_D))
 	{
 		Rotation = -1.0f;
-	}
+	}*/
 
 	//注視点からカメラへのベクトル
 	XMFLOAT2	vec;

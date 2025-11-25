@@ -1,375 +1,218 @@
 
-#include <d3d11.h>
-#include <DirectXMath.h>
-using namespace DirectX;
-#include "direct3d.h"
-#include "shader.h"
-//#include "debug_ostream.h"
-#include "sprite.h"
-#include "keyboard.h"
-
 #include "Block.h"
-#include "player.h"
-#include "Effect.h"
-#include "score.h"
+#include "camera.h"
+#include "model.h"
+
+MODEL* Model[FIELD_MAX] = { NULL };//ï¿½fï¿½oï¿½bï¿½O
 
 
-// ’ˆÓI‰Šú‰»‚ÅŠO•”‚©‚çİ’è‚³‚ê‚é‚à‚ÌBRelease•s—vB
-static ID3D11Device* g_pDevice = nullptr;
-static ID3D11DeviceContext* g_pContext = nullptr;
+//ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½
+static ID3D11Device* g_pDevice = NULL;
+static ID3D11DeviceContext* g_pContext = NULL;
 
-static ID3D11ShaderResourceView* g_Texture[4]{};
-static BLOCK g_Block[BLOCK_ROWS][BLOCK_COLS]{};//‰¡‚É6ŒÂ@c‚É13ŒÂ
-
-static BLOCK_STATE g_BlockState{};
-static int g_BlockStateCount{};
-
-//ƒXƒNƒ[ƒ‹’l‚Ì‰Šú‰»
-static	XMFLOAT2	ScrollOffset = XMFLOAT2(POSITION_OFFSET_X, POSITION_OFFSET_Y);
+#define		BOX_NUM_VERTEX (24)
 
 
-
-//‰Šú‰»
-void Block_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+//BOXï¿½ï¿½ï¿½_ï¿½fï¿½[ï¿½^
+static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 {
-	// ƒfƒoƒCƒX‚ÆƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚Ì•Û‘¶
-	g_pDevice = pDevice;
-	g_pContext = pContext;
+	//-Z
+	{//ï¿½ï¿½ï¿½_ï¿½Oï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_ï¿½Pï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_ï¿½Qï¿½@LEFT-BOTTOM
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_3ï¿½@RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
 
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
-	TexMetadata metadata;
-	ScratchImage image;
+	//+Xï¿½ï¿½
+	{//ï¿½ï¿½ï¿½_4ï¿½@LEFT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_5ï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_6ï¿½@LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_7ï¿½@RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
 
-	LoadFromWICFile(L"Asset\\Texture\\Spade.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[0]);
-	assert(g_Texture[0]);
+	//+Z
 
-	LoadFromWICFile(L"Asset\\Texture\\Clover.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[1]);
-	assert(g_Texture[1]);
+	{//ï¿½ï¿½ï¿½_8ï¿½@RIGHT-TOP
+		XMFLOAT3(0.5f, 0.5f, 0.5f),//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//ï¿½F
+		XMFLOAT2(0.0f,0.0f)//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_9ï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_10ï¿½@LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_11ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	//-X
 
-	LoadFromWICFile(L"Asset\\Texture\\Diamond.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[2]);
-	assert(g_Texture[2]);
+	{//ï¿½ï¿½ï¿½_12ï¿½@LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_13ï¿½@LEFT-BOTTOM
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,0.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_14ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(0.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
+	{//ï¿½ï¿½ï¿½_15ï¿½@RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//ï¿½ï¿½ï¿½W
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//ï¿½F
+		XMFLOAT2(1.0f,1.0f)				//ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½W
+	},
 
-	LoadFromWICFile(L"Asset\\Texture\\Heart.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[3]);
-	assert(g_Texture[3]);
+	//+Y
 
+	{//ï¿½ï¿½ï¿½_16 LEFT-TOP
+		XMFLOAT3(-0.5f, 0.5f, 0.5f),
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(0.0f,0.0f)
+	},
+	{//ï¿½ï¿½ï¿½_17 RIGHT-TOP
+		XMFLOAT3(0.5f, 0.5f, 0.5f),
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(1.0f,0.0f)
+	},
+	{//ï¿½ï¿½ï¿½_18 LEFT-BOTTOM
+		XMFLOAT3(-0.5f, 0.5f, -0.5f),
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(0.0f,0.25f)
+	},
+	{//ï¿½ï¿½ï¿½_19 RIGHT-BOTTOM
+		XMFLOAT3(0.5f, 0.5f, -0.5f),
+		XMFLOAT3(0.0f,1.0f,0.0f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(1.0f,0.25f)
+	},
+	//-Yï¿½ï¿½
+	{//ï¿½ï¿½ï¿½_20 LEFT-TOP
+		XMFLOAT3(-0.5f, -0.5f, -0.5f),
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(0.0f,0.75f)
+	},
+	{//ï¿½ï¿½ï¿½_21 RIGHT-TOP
+		XMFLOAT3(0.5f, -0.5f, -0.5f),
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(1.0f,0.75f)
+	},
+	{//ï¿½ï¿½ï¿½_22 LEFT-BOTTOM
+		XMFLOAT3(-0.5f, -0.5f, 0.5f),
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(0.0f,1.0f)
+	},
+	{//ï¿½ï¿½ï¿½_23 RIGHT-BOTTOM
+		XMFLOAT3(0.5f, -0.5f, 0.5f),
+		XMFLOAT3(0.5f,0.5f,0.5f),		//ï¿½@ï¿½ï¿½
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
+		XMFLOAT2(1.0f,1.0f)
+	},
 
+	//ï¿½ï¿½Å‘ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
 
-	//ƒuƒƒbƒN‰Šú‰»
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			//g_Block[y][x].Enable = true;	//ƒfƒoƒbƒO—p
-			g_Block[y][x].Enable = false;
-			g_Block[y][x].Type = 0;
+};
 
-		}
+//ï¿½Cï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½zï¿½ï¿½
+static UINT Box_idxdata[6 * 6] =
+{
+	 0, 1, 2, 2, 1, 3,	//-Zï¿½ï¿½
+	 4, 5, 6, 6, 5, 7,	//+Xï¿½ï¿½
+	 8, 9,10,10, 9,11,	//+Zï¿½ï¿½
+	12,13,14,14,13,15,	//-Xï¿½ï¿½
+	16,17,18,18,17,19,	//+Yï¿½ï¿½
+	20,21,22,22,21,23,	//-Yï¿½ï¿½
+};
 
-	}
-
-	g_BlockState = BLOCK_STATE_IDLE;
-	g_BlockStateCount = 0;
+void MAP::MapData_Initialize(XMFLOAT3 pPos,FIELD pNo)
+{
+	position = pPos;
+	no = pNo;
 }
 
-//I—¹
-void Block_Finalize()
+void  MAP::MapData_Finalize(void)
 {
-	for (int i = 0; i < 4; i++)
-	{
-		g_Texture[i]->Release();
-	}
-}
-
-//XV
-void Block_Update()
-{
-
-	switch (g_BlockState)
-	{
-	case BLOCK_STATE_IDLE:	//‚Ğ‚Ü
-		break;
-
-	case BLOCK_STATE_ERASE_IDLE://Á–Å’†
-		g_BlockStateCount++;	//Ø‚è‘Ö‚¦ƒEƒFƒCƒgƒCƒ“ƒNƒŠƒƒ“ƒg
-		if (g_BlockStateCount >= 30)//“K“–‚É‘Ò‚Â
-		{
-			Block_StackBlock();	//—‰ºˆ—
-		}
-		break;
-
-	case BLOCK_STATE_STACK_IDLE://—‰º’†
-		g_BlockStateCount++;
-		if (g_BlockStateCount >= 30)
-		{
-			Block_EraseBlock();//Á–Åƒ`ƒFƒbƒN
-		}
-		break;
-
-	default:
-		break;
-	}
-}
-
-//•\¦
-void Block_Draw()
-{
-
-	// ‰æ–ÊƒTƒCƒYæ“¾
-	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
-	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
-
-	// ƒVƒF[ƒ_[‚ğ•`‰æƒpƒCƒvƒ‰ƒCƒ“‚Éİ’è
-	Shader_Begin();
-
-	// ’¸“_ƒVƒF[ƒ_[‚É2D•ÏŠ·s—ñ‚ğİ’è
-	XMMATRIX	Projection = XMMatrixOrthographicOffCenterLH(
-		0.0f,
-		SCREEN_WIDTH,
-		SCREEN_HEIGHT,
-		0.0f,
-		0.0f,
-		1.0f);
-
-
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable)//ƒuƒƒbƒN‚ª‚ ‚ê‚Î
-			{	//”z—ñ‚ÌŒ`‚É•\¦‚·‚é
-
-				g_pContext->PSSetShaderResources(0, 1, &g_Texture[g_Block[y][x].Type]);
-
-
-				XMFLOAT2 pos = XMFLOAT2(x*BLOCK_WIDTH+(BLOCK_WIDTH*0.5f), y* BLOCK_HEIGHT+(BLOCK_HEIGHT*0.5f));
-				XMFLOAT2 size = XMFLOAT2(BLOCK_WIDTH, BLOCK_HEIGHT);
-				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-				//•½sˆÚ“® •\¦À•W
-				XMMATRIX	Translation =
-					XMMatrixTranslation(pos.x,pos.y, 0.0f);
-				//‰ñ“]
-				XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
-				//Šg‘å—¦i0‚Í‚¾‚ßj
-				XMMATRIX	Scaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-				//ƒ[ƒ‹ƒhs—ñ
-				XMMATRIX	World = Scaling * Rotation * Translation;
-
-				//ƒXƒNƒ[ƒ‹—ps—ñì¬
-				//XMMATRIX	mat = XMMatrixIdentity();//s—ñ‚Ì‰Šú‰»i’PˆÊs—ñj
-				XMMATRIX	mat = XMMatrixTranslation(ScrollOffset.x, ScrollOffset.y, 0.0f);
-				//’¸“_•ÏŠ·s—ñ
-				mat = World * mat * Projection;
-
-				//ƒVƒF[ƒ_[‚Ös—ñ‚ğƒZƒbƒg
-				Shader_SetMatrix(mat);
-
-				SetBlendState(BLENDSTATE_ALFA);
-				DrawSprite(size, col, 0, 1, 1);
-			}
-		}
-	}
-}
-
-//ƒuƒƒbƒN‚ğ”z—ñ‚ÉƒZƒbƒg
-void Block_SetBlock(int x, int y, int Type)
-{
-	//”z—ñ‚Ì”ÍˆÍ“à‚©H
-	if (x < 0 || x >= BLOCK_COLS || y < 0 || y >= BLOCK_ROWS)
-	{
-		return;
-	}
-
-	g_Block[y][x].Enable = true;
-	g_Block[y][x].Erase = false;
-	g_Block[y][x].Type = Type;
-
-}
-
-//ƒuƒƒbƒN‚ğ”z—ñ‚©‚çæ“¾
-BLOCK Block_GetBlock(int x, int y)
-{
-	BLOCK dummy =	//ƒ_ƒ~[ƒuƒƒbƒN
-	{
-		false,
-		false,
-		0,
-	};
-
-	if (x < 0 || x >= BLOCK_COLS  ||  y < 0 || y >= BLOCK_ROWS)
-	{
-		return dummy;//”z—ñ”ÍˆÍŠO‚Ìê‡‚Íƒ_ƒ~[ƒuƒƒbƒN‚ğ•Ô‚·
-	}
-
-	return g_Block[y][x];
-}
-
-
-//Á–Åƒ`ƒFƒbƒN
-void Block_EraseBlock()
-{
-	bool	erase = false;		//Á–Å”­¶ƒtƒ‰ƒO
-
-	int		type = -1;		//ƒuƒƒbƒN‚Ìí—Ş
-	int		count = 0;		//“¯‚¶F‚ª•À‚ñ‚Å‚¢‚é”
-
-	//‰¡•ûŒüƒ`ƒFƒbƒN
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0 ; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable == true)//ƒuƒƒbƒN‚ª‘¶İ‚·‚é
-			{
-				if (g_Block[y][x].Type == type)//type‚Æ“¯‚¶ƒuƒƒbƒN
-				{
-					count++;	//•À‚ñ‚Å‚¢‚é”{‚P
-
-					if (count >= 2)//F‚ª3‚ÂˆÈã•À‚ñ‚Å‚¢‚é
-					{
-						for (int i = x; i > x - 3; i--)
-						{	//è‘O‚É3‚Â•ª‘k‚Á‚ÄÁ‹ƒtƒ‰ƒO‚ğtrue‚É‚µ‚Ä‚¢‚­
-							g_Block[y][i].Erase = true;
-						}
-						erase = true;	//Á–Å”­¶ƒtƒ‰ƒOON
-						AddScore(10);	//ƒXƒRƒA‚É‚P‚O‚O“_‰ÁZ‚·‚é
-					}
-				}
-				else
-				{//type‚ÆˆÙ‚È‚éƒuƒƒbƒN‚¾‚Á‚½ê‡
-					type = g_Block[y][x].Type;	//ƒ`ƒFƒbƒN‚·‚éí—Ş‚ğXV
-					count = 0;					//•À‚ñ‚Å‚¢‚é”ƒŠƒZƒbƒg
-				}
-			}
-			else
-			{//ƒuƒƒbƒN‚ª–³‚¢ê‡
-				type = -1;
-				count = 0;
-			}
-
-		}
-		type = -1;
-		count = 0;
-
-	}
-
-	//cƒ`ƒFƒbƒN
-	type = -1;
-	count = 0;
-
-	for (int x = 0; x < BLOCK_COLS; x++)
-	{
-		for (int y = 0; y < BLOCK_ROWS; y++)
-		{
-
-			if (g_Block[y][x].Enable == true)//ƒuƒƒbƒN‚ª‘¶İ‚·‚é
-			{
-				if (g_Block[y][x].Type == type)//type‚Æ“¯‚¶ƒuƒƒbƒN
-				{
-					count++;	//•À‚ñ‚Å‚¢‚é”{‚P
-
-					if (count >= 2)//F‚ª3‚ÂˆÈã•À‚ñ‚Å‚¢‚é
-					{
-						for (int i = y; i > y - 3; i--)
-						{	//è‘O‚É3‚Â•ª‘k‚Á‚ÄÁ‹ƒtƒ‰ƒO‚ğtrue‚É‚µ‚Ä‚¢‚­
-							g_Block[i][x].Erase = true;
-						}
-						erase = true;	//Á–Å”­¶ƒtƒ‰ƒOON
-						AddScore(10);
-					}
-				}
-				else
-				{//type‚ÆˆÙ‚È‚éƒuƒƒbƒN‚¾‚Á‚½ê‡
-					type = g_Block[y][x].Type;	//ƒ`ƒFƒbƒN‚·‚éí—Ş‚ğXV
-					count = 0;					//•À‚ñ‚Å‚¢‚é”ƒŠƒZƒbƒg
-				}
-			}
-			else
-			{//ƒuƒƒbƒN‚ª–³‚¢ê‡
-				type = -1;
-				count = 0;
-			}
-		}
-		type = -1;
-		count = 0;
-
-	}
-
-
-	//Á–Åó‘Ô‚ÌƒuƒƒbƒN‚Ìíœ•ƒGƒtƒFƒNƒg”­¶
-	for (int y = 0; y < BLOCK_ROWS; y++)
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Erase)//Á–Å‚·‚é—\’è‚ÌƒuƒƒbƒN
-			{
-				g_Block[y][x].Enable = false;
-				g_Block[y][x].Erase = false;
-
-				//ƒGƒtƒFƒNƒg”­¶—\’è
-				XMFLOAT2	position;
-				position = XMFLOAT2(x * BLOCK_WIDTH + (BLOCK_WIDTH * 0.5f), 
-									y * BLOCK_HEIGHT + (BLOCK_HEIGHT * 0.5f));
-
-				CreateEffect(position);
-
-			}
-
-		}
-	}
-
-	if (erase == true)
-	{//Á–Å‚ª”­¶‚µ‚½
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_ERASE_IDLE;
-		g_BlockStateCount = 0;
-	}
-	else
-	{//Á–Å‚Í–³‚©‚Á‚½
-		Player_Create();		//V‚µ‚¢ƒvƒŒƒCƒ„[”­¶
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
-		g_BlockStateCount = 0;
-	}
 
 }
 
-//ƒuƒƒbƒN—‰º
-void Block_StackBlock()
+
+void  MAP::MapData_Update(void)
 {
-	bool stack = false;	//—‰ºˆ—OFF
+}
 
-	for (int y = BLOCK_ROWS - 1; y > 0; y--)//‰º‚©‚çã‚ÉŒ©‚Ä‚¢‚­
-	{
-		for (int x = 0; x < BLOCK_COLS; x++)
-		{
-			if (g_Block[y][x].Enable == false)//ƒuƒƒbƒN‚ª–³‚¢
-			{
-				for (int ys = y - 1; ys >= 0; ys--)//1‚ÁŒÂã‚©‚çÅã•”‚Ü‚Å
-				{
-					if (g_Block[ys][x].Enable == true)
-					{
-						g_Block[y][x] = g_Block[ys][x];	//1‚Âã‚Ì\‘¢‘Ì‚ğ‰º‚ÖƒRƒs[
-						g_Block[ys][x].Enable = false;	//ƒRƒs[‚µ‚½‚ç‹ó‚É‚È‚é
-						stack = true;					//—‰ºˆ—”­¶
-						break;
-					}
-				}
-			}
-		}
-	}
 
-	if (stack == true)
-	{	//—‰ºˆ—‚ª‚ ‚Á‚½ê‡
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_STACK_IDLE;
-		g_BlockStateCount = 0;
-	}
-	else
-	{	//—‰ºˆ—‚ª–³‚©‚Á‚½ê‡
-		Player_Create();
-		g_BlockState = BLOCK_STATE::BLOCK_STATE_IDLE;
-		g_BlockStateCount = 0;
-	}
+////BOXï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
+//void CreateBox()
+//{
+//
+//}
 
+MAP* MAP::GetFieldMap()
+{
+	//return Mapï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é‚ªï¿½zï¿½ï¿½Æ•ï¿½ï¿½ï¿½ï¿½è‚¸ï¿½ç‚¢ï¿½ï¿½ï¿½ï¿½
+	return this;
 }

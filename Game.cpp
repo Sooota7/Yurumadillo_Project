@@ -16,7 +16,7 @@
 #include	"Polygon3D.h"
 #include	"Camera.h"
 
-#include "Ball.h"
+//#include "Ball.h"
 
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
@@ -25,25 +25,25 @@ LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	Camera_Initialize();	//カメラ初期化
-	Field_Initialize(pDevice, pContext); // フィールドの初期化
-	BallInitialize(pDevice, pContext); // ボールの初期化
+	m_Player.Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 
-	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
+	//m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
+	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
+	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
+	
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
 	//Score_Initialize(pDevice, pContext);//スコア初期化
 
 	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
 
-	
 
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
-	PlayAudio(g_BgmID, true);	//再生開始（ループあり）
+	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
 	//PlayAudio(g_BgmID);			//再生開始（ループなし）
 	//PlayAudio(g_BgmID, false);	//再生開始（ループなし）
 
@@ -65,12 +65,12 @@ void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 }
 
-void Game_Finalize()
+void GAME::Game_Finalize()
 {
-	Field_Finalize();	// フィールドの終了処理
-	BallFinalize();	// ボールの終了処理
+	m_Map.Field_Finalize();	// フィールドの終了処理
+	//m_Ball.BallFinalize();	// ボールの終了処理
 	//Block_Finalize();
-	//Player_Finalize();	// ポリゴンの終了処理
+	m_Player.Player_Finalize();	// ポリゴンの終了処理
 	//Effect_Finalize();
 	//Score_Finalize();
 	//Polygon3D_Finalize();
@@ -79,14 +79,21 @@ void Game_Finalize()
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
-void Game_Update()
+void GAME::Game_Update()
 {
 	//更新処理
-	Camera_Update();	//カメラ更新処理
-	BallUpdate();
-	Field_Update();
+	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
+	//m_Ball.BallUpdate();
 	
-	//Player_Update();
+	m_Player.Player_Update();
+
+
+	m_Map.Field_Update();
+
+
+	collision.PlayerFieldCollision(&m_Player,&m_Map);
+
+	
 	//Block_Update();
 	//Effect_Update();
 	//Score_Update();
@@ -94,15 +101,18 @@ void Game_Update()
 
 }
 
-void Game_Draw()
+void GAME::Game_Draw()
 { 
 	Light.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
-	Field_Draw();
-	BallDraw();
+	m_Map.Field_Draw();
+	//m_Ball.BallDraw();
+
+	m_Player.Player_Draw();
+
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
@@ -112,7 +122,6 @@ void Game_Draw()
 
 
 	//Block_Draw();
-	//Player_Draw();
 	//Effect_Draw();
 	//Score_Draw();
 

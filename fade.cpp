@@ -4,15 +4,13 @@
 #include	"fade.h"
 #include	"shader.h"
 
-FadeObject	g_Fade;		//フェード処理構造体
-
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
 
 
-void Fade_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void FadeObject::Fade_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
@@ -24,16 +22,18 @@ void Fade_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
-	g_Fade.fadecolor.x = 0.0f;
-	g_Fade.fadecolor.y = 0.0f;
-	g_Fade.fadecolor.z = 0.0f;
-	g_Fade.fadecolor.w = 1.0f;
-	g_Fade.frame = 60.0f;	//60フレームでフェード完了
-	g_Fade.state = FADE_STATE::FADE_NONE;
+	fadecolor.x = 0.0f;
+	fadecolor.y = 0.0f;
+	fadecolor.z = 0.0f;
+	fadecolor.w = 1.0f;
+	frame = 60.0f;	//60フレームでフェード完了
+	state = FADE_STATE::FADE_NONE;
+
+
 
 }
 
-void Fade_Finalize()
+void FadeObject::Fade_Finalize()
 {
 	if (g_Texture != NULL)
 	{
@@ -42,32 +42,32 @@ void Fade_Finalize()
 	}
 }
 
-void Fade_Update()
+void FadeObject::Fade_Update()
 {
 }
 
-void Fade_Draw()
+void FadeObject::Fade_Draw()
 { 
 	//現在の状況
-	switch (g_Fade.state)
+	switch (state)
 	{
 		case FADE_STATE::FADE_NONE:
 			return;
 		case FADE_STATE::FADE_IN:
-			if (g_Fade.fadecolor.w < 0.0)
+			if (fadecolor.w < 0.0)
 			{//フェードイン終了
-				g_Fade.fadecolor.w = 0.0f;
-				g_Fade.state = FADE_STATE::FADE_NONE;
+				fadecolor.w = 0.0f;
+				state = FADE_STATE::FADE_NONE;
 			}
 			break;
 		case FADE_STATE::FADE_OUT:
-			if (g_Fade.fadecolor.w > 1.0f)
+			if (fadecolor.w > 1.0f)
 			{//フェードアウト終了
-				g_Fade.fadecolor.w = 1.0;
+				fadecolor.w = 1.0;
 				//フェードイン初期化
-				SetFade(g_Fade.frame, g_Fade.fadecolor, FADE_STATE::FADE_IN, g_Fade.scene);
+				Fade_SetFade(frame, fadecolor, FADE_STATE::FADE_IN,scene);
 				//シーン切り替え
-				SetScene(g_Fade.scene);
+				
 			}
 			break;
 	}
@@ -99,44 +99,44 @@ void Fade_Draw()
 	SetBlendState(BLENDSTATE_ALFA);//αブレンド
 	XMFLOAT2 pos = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };
-	DrawSprite(pos, size, g_Fade.fadecolor);
+	DrawSprite(pos, size, fadecolor);
 
 	//フェード処理
-	switch (g_Fade.state)
+	switch (state)
 	{
 		case FADE_STATE::FADE_IN:
-			g_Fade.fadecolor.w -= (1.0f / g_Fade.frame);//透明にしていく
+			fadecolor.w -= (1.0f / frame);//透明にしていく
 			break;
 		case FADE_STATE::FADE_OUT:
-			g_Fade.fadecolor.w += (1.0f / g_Fade.frame);//不透明にしていく
+			fadecolor.w += (1.0f / frame);//不透明にしていく
 			break;
 	}
 
 
 }
 
-void	SetFade(int fadeframe, XMFLOAT4 color, FADE_STATE state, SCENE scene)
+void	FadeObject::Fade_SetFade(int fadeframe, XMFLOAT4 color, FADE_STATE sta, SCENE sce)
 { 
-	g_Fade.frame = fadeframe;
-	g_Fade.fadecolor = color;
-	g_Fade.state = state;
-	g_Fade.scene = scene;
+	frame = fadeframe;
+	fadecolor = color;
+	state = sta;
+	scene = sce;
 
-	if (g_Fade.state == FADE_IN)
+	if (state == FADE_IN)
 	{
-		g_Fade.fadecolor.w = 1.0f;	//不透明にする
+		fadecolor.w = 1.0f;	//不透明にする
 	}
 	else
 	{
-		g_Fade.fadecolor.w = 0.0f;	//透明にする
+		fadecolor.w = 0.0f;	//透明にする
 	}
 
 
 }
 
-FADE_STATE	GetFadeState()
+FADE_STATE	FadeObject::GetFadeState()
 {
-	return	g_Fade.state;	//現在の状態
+	return	state;	//現在の状態
 }
 
 

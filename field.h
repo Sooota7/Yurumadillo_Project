@@ -9,29 +9,32 @@
 #include "shader.h"
 using namespace DirectX;
 
+#include "dictionary.h"
+#include "Block.h"
+#include "model.h"
+
 // マクロ定義
 #define		BOX_RADIUS		(0.5f)
 
-//MAP構成ブロックの種類
-enum FIELD
-{
-	FIELD_BOX = 0,	
 
-	FIELD_OBT_0, // 障害物
-
-	FIELD_MAX
-};
 //MAPデータ構造体
 class MAPDATA
 {
-	public:
-		XMFLOAT3	pos;	//ブロックの座標
-		FIELD		no;		//ブロックの種類
-		//その他必要な物は追加する
-};
-void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-void Field_Finalize(void);
-void Field_Draw(void);
-void Field_Update(void);
+private:
+//	BOMB* m_Bomb;
+	MAP		m_Map[(FIELD_WIDTH_X * FIELD_WIDTH_Z) * 3 + 1];
+	MODEL* Model[FIELD_MAX] = { NULL };//デバッグ
+	//その他必要な物は追加する
 
-MAPDATA* GetFieldMap();
+
+public:
+
+	void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Field_Finalize(void);
+	void Field_Draw(void);
+	void Field_Update(void);
+
+	MAP* GetFieldMap();
+
+};
+
