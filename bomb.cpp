@@ -1,11 +1,8 @@
 
 
 #include "bomb.h"
-<<<<<<< HEAD
 #include "camera.h"
 
-=======
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 
 //グローバル変数
 static ID3D11Device* g_pDevice = NULL;
@@ -25,7 +22,6 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-<<<<<<< HEAD
 	for (int i; i < BOMB_STATE::BOMB_MAX; i++)
 	{
 		switch (i)
@@ -50,14 +46,8 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		m_Bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f),BOMB_STATE::BOMB_SAFE);
-=======
-	m_Model[BOMB_ACTIVE] = ModelLoad("asset\\model\\ball.fbx");
-
-	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{
-		m_bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f),BOMB_STATE::BOMB_SAFE);
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
+		m_Bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f), BOMB_STATE::BOMB_SAFE);
+		m_Model[BOMB_ACTIVE] = ModelLoad("asset\\model\\ball.fbx");
 	}
 }
 
@@ -68,7 +58,6 @@ void BOMB::Bomb_Finalize(void)
 
 void BOMB::Bomb_Draw(void)
 {
-<<<<<<< HEAD
 
 	//シェーダーを描画パイプラインへ設定
 	Shader_Begin();
@@ -138,39 +127,24 @@ void BOMB::Bomb_Draw(void)
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		//描画リクエスト
-		switch (m_Bomb[i].BombSource_GetState())
+
+		for (int i = 0; i < BOMB_NUM_MAX; i++)
 		{
-		case BOMB_NONE:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-			break;
-		case BOMB_SAFE:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-			break;
-		case BOMB_ACTIVE:
-			ModelDraw(m_Model[m_Bomb[i].BombSource_GetState()]);
-			break;
-		case BOMB_EXPLOSION:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-=======
-	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{
-		switch (m_bomb[i].BombSource_GetState())
-		{
-		case BOMB_NONE:
+			switch (m_Bomb[i].BombSource_GetState())
+			{
+			case BOMB_NONE:
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+				break;
+			case BOMB_SAFE:
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+				break;
+			case BOMB_ACTIVE:
+				ModelDraw(m_Model[m_Bomb[i].BombSource_GetState()]);
+				break;
+			case BOMB_EXPLOSION:
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+			}
 
-			break;
-		case BOMB_SAFE:
-
-			break;
-		case BOMB_ACTIVE:
-
-			break;
-		case BOMB_EXPLOSION:
-
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
-			break;
-		default:
-			break;
 		}
 	}
 }
@@ -179,17 +153,11 @@ void BOMB::Bomb_Update(void)
 {
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-<<<<<<< HEAD
 		switch (m_Bomb[i].BombSource_GetState())
-=======
-		switch (m_bomb[i].BombSource_GetState())
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 		{
 		case BOMB_NONE:
-
 			break;
 		case BOMB_SAFE:
-<<<<<<< HEAD
 			m_Bomb[i].BombSource_Safe();
 			break;
 		case BOMB_ACTIVE:
@@ -197,18 +165,6 @@ void BOMB::Bomb_Update(void)
 			break;
 		case BOMB_EXPLOSION:
 			m_Bomb[i].BombSource_Explosion();
-=======
-
-			break;
-		case BOMB_ACTIVE:
-			if (m_bomb[i].BombSource_GetCount() > limitTime)
-			{
-
-			}
-			break;
-		case BOMB_EXPLOSION:
-
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 			break;
 		default:
 			break;

@@ -11,8 +11,6 @@ void BOMBSOURCE::BombSource_Finalize(void)
 {
 }
 
-<<<<<<< HEAD
-=======
 void BOMBSOURCE::BombSource_Update(void)
 {
 	switch (m_State)
@@ -30,7 +28,6 @@ void BOMBSOURCE::BombSource_Update(void)
 	}
 }
 
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 void BOMBSOURCE::BombSource_Safe()
 {
 
@@ -38,11 +35,8 @@ void BOMBSOURCE::BombSource_Safe()
 
 void BOMBSOURCE::BombSource_Active()
 {
-<<<<<<< HEAD
 	m_Count += 1.0f / 60.0f;
-=======
 	
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
 }
 
 void BOMBSOURCE::BombSource_Explosion()

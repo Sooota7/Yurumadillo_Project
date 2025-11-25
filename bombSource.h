@@ -26,29 +26,19 @@ class BOMBSOURCE
 private:
 
 	
-<<<<<<< HEAD
 	XMFLOAT3	m_Position;		//爆弾の座標
 	float		m_Count;		//爆発までのカウント
 	BOMB_STATE	m_State;		//現在の状態
 	float		m_LimitCount;	//
-=======
-	XMFLOAT3   m_Position;
 	
-	float		m_Count;
-
-	BOMB_STATE m_State;
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
-
 public:
 
 	void		BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state);
 	void		BombSource_Finalize(void);
-<<<<<<< HEAD
 	
-=======
 	void		BombSource_Update(void);
 
->>>>>>> 6d8c39e6b7e5d7419fc0ee9a596a9b39278503eb
+
 	void		BombSource_Safe();
 	void		BombSource_Active();
 	void		BombSource_Explosion();
