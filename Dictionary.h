@@ -57,5 +57,6 @@ enum SCENE
 	SCENE_NONE = 0,		//何もなし
 	SCENE_TITLE,		//タイトルシーン
 	SCENE_GAME,			//ゲームシーン
+	SCENE_PAUSE,		//ポーズシーン
 	SCENE_RESULT,		//リザルトルシーン
 };
