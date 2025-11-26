@@ -1,0 +1,55 @@
+// ====================================================================
+// 
+// Enemy.h             制作者: 杉森奏太
+// 日付: 11/23
+//
+// ====================================================================
+
+#pragma once
+
+#include	<d3d11.h>
+#include	<DirectXMath.h>
+#include	"direct3d.h"
+using namespace DirectX;
+
+#include	"model.h"
+
+class ENEMY
+{
+protected:
+	XMFLOAT3	m_Position;	//表示座標
+	XMFLOAT3	m_Rotation;	//回転角
+	XMFLOAT3	m_Scaling;	//拡大率
+	XMFLOAT3	m_Velocity;	//速度
+	XMFLOAT3	m_Acceleration;	// 落下速度
+	int			m_Hp;		// 体力
+	
+	MODEL* m_Model;		//モデルデータ
+
+public:
+	virtual void	Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext) = 0;
+	virtual void	Finalize() = 0;
+	virtual void	Update() = 0;
+	virtual void	Draw() = 0;
+	virtual ENEMY*	GetEnemy() = 0;
+
+	virtual ~ENEMY() {};  // 仮想デストラクタ
+
+	void SetEnemyPosition(XMFLOAT3 pos) { m_Position = pos; };
+	XMFLOAT3 GetEnemyPosition() { return m_Position; };
+
+	void SetEnemyRotation(XMFLOAT3 rotate) { m_Rotation = rotate; };
+	XMFLOAT3 GetEnemyRotation() { return m_Rotation; };
+
+	void SetEnemyScaling(XMFLOAT3 sca) { m_Scaling = sca; };
+	XMFLOAT3 GetEnemyScaling() { return m_Scaling; };
+
+	void SetEnemyVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
+	XMFLOAT3 GetEnemyVelocity() { return m_Velocity; };
+
+	void SetEnemyHp(int hp) { m_Hp = hp; };
+	int GetEnemyHp() { return m_Hp; };
+
+	
+};
+
