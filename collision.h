@@ -12,6 +12,7 @@ using namespace DirectX;
 
 #include	"field.h"
 #include	"Ball.h"
+#include	"Enemy.h"
 
 #include    "player.h"
 
@@ -33,4 +34,6 @@ class COLLISION
 {
 public:
 	float	PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField);
+	float	EnemyFieldCollision(ENEMY* pEnemy, MAPDATA* pField);
+	float	PlayerEnemyCollision(PLAYER* pPlayer, ENEMY* pEnemy);
 };

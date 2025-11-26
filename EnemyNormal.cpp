@@ -1,0 +1,136 @@
+// ====================================================================
+// 
+// EnemyNormal.cpp            制作者: 杉森奏太
+// 日付: 11/23
+//
+// ====================================================================
+#include	"EnemyNormal.h"
+#include	"Camera.h"
+#include	"shader.h"
+#include	"collision.h"
+
+static ID3D11Device* g_pDevice;
+static ID3D11DeviceContext* g_pContext;
+
+void	ENEMY_NORMAL::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	g_pDevice = pDevice;
+	g_pContext = pContext;
+
+	m_Model = ModelLoad("asset\\model\\test.fbx");
+
+	SetEnemyPosition(XMFLOAT3(1.0f, 3.0f, 7.0f));
+	SetEnemyRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	SetEnemyScaling(XMFLOAT3(1.0f, 1.0f, 1.0f));
+
+	/*m_Position = XMFLOAT3(0.0f, 2.0f, 1.0f);
+	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);*/
+	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
+
+	//m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	SetEnemyHp(100);
+
+	SetEnemyNormalState(ENEMY_NORMAL_STATE_MOVE);
+}
+
+void	ENEMY_NORMAL::Finalize()
+{
+	ModelRelease(m_Model);
+}
+
+void	ENEMY_NORMAL::Update()
+{
+	switch (m_State)
+	{
+	case ENEMY_NORMAL_STATE_IDLE:
+		Enemy_Normal_Idle();
+		break;
+	case ENEMY_NORMAL_STATE_MOVE:
+		Enemy_Normal_Move();
+		break;
+	case ENEMY_NORMAL_STATE_DIRECTION:
+		Enemy_Normal_Direction();
+		break;
+	case ENEMY_NORMAL_STATE_JUMP:
+		Enemy_Normal_Jump();
+		break;
+	case ENEMY_NORMAL_STATE_DEAD:
+		Enemy_Normal_Dead();
+		break;
+	default:
+		break;
+	}
+}
+
+void	ENEMY_NORMAL::Draw()
+{
+	//ワールド行列作成
+	XMMATRIX	scale = XMMatrixScaling(
+		m_Scaling.x,
+		m_Scaling.y,
+		m_Scaling.z);
+	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
+		m_Rotation.x,
+		m_Rotation.y,
+		m_Rotation.z);
+	XMMATRIX	translation = XMMatrixTranslation(
+		m_Position.x,
+		m_Position.y,
+		m_Position.z);
+	XMMATRIX	world = scale * rotation * translation;
+
+	//変換行列作成
+	XMMATRIX	view = GetViewMatrix();
+	XMMATRIX	projection = GetProjectionMatrix();
+	XMMATRIX	wvp = world * view * projection;
+
+	//シェーダーへ行列をセット
+	Shader_SetWorldMatrix(world);
+	Shader_SetMatrix(wvp);
+
+	//モデルの描画リクエスト
+	ModelDraw(m_Model);
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Idle()
+{
+
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Move()
+{
+	m_Velocity.x += m_Acceleration.x;
+	m_Velocity.y += m_Acceleration.y;
+	m_Velocity.z += m_Acceleration.z;
+
+	m_Position.x += m_Velocity.x;
+	m_Position.y += m_Velocity.y;
+	m_Position.z += m_Velocity.z;
+
+	m_Velocity.x *= GENSUI;	// 速度を適当に減衰する
+	//Velocity.y *= GENSUI;
+	m_Velocity.z *= GENSUI;
+
+	// 静止チェック
+	float	len = (m_Velocity.x * m_Velocity.x +
+		m_Velocity.y * m_Velocity.y +
+		m_Velocity.z * m_Velocity.z);
+
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Direction()
+{
+
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Jump()
+{
+
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Dead()
+{
+
+}

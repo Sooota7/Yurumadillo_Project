@@ -141,6 +141,7 @@
     <ClCompile Include="debug_ostream.cpp" />
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EnemyNormal.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -170,6 +171,8 @@
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyNormal.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="Game.h" />

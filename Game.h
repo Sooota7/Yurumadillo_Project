@@ -7,6 +7,7 @@
 #include "Ball.h"
 #include "collision.h"
 #include "camera.h"
+#include "EnemyNormal.h"
 
 class MANAGER;
 
@@ -15,11 +16,10 @@ class GAME
 private:
 	MANAGER* m_Manager;
 	PLAYER m_Player;
-	BALL m_Ball;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
 //	BOMB m_Bomb;
-//	ENEMY m_Enemy;
+	ENEMY_NORMAL m_EnemyNormal;
 
 	COLLISION collision;
 
