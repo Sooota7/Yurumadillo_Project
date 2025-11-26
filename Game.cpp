@@ -20,88 +20,87 @@
 
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
-LIGHTOBJECT		Light;//<<<<<<ƒ‰ƒCƒgŠÇ—ƒIƒuƒWƒFƒNƒg
+LIGHTOBJECT		Light;//<<<<<<ãƒ©ã‚¤ãƒˆç®¡ç†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
 
-static	int		g_BgmID = NULL;	//ƒTƒEƒ“ƒhŠÇ—ID
+static	int		g_BgmID = NULL;	//ã‚µã‚¦ãƒ³ãƒ‰ç®¡ç†ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
 	
-	m_Player.Player_Initialize(pDevice, pContext); // ƒ{[ƒ‹‚Ì‰Šú‰»
-	Camera_Initialize(m_Player.GetPlayerPosition());	//ƒJƒƒ‰‰Šú‰»
-	m_Map.Field_Initialize(pDevice, pContext); // ƒtƒB[ƒ‹ƒh‚Ì‰Šú‰»
+	m_Player.Player_Initialize(pDevice, pContext); // ãƒœãƒ¼ãƒ«ã®åˆæœŸåŒ–
+	Camera_Initialize(m_Player.GetPlayerPosition());	//ã‚«ãƒ¡ãƒ©åˆæœŸåŒ–
+	m_Map.Field_Initialize(pDevice, pContext); // ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®åˆæœŸåŒ–
 	m_EnemyNormal.Initialize(pDevice, pContext);
 
-	//Player_Initialize(pDevice, pContext); // ƒ|ƒŠƒSƒ“‚Ì‰Šú‰»
-	//Block_Initialize(pDevice, pContext);//ƒuƒƒbƒN‚Ì‰Šú‰»
-	//Effect_Initialize(pDevice, pContext);//ƒGƒtƒFƒNƒg‰Šú‰»
-	//Score_Initialize(pDevice, pContext);//ƒXƒRƒA‰Šú‰»
+	//Player_Initialize(pDevice, pContext); // ãƒãƒªã‚´ãƒ³ã®åˆæœŸåŒ–
+	//Block_Initialize(pDevice, pContext);//ãƒ–ãƒ­ãƒƒã‚¯ã®åˆæœŸåŒ–
+	//Effect_Initialize(pDevice, pContext);//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆåˆæœŸåŒ–
+	//Score_Initialize(pDevice, pContext);//ã‚¹ã‚³ã‚¢åˆæœŸåŒ–
 
-	//Polygon3D_Initialize(pDevice, pContext);//‚RDƒeƒXƒg‰Šú‰»
+	//Polygon3D_Initialize(pDevice, pContext);//ï¼“Dãƒ†ã‚¹ãƒˆåˆæœŸåŒ–
 
 	m_Manager = manager;
 
 
-	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//ƒTƒEƒ“ƒhƒ[ƒh
-	//PlayAudio(g_BgmID, true);	//Ä¶ŠJniƒ‹[ƒv‚ ‚èj
-	//PlayAudio(g_BgmID);			//Ä¶ŠJniƒ‹[ƒv‚È‚µj
-	//PlayAudio(g_BgmID, false);	//Ä¶ŠJniƒ‹[ƒv‚È‚µj
+	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
+	//PlayAudio(g_BgmID, true);	//å†ç”Ÿé–‹å§‹ï¼ˆãƒ«ãƒ¼ãƒ—ã‚ã‚Šï¼‰
+	//PlayAudio(g_BgmID);			//å†ç”Ÿé–‹å§‹ï¼ˆãƒ«ãƒ¼ãƒ—ãªã—ï¼‰
+	//PlayAudio(g_BgmID, false);	//å†ç”Ÿé–‹å§‹ï¼ˆãƒ«ãƒ¼ãƒ—ãªã—ï¼‰
 
-	//ƒ‰ƒCƒg‰Šú‰»
+	//ãƒ©ã‚¤ãƒˆåˆæœŸåŒ–
 	XMFLOAT4	para;
 
-	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//ŠÂ‹«Œõ‚ÌF
+	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//ç’°å¢ƒå…‰ã®è‰²
 	Light.SetAmbient(para);
 
-	para = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);//Œõ‚ÌF
+	para = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);//å…‰ã®è‰²
 	Light.SetDiffuse(para);
 
-	para = XMFLOAT4(0.5f, -1.0f, 0.0f, 1.0f);//Œõ•ûŒü
+	para = XMFLOAT4(0.5f, -1.0f, 0.0f, 1.0f);//å…‰æ–¹å‘
 	float	len = sqrtf(para.x * para.x + para.y * para.y + para.z * para.z);
 	para.x /= len;
 	para.y /= len;
 	para.z /= len;
-	Light.SetDirection(para);//Œõ‚Ì•ûŒüi³‹K‰»Ïj
+	Light.SetDirection(para);//å…‰ã®æ–¹å‘ï¼ˆæ­£è¦åŒ–æ¸ˆï¼‰
 
 }
 
 void GAME::Game_Finalize()
 {
-	m_Map.Field_Finalize();	// ƒtƒB[ƒ‹ƒh‚ÌI—¹ˆ—
-	m_Player.Player_Finalize();	// ƒ{[ƒ‹‚ÌI—¹ˆ—
+	m_Map.Field_Finalize();	// ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®çµ‚äº†å‡¦ç†
+	m_Player.Player_Finalize();	// ãƒœãƒ¼ãƒ«ã®çµ‚äº†å‡¦ç†
 	m_EnemyNormal.Finalize();
 	//Block_Finalize();
-	//Player_Finalize();	// ƒ|ƒŠƒSƒ“‚ÌI—¹ˆ—
 	//Effect_Finalize();
 	//Score_Finalize();
 	//Polygon3D_Finalize();
-	Camera_Finalize();	//ƒJƒƒ‰I—¹ˆ—
+	Camera_Finalize();	//ã‚«ãƒ¡ãƒ©çµ‚äº†å‡¦ç†
 
-	UnloadAudio(g_BgmID);//ƒTƒEƒ“ƒh‚Ì‰ğ•ú
+	UnloadAudio(g_BgmID);//ã‚µã‚¦ãƒ³ãƒ‰ã®è§£æ”¾
 }
 
 void GAME::Game_Update()
 {
-	//XVˆ—
-	Camera_Update(m_Player.GetPlayerPosition());	//ƒJƒƒ‰XVˆ—
+	//æ›´æ–°å‡¦ç†
+	Camera_Update(m_Player.GetPlayerPosition());	//ã‚«ãƒ¡ãƒ©æ›´æ–°å‡¦ç†
 	m_Player.Player_Update();
 	m_EnemyNormal.Update();
 	m_Map.Field_Update();
+	
 
 	collision.PlayerFieldCollision(&m_Player,&m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
 
-	//ƒL[“ü—Íƒ`ƒFƒbƒN
-//ƒXƒ^[ƒgƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½‚çƒV[ƒ“‚ğØ‚è‘Ö‚¦
-//ƒtƒF[ƒhˆ—’†‚ÍƒL[‚ğó‚¯•t‚¯‚È‚¢
+	//ã‚­ãƒ¼å…¥åŠ›ãƒã‚§ãƒƒã‚¯
+//ã‚¹ã‚¿ãƒ¼ãƒˆãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸã‚‰ã‚·ãƒ¼ãƒ³ã‚’åˆ‡ã‚Šæ›¿ãˆ
+//ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†ä¸­ã¯ã‚­ãƒ¼ã‚’å—ã‘ä»˜ã‘ãªã„
 	if (Keyboard_IsKeyDownTrigger(KK_P))
 	{
 		m_Manager->SetScene(SCENE_PAUSE);
 	}
 
-	//Player_Update();
 	//Block_Update();
 	//Effect_Update();
 	//Score_Update();
@@ -111,24 +110,24 @@ void GAME::Game_Update()
 
 void GAME::Game_Draw()
 { 
-	Light.SetEnable(TRUE);			//ƒ‰ƒCƒeƒBƒ“ƒOON
-	Shader_SetLight(Light.Light);	//ƒ‰ƒCƒg\‘¢‘Ì‚ğƒVƒF[ƒ_[‚ÖƒZƒbƒg
+	Light.SetEnable(TRUE);			//ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°ON
+	Shader_SetLight(Light.Light);	//ãƒ©ã‚¤ãƒˆæ§‹é€ ä½“ã‚’ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ã‚»ãƒƒãƒˆ
 	SetDepthTest(TRUE);
 
-	Camera_Draw();		//Draw‚ÌÅ‰‚ÅŒÄ‚ÔI
+	Camera_Draw();		//Drawã®æœ€åˆã§å‘¼ã¶ï¼
+	m_Player.Player_Draw();
 	m_Map.Field_Draw();
 	m_Player.Player_Draw();
 	m_EnemyNormal.Draw();
 
-	//2D•`‰æ
-	Light.SetEnable(FALSE);			//ƒ‰ƒCƒeƒBƒ“ƒOOFF
-	Shader_SetLight(Light.Light);	//ƒ‰ƒCƒg\‘¢‘Ì‚ğƒVƒF[ƒ_[‚ÖƒZƒbƒg
+	//2Dæç”»
+	Light.SetEnable(FALSE);			//ãƒ©ã‚¤ãƒ†ã‚£ãƒ³ã‚°OFF
+	Shader_SetLight(Light.Light);	//ãƒ©ã‚¤ãƒˆæ§‹é€ ä½“ã‚’ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ã‚»ãƒƒãƒˆ
 	SetDepthTest(FALSE);
 
 
 
 	//Block_Draw();
-	//Player_Draw();
 	//Effect_Draw();
 	//Score_Draw();
 
