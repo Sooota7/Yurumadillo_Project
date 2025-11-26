@@ -14,7 +14,7 @@ class GAME
 {
 private:
 	MANAGER* m_Manager;
-	BALL m_Ball;
+	PLAYER m_Player;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
 //	BOMB m_Bomb;

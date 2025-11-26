@@ -34,4 +34,6 @@ class COLLISION
 {
 public:
 	float	PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField);
+	float	EnemyFieldCollision(ENEMY* pEnemy, MAPDATA* pField);
+	float	PlayerEnemyCollision(PLAYER* pPlayer, ENEMY* pEnemy);
 };

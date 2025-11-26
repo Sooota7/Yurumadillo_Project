@@ -28,8 +28,8 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
 	
-	m_Ball.BallInitialize(pDevice, pContext); // ボールの初期化
-	Camera_Initialize(m_Ball.GetBallPosition());	//カメラ初期化
+	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
+	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
 	m_EnemyNormal.Initialize(pDevice, pContext);
 
@@ -69,7 +69,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 void GAME::Game_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
-	m_Ball.BallFinalize();	// ボールの終了処理
+	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.Finalize();
 	//Block_Finalize();
 	//Player_Finalize();	// ポリゴンの終了処理
@@ -84,12 +84,14 @@ void GAME::Game_Finalize()
 void GAME::Game_Update()
 {
 	//更新処理
-	Camera_Update(m_Ball.GetBallPosition());	//カメラ更新処理
-	m_Ball.BallUpdate();
+	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
+	m_Player.Player_Update();
 	m_EnemyNormal.Update();
 	m_Map.Field_Update();
 
-	collision.BallFieldCollision(&m_Ball,&m_Map);
+	collision.PlayerFieldCollision(&m_Player,&m_Map);
+	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
+	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -115,7 +117,7 @@ void GAME::Game_Draw()
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
 	m_Map.Field_Draw();
-	m_Ball.BallDraw();
+	m_Player.Player_Draw();
 	m_EnemyNormal.Draw();
 
 	//2D描画
