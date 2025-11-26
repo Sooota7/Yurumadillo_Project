@@ -8,9 +8,6 @@
 #include "direct3d.h"
 #include "sprite.h"
 #include "shader.h"
-#include	<d3d11.h>
-#include	<DirectXMath.h>
-#include	"direct3d.h"
 using namespace DirectX;
 
 #include	"model.h"

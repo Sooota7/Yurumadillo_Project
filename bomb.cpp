@@ -22,7 +22,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	for (int i; i < BOMB_STATE::BOMB_MAX; i++)
+	for (int i = 0; i < BOMB_STATE::BOMB_MAX; i++)
 	{
 		switch (i)
 		{
