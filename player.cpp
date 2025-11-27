@@ -57,10 +57,17 @@ void	PLAYER::Player_Update()
 	case PLAYER_STATE::PLAYER_STATE_MOVE:
 		Player_Move();
 		break;
+	case PLAYER_STATE::PLAYER_STATE_JUMP :
+		Player_Jump();
+		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
 		break;
 	}
+	
+	m_Position.x += m_Velocity.x;
+	m_Position.y += m_Velocity.y;
+	m_Position.z += m_Velocity.z;
 	
 	//Player_BombMagic(m_Bomb);
 
@@ -114,19 +121,20 @@ void	PLAYER::Player_Idle()
 	if (Keyboard_IsKeyDown(KK_W) || //いずれかの移動キーを押したら移動状態に
 		Keyboard_IsKeyDown(KK_A) || 
 		Keyboard_IsKeyDown(KK_S) ||
-		Keyboard_IsKeyDown(KK_D) || 
-		(Keyboard_IsKeyDownTrigger(KK_SPACE)))
+		Keyboard_IsKeyDown(KK_D)  )
 	{
 		m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+	}
 
+	if (Keyboard_IsKeyDownTrigger(KK_SPACE)&& JumpCount == true)
+	{
+		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 	}
 
 	//停止中も重力はかかる
 	m_Velocity.y -= PLAYER_GRAVITY; 
 
-	m_Position.x += m_Velocity.x;
-	m_Position.y += m_Velocity.y;
-	m_Position.z += m_Velocity.z;
+	
 }
 
 void	PLAYER::Player_Move()
@@ -163,14 +171,7 @@ void	PLAYER::Player_Move()
 		m_Velocity.x = 0.0f;//離したら即停止
 	}
 
-	if (Keyboard_IsKeyDownTrigger(KK_SPACE)) //ジャンプ
-	{
-		if (JumpCount == true)
-		{
-			m_Velocity.y += PLAYER_JUMP;
-			JumpCount = false;
-		}
-	}
+	
 
 	if (m_Velocity.x > PLAYER_SPEEDMAX) //最高速度
 	{
@@ -189,9 +190,12 @@ void	PLAYER::Player_Move()
 		m_Velocity.z = -PLAYER_SPEEDMAX;
 	}
 	
-	m_Position.x += m_Velocity.x;
-	m_Position.y += m_Velocity.y;
-	m_Position.z += m_Velocity.z;
+	if (Keyboard_IsKeyDownTrigger(KK_SPACE)&& JumpCount == true) //ジャンプ
+	{
+		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+	}
+
+	
 
 	//m_Velocity.x *= GENSUI;	// 速度を適当に減衰する
 	////Velocity.y *= GENSUI;
@@ -220,6 +224,30 @@ void	PLAYER::Player_Move()
 
 	//float hit = PlayerFieldCollision(); 
 }
+
+void   PLAYER::Player_Jump()
+{
+	
+	if (JumpCount == true)
+	{
+		m_Velocity.y += PLAYER_JUMP;
+		JumpCount = false;
+
+		if (Keyboard_IsKeyDown(KK_W) || //いずれかの移動キーを押したら移動状態に
+			Keyboard_IsKeyDown(KK_A) ||
+			Keyboard_IsKeyDown(KK_S) ||
+			Keyboard_IsKeyDown(KK_D))
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
+		else
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+		}
+
+	}
+}
+
 
 void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
 {
