@@ -65,11 +65,21 @@ void	PLAYER::Player_Update()
 		break;
 	}
 	
+	if (m_Velocity.y < PLAYER_FALLMAX)
+	{
+		m_Velocity.y = PLAYER_FALLMAX;
+	}
+
+
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 	
-	//Player_BombMagic(m_Bomb);
+
+	if (m_Position.y < PLAYER_DEATH)
+	{
+		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
+	}
 
 
 }
@@ -217,10 +227,7 @@ void	PLAYER::Player_Move()
 		}
 	}
 
-	if (m_Position.y < PLAYER_DEATH)
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
-	}
+	
 
 	//float hit = PlayerFieldCollision(); 
 }
