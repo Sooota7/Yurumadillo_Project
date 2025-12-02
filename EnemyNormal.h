@@ -29,7 +29,9 @@ enum ENEMY_NORMAL_STATE
 class ENEMY_NORMAL : public ENEMY
 {
 private:
+	constexpr static int ENEMY_NORMAL_IDLE_CNT = 120;
 	ENEMY_NORMAL_STATE m_State;		// 状態
+	int m_FrameCnt;					// フレームカウント
 
 private:
 	void	Enemy_Normal_Idle();

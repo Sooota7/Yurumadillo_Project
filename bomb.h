@@ -1,6 +1,6 @@
-//#pragma once
+#pragma once
 #ifndef _BOMB_H_
-#define _BONB_H_
+#define _BOMB_H_
 
 
 #include <d3d11.h>
@@ -34,9 +34,9 @@ public:
 	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(void);
-	void	Bomb_Update(void);
-
-
+	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	BOMBSOURCE* Bomb_GetBomb();
+	
 };
 
 #endif // !_BOMB_H_

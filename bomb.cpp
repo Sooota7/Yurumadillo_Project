@@ -2,6 +2,8 @@
 
 #include "bomb.h"
 #include "camera.h"
+#include "Dictionary.h"
+#include "player.h"
 
 
 //グローバル変数
@@ -16,6 +18,30 @@ static ID3D11ShaderResourceView* g_Texture;
 
 
 
+int GetBomb(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return Field_pos_row[y][x];
+
+		break;
+	case(1):
+		return Field_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return Field_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 
 void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -28,9 +54,10 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		{
 		case BOMB_NONE:
 			break;
-		case BOMB_SAFE:
+		case BOMB_ITEM:
+			m_Model[i] = ModelLoad("asset\\model\\test.fbx");
 			break;
-		case BOMB_ACTIVE:
+		case BOMB_ACTIVE_HAVE:
 			m_Model[i] = ModelLoad("asset\\model\\ball.fbx");
 			break;
 		case BOMB_EXPLOSION:
@@ -44,11 +71,37 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	}
 
 	
-	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	/*for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f), BOMB_STATE::BOMB_SAFE);
 		m_Model[BOMB_ACTIVE] = ModelLoad("asset\\model\\ball.fbx");
+	}*/
+
+	int a = 0;
+	for (int q = 0; q < 3; q++)
+	{
+		for (int i = 0; i < FIELD_WIDTH_Z; i++)
+		{
+			for (int l = 0; l < FIELD_WIDTH_X; l++)
+			{
+
+				switch (GetBomb(l, i, q))
+				{
+				case 0:
+					break;
+				case 1:
+					break;
+				case 3:
+					m_Bomb[a].BombSource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
+					a++;
+					break;
+				}
+
+				
+			}
+		}
 	}
+	
 }
 
 void BOMB::Bomb_Finalize(void)
@@ -70,9 +123,7 @@ void BOMB::Bomb_Draw(void)
 	//先にVP変換行列を作っておく
 	XMMATRIX	VP = View * Projection;
 
-	//MAPの表示
-	int i = 0;
-
+	
 	static float rot = 0.0f;
 	rot -= 0.5f;
 
@@ -88,6 +139,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f,
 			1.0f
 		);
+
 		//平行移動行列の作成
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
@@ -127,29 +179,35 @@ void BOMB::Bomb_Draw(void)
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		//描画リクエスト
-
-		for (int i = 0; i < BOMB_NUM_MAX; i++)
+		switch (m_Bomb[i].BombSource_GetState())
 		{
-			switch (m_Bomb[i].BombSource_GetState())
-			{
-			case BOMB_NONE:
-				g_pContext->DrawIndexed(6 * 6, 0, 0);
-				break;
-			case BOMB_SAFE:
-				g_pContext->DrawIndexed(6 * 6, 0, 0);
-				break;
-			case BOMB_ACTIVE:
-				ModelDraw(m_Model[m_Bomb[i].BombSource_GetState()]);
-				break;
-			case BOMB_EXPLOSION:
-				g_pContext->DrawIndexed(6 * 6, 0, 0);
-			}
+		case BOMB_NONE:
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
+			break;
+		case BOMB_ITEM:
+			ModelDraw(m_Model[BOMB_ITEM]);
+			break;
+		case BOMB_ACTIVE_HAVE:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		case BOMB_ACTIVE_THROW:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		
+		case BOMB_EXPLOSION:
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			break;
 
+		case BOMB_COOL:
+			
+			break;
 		}
+
+
 	}
 }
 
-void BOMB::Bomb_Update(void)
+void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -157,20 +215,32 @@ void BOMB::Bomb_Update(void)
 		{
 		case BOMB_NONE:
 			break;
-		case BOMB_SAFE:
+		case BOMB_ITEM:
 			m_Bomb[i].BombSource_Safe();
 			break;
-		case BOMB_ACTIVE:
-			m_Bomb[i].BombSource_Active();
+		case BOMB_ACTIVE_HAVE:
+			m_Bomb[i].BombSource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_Bomb[i].BombSource_Active_Throw();
 			break;
 		case BOMB_EXPLOSION:
 			m_Bomb[i].BombSource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_Bomb[i].BombSource_Cool();
 			break;
 		default:
 			break;
 		}
 	}
 }
+
+BOMBSOURCE* BOMB::Bomb_GetBomb()
+{
+	return m_Bomb->BombSource_GetBombSource();
+}
+
 
 
 

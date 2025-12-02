@@ -40,3 +40,5 @@ XMMATRIX	GetViewMatrix();
 XMMATRIX	GetProjectionMatrix();
 XMFLOAT3	GetCameraPosition();
 XMFLOAT3	GetCameraAtPosition();
+
+float GetCameraYoko();

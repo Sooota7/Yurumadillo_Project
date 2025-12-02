@@ -8,6 +8,7 @@
 #include "collision.h"
 #include "camera.h"
 #include "EnemyNormal.h"
+#include "bomb.h"
 
 class MANAGER;
 
@@ -18,7 +19,7 @@ private:
 	PLAYER m_Player;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
-//	BOMB m_Bomb;
+	BOMB	m_bomb;
 	ENEMY_NORMAL m_EnemyNormal;
 
 	COLLISION collision;
