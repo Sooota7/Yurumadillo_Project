@@ -3,6 +3,7 @@
 
 #include	"Camera.h"
 #include	"keyboard.h"
+#include    "mouse.h"
 //#include	"Ball.h"
 
 #include "player.h"
@@ -18,7 +19,7 @@ static float cameraYoko = 180.0f;      // 横調整
 static float cameraTate = 20.0f;     // 縦調整
 
 void	Camera_Initialize(XMFLOAT3 BallPos)
-{ 
+{
 	CameraObject.Position = XMFLOAT3(0.0f, 3.0f, -4.0f);
 	CameraObject.AtPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	CameraObject.UpVector = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -38,72 +39,91 @@ void	Camera_Finalize()
 {
 	return;
 }
-void	Camera_Update(XMFLOAT3 BallPos)
+void Camera_Update(XMFLOAT3 BallPos)
 {
+	// ================================
+	// マウス入力の取得
+	// ================================
+	Mouse_State ms;
+	Mouse_GetState(&ms);
 
+	// 相対モード時だけカメラ回転
+	if (ms.positionMode == MOUSE_POSITION_MODE_RELATIVE)
+	{
+		float sensitivity = CAMERA_SENSITIVITY;
 
-	
+		cameraYoko += ms.x * sensitivity; // 左右
+		cameraTate += ms.y * sensitivity; // 上下
 
-	//左右回転調整
-	if (Keyboard_IsKeyDown(KK_LEFT)) {
-		cameraYoko += 2.0f;
-		if (cameraYoko >= 360.0f) cameraYoko -= 360.0f;
+		// 上下移動限界
+		if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX;
+		if (cameraTate < CAMERA_DOWN_MAX)  cameraTate = CAMERA_DOWN_MAX;
+
+		// 左右移動限界
+		if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
+		if (cameraYoko < 0.0f)    cameraYoko += CAMERA_SIDE_MAX;
 	}
-	if (Keyboard_IsKeyDown(KK_RIGHT)) {
-		cameraYoko -= 2.0f;
-		if (cameraYoko < 0.0f) cameraYoko += 360.0f;
-	}
 
-	//ピッチ調整
-	if (Keyboard_IsKeyDown(KK_UP)) {
-		cameraTate += 2.0f;
-		if (cameraTate > 80.0f) cameraTate = 80.0f; // 上限
-	}
-	if (Keyboard_IsKeyDown(KK_DOWN)) {
-		cameraTate -= 2.0f;
-		if (cameraTate < 5.0f) cameraTate = 5.0f; // 下限
-	}
+	//左右回転調整 
+	 if (Keyboard_IsKeyDown(KK_LEFT)) 
+	 {
+		 cameraYoko += 2.0f; 
+		 if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
+	 } 
+	 if (Keyboard_IsKeyDown(KK_RIGHT)) 
+	 { 
+		 cameraYoko -= 2.0f; 
+		 if (cameraYoko < 0.0f) cameraYoko += CAMERA_SIDE_MAX;
+	 } 
+	 //ピッチ調整 
+	 if (Keyboard_IsKeyDown(KK_UP)) 
+	 {
+		 cameraTate += 2.0f; 
+		 if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX; // 上限 
+	 } 
+	 if (Keyboard_IsKeyDown(KK_DOWN)) 
+	 { 
+		 cameraTate -= 2.0f; 
+		 if (cameraTate < CAMERA_DOWN_MAX) cameraTate = CAMERA_DOWN_MAX; // 下限 
+	 }
 
-	// 注視点は常にプレイヤー
+
+	// ================================
+	// 注視点（プレイヤー）
+	// ================================
 	CameraObject.AtPosition = BallPos;
 
-	// カメラ座標の計算
+	// ================================
+	// カメラ座標計算
+	// ================================
 	float radYoko = XMConvertToRadians(cameraYoko);
 	float radTate = XMConvertToRadians(cameraTate);
 
 	float horiz = cosf(radTate) * rangeCamera;
-	float offsetX = sinf(radYoko) * horiz; // 左右
-	float offsetZ = cosf(radYoko) * horiz; // 前後
-	float offsetY = sinf(radTate) * rangeCamera; // 高さ
+
+	float offsetX = sinf(radYoko) * horiz;
+	float offsetZ = cosf(radYoko) * horiz;
+	float offsetY = sinf(radTate) * rangeCamera;
 
 	CameraObject.Position.x = BallPos.x + offsetX;
 	CameraObject.Position.y = BallPos.y + offsetY + cameraHeight;
 	CameraObject.Position.z = BallPos.z + offsetZ;
 
-
 	CameraObject.UpVector = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-	// FOVの変更
+	// FOV キーボード調整はそのまま
 	if (Keyboard_IsKeyDown(KK_Z))
 	{
 		CameraObject.Fov += 0.3f;
-		if (CameraObject.Fov > 160.0f)
-		{
-			CameraObject.Fov = 160.0f;
-		}
-
+		if (CameraObject.Fov > 160.0f) CameraObject.Fov = 160.0f;
 	}
 	if (Keyboard_IsKeyDown(KK_X))
 	{
 		CameraObject.Fov -= 0.3f;
-		if (CameraObject.Fov < 5.0f)
-		{
-			CameraObject.Fov = 5.0f;
-		}
+		if (CameraObject.Fov < 5.0f) CameraObject.Fov = 5.0f;
 	}
-
-	return;
 }
+
 void	Camera_Draw()
 { 
 	//プロジェクション行列作成
