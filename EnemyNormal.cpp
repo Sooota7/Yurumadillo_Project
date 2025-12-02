@@ -91,7 +91,27 @@ void	ENEMY_NORMAL::Draw()
 	Shader_SetMatrix(wvp);
 
 	//モデルの描画リクエスト
-	ModelDraw(m_Model);
+	//ModelDraw(m_Model);
+	switch (m_State)
+	{
+	case ENEMY_NORMAL_STATE_IDLE:
+		ModelDraw(m_Model);
+		break;
+	case ENEMY_NORMAL_STATE_MOVE:
+		ModelDraw(m_Model);
+		break;
+	case ENEMY_NORMAL_STATE_DIRECTION:
+		ModelDraw(m_Model);
+		break;
+	case ENEMY_NORMAL_STATE_JUMP:
+		ModelDraw(m_Model);
+		break;
+	case ENEMY_NORMAL_STATE_DEAD:
+		
+		break;
+	default:
+		break;
+	}
 }
 
 void	ENEMY_NORMAL::Enemy_Normal_Idle()
