@@ -14,48 +14,42 @@ using namespace DirectX;
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
-<<<<<<< HEAD
 #define PLAYER_ACCELERATION (0.01f)  //�����x
 #define PLAYER_GRAVITY (0.01f)       //�d��
-<<<<<<< HEAD
 #define PLAYER_JUMP (0.3f)           //�W�����v��
-=======
 #define PLAYER_FALLMAX (-0.2f)        //�����ō����x
 #define PLAYER_JUMP (0.2f)           //�W�����v��
->>>>>>> e5e005faf78d341748218fb44b15d22f971cf71d
 #define PLAYER_DEATH (-3.0f)         //����ȏ㉺�ɍs���Ǝ�
 #define PLAYER_MAGICRANGE (0.03f)    //���@�͈�
-=======
 #define PLAYER_ACCELERATION (0.01f)  //加速度
 #define PLAYER_GRAVITY (0.01f)       //重力
 #define PLAYER_FALLMAX (-0.2f)        //落下最高速度
 #define PLAYER_JUMP (0.2f)           //ジャンプ力
 #define PLAYER_DEATH (-3.0f)         //これ以上下に行くと死
-#define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
->>>>>>> 6174eedcea92a7148fda2e2418c94a9a79d31790
+#define PLAYER_MAGICRANGE (0.03f)    //魔法篁E��
 
-//ボールの状態
+//ボ�Eルの状慁E
 enum PLAYER_STATE
 {
-	PLAYER_STATE_IDLE = 0,	//何もしない
-	PLAYER_STATE_MOVE,		//移動
+	PLAYER_STATE_IDLE = 0,	//何もしなぁE
+	PLAYER_STATE_MOVE,		//移勁E
 	PLAYER_STATE_JUMP,
-	PLAYER_STATE_RESPAWN,   //リスポーン
+	PLAYER_STATE_RESPAWN,   //リスポ�Eン
 	
 };
 
-//ボール構造体
+//ボ�Eル構造佁E
 class PLAYER
 {
 private:
-	XMFLOAT3	m_Position;	//表示座標
-	XMFLOAT3	m_Rotation;	//回転角
-	XMFLOAT3	m_Scaling;	//拡大率
+	XMFLOAT3	m_Position;	//表示座樁E
+	XMFLOAT3	m_Rotation;	//回転见E
+	XMFLOAT3	m_Scaling;	//拡大玁E
 	XMFLOAT3	m_Velocity;	//速度
 	XMFLOAT3	m_Acceleration;	// 落下速度
 
-	PLAYER_STATE	m_State;		//状態
-	MODEL* m_Model[2];		//モデルデータ
+	PLAYER_STATE	m_State;		//状慁E
+	MODEL* m_Model[2];		//モチE��チE�Eタ
 
 	 BOMBSOURCE* m_Bomb;
 
