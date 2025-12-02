@@ -8,6 +8,7 @@
 #include	"Camera.h"
 #include	"shader.h"
 #include	"collision.h"
+#include	"player.h"
 
 static ID3D11Device* g_pDevice;
 static ID3D11DeviceContext* g_pContext;
@@ -40,7 +41,7 @@ void	ENEMY_NORMAL::Finalize()
 	ModelRelease(m_Model);
 }
 
-void	ENEMY_NORMAL::Update()
+void	ENEMY_NORMAL::Update(XMFLOAT3 playerPos)
 {
 	switch (m_State)
 	{
@@ -119,6 +120,8 @@ void	ENEMY_NORMAL::Enemy_Normal_Move()
 	m_Velocity.y *= GENSUI;
 	m_Velocity.z *= GENSUI;
 
+	m_Position.y -= 1.0 / 60.0f;
+
 	// 静止チェック
 	float	len = (m_Velocity.x * m_Velocity.x +
 		m_Velocity.y * m_Velocity.y +
@@ -128,7 +131,7 @@ void	ENEMY_NORMAL::Enemy_Normal_Move()
 
 void	ENEMY_NORMAL::Enemy_Normal_Direction()
 {
-
+	
 }
 
 void	ENEMY_NORMAL::Enemy_Normal_Jump()

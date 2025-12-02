@@ -29,7 +29,7 @@ protected:
 public:
 	virtual void	Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext) = 0;
 	virtual void	Finalize() = 0;
-	virtual void	Update() = 0;
+	virtual void	Update(XMFLOAT3 playerPos) = 0;
 	virtual void	Draw() = 0;
 	virtual ENEMY*	GetEnemy() = 0;
 
