@@ -276,10 +276,10 @@ void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
 	{
 		if (dist2 <= range2)// 距離が範囲内 → 実行
 		{
-			if (BombSta==BOMB_STATE::BOMB_SAFE)
+			if (BombSta==BOMB_STATE::BOMB_ITEM)	
 			{
 				// 爆弾のSTATEを爆弾に変身状態に変更
-				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE);
+				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE_HAVE);
 			}
 		}
 		
