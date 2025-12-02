@@ -32,6 +32,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
 	m_EnemyNormal.Initialize(pDevice, pContext);
+	m_bomb.Bomb_Initialize(pDevice, pContext);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -71,6 +72,7 @@ void GAME::Game_Finalize()
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.Finalize();
+	m_bomb.Bomb_Finalize();
 	//Block_Finalize();
 	//Effect_Finalize();
 	//Score_Finalize();
@@ -87,11 +89,15 @@ void GAME::Game_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.Update();
 	m_Map.Field_Update();
-	
 
-	collision.PlayerFieldCollision(&m_Player,&m_Map);
+	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(),m_Player.GetPlayerRotation());
+
+	collision.PlayerFieldCollision(&m_Player, &m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
+	collision.PlayerBombCollision(&m_Player, &m_bomb);
+	collision.BombFieldCollision(&m_bomb, &m_Map);
+	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -119,6 +125,7 @@ void GAME::Game_Draw()
 	m_Map.Field_Draw();
 	m_Player.Player_Draw();
 	m_EnemyNormal.Draw();
+	m_bomb.Bomb_Draw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF

@@ -168,6 +168,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_ostream.h" />
+    <ClInclude Include="Dictionary.h" />
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
