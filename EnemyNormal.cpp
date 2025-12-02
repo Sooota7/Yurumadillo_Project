@@ -116,6 +116,12 @@ void	ENEMY_NORMAL::Draw()
 
 void	ENEMY_NORMAL::Enemy_Normal_Idle()
 {
+	m_FrameCnt++;			// カウントアップ
+	if (m_FrameCnt >= ENEMY_NORMAL_IDLE_CNT)
+	{
+		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DIRECTION;
+		m_FrameCnt = 0;
+	}
 
 }
 
@@ -130,7 +136,7 @@ void	ENEMY_NORMAL::Enemy_Normal_Move()
 	m_Position.z += m_Velocity.z;
 
 	m_Velocity.x *= GENSUI;	// 速度を適当に減衰する
-	//Velocity.y *= GENSUI;
+	m_Velocity.y *= GENSUI;
 	m_Velocity.z *= GENSUI;
 
 	// 静止チェック
