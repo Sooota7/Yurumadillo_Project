@@ -16,7 +16,7 @@ using namespace DirectX;
 #define STOP_VELO (0.0002f)
 #define PLAYER_ACCELERATION (0.01f)  //加速度
 #define PLAYER_GRAVITY (0.01f)       //重力
-#define PLAYER_JUMP (0.3f)           //ジャンプ力
+#define PLAYER_JUMP (0.2f)           //ジャンプ力
 #define PLAYER_DEATH (-3.0f)         //これ以上下に行くと死
 #define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
 
@@ -49,7 +49,6 @@ private:
 private:
 	void	Player_Idle();
 	void	Player_Move();
-	void    Player_BombMagic(BOMBSOURCE* pBomb);
 	void    Player_Respawn();
 
 public:

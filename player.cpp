@@ -136,12 +136,12 @@ void	PLAYER::Player_Move()
 	if (Keyboard_IsKeyDown(KK_W)) //前
 	{
 		m_Velocity.z += PLAYER_ACCELERATION; //少しずつ加速
-		//m_Rotation.y = 0.0f;                 //進行方向に向く
+		m_Rotation.y = 0.0f;                 //進行方向に向く
 	}
 	else if (Keyboard_IsKeyDown(KK_S))  //後
 	{
 		m_Velocity.z -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 180.0f;
+		m_Rotation.y = 180.0f;
 	}
 	else
 	{
@@ -151,12 +151,12 @@ void	PLAYER::Player_Move()
 	if (Keyboard_IsKeyDown(KK_D)) //右
 	{
 		m_Velocity.x += PLAYER_ACCELERATION;
-		//m_Rotation.y = 90.0f;
+		m_Rotation.y = 90.0f;
 	}
 	else if (Keyboard_IsKeyDown(KK_A)) //左
 	{
 		m_Velocity.x -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 270.0f;
+		m_Rotation.y = 270.0f;
 	}
 	else
 	{
@@ -219,36 +219,6 @@ void	PLAYER::Player_Move()
 	}
 
 	//float hit = PlayerFieldCollision(); 
-}
-
-void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
-{
-
-	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // 爆弾の位置取得
-
-	//爆弾のSTATE取得
-	BOMB_STATE BombSta = pBomb->BombSource_GetState();
-
-	 //距離の二乗で比較（高速）
-	float dx = m_Position.x - BombPos.x;
-	float dy = m_Position.y - BombPos.y;
-	float dz = m_Position.z - BombPos.z;
-
-	float dist2 = dx * dx + dy * dy + dz * dz;
-	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
-
-	if (Keyboard_IsKeyDownTrigger(KK_F))
-	{
-		if (dist2 <= range2)// 距離が範囲内 → 実行
-		{
-			if (BombSta==BOMB_STATE::BOMB_SAFE)
-			{
-				// 爆弾のSTATEを爆弾に変身状態に変更
-				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE);
-			}
-		}
-		
-	}
 }
 
 void    PLAYER::Player_Respawn()
