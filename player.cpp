@@ -235,35 +235,35 @@ void   PLAYER::Player_Jump()
 }
 
 
-void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
-{
-
-	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // 爆弾の位置取得
-
-	//爆弾のSTATE取得
-	BOMB_STATE BombSta = pBomb->BombSource_GetState();
-
-	 //距離の二乗で比較（高速）
-	float dx = m_Position.x - BombPos.x;
-	float dy = m_Position.y - BombPos.y;
-	float dz = m_Position.z - BombPos.z;
-
-	float dist2 = dx * dx + dy * dy + dz * dz;
-	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
-
-	if (Keyboard_IsKeyDownTrigger(KK_F))
-	{
-		if (dist2 <= range2)// 距離が範囲内 → 実行
-		{
-			if (BombSta==BOMB_STATE::BOMB_SAFE)
-			{
-				// 爆弾のSTATEを爆弾に変身状態に変更
-				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE);
-			}
-		}
-		
-	}
-}
+//void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
+//{
+//
+//	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // 爆弾の位置取得
+//
+//	//爆弾のSTATE取得
+//	BOMB_STATE BombSta = pBomb->BombSource_GetState();
+//
+//	 //距離の二乗で比較（高速）
+//	float dx = m_Position.x - BombPos.x;
+//	float dy = m_Position.y - BombPos.y;
+//	float dz = m_Position.z - BombPos.z;
+//
+//	float dist2 = dx * dx + dy * dy + dz * dz;
+//	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
+//
+//	if (Keyboard_IsKeyDownTrigger(KK_F))
+//	{
+//		if (dist2 <= range2)// 距離が範囲内 → 実行
+//		{
+//			if (BombSta==BOMB_STATE::BOMB_ITEM)	
+//			{
+//				// 爆弾のSTATEを爆弾に変身状態に変更
+//				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE_HAVE);
+//			}
+//		}
+//		
+//	}
+//}
 
 void    PLAYER::Player_Respawn()
 {
