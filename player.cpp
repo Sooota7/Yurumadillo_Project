@@ -147,89 +147,68 @@ void	PLAYER::Player_Idle()
 	
 }
 
-void	PLAYER::Player_Move()
+void PLAYER::Player_Move()
 {
-	m_Velocity.y -= PLAYER_GRAVITY; //重力
+    m_Velocity.y -= PLAYER_GRAVITY;
 
-	if (Keyboard_IsKeyDown(KK_W)) //前
-	{
-		m_Velocity.z += PLAYER_ACCELERATION; //少しずつ加速
-		//m_Rotation.y = 0.0f;                 //進行方向に向く
-	}
-	else if (Keyboard_IsKeyDown(KK_S))  //後
-	{
-		m_Velocity.z -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 180.0f;
-	}
-	else
-	{
-		m_Velocity.z = 0.0f; //離したら即停止
-	}
+    // --- カメラの Y 向き（水平角度）を取得 ---
+    float camY = XMConvertToRadians(GetCameraYoko());
 
-	if (Keyboard_IsKeyDown(KK_D)) //右
-	{
-		m_Velocity.x += PLAYER_ACCELERATION;
-		//m_Rotation.y = 90.0f;
-	}
-	else if (Keyboard_IsKeyDown(KK_A)) //左
-	{
-		m_Velocity.x -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 270.0f;
-	}
-	else
-	{
-		m_Velocity.x = 0.0f;//離したら即停止
-	}
+    // カメラ基準の前方向ベクトル
+    XMFLOAT3 forward = XMFLOAT3(sinf(camY), 0.0f, cosf(camY));
 
-	
+    // カメラ基準の右方向ベクトル
+    XMFLOAT3 right = XMFLOAT3(cosf(camY), 0.0f, -sinf(camY));
 
-	if (m_Velocity.x > PLAYER_SPEEDMAX) //最高速度
-	{
-		m_Velocity.x = PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.x < -PLAYER_SPEEDMAX) //最高速度
-	{
-		m_Velocity.x = -PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.z > PLAYER_SPEEDMAX) //最高速度
-	{
-		m_Velocity.z = PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.z < -PLAYER_SPEEDMAX) //最高速度
-	{
-		m_Velocity.z = -PLAYER_SPEEDMAX;
-	}
-	
-	if (Keyboard_IsKeyDownTrigger(KK_SPACE)&& JumpCount == true) //ジャンプ
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
-	}
+    XMFLOAT3 move = XMFLOAT3(0, 0, 0);
 
-	
+    // --- 入力 ---
+    if (Keyboard_IsKeyDown(KK_W)) // 前
+        move.x -= forward.x, move.z -= forward.z;
+    if (Keyboard_IsKeyDown(KK_S)) // 後
+        move.x += forward.x, move.z += forward.z;
+    if (Keyboard_IsKeyDown(KK_D)) // 右
+        move.x -= right.x, move.z -= right.z;
+    if (Keyboard_IsKeyDown(KK_A)) // 左
+        move.x += right.x, move.z += right.z;
 
-	//m_Velocity.x *= GENSUI;	// 速度を適当に減衰する
-	////Velocity.y *= GENSUI;
-	//m_Velocity.z *= GENSUI;
+    // 正規化
+    float len = sqrtf(move.x * move.x + move.z * move.z);
+    if (len > 0.0f)
+    {
+        move.x /= len;
+        move.z /= len;
 
-	// 静止チェック
-	float	len = (m_Velocity.x * m_Velocity.x +
-		m_Velocity.y * m_Velocity.y +
-		m_Velocity.z * m_Velocity.z);
+        // 加速
+        m_Velocity.x = move.x * PLAYER_SPEEDMAX;
+        m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+    }
+    else
+    {
+        // 停止
+        m_Velocity.x = 0.0f;
+        m_Velocity.z = 0.0f;
+    }
 
-	if (len <= STOP_VELO) // 静止とみなす速度
-	{
-		g_StopTime++;
-		if (g_StopTime > 60.0f * 2) // 2秒間続いている
-		{
-			m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
-			g_StopTime = 0.0f;
-		}
-	}
+    // スペースでジャンプ
+    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
+        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 
-	
+    // 静止チェック（元のコード）
+    float v2 = m_Velocity.x * m_Velocity.x +
+               m_Velocity.y * m_Velocity.y +
+               m_Velocity.z * m_Velocity.z;
 
-	//float hit = PlayerFieldCollision(); 
+    if (v2 <= STOP_VELO)
+    {
+        g_StopTime++;
+        if (g_StopTime > 60.0f * 2)
+        {
+            m_Velocity = XMFLOAT3(0, 0, 0);
+            m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+            g_StopTime = 0.0f;
+        }
+    }
 }
 
 void   PLAYER::Player_Jump()

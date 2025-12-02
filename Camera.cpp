@@ -11,6 +11,12 @@ static	CAMERA	CameraObject;
 
 XMFLOAT3		g_BallPosOld;
 
+// 調整可
+static float rangeCamera = 4.5f;   // カメラとプレイヤーの距離
+static float cameraHeight = 0.5f;      // カメラの高さ
+static float cameraYoko = 180.0f;      // 横調整
+static float cameraTate = 20.0f;     // 縦調整
+
 void	Camera_Initialize(XMFLOAT3 BallPos)
 { 
 	CameraObject.Position = XMFLOAT3(0.0f, 3.0f, -4.0f);
@@ -36,11 +42,7 @@ void	Camera_Update(XMFLOAT3 BallPos)
 {
 
 
-	// 調整可
-	static float rangeCamera = 4.5f;   // カメラとプレイヤーの距離
-	static float cameraHeight = 0.5f;      // カメラの高さ
-	static float cameraYoko = 180.0f;      // 横調整
-	static float cameraTate = 20.0f;     // 縦調整
+	
 
 	//左右回転調整
 	if (Keyboard_IsKeyDown(KK_LEFT)) {
@@ -187,3 +189,7 @@ XMFLOAT3	GetCameraAtPosition()
 	return CameraObject.AtPosition;
 }
 
+float GetCameraYoko()
+{
+	return cameraYoko;
+}
