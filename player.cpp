@@ -1,4 +1,3 @@
-
 //Player.cpp
 
 #include	"keyboard.h"
@@ -70,11 +69,19 @@ void	PLAYER::Player_Update()
 		m_Velocity.y = PLAYER_FALLMAX;
 	}
 
-
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
-	
+
+	// --- ここだけ変更（着地判定とバウンド防止） ---
+	float groundY = 0.0f; // 地面の高さ
+	if (m_Position.y <= groundY)
+	{
+		m_Position.y = groundY;
+		m_Velocity.y = 0.0f;
+		JumpCount = true;
+	}
+	// --- ここまで ---
 
 	if (m_Position.y < PLAYER_DEATH)
 	{
@@ -282,6 +289,8 @@ PLAYER* PLAYER::GetPlayer()
 {
 	return this;
 }
+
+
 
 
 
