@@ -71,6 +71,8 @@ void Mouse_SetVisible(bool visible);
 // マウス制御のためのウィンドウメッセージプロシージャフック関数
 void Mouse_ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
+bool Mouse_IsLeftDownTrigger();
+bool Mouse_IsRightDownTrigger();
 
 // 導入方法
 //

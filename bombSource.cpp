@@ -1,7 +1,7 @@
 #include "bombSource.h"
 #include	"keyboard.h"
 #include	"collision.h"
-
+#include	"mouse.h"
 
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
@@ -33,7 +33,9 @@ void BOMBSOURCE::BombSource_Safe()
 void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 0.5;
+	m_Position.y += 1.0f;
+
+	
 
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 5.0f)
@@ -42,32 +44,58 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 		m_Count = 0;
 	}
 
-	//動き
-	if (Keyboard_IsKeyDownTrigger(KK_B))//トリガーでチェック！
+	////動き
+	//if (Keyboard_IsKeyDownTrigger(KK_B))//トリガーでチェック！
+	//{
+	//	
+
+	//	m_Velocity.x = sinf(XMConvertToRadians(pPlayerRot.y));
+	//	//m_Velocity.y = 1.0f;
+	//	m_Velocity.z = cosf(XMConvertToRadians(pPlayerRot.y));
+
+	//	XMFLOAT3	power = XMFLOAT3(1.0f, 1.0f, 1.0f);
+	//	power.z *= BOMB_SPEED_MAX * 0.1f;
+
+	//	m_Velocity.x *= power.z;
+	//	/*if (power.z < 0.16f)
+	//	{
+	//		m_Velocity.y = 0.0f;
+	//	}
+	//	else*/
+	//	//{//それなりのパワーの場合、ボール浮かす
+	//		m_Velocity.y = power.z * 1.5f;
+	//	//}
+	//	m_Velocity.z *= power.z;
+
+	//	
+	//	m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+	//}
+	
+	if (Mouse_IsLeftDownTrigger())
 	{
+		// プレイヤーの向き
+		float yaw = pPlayerRot.y;
 
-		m_Velocity.x = sinf(XMConvertToRadians(pPlayerRot.y));
-		//m_Velocity.y = 1.0f;
-		m_Velocity.z = cosf(XMConvertToRadians(pPlayerRot.y));
+		// プレイヤーの正面方向ベクトル
+		float pVecX = sinf(yaw);
+		float pVecZ = cosf(yaw);
 
-		XMFLOAT3	power = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		power.z *= BOMB_SPEED_MAX * 0.1f;
-
-		m_Velocity.x *= power.z;
-		/*if (power.z < 0.16f)
-		{
-			m_Velocity.y = 0.0f;
+		// 正規化
+		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+		if (len > 0.0f) {
+			pVecX /= len;
+			pVecZ /= len;
 		}
-		else*/
-		//{//それなりのパワーの場合、ボール浮かす
-			m_Velocity.y = power.z * 1.5f;
-		//}
-		m_Velocity.z *= power.z;
 
-		
+		float speed = BOMB_SPEED_MAX*BOMB_THROW_POWER;
+
+		// 投げる速度
+		m_Velocity.x = pVecX * speed;
+		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+		m_Velocity.z = pVecZ * speed;
+
 		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 	}
-	
 
 
 }
@@ -75,8 +103,7 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 
 void BOMBSOURCE::BombSource_Active_Throw()
 {
-	m_Velocity.y -= BOMB_GRAVITY;
-
+	
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
@@ -119,6 +146,10 @@ void BOMBSOURCE::BombSource_Active_Throw()
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
 	}
+	
+	
+	m_Velocity.y -= BOMB_GRAVITY;
+	
 
 }
 

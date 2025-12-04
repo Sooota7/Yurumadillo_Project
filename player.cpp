@@ -158,7 +158,7 @@ void PLAYER::Player_Move()
 {
     m_Velocity.y -= PLAYER_GRAVITY;
 
-    // --- �J������ Y �����i�����p�x�j���擾 ---
+    // カメラの横の向きを取得
     float camY = XMConvertToRadians(GetCameraYoko());
 
     // �J������̑O�����x�N�g��
@@ -169,39 +169,46 @@ void PLAYER::Player_Move()
 
     XMFLOAT3 move = XMFLOAT3(0, 0, 0);
 
-    // --- ���� ---
-    if (Keyboard_IsKeyDown(KK_W)) // �O
+    // WASDで移動
+    if (Keyboard_IsKeyDown(KK_W)) // 前
         move.x -= forward.x, move.z -= forward.z;
-    if (Keyboard_IsKeyDown(KK_S)) // ��
+    if (Keyboard_IsKeyDown(KK_S)) // 後
         move.x += forward.x, move.z += forward.z;
-    if (Keyboard_IsKeyDown(KK_D)) // �E
+    if (Keyboard_IsKeyDown(KK_D)) // 右
         move.x -= right.x, move.z -= right.z;
-    if (Keyboard_IsKeyDown(KK_A)) // ��
+    if (Keyboard_IsKeyDown(KK_A)) // 左
         move.x += right.x, move.z += right.z;
 
-    // ���K��
+    // 正規化
     float len = sqrtf(move.x * move.x + move.z * move.z);
     if (len > 0.0f)
     {
         move.x /= len;
         move.z /= len;
 
-        // ����
+        // 移動
         m_Velocity.x = move.x * PLAYER_SPEEDMAX;
         m_Velocity.z = move.z * PLAYER_SPEEDMAX;
     }
     else
     {
-        // ��~
+        // 停止
         m_Velocity.x = 0.0f;
         m_Velocity.z = 0.0f;
     }
 
-    // �X�y�[�X�ŃW�����v
+    // ジャンプ
     if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
         m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 
-    // �Î~�`�F�b�N�i���̃R�[�h�j
+	// --- 進行方向に体の向きを合わせる ---
+	if (len > 0.0f)
+	{
+		float angle = atan2f(m_Velocity.x, m_Velocity.z); // ← Y軸回転
+		m_Rotation.y = angle;
+	}
+
+    // 停止状態移行
     float v2 = m_Velocity.x * m_Velocity.x +
                m_Velocity.y * m_Velocity.y +
                m_Velocity.z * m_Velocity.z;

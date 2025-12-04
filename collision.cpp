@@ -528,7 +528,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 								BombPos.y > BoxTop)
 							{//BOXの+X面にぶつかった
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
-								BombVel.y = BombVel.y * (-COE * 1.0f);
+								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
 								hit = COLLISION_HIT::HIT_GROUND;
 							}
 						}
@@ -561,73 +561,32 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMY_NORMAL* pEnemy)
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int			l = 0;
+		bool test = false;
 
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
-			bool test = false;
-
+			
 			float BoxTop;	// BOXの+Y面の座標
 
 			BoxTop = EnemyPos.y + BOX_RADIUS;
 
 			// 壁としての判定処理
-			if (EnemyPos.y - BOX_RADIUS < BombPos.y &&
-				BombPos.y < BoxTop - 0.1f)
+			if (BombPos.x + 3 > EnemyPos.x &&
+				BombPos.x - 3 < EnemyPos.x)
 			{
-				if (EnemyPos.z - BOX_RADIUS < BombPos.z &&
-					BombPos.z < EnemyPos.z + BOX_RADIUS)
+				if (BombPos.y + 3 > EnemyPos.y &&
+					BombPos.y - 3 < EnemyPos.y)
 				{
-					if (EnemyPos.x - BOX_RADIUS < BombPos.x + BALL_RADIUS &&
-						BombPos.x < EnemyPos.x - BOX_RADIUS)
-					{//BOXの-X面にぶつかったので座標の補正
-						test = true;
-					}
-					else if (EnemyPos.x + BOX_RADIUS > BombPos.x - BALL_RADIUS &&
-						BombPos.x > EnemyPos.x + BOX_RADIUS)
-					{//BOXの+X面にぶつかった
-						test = true;
-					}
-				}
-				else if (EnemyPos.x - BOX_RADIUS < BombPos.x &&
-					BombPos.x < EnemyPos.x + BOX_RADIUS)
-				{
-					if (EnemyPos.z - BOX_RADIUS < BombPos.z + BALL_RADIUS &&
-						BombPos.z < EnemyPos.z - BOX_RADIUS)
-					{//BOXの-Z面にぶつかったので座標の補正
-						test = true;
-					}
-					else if (EnemyPos.z + BOX_RADIUS > BombPos.z - BALL_RADIUS &&
-						BombPos.z > EnemyPos.z + BOX_RADIUS)
-					{//BOXの+Z面にぶつかった
-						test = true;
-					}
-				}
-			}
-			//地面として判定処理
-			else
-			{
-				if (EnemyPos.z - BOX_RADIUS < BombPos.z &&
-					BombPos.z < EnemyPos.z + BOX_RADIUS)
-				{
-					if (EnemyPos.x - BOX_RADIUS < BombPos.x &&
-						BombPos.x < EnemyPos.x + BOX_RADIUS)
+					if (BombPos.z + 3 > EnemyPos.z &&
+						BombPos.z - 3 < EnemyPos.z)
 					{
-						if (EnemyPos.y - BOX_RADIUS < BombPos.y + BALL_RADIUS &&
-							BombPos.y < EnemyPos.y - BOX_RADIUS)
-						{//BOXの-X面にぶつかったので座標の補正
-							test = true;
-							//hit = 
-						}
-						else if (BoxTop > BombPos.y - BALL_RADIUS &&
-							BombPos.y > BoxTop)
-						{//BOXの+X面にぶつかった
-							test = true;
-						}
+						test = true;
 					}
 				}
 			}
+
 
 			if (test)
 			{
