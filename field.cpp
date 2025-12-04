@@ -1,6 +1,7 @@
 
 #include "field.h"
 #include "camera.h"
+#include "Dictionary.h"
 
 //グローバル変数
 static ID3D11Device* g_pDevice = NULL;
@@ -41,6 +42,49 @@ int GetMap(int x,int y,int z)
 
 
 }
+
+int GetMap2(int x,int y,int z)
+{
+	switch (z)
+	{
+	case(0):
+		return Field2_pos_row[y][x];
+
+		break;
+	case(1):
+		return Field2_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return Field2_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+int CheckMap(int x, int y, int z,FIELD_NO no)
+{
+	switch (no)
+	{
+	case NO_NONE:
+		break;
+	case NO_1:
+		return GetMap(x, y, z);
+		break;
+	case NO_2:
+		return GetMap2(x, y, z);
+		break;
+	default:
+		break;
+	}
+}
+
 
 //BOX頂点データ
 static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
@@ -217,7 +261,7 @@ static UINT Box_idxdata[6 * 6] =
 	20,21,22,22,21,23,	//-Y面
 };
 
-void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 	//Test = ModelLoad("asset\\model\\test.fbx");//デバッグ
 
@@ -242,7 +286,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
 
-				switch (GetMap(l, i, q))
+				switch (CheckMap(l, i, q,no))
 				{
 				case 0:
 					break;
@@ -253,6 +297,11 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 				case 2:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_0);;
 					break;
+
+				case 5:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_1);;
+					break;
+
 				}
 
 				a++;
@@ -300,6 +349,10 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
 			break;
 
+		case FIELD_OBT_1://障害物0
+			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+			break;
+
 		}
 	}
 
@@ -315,6 +368,11 @@ void  MAPDATA::Field_Finalize(void)
 			Model[i] = NULL;
 		}
 
+	}
+
+	for (int i = 0; i < (FIELD_WIDTH_X * FIELD_WIDTH_Z) * 3 + 1; i++)
+	{
+		m_Map[i].MapData_Finalize();
 	}
 
 	SAFE_RELEASE(g_VertexBuffer);
@@ -396,6 +454,10 @@ void  MAPDATA::Field_Draw(void)
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
 		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_0)
+		{
+			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+		}
+		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_1)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
 		}

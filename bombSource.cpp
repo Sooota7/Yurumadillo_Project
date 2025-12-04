@@ -60,7 +60,7 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 		}
 		else*/
 		//{//それなりのパワーの場合、ボール浮かす
-			m_Velocity.y = power.z * 1.5f;
+			m_Velocity.y = power.z * 1.2f;
 		//}
 		m_Velocity.z *= power.z;
 

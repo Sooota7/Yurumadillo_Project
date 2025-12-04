@@ -42,8 +42,50 @@ int GetBomb(int x, int y, int z)
 
 
 }
+int GetBomb2(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return Field2_pos_row[y][x];
 
-void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+		break;
+	case(1):
+		return Field2_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return Field2_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
+int CheckBomb(int x, int y, int z,FIELD_NO no)
+{
+	switch (no)
+	{
+	case NO_NONE:
+		break;
+	case NO_1:
+		return GetBomb(x, y, z);
+		break;
+	case NO_2:
+		return GetBomb2(x, y, z);
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
@@ -55,13 +97,13 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		case BOMB_NONE:
 			break;
 		case BOMB_ITEM:
-			m_Model[i] = ModelLoad("asset\\model\\test.fbx");
-			break;
-		case BOMB_ACTIVE_HAVE:
 			m_Model[i] = ModelLoad("asset\\model\\ball.fbx");
 			break;
+		case BOMB_ACTIVE_HAVE:
+			m_Model[i] = ModelLoad("asset\\model\\test_bomb.fbx");
+			break;
 		case BOMB_EXPLOSION:
-			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");
+			m_Model[i] = ModelLoad("asset\\model\\test_explosion.fbx");
 			break;
 		case BOMB_MAX:
 			break;
@@ -85,7 +127,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
 
-				switch (GetBomb(l, i, q))
+				switch (CheckBomb(l, i, q, no))
 				{
 				case 0:
 					break;

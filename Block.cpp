@@ -3,7 +3,7 @@
 #include "camera.h"
 #include "model.h"
 
-MODEL* Model[FIELD_MAX] = { NULL };//�f�o�b�O
+//MODEL* Model[FIELD_MAX] = { NULL };//�f�o�b�O
 
 
 //�O���[�o���ϐ�
@@ -196,12 +196,17 @@ void MAP::MapData_Initialize(XMFLOAT3 pPos,FIELD pNo)
 
 void  MAP::MapData_Finalize(void)
 {
-
+	position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	no = FIELD::FIELD_NONE;
 }
 
 
 void  MAP::MapData_Update(void)
 {
+	if (no == FIELD::FIELD_OBT_1)
+	{
+
+	}
 }
 
 

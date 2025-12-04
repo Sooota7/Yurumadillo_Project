@@ -23,16 +23,18 @@
 LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
 
 
+
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	
+	m_NowField = FIELD_NO::NO_1;
+
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
-	m_Map.Field_Initialize(pDevice, pContext); // フィールドの初期化
+	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_EnemyNormal.Initialize(pDevice, pContext);
-	m_bomb.Bomb_Initialize(pDevice, pContext);
+	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -43,6 +45,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	m_Manager = manager;
 
+	
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
 	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
@@ -92,7 +95,20 @@ void GAME::Game_Update()
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(),m_Player.GetPlayerRotation());
 
-	collision.PlayerFieldCollision(&m_Player, &m_Map);
+	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
+	{
+		if (m_NowField == FIELD_NO::NO_1)
+		{
+			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
+			m_NowField = FIELD_NO::NO_2;
+		}
+		else if (m_NowField == FIELD_NO::NO_2)
+		{
+			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
+			m_NowField = FIELD_NO::NO_1;
+		}
+	}
+
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
@@ -140,5 +156,23 @@ void GAME::Game_Draw()
 
 	//Polygon3D_Draw();
 
+}
+
+void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
+{
+
+	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Player.Player_Finalize();	// ボールの終了処理
+	m_EnemyNormal.Finalize();
+	m_bomb.Bomb_Finalize();
+	Camera_Finalize();	//カメラ終了処理
+
+
+
+	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
+	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
+	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
+	m_EnemyNormal.Initialize(pDevice, pContext);
+	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 }
 
