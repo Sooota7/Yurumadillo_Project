@@ -33,7 +33,7 @@ void BOMBSOURCE::BombSource_Safe()
 void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 0.5;
+	m_Position.y += 1.0f;
 
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 5.0f)
@@ -75,8 +75,7 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 
 void BOMBSOURCE::BombSource_Active_Throw()
 {
-	m_Velocity.y -= BOMB_GRAVITY;
-
+	
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
@@ -119,6 +118,10 @@ void BOMBSOURCE::BombSource_Active_Throw()
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
 	}
+	
+	
+	m_Velocity.y -= BOMB_GRAVITY;
+	
 
 }
 
