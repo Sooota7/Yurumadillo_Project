@@ -30,20 +30,24 @@ class ENEMY_NORMAL : public ENEMY
 {
 private:
 	constexpr static int ENEMY_NORMAL_IDLE_CNT = 120;
+	constexpr static float ENEMY_NORMAL_POWER = 2.0f; // 移動量
+
 	ENEMY_NORMAL_STATE m_State;		// 状態
 	int m_FrameCnt;					// フレームカウント
+	XMFLOAT3	m_ChasePos;			// 追跡する相手
 
 private:
 	void	Enemy_Normal_Idle();
 	void	Enemy_Normal_Move();
-	void	Enemy_Normal_Direction();
+	void	Enemy_Normal_Direction(XMFLOAT3 chasePos);
 	void	Enemy_Normal_Jump();
 	void	Enemy_Normal_Dead();
+
 
 public:
 	void	Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext) override;
 	void	Finalize()override;
-	void	Update()override;
+	void	Update(XMFLOAT3 chasePos)override;
 	void	Draw()override;
 
 	ENEMY* GetEnemy()override { return this; };
