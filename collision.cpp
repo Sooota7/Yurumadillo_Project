@@ -528,7 +528,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 								BombPos.y > BoxTop)
 							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
-								BombVel.y = BombVel.y * (-COE * 1.0f);
+								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
 								hit = COLLISION_HIT::HIT_GROUND;
 							}
 						}
