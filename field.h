@@ -29,7 +29,7 @@ private:
 
 public:
 
-	void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no);
 	void Field_Finalize(void);
 	void Field_Draw(void);
 	void Field_Update(void);

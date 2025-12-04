@@ -29,6 +29,7 @@ enum COLLISION_HIT
 	HIT_WALL_1,		// +X
 	HIT_WALL_2,		// +Z
 	HIT_WALL_3,		// -X
+	HIT_WALL_CREAR,		// -X
 
 };
 

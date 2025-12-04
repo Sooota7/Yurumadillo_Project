@@ -12,6 +12,7 @@ using namespace DirectX;
 
 #include	"model.h"
 #include	"bombSource.h"
+#include	"Dictionary.h"
 
 // É}ÉNÉçíËã`
 
@@ -31,7 +32,7 @@ private:
 
 public:
 
-	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,FIELD_NO no);
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(void);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
