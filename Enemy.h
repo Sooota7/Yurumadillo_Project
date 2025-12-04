@@ -29,25 +29,25 @@ protected:
 public:
 	virtual void	Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext) = 0;
 	virtual void	Finalize() = 0;
-	virtual void	Update() = 0;
+	virtual void	Update(XMFLOAT3 playerPos) = 0;
 	virtual void	Draw() = 0;
 	virtual ENEMY*	GetEnemy() = 0;
 
 	virtual ~ENEMY() {};  // 仮想デストラクタ
 
-	void SetEnemyPosition(XMFLOAT3 pos) { m_Position = pos; };
+	virtual void SetEnemyPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3 GetEnemyPosition() { return m_Position; };
 
-	void SetEnemyRotation(XMFLOAT3 rotate) { m_Rotation = rotate; };
+	virtual void SetEnemyRotation(XMFLOAT3 rotate) { m_Rotation = rotate; };
 	XMFLOAT3 GetEnemyRotation() { return m_Rotation; };
 
-	void SetEnemyScaling(XMFLOAT3 sca) { m_Scaling = sca; };
+	virtual void SetEnemyScaling(XMFLOAT3 sca) { m_Scaling = sca; };
 	XMFLOAT3 GetEnemyScaling() { return m_Scaling; };
 
-	void SetEnemyVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
+	virtual void SetEnemyVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
 	XMFLOAT3 GetEnemyVelocity() { return m_Velocity; };
 
-	void SetEnemyHp(int hp) { m_Hp = hp; };
+	virtual void SetEnemyHp(int hp) { m_Hp = hp; };
 	int GetEnemyHp() { return m_Hp; };
 
 	
