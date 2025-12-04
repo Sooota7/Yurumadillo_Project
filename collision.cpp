@@ -16,11 +16,13 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 	MAP*	Map = pField->GetFieldMap();	// マップ
 	int			i = 0;
 
+	
+
 	// 全てのブロックをチェック
 	while (Map[i].MapData_GetNo() != FIELD_MAX)
 	{
 		float BoxTop;	// BOXの+Y面の座標
-
+		
 		XMFLOAT3 mapPos = Map[i].MapData_GetPosition();
 
 		switch (Map[i].MapData_GetNo())
@@ -44,6 +46,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerPos.x += (mapPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
 					PlayerVel.x *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_3;
+
+					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					{
+						hit = COLLISION_HIT::HIT_WALL_CREAR;
+					}
 				}
 				else if (mapPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
 					PlayerPos.x > mapPos.x + BOX_RADIUS)
@@ -51,6 +58,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerPos.x += (mapPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
+
+					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					{
+						hit = COLLISION_HIT::HIT_WALL_CREAR;
+					}
 				}
 			}
 			else if (mapPos.x - BOX_RADIUS < PlayerPos.x &&
@@ -62,6 +74,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerPos.z += (mapPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
 					PlayerVel.z *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_0;
+
+					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					{
+						hit = COLLISION_HIT::HIT_WALL_CREAR;
+					}
 				}
 				else if (mapPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
 					PlayerPos.z > mapPos.z + BOX_RADIUS)
@@ -69,6 +86,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerPos.z += (mapPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
+
+					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					{
+						hit = COLLISION_HIT::HIT_WALL_CREAR;
+					}
 				}
 			}
 		}
@@ -87,6 +109,10 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						PlayerPos.y += (mapPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
 						PlayerVel.y *= -COE; //移動ベクトルの反転
 						//hit = 
+						if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+						{
+							hit = COLLISION_HIT::HIT_WALL_CREAR;
+						}
 					}
 					else if (BoxTop > PlayerPos.y - PLAYER_RADIUS &&
 						PlayerPos.y > BoxTop)
@@ -97,6 +123,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						if (PlayerJump == false)
 						{
 							PlayerJump = true;
+						}
+
+						if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+						{
+							hit = COLLISION_HIT::HIT_WALL_CREAR;
 						}
 					}
 				}
@@ -529,6 +560,12 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 							{//BOXの+X面にぶつかった
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
 								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
+
+								//とりあえずのストップ
+								BombVel.x = 0.0f;
+								BombVel.z = 0.0f;
+
+
 								hit = COLLISION_HIT::HIT_GROUND;
 							}
 						}

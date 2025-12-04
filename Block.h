@@ -12,12 +12,17 @@ using namespace DirectX;
 // マクロ定義
 #define		BOX_RADIUS		(0.5f)
 
+
 //MAP構成ブロックの種類
 enum FIELD
 {
-	FIELD_BOX = 0,
+	FIELD_NONE = 0,
+
+	FIELD_BOX,
 
 	FIELD_OBT_0, // 障害物
+
+	FIELD_OBT_1, // ゴール
 
 	FIELD_MAX
 };
