@@ -7,9 +7,9 @@
 using namespace DirectX;
 
 #define		BOMB_RADIUS		(0.5f)
-#define		BOMB_SPEED_MAX		(1.5f)
-#define		BOMB_GRAVITY		(0.5f/60.0f)
-
+#define		BOMB_SPEED_MAX		(1.0f)
+#define		BOMB_GRAVITY		(1.0f/60.0f)
+#define		BOMB_THROW_POWER		(0.2f)
 
 enum BOMB_STATE
 {

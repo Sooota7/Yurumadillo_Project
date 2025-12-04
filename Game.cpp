@@ -90,7 +90,7 @@ void GAME::Game_Update()
 	//更新処理
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
 	m_Player.Player_Update();
-	m_EnemyNormal.Update();
+	m_EnemyNormal.Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(),m_Player.GetPlayerRotation());

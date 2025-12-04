@@ -20,6 +20,7 @@
 #include "Manager.h"
 #include "Audio.h"	//<<<<<<<<<<<<<追加
 
+#include "mouse.h"
 
 ///////////////////////////////////////////
 #define		SCREEN_WIDTH	(1280)
@@ -73,7 +74,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	wc.lpszClassName = CLASS_NAME;	//この仕様書の名前
 	wc.hInstance = hInstance;	//このアプリケーションのこと
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);//カーソルの種類
-	wc.hbrBackground = (HBRUSH)(COLOR_BACKGROUND+1 );//ウィンドウの背景色は黒
+	wc.hbrBackground = (HBRUSH)(COLOR_BACKGROUND + 1);//ウィンドウの背景色は黒
 	RegisterClass(&wc);	//構造体をWindowsへセット
 
 	//クライアント領域のサイズを表す矩形 (左からleft, top, right, bottom)
@@ -88,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	//ウィンドウの作成
 	HWND	hWnd = CreateWindow(
-		CLASS_NAME,	
+		CLASS_NAME,
 		WINDOW_CAPTION,
 		window_style,
 		CW_USEDEFAULT,
@@ -115,6 +116,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	InitAudio();	//サウンドの初期化
 
+	Mouse_Initialize(hWnd);
+	Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE); // マウスルック開始
 
 
 	manager.Manager_Initialize();
@@ -133,12 +136,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	//終了メッセージが来るまでループする
 	do {
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) 
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{ // ウィンドウメッセージが来ていたら
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else 
+		else
 		{ // ゲームの処理
 			dwCurrentTime = timeGetTime();
 			if ((dwCurrentTime - dwFPSLastTime) >= 1000)
@@ -157,7 +160,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 				//ウィンドウキャプションへ現在のFPSを表示
 				wsprintf(g_DebugStr, "DX21 プロジェクト ");
 				wsprintf(&g_DebugStr[strlen(g_DebugStr)],
-									" FPS : %d", g_CountFPS);
+					" FPS : %d", g_CountFPS);
 				SetWindowText(hWnd, g_DebugStr);
 #endif
 
@@ -175,7 +178,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 		}
 	} while (msg.message != WM_QUIT);
-	
+
 	manager.Manager_Finalize();
 
 
@@ -203,41 +206,53 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	HDC		hdc;	//ウィンドウ画面を表す情報（デバイスコンテキスト 入出力先）
 	PAINTSTRUCT	ps;	//ウィンドウ画面の大きさなど描画関連の情報
 
+
+
 	switch (uMsg)
 	{
-		case WM_ACTIVATEAPP:
-		case WM_SYSKEYDOWN:
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-		     Keyboard_ProcessMessage(uMsg, wParam, lParam);
-			 break;
+	case WM_ACTIVATEAPP:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Keyboard_ProcessMessage(uMsg, wParam, lParam);
+		break;
 
-		case WM_KEYDOWN:	//キーが押された
-			if (wParam == VK_ESCAPE)//押されたのはESCキー
-			{
-				//ウィンドウを閉じたいリクエストをWindowsに送る
-				SendMessage(hWnd, WM_CLOSE, 0, 0);
-			}
+	case WM_KEYDOWN:	//キーが押された
+		if (wParam == VK_ESCAPE)//押されたのはESCキー
+		{
+			//ウィンドウを閉じたいリクエストをWindowsに送る
+			SendMessage(hWnd, WM_CLOSE, 0, 0);
+		}
 
-			Keyboard_ProcessMessage(uMsg, wParam, lParam);
-			break;
-		case WM_CLOSE:	//ウィンドウを閉じなさい命令				
-			//if (
-			//	MessageBox(hWnd, "本当に終了してよろしいですか？",
-			//		"確認", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK
-			//	)
-			//{//OKが押されたとき
-			//	DestroyWindow(hWnd);//終了する手続きをWindowsへリクエスト
-			//}
-			//else
-			//{
-			//	return 0;	//やっぱり終わらない
-			//}
+		Keyboard_ProcessMessage(uMsg, wParam, lParam);
+		break;
+	case WM_CLOSE:	//ウィンドウを閉じなさい命令				
+		//if (
+		//	MessageBox(hWnd, "本当に終了してよろしいですか？",
+		//		"確認", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK
+		//	)
+		//{//OKが押されたとき
+		//	DestroyWindow(hWnd);//終了する手続きをWindowsへリクエスト
+		//}
+		//else
+		//{
+		//	return 0;	//やっぱり終わらない
+		//}
 
-			//break;
-		case WM_DESTROY:	//終了してOKですよ
-			PostQuitMessage(0);		//自分のメッセージに０を送る
-			break;
+		//break;
+	case WM_DESTROY:	//終了してOKですよ
+		PostQuitMessage(0);		//自分のメッセージに０を送る
+		break;
+
+	case WM_INPUT:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MOUSEWHEEL:
+		Mouse_ProcessMessage(uMsg, wParam, lParam);
+		break;
 
 	}
 
@@ -245,3 +260,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 
 }
+
