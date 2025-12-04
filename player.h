@@ -16,17 +16,10 @@ using namespace DirectX;
 #define STOP_VELO (0.0002f)
 #define PLAYER_ACCELERATION (0.01f)  //加速度
 #define PLAYER_GRAVITY (0.01f)       //重力
-#define PLAYER_JUMP (0.3f)           //ジャンプ力
+#define PLAYER_JUMP (0.25f)           //ジャンプ力
 #define PLAYER_FALLMAX (-0.2f)        //落下最高速度
-#define PLAYER_JUMP (0.2f)           //ジャンプ力
 #define PLAYER_DEATH (-3.0f)         //これ以上下に行くと死
 #define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
-#define PLAYER_ACCELERATION (0.01f)  //蜉騾溷ｺｦ
-#define PLAYER_GRAVITY (0.01f)       //驥榊鴨
-#define PLAYER_FALLMAX (-0.2f)        //關ｽ荳区怙鬮倬溷ｺｦ
-#define PLAYER_JUMP (0.2f)           //繧ｸ繝｣繝ｳ繝怜鴨
-#define PLAYER_DEATH (-3.0f)         //縺薙ｌ莉･荳贋ｸ九↓陦後￥縺ｨ豁ｻ
-#define PLAYER_MAGICRANGE (0.03f)    //鬲疲ｳ慕ｯ・峇
 
 //繝懊・繝ｫ縺ｮ迥ｶ諷・
 enum PLAYER_STATE

@@ -18,7 +18,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	m_Model[0] = ModelLoad("asset\\model\\ball.fbx");
+	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 
 	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
