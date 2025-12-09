@@ -69,52 +69,53 @@ void	ENEMY_NORMAL::Update(XMFLOAT3 chasePos)
 
 void	ENEMY_NORMAL::Draw()
 {
-	//ワールド行列作成
-	XMMATRIX	scale = XMMatrixScaling(
-		m_Scaling.x,
-		m_Scaling.y,
-		m_Scaling.z);
-	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
-		m_Rotation.x,
-		m_Rotation.y,
-		m_Rotation.z);
-	XMMATRIX	translation = XMMatrixTranslation(
-		m_Position.x,
-		m_Position.y,
-		m_Position.z);
-	XMMATRIX	world = scale * rotation * translation;
-
-	//変換行列作成
-	XMMATRIX	view = GetViewMatrix();
-	XMMATRIX	projection = GetProjectionMatrix();
-	XMMATRIX	wvp = world * view * projection;
-
-	//シェーダーへ行列をセット
-	Shader_SetWorldMatrix(world);
-	Shader_SetMatrix(wvp);
-
-	//モデルの描画リクエスト
-	//ModelDraw(m_Model);
-	switch (m_State)
-	{
-	case ENEMY_NORMAL_STATE_IDLE:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_MOVE:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_DIRECTION:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_JUMP:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_DEAD:
-		
-		break;
-	default:
-		break;
-	}
+//{
+//	//ワールド行列作成
+//	XMMATRIX	scale = XMMatrixScaling(
+//		m_Scaling.x,
+//		m_Scaling.y,
+//		m_Scaling.z);
+//	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
+//		m_Rotation.x,
+//		m_Rotation.y,
+//		m_Rotation.z);
+//	XMMATRIX	translation = XMMatrixTranslation(
+//		m_Position.x,
+//		m_Position.y,
+//		m_Position.z);
+//	XMMATRIX	world = scale * rotation * translation;
+//
+//	//変換行列作成
+//	XMMATRIX	view = GetViewMatrix();
+//	XMMATRIX	projection = GetProjectionMatrix();
+//	XMMATRIX	wvp = world * view * projection;
+//
+//	//シェーダーへ行列をセット
+//	Shader_SetWorldMatrix(world);
+//	Shader_SetMatrix(wvp);
+//
+//	//モデルの描画リクエスト
+//	//ModelDraw(m_Model);
+//	switch (m_State)
+//	{
+//	case ENEMY_NORMAL_STATE_IDLE:
+//		ModelDraw(m_Model);
+//		break;
+//	case ENEMY_NORMAL_STATE_MOVE:
+//		ModelDraw(m_Model);
+//		break;
+//	case ENEMY_NORMAL_STATE_DIRECTION:
+//		ModelDraw(m_Model);
+//		break;
+//	case ENEMY_NORMAL_STATE_JUMP:
+//		ModelDraw(m_Model);
+//		break;
+//	case ENEMY_NORMAL_STATE_DEAD:
+//		
+//		break;
+//	default:
+//		break;
+//	}
 }
 
 void	ENEMY_NORMAL::Enemy_Normal_Idle()

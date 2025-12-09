@@ -146,10 +146,14 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 	return hit;  // ぶつかったかどうかを示す
 }
 
-float	COLLISION::EnemyFieldCollision(ENEMY* pEnemy, MAPDATA* pField)
+float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 {
 	float		hit = 0.0f;				// ヒットした方向
 	//BALL*		Ball = GetBall();		// ボールの情報
+	ENEMY_NORMAL* enemy = 
+
+
+
 	XMFLOAT3 EnemyPos = pEnemy->GetEnemyPosition();
 	XMFLOAT3 EnemyVel = pEnemy->GetEnemyVelocity();
 	MAP* Map = pField->GetFieldMap();	// マップ
@@ -249,7 +253,7 @@ float	COLLISION::EnemyFieldCollision(ENEMY* pEnemy, MAPDATA* pField)
 }
 
 
-float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMY* pEnemy)
+float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 {
 	float		hit = 0.0f;				// ヒットした方向
 	//BALL*		Ball = GetBall();		// ボールの情報

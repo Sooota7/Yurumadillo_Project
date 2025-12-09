@@ -14,6 +14,15 @@ using namespace DirectX;
 
 #include	"model.h"
 
+enum ENEMY_TYPE
+{
+	ENEMY_TYPE_NONE = 0,
+
+	ENEMY_TYPE_NORMAL,
+
+	ENEMY_TYPE_MAX
+};
+
 class ENEMY
 {
 protected:
