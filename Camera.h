@@ -7,6 +7,12 @@
 #include	"direct3d.h"
 using namespace DirectX;
 
+#define CAMERA_SENSITIVITY (0.5f) //ÉJÉÅÉâä¥ìx
+#define CAMERA_UP_MAX (80.0f)
+#define CAMERA_DOWN_MAX (5.0f)
+#define CAMERA_SIDE_MAX (360.0f)
+
+
 class CAMERA
 {
 	public:
@@ -40,3 +46,5 @@ XMMATRIX	GetViewMatrix();
 XMMATRIX	GetProjectionMatrix();
 XMFLOAT3	GetCameraPosition();
 XMFLOAT3	GetCameraAtPosition();
+
+float GetCameraYoko();

@@ -7,19 +7,19 @@
 #include	"shader.h"
 #include	"collision.h"
 
-//ƒ{[ƒ‹ƒIƒuƒWƒFƒNƒg
+//ãƒœãƒ¼ãƒ«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
 ID3D11Device* g_pDevice;
 ID3D11DeviceContext* g_pContext;
 
-float g_StopTime = 0.0f;	// ƒ{[ƒ‹‚ª§~‚·‚é‚Ü‚Å‚ÌŠÔ
+float g_StopTime = 0.0f;	// ãƒœãƒ¼ãƒ«ãŒåˆ¶æ­¢ã™ã‚‹ã¾ã§ã®æ™‚é–“
 
 void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	m_Model[0] = ModelLoad("asset\\model\\ball.fbx");
+	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 
 	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
@@ -65,17 +65,27 @@ void	PLAYER::Player_Update()
 		break;
 	}
 	
+	if (m_Velocity.y < PLAYER_FALLMAX)
+	{
+		m_Velocity.y = PLAYER_FALLMAX;
+	}
+
+
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 	
-	//Player_BombMagic(m_Bomb);
+
+	if (m_Position.y < PLAYER_DEATH)
+	{
+		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
+	}
 
 
 }
 void	PLAYER::Player_Draw()
 {
-	//ƒ[ƒ‹ƒhs—ñì¬
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ä½œæˆ
 	XMMATRIX	scale = XMMatrixScaling(
 		m_Scaling.x,
 		m_Scaling.y,
@@ -90,16 +100,16 @@ void	PLAYER::Player_Draw()
 		m_Position.z);
 	XMMATRIX	world = scale * rotation * translation;
 
-	//•ÏŠ·s—ñì¬
+	//å¤‰æ›è¡Œåˆ—ä½œæˆ
 	XMMATRIX	view = GetViewMatrix();
 	XMMATRIX	projection = GetProjectionMatrix();
 	XMMATRIX	wvp = world * view * projection;
 
-	//ƒVƒF[ƒ_[‚Ös—ñ‚ğƒZƒbƒg
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 	Shader_SetWorldMatrix(world);
 	Shader_SetMatrix(wvp);
 
-	//ƒ‚ƒfƒ‹‚Ì•`‰æƒŠƒNƒGƒXƒg
+	//ãƒ¢ãƒ‡ãƒ«ã®æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 	switch (m_State)
 	{
 	case PLAYER_STATE::PLAYER_STATE_IDLE:
@@ -117,8 +127,8 @@ void	PLAYER::Player_Draw()
 
 void	PLAYER::Player_Idle()
 {
-	//“®‚¢‚Ä‚¢‚È‚¢‚Ì‘Ò‹@ƒ‚[ƒVƒ‡ƒ“‚ğ“ü‚ê‚Ä‚à‚¢‚¢‚©‚à
-	if (Keyboard_IsKeyDown(KK_W) || //‚¢‚¸‚ê‚©‚ÌˆÚ“®ƒL[‚ğ‰Ÿ‚µ‚½‚çˆÚ“®ó‘Ô‚É
+	//å‹•ã„ã¦ã„ãªã„æ™‚ã®å¾…æ©Ÿãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å…¥ã‚Œã¦ã‚‚ã„ã„ã‹ã‚‚
+	if (Keyboard_IsKeyDown(KK_W) || //ã„ãšã‚Œã‹ã®ç§»å‹•ã‚­ãƒ¼ã‚’æŠ¼ã—ãŸã‚‰ç§»å‹•çŠ¶æ…‹ã«
 		Keyboard_IsKeyDown(KK_A) || 
 		Keyboard_IsKeyDown(KK_S) ||
 		Keyboard_IsKeyDown(KK_D)  )
@@ -131,98 +141,81 @@ void	PLAYER::Player_Idle()
 		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 	}
 
-	//’â~’†‚àd—Í‚Í‚©‚©‚é
+	//åœæ­¢ä¸­ã‚‚é‡åŠ›ã¯ã‹ã‹ã‚‹
 	m_Velocity.y -= PLAYER_GRAVITY; 
 
 	
 }
 
-void	PLAYER::Player_Move()
+void PLAYER::Player_Move()
 {
-	m_Velocity.y -= PLAYER_GRAVITY; //d—Í
+    m_Velocity.y -= PLAYER_GRAVITY;
 
-	if (Keyboard_IsKeyDown(KK_W)) //‘O
-	{
-		m_Velocity.z += PLAYER_ACCELERATION; //­‚µ‚¸‚Â‰Á‘¬
-		//m_Rotation.y = 0.0f;                 //is•ûŒü‚ÉŒü‚­
-	}
-	else if (Keyboard_IsKeyDown(KK_S))  //Œã
-	{
-		m_Velocity.z -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 180.0f;
-	}
-	else
-	{
-		m_Velocity.z = 0.0f; //—£‚µ‚½‚ç‘¦’â~
-	}
+    // ã‚«ãƒ¡ãƒ©ã®æ¨ªã®å‘ãã‚’å–å¾—
+    float camY = XMConvertToRadians(GetCameraYoko());
 
-	if (Keyboard_IsKeyDown(KK_D)) //‰E
-	{
-		m_Velocity.x += PLAYER_ACCELERATION;
-		//m_Rotation.y = 90.0f;
-	}
-	else if (Keyboard_IsKeyDown(KK_A)) //¶
-	{
-		m_Velocity.x -= PLAYER_ACCELERATION;
-		//m_Rotation.y = 270.0f;
-	}
-	else
-	{
-		m_Velocity.x = 0.0f;//—£‚µ‚½‚ç‘¦’â~
-	}
+    // ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½î€ï¿½Ì‘Oï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½
+    XMFLOAT3 forward = XMFLOAT3(sinf(camY), 0.0f, cosf(camY));
 
-	
+    // ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½î€ï¿½Ì‰Eï¿½ï¿½ï¿½ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½
+    XMFLOAT3 right = XMFLOAT3(cosf(camY), 0.0f, -sinf(camY));
 
-	if (m_Velocity.x > PLAYER_SPEEDMAX) //Å‚‘¬“x
+    XMFLOAT3 move = XMFLOAT3(0, 0, 0);
+
+    // WASDã§ç§»å‹•
+    if (Keyboard_IsKeyDown(KK_W)) // å‰
+        move.x -= forward.x, move.z -= forward.z;
+    if (Keyboard_IsKeyDown(KK_S)) // å¾Œ
+        move.x += forward.x, move.z += forward.z;
+    if (Keyboard_IsKeyDown(KK_D)) // å³
+        move.x -= right.x, move.z -= right.z;
+    if (Keyboard_IsKeyDown(KK_A)) // å·¦
+        move.x += right.x, move.z += right.z;
+
+    // æ­£è¦åŒ–
+    float len = sqrtf(move.x * move.x + move.z * move.z);
+    if (len > 0.0f)
+    {
+        move.x /= len;
+        move.z /= len;
+
+        // ç§»å‹•
+        m_Velocity.x = move.x * PLAYER_SPEEDMAX;
+        m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+    }
+    else
+    {
+        // åœæ­¢
+        m_Velocity.x = 0.0f;
+        m_Velocity.z = 0.0f;
+    }
+
+    // ã‚¸ãƒ£ãƒ³ãƒ—
+    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
+        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+
+	// --- é€²è¡Œæ–¹å‘ã«ä½“ã®å‘ãã‚’åˆã‚ã›ã‚‹ ---
+	if (len > 0.0f)
 	{
-		m_Velocity.x = PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.x < -PLAYER_SPEEDMAX) //Å‚‘¬“x
-	{
-		m_Velocity.x = -PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.z > PLAYER_SPEEDMAX) //Å‚‘¬“x
-	{
-		m_Velocity.z = PLAYER_SPEEDMAX;
-	}
-	if (m_Velocity.z < -PLAYER_SPEEDMAX) //Å‚‘¬“x
-	{
-		m_Velocity.z = -PLAYER_SPEEDMAX;
-	}
-	
-	if (Keyboard_IsKeyDownTrigger(KK_SPACE)&& JumpCount == true) //ƒWƒƒƒ“ƒv
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		float angle = atan2f(m_Velocity.x, m_Velocity.z); // â† Yè»¸å›è»¢
+		m_Rotation.y = angle;
 	}
 
-	
+    // åœæ­¢çŠ¶æ…‹ç§»è¡Œ
+    float v2 = m_Velocity.x * m_Velocity.x +
+               m_Velocity.y * m_Velocity.y +
+               m_Velocity.z * m_Velocity.z;
 
-	//m_Velocity.x *= GENSUI;	// ‘¬“x‚ğ“K“–‚ÉŒ¸Š‚·‚é
-	////Velocity.y *= GENSUI;
-	//m_Velocity.z *= GENSUI;
-
-	// Ã~ƒ`ƒFƒbƒN
-	float	len = (m_Velocity.x * m_Velocity.x +
-		m_Velocity.y * m_Velocity.y +
-		m_Velocity.z * m_Velocity.z);
-
-	if (len <= STOP_VELO) // Ã~‚Æ‚İ‚È‚·‘¬“x
-	{
-		g_StopTime++;
-		if (g_StopTime > 60.0f * 2) // 2•bŠÔ‘±‚¢‚Ä‚¢‚é
-		{
-			m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-			m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
-			g_StopTime = 0.0f;
-		}
-	}
-
-	if (m_Position.y < PLAYER_DEATH)
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
-	}
-
-	//float hit = PlayerFieldCollision(); 
+    if (v2 <= STOP_VELO)
+    {
+        g_StopTime++;
+        if (g_StopTime > 60.0f * 2)
+        {
+            m_Velocity = XMFLOAT3(0, 0, 0);
+            m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+            g_StopTime = 0.0f;
+        }
+    }
 }
 
 void   PLAYER::Player_Jump()
@@ -233,7 +226,7 @@ void   PLAYER::Player_Jump()
 		m_Velocity.y += PLAYER_JUMP;
 		JumpCount = false;
 
-		if (Keyboard_IsKeyDown(KK_W) || //‚¢‚¸‚ê‚©‚ÌˆÚ“®ƒL[‚ğ‰Ÿ‚µ‚½‚çˆÚ“®ó‘Ô‚É
+		if (Keyboard_IsKeyDown(KK_W) || //ã„ãšã‚Œã‹ã®ç§»å‹•ã‚­ãƒ¼ã‚’æŠ¼ã—ãŸã‚‰ç§»å‹•çŠ¶æ…‹ã«
 			Keyboard_IsKeyDown(KK_A) ||
 			Keyboard_IsKeyDown(KK_S) ||
 			Keyboard_IsKeyDown(KK_D))
@@ -249,35 +242,35 @@ void   PLAYER::Player_Jump()
 }
 
 
-void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
-{
-
-	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // ”š’e‚ÌˆÊ’uæ“¾
-
-	//”š’e‚ÌSTATEæ“¾
-	BOMB_STATE BombSta = pBomb->BombSource_GetState();
-
-	 //‹——£‚Ì“ñæ‚Å”äŠri‚‘¬j
-	float dx = m_Position.x - BombPos.x;
-	float dy = m_Position.y - BombPos.y;
-	float dz = m_Position.z - BombPos.z;
-
-	float dist2 = dx * dx + dy * dy + dz * dz;
-	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
-
-	if (Keyboard_IsKeyDownTrigger(KK_F))
-	{
-		if (dist2 <= range2)// ‹——£‚ª”ÍˆÍ“à ¨ Às
-		{
-			if (BombSta==BOMB_STATE::BOMB_SAFE)
-			{
-				// ”š’e‚ÌSTATE‚ğ”š’e‚É•Ïgó‘Ô‚É•ÏX
-				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE);
-			}
-		}
-		
-	}
-}
+//void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
+//{
+//
+//	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // çˆ†å¼¾ã®ä½ç½®å–å¾—
+//
+//	//çˆ†å¼¾ã®STATEå–å¾—
+//	BOMB_STATE BombSta = pBomb->BombSource_GetState();
+//
+//	 //è·é›¢ã®äºŒä¹—ã§æ¯”è¼ƒï¼ˆé«˜é€Ÿï¼‰
+//	float dx = m_Position.x - BombPos.x;
+//	float dy = m_Position.y - BombPos.y;
+//	float dz = m_Position.z - BombPos.z;
+//
+//	float dist2 = dx * dx + dy * dy + dz * dz;
+//	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
+//
+//	if (Keyboard_IsKeyDownTrigger(KK_F))
+//	{
+//		if (dist2 <= range2)// è·é›¢ãŒç¯„å›²å†… â†’ å®Ÿè¡Œ
+//		{
+//			if (BombSta==BOMB_STATE::BOMB_ITEM)	
+//			{
+//				// çˆ†å¼¾ã®STATEã‚’çˆ†å¼¾ã«å¤‰èº«çŠ¶æ…‹ã«å¤‰æ›´
+//				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE_HAVE);
+//			}
+//		}
+//		
+//	}
+//}
 
 void    PLAYER::Player_Respawn()
 {

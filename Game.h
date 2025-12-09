@@ -8,6 +8,8 @@
 #include "collision.h"
 #include "camera.h"
 #include "EnemyNormal.h"
+#include "bomb.h"
+#include "Dictionary.h"
 
 class MANAGER;
 
@@ -18,10 +20,12 @@ private:
 	PLAYER m_Player;
 	MAPDATA m_Map;
 	CAMERA m_Camera;
-//	BOMB m_Bomb;
+	BOMB	m_bomb;
 	ENEMY_NORMAL m_EnemyNormal;
 
 	COLLISION collision;
+
+	FIELD_NO m_NowField;
 
 public:
 	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
@@ -29,5 +33,6 @@ public:
 	void Game_Update();
 	void Game_Draw();
 
+	void Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
 
 };

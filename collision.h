@@ -13,6 +13,8 @@ using namespace DirectX;
 #include	"field.h"
 #include	"Ball.h"
 #include	"Enemy.h"
+#include	"EnemyNormal.h"
+#include	"bomb.h"
 
 #include    "player.h"
 
@@ -27,6 +29,7 @@ enum COLLISION_HIT
 	HIT_WALL_1,		// +X
 	HIT_WALL_2,		// +Z
 	HIT_WALL_3,		// -X
+	HIT_WALL_CREAR,		// -X
 
 };
 
@@ -36,4 +39,8 @@ public:
 	float	PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField);
 	float	EnemyFieldCollision(ENEMY* pEnemy, MAPDATA* pField);
 	float	PlayerEnemyCollision(PLAYER* pPlayer, ENEMY* pEnemy);
+	float	PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb);
+	float	BombFieldCollision(BOMB* pBomb, MAPDATA* pField);
+	float	BombEnemyCollision(BOMB* pBomb, ENEMY_NORMAL* pEnemy);
+
 };

@@ -1,15 +1,18 @@
-//#pragma once
+#pragma once
 #ifndef _BOMB_H_
-#define _BONB_H_
+#define _BOMB_H_
 
 
-#include	<d3d11.h>
-#include	<DirectXMath.h>
-#include	"direct3d.h"
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include "direct3d.h"
+#include "sprite.h"
+#include "shader.h"
 using namespace DirectX;
 
 #include	"model.h"
 #include	"bombSource.h"
+#include	"Dictionary.h"
 
 // マクロ定義
 
@@ -24,17 +27,17 @@ private:
 	const int limitTime{ 5 };
 
 
-	BOMBSOURCE	m_bomb[BOMB_NUM_MAX];
+	BOMBSOURCE	m_Bomb[BOMB_NUM_MAX];
 	MODEL*		m_Model[BOMB_MAX] = { NULL };//デバッグ
 
 public:
 
-	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,FIELD_NO no);
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(void);
-	void	Bomb_Update(void);
-
-
+	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	BOMBSOURCE* Bomb_GetBomb();
+	
 };
 
 #endif // !_BOMB_H_

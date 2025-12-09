@@ -20,6 +20,10 @@
 
 #define SAFE_CLOSEHANDLE(h) if(h){CloseHandle(h); h = NULL;}
 
+/////////////////////////////////////////
+static bool gPrevLeftButton = false;
+static bool gPrevRightButton = false;
+/////////////////////////////////////////
 
 static Mouse_State        gState = {};
 static HWND               gWindow = NULL;
@@ -382,3 +386,24 @@ void clipToWindow(void)
     ClipCursor(&rect);
 }
 
+bool Mouse_IsLeftDownTrigger()
+{
+    Mouse_State ms;
+    Mouse_GetState(&ms);
+
+    bool trigger = (ms.leftButton && !gPrevLeftButton);
+    gPrevLeftButton = ms.leftButton;
+
+    return trigger;
+}
+
+bool Mouse_IsRightDownTrigger()
+{
+    Mouse_State ms;
+    Mouse_GetState(&ms);
+
+    bool trigger = (ms.rightButton && !gPrevRightButton);
+    gPrevRightButton = ms.rightButton;
+
+    return trigger;
+}
