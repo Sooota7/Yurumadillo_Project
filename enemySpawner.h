@@ -23,8 +23,10 @@ class ENEMYSPAWNER
 {
 private:
 
-	//5秒後爆発
-	const int limitTime{ 5 };
+	//全滅数
+	int MaxNum;
+
+	int NowKillNum;
 
 	ENEMY_NORMAL	m_Enemy[Enemy_Spawner_MAX];
 	MODEL* m_Model[ENEMY_TYPE_MAX] = { NULL };//デバッグ
@@ -36,6 +38,10 @@ public:
 	void	EnemySpawner_Draw(void);
 	void	EnemySpawner_Update(XMFLOAT3 pPlayerPos);
 	ENEMY_NORMAL* EnemySpawner_GetEnemy();
+
+	int		EnemySpawner_GetEnemyNum();
+	void	EnemySpawner_SetKillNum(int killnum);
+	int		EnemySpawner_GetKillNum();
 
 };
 

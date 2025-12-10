@@ -148,7 +148,24 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 void BOMB::Bomb_Finalize(void)
 {
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bomb[i].BombSource_Finalize();
+	}
 
+	for (int i = 0; i < BOMB_STATE::BOMB_MAX; i++)
+	{
+		if (m_Model[i] != NULL)
+		{
+			ModelRelease(m_Model[i]);
+			m_Model[i] = NULL;
+		}
+
+	}
+
+	SAFE_RELEASE(g_VertexBuffer);
+	SAFE_RELEASE(g_IndexBuffer);
+	SAFE_RELEASE(g_Texture);
 }
 
 void BOMB::Bomb_Draw(void)

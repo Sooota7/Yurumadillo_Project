@@ -72,6 +72,7 @@ void	MANAGER::Manager_Update()
 
 void	MANAGER::Manager_Draw()
 { 
+
 	switch (m_Scene)	//Œ»İƒV[ƒ“‚Ì•`‰æŠÖ”‚ğŒÄ‚Ño‚·
 	{
 		case SCENE_NONE:

@@ -13,7 +13,7 @@ static ID3D11Buffer* g_IndexBuffer = NULL;
 //テクスチャ変数
 static ID3D11ShaderResourceView* g_Texture;
 
-
+//マップ１
 int GetEnemy(int x, int y, int z)
 {
 	switch (z)
@@ -36,6 +36,8 @@ int GetEnemy(int x, int y, int z)
 
 
 }
+
+//マップ２
 int GetEnemy2(int x, int y, int z)
 {
 	switch (z)
@@ -58,6 +60,8 @@ int GetEnemy2(int x, int y, int z)
 
 
 }
+
+//セットするマップ判別
 int CheckEnemy(int x, int y, int z, FIELD_NO no)
 {
 	switch (no)
@@ -92,11 +96,15 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);
 
-	for (int i = 0; i > Enemy_Spawner_MAX; i++)
+	//初期化
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		m_Enemy[i].Initialize(g_pDevice, g_pContext);
+		m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE::ENEMY_TYPE_NONE);
 	}
 
+
+	//マップのセット
 	int a = 0;
 
 	for (int q = 0; q < 3; q++)
@@ -113,10 +121,12 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 				case 6:
 					m_Enemy[a].SetEnemyPosition(XMFLOAT3(l, q, i));
 					m_Enemy[a].SetEnemyNormalType(ENEMY_TYPE_NORMAL);
+					a++;
+					MaxNum++;
 					break;
 				}
 
-				a++;
+				
 			}
 		}
 	}
@@ -125,7 +135,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	//ブロックの作成
 	for (int i = 0; i < ENEMY_TYPE_MAX; i++)
 	{
-		switch (m_Enemy[i].GetEnemyNormalType())
+		switch (i)
 		{
 		case ENEMY_TYPE_NONE:
 			break;
@@ -138,6 +148,11 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 			break;
 		}
 	}
+
+	int MaxNum = 0;
+
+	int NowKillNum = 0;
+
 }
 
 void ENEMYSPAWNER::EnemySpawner_Finalize(void)
@@ -177,75 +192,81 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 	static float rot = 0.0f;
 	rot -= 0.5f;
 
-	for(int i = 0; i> Enemy_Spawner_MAX;i++)
+	for(int i = 0; i< Enemy_Spawner_MAX;i++)
 	{
-		XMFLOAT3 mapPos = m_Enemy[i].GetEnemyPosition();
-
-		//スケーリング行列の作成
-		XMMATRIX	ScalingMatrix = XMMatrixScaling
-		(
-			1.0f,
-			1.0f,
-			1.0f
-		);
-		//平行移動行列の作成
-		XMMATRIX	TranslationMatrix = XMMatrixTranslation
-		(
-			mapPos.x,
-			mapPos.y,
-			mapPos.z
-		);
-
-		//回転行列の作成
-		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
-		(
-			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
-			XMConvertToRadians(0.0f),
-			XMConvertToRadians(0.0f)
-		);
-		//ワールド行列の作成
-		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//最終的な変換行列を作成
-		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXへ行列をセット
-		Shader_SetMatrix(WVP);
-
-		//テクスチャをセット
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
-
-		//頂点バッファをセット
-		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
-		UINT	offset = 0;
-		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
-
-		//インデックスバッファをセット
-		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
-		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		//描画リクエスト
-		switch (m_Enemy[i].GetEnemyNormalType())
+		//死亡、存在しない場合書かない
+		if (m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE&&
+			m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
-		case ENEMY_NORMAL_STATE_IDLE:
-			ModelDraw(m_Model[i]);
-			break;
-		case ENEMY_NORMAL_STATE_MOVE:
-			ModelDraw(m_Model[i]);
-			break;
-		case ENEMY_NORMAL_STATE_DIRECTION:
-			ModelDraw(m_Model[i]);
-			break;
-		case ENEMY_NORMAL_STATE_JUMP:
-			ModelDraw(m_Model[i]);
-			break;
-		case ENEMY_NORMAL_STATE_DEAD:
+			XMFLOAT3 mapPos = m_Enemy[i].GetEnemyPosition();
 
-			break;
-		default:
-			break;
+			//スケーリング行列の作成
+			XMMATRIX	ScalingMatrix = XMMatrixScaling
+			(
+				1.0f,
+				1.0f,
+				1.0f
+			);
+			//平行移動行列の作成
+			XMMATRIX	TranslationMatrix = XMMatrixTranslation
+			(
+				mapPos.x,
+				mapPos.y,
+				mapPos.z
+			);
+
+			//回転行列の作成
+			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+			(
+				XMConvertToRadians(0.0f),
+				//XMConvertToRadians(rot),
+				//XMConvertToRadians(rot),
+				XMConvertToRadians(0.0f),
+				XMConvertToRadians(0.0f)
+			);
+			//ワールド行列の作成
+			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+			//最終的な変換行列を作成
+			XMMATRIX WVP = World * VP;//(VP = View*Projection)
+			//DirectXへ行列をセット
+			Shader_SetMatrix(WVP);
+
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+			//頂点バッファをセット
+			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			UINT	offset = 0;
+			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+			//インデックスバッファをセット
+			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			//描画リクエスト
+			//モデル一個しかないから追加するときに変える
+			switch (m_Enemy[i].GetEnemyNormalState())
+			{
+			case ENEMY_NORMAL_STATE_IDLE:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
+			case ENEMY_NORMAL_STATE_MOVE:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
+			case ENEMY_NORMAL_STATE_DIRECTION:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
+			case ENEMY_NORMAL_STATE_JUMP:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
+			case ENEMY_NORMAL_STATE_DEAD:
+				
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -253,7 +274,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 {
-	for (int i = 0; i > Enemy_Spawner_MAX; i++)
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		switch (m_Enemy[i].GetEnemyNormalType())
 		{
@@ -262,11 +283,18 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 		case ENEMY_TYPE_NORMAL:
 			m_Enemy[i].Update(pPlayerPos);
 			break;
+		case ENEMY_TYPE_DEAD:
+			EnemySpawner_SetKillNum(1);						//死んだらカウントする
+			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE_NONE);	//存在を消す
+			break;
 		case ENEMY_TYPE_MAX:
 			break;
 		default:
 			break;
 		}
+
+		
+
 	}
 	
 }
@@ -274,4 +302,22 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 ENEMY_NORMAL* ENEMYSPAWNER::EnemySpawner_GetEnemy()
 {
 	return m_Enemy;
+}
+
+//配置した数、倒すべき敵の数
+int ENEMYSPAWNER::EnemySpawner_GetEnemyNum()
+{
+	return MaxNum;
+}
+
+//倒した数をカウント、今のところ１のみ
+void ENEMYSPAWNER::EnemySpawner_SetKillNum(int killnum)
+{
+	NowKillNum += killnum;
+}
+
+//現在倒した敵の合計数を返す
+int ENEMYSPAWNER::EnemySpawner_GetKillNum()
+{
+	return NowKillNum;
 }

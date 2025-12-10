@@ -23,8 +23,8 @@
 #include "mouse.h"
 
 ///////////////////////////////////////////
-#define		SCREEN_WIDTH	(1980)
-#define		SCREEN_HEIGHT	(1080)
+#define		SCREEN_WIDTH	(1080)
+#define		SCREEN_HEIGHT	(720)
 
 
 //==================================
