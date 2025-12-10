@@ -111,6 +111,7 @@ void	MANAGER::SetScene(SCENE scene) //ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚é
 			if (scene != SCENE_PAUSE)
 			{
 				m_Game.Game_Finalize();
+				m_GameInitialized = false;
 			}
 		break;		
 		case SCENE_PAUSE:
