@@ -7,7 +7,7 @@
 #include "Ball.h"
 #include "collision.h"
 #include "camera.h"
-#include "EnemyNormal.h"
+#include "enemySpawner.h"
 #include "bomb.h"
 #include "Dictionary.h"
 
@@ -21,7 +21,7 @@ private:
 	MAPDATA m_Map;
 	CAMERA m_Camera;
 	BOMB	m_bomb;
-	ENEMY_NORMAL m_EnemyNormal;
+	ENEMYSPAWNER m_EnemyNormal;
 
 	COLLISION collision;
 

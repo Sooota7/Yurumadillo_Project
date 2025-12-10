@@ -35,6 +35,7 @@ private:
 	ENEMY_NORMAL_STATE m_State;		// 状態
 	int m_FrameCnt;					// フレームカウント
 	XMFLOAT3	m_ChasePos;			// 追跡する相手
+	ENEMY_TYPE  m_Type;
 
 private:
 	void	Enemy_Normal_Idle();
@@ -54,4 +55,7 @@ public:
 
 	void SetEnemyNormalState(ENEMY_NORMAL_STATE state) { m_State = state; };
 	ENEMY_NORMAL_STATE GetEnemyNormalState() { return m_State; };
+
+	void SetEnemyNormalType(ENEMY_TYPE type) { m_Type = type; };
+	ENEMY_TYPE GetEnemyNormalType() { return m_Type; };
 };
