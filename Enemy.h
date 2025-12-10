@@ -14,6 +14,20 @@ using namespace DirectX;
 
 #include	"model.h"
 
+enum ENEMY_TYPE
+{
+	ENEMY_TYPE_NONE = 0,
+
+	ENEMY_TYPE_NORMAL,
+
+	ENEMY_TYPE_DEAD,
+
+	ENEMY_TYPE_MAX
+};
+
+//—‰º‚Ì’êA€‚Êƒ‰ƒCƒ“
+#define	FALL_MAX (-3)
+
 class ENEMY
 {
 protected:

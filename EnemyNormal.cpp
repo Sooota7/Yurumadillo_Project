@@ -18,7 +18,7 @@ void	ENEMY_NORMAL::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	m_Model = ModelLoad("asset\\model\\test.fbx");
+	//m_Model = ModelLoad("asset\\model\\test.fbx");
 
 	SetEnemyPosition(XMFLOAT3(1.0f, 4.0f, 7.0f));
 	SetEnemyRotation(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -65,56 +65,17 @@ void	ENEMY_NORMAL::Update(XMFLOAT3 chasePos)
 	default:
 		break;
 	}
+	
+	if (m_Position.y < FALL_MAX)
+	{
+		SetEnemyNormalState(ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DEAD);
+	}
+
 }
 
 void	ENEMY_NORMAL::Draw()
 {
-	//ワールド行列作成
-	XMMATRIX	scale = XMMatrixScaling(
-		m_Scaling.x,
-		m_Scaling.y,
-		m_Scaling.z);
-	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
-		m_Rotation.x,
-		m_Rotation.y,
-		m_Rotation.z);
-	XMMATRIX	translation = XMMatrixTranslation(
-		m_Position.x,
-		m_Position.y,
-		m_Position.z);
-	XMMATRIX	world = scale * rotation * translation;
-
-	//変換行列作成
-	XMMATRIX	view = GetViewMatrix();
-	XMMATRIX	projection = GetProjectionMatrix();
-	XMMATRIX	wvp = world * view * projection;
-
-	//シェーダーへ行列をセット
-	Shader_SetWorldMatrix(world);
-	Shader_SetMatrix(wvp);
-
-	//モデルの描画リクエスト
-	//ModelDraw(m_Model);
-	switch (m_State)
-	{
-	case ENEMY_NORMAL_STATE_IDLE:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_MOVE:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_DIRECTION:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_JUMP:
-		ModelDraw(m_Model);
-		break;
-	case ENEMY_NORMAL_STATE_DEAD:
-		
-		break;
-	default:
-		break;
-	}
+	//ドローはスポナーで行う
 }
 
 void	ENEMY_NORMAL::Enemy_Normal_Idle()
@@ -209,5 +170,6 @@ void	ENEMY_NORMAL::Enemy_Normal_Jump()
 
 void	ENEMY_NORMAL::Enemy_Normal_Dead()
 {
-	delete this;
+	////delete this;
+	m_Type = (ENEMY_TYPE_DEAD);//deleteだとスローするのでタイプで表示を無効化する。処理が重たくなるかも
 }
