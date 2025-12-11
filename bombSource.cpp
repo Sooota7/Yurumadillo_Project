@@ -14,6 +14,7 @@ void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 
 void BOMBSOURCE::BombSource_Finalize(void)
 {
+	
 }
 
 
