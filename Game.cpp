@@ -96,6 +96,24 @@ void GAME::Game_Update()
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 
 
+	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
+	{
+		if (m_NowField == FIELD_NO::NO_1)
+		{
+			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
+			m_NowField = FIELD_NO::NO_2;
+		}
+		else if (m_NowField == FIELD_NO::NO_2)
+		{
+			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
+			m_NowField = FIELD_NO::NO_1;
+		}
+	}
+	
+	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
+	{
+		m_Manager->SetScene(SCENE_PAUSE);
+	}
 
 	collision.PlayerFieldCollision(&m_Player, &m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);

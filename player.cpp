@@ -31,6 +31,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
 
+	m_Hp = PLAYER_HP;
 	JumpCount = true;
 
 	g_StopTime = 0.0f;
@@ -38,17 +39,12 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 }
 void	PLAYER::Player_Finalize()
 {
-
-
 	ModelRelease(m_Model[0]);
 	ModelRelease(m_Model[1]);
 
 }
 void	PLAYER::Player_Update()
 {
-	
-
-
 	switch (m_State)
 	{
 	case PLAYER_STATE::PLAYER_STATE_IDLE:
@@ -63,6 +59,9 @@ void	PLAYER::Player_Update()
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
 		break;
+	case PLAYER_STATE::PLAYER_STATE_DEATH:
+		Player_Death();
+		break;
 	}
 	
 	if (m_Velocity.y < PLAYER_FALLMAX)
@@ -75,12 +74,20 @@ void	PLAYER::Player_Update()
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 	
+	if (Keyboard_IsKeyDownTrigger(KK_ENTER))
+	{
+		m_Hp-=20.0f;
+	}
 
-	if (m_Position.y < PLAYER_DEATH)
+	if (m_Position.y < PLAYER_RESPAWN)
 	{
 		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
 	}
 
+	if (m_Hp < 0.0f)
+	{
+		m_State = PLAYER_STATE::PLAYER_STATE_DEATH;
+	}
 
 }
 void	PLAYER::Player_Draw()
@@ -242,35 +249,7 @@ void   PLAYER::Player_Jump()
 }
 
 
-//void   PLAYER:: Player_BombMagic(BOMBSOURCE* pBomb)
-//{
-//
-//	XMFLOAT3 BombPos = pBomb->BombSource_GetPosition();  // 爆弾の位置取得
-//
-//	//爆弾のSTATE取得
-//	BOMB_STATE BombSta = pBomb->BombSource_GetState();
-//
-//	 //距離の二乗で比較（高速）
-//	float dx = m_Position.x - BombPos.x;
-//	float dy = m_Position.y - BombPos.y;
-//	float dz = m_Position.z - BombPos.z;
-//
-//	float dist2 = dx * dx + dy * dy + dz * dz;
-//	float range2 = PLAYER_MAGICRANGE * PLAYER_MAGICRANGE;
-//
-//	if (Keyboard_IsKeyDownTrigger(KK_F))
-//	{
-//		if (dist2 <= range2)// 距離が範囲内 → 実行
-//		{
-//			if (BombSta==BOMB_STATE::BOMB_ITEM)	
-//			{
-//				// 爆弾のSTATEを爆弾に変身状態に変更
-//				pBomb->BombSource_SetState(BOMB_STATE::BOMB_ACTIVE_HAVE);
-//			}
-//		}
-//		
-//	}
-//}
+
 
 void    PLAYER::Player_Respawn()
 {
@@ -281,6 +260,11 @@ void    PLAYER::Player_Respawn()
 
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+	
+}
+
+void PLAYER::Player_Death()
+{
 	
 }
 
