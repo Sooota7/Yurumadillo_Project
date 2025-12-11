@@ -108,6 +108,11 @@ void GAME::Game_Update()
 			m_NowField = FIELD_NO::NO_1;
 		}
 	}
+	
+	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
+	{
+		m_Manager->SetScene(SCENE_PAUSE);
+	}
 
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);

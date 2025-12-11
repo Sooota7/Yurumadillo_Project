@@ -18,42 +18,44 @@ using namespace DirectX;
 #define PLAYER_GRAVITY (0.01f)       //重力
 #define PLAYER_JUMP (0.25f)           //ジャンプ力
 #define PLAYER_FALLMAX (-0.2f)        //落下最高速度
-#define PLAYER_DEATH (-3.0f)         //これ以上下に行くと死
+#define PLAYER_RESPAWN (-3.0f)         //これ以上下に行くと死
 #define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
+#define PLAYER_HP (100.0f)			 //HP
 
 //繝懊・繝ｫ縺ｮ迥ｶ諷・
 enum PLAYER_STATE
 {
-	PLAYER_STATE_IDLE = 0,	//菴輔ｂ縺励↑縺・
-	PLAYER_STATE_MOVE,		//遘ｻ蜍・
-	PLAYER_STATE_JUMP,
-	PLAYER_STATE_RESPAWN,   //繝ｪ繧ｹ繝昴・繝ｳ
-	
+	PLAYER_STATE_IDLE = 0,	//通常
+	PLAYER_STATE_MOVE,		//ムーブ
+	PLAYER_STATE_JUMP,		//ジャンプ
+	PLAYER_STATE_RESPAWN,   //リスポーン
+	PLAYER_STATE_DEATH,		//死
 };
 
 //繝懊・繝ｫ讒矩菴・
 class PLAYER
 {
 private:
-	XMFLOAT3	m_Position;	//陦ｨ遉ｺ蠎ｧ讓・
-	XMFLOAT3	m_Rotation;	//蝗櫁ｻ｢隗・
-	XMFLOAT3	m_Scaling;	//諡｡螟ｧ邇・
-	XMFLOAT3	m_Velocity;	//騾溷ｺｦ
-	XMFLOAT3	m_Acceleration;	// 關ｽ荳矩溷ｺｦ
+	XMFLOAT3	m_Position;	//ポジション
+	XMFLOAT3	m_Rotation;	//回転
+	XMFLOAT3	m_Scaling;	//大きさ
+	XMFLOAT3	m_Velocity;	//進行方向
+	XMFLOAT3	m_Acceleration;	// 加速
 
-	PLAYER_STATE	m_State;		//迥ｶ諷・
-	MODEL* m_Model[2];		//繝｢繝・Ν繝・・繧ｿ
+	PLAYER_STATE	m_State;		//ステート
+	MODEL* m_Model[2];		//モデル
 
 	 BOMBSOURCE* m_Bomb;
 
 	 bool JumpCount;
+	 float m_Hp;
 
 private:
 	void	Player_Idle();
 	void	Player_Move();
 	void    Player_Jump();
-	void    Player_BombMagic(BOMBSOURCE* pBomb);
 	void    Player_Respawn();
+	void    Player_Death();
 
 public:
 	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -75,6 +77,11 @@ public:
 
 	void SetPlayerJump(bool jump) { JumpCount = jump; };
 	BOOL GetPlayerJump() { return JumpCount; };
+
+	void SetPlayerHp(float hp ) { m_Hp = hp; };
+	FLOAT GetPlayerHp() { return m_Hp; };
+
+	PLAYER_STATE GetPlayerState() { return m_State; };
 
 	PLAYER* GetPlayer();
 };
