@@ -3,6 +3,7 @@
 
 #include	"fade.h"
 #include	"shader.h"
+#include	"Manager.h"
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
@@ -28,7 +29,7 @@ void FadeObject::Fade_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	fadecolor.w = 1.0f;
 	frame = 60.0f;	//60フレームでフェード完了
 	state = FADE_STATE::FADE_NONE;
-
+	scene = SCENE_TITLE;
 
 
 }
