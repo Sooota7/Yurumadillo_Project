@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="billboard.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="bombSource.cpp" />
@@ -164,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="billboard.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="bombSource.h" />
