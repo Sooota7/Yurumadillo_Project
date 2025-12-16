@@ -159,9 +159,9 @@ void TUTORIAL::Tutorial_Draw()
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
-	m_Player.Player_Draw();
+	m_Player.Player_Draw(&m_BillboardManager);
 	m_Map.Field_Draw();
-	m_Player.Player_Draw();
+	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
 
