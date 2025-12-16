@@ -27,7 +27,7 @@ void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 		{
 		case BILLBOARD_TEXTURE::TEST:
 			// テクスチャ読み込み（テスト）
-			LoadFromWICFile(L"Asset\\Texture\\Heart.png", WIC_FLAGS_NONE, &metadata, image);
+			LoadFromWICFile(L"Asset\\Texture\\Diamond.png", WIC_FLAGS_NONE, &metadata, image);
 			CreateShaderResourceView(pDevice, image.GetImages(),
 				image.GetImageCount(), metadata, &m_pSRV[i]);
 			assert(m_pSRV[i]);
@@ -47,7 +47,11 @@ void BillboardManager::Finalize()
 
 	for (int i = 0; i < BILLBOARD_MAX; ++i)
 	{
-		if (m_pBillboard[i]) m_pBillboard[i] = nullptr; 
+		if (m_pBillboard[i])
+		{
+			delete m_pBillboard[i];
+			m_pBillboard[i] = nullptr;
+		}
 	}
 
 
@@ -72,11 +76,17 @@ void BillboardManager::Draw()
 			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::TEST]);
 			break;
 		default:
+			delete m_pBillboard[i];
+			m_pBillboard[i] = nullptr;
 			continue;
 		}
+
 		// 描画
 		m_pBillboard[i]->Billboard_Draw();
 
+		// 削除
+		delete m_pBillboard[i];
+		m_pBillboard[i] = nullptr;
 	}
 
 	m_Count = 0;

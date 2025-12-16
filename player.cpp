@@ -8,7 +8,7 @@
 #include	"collision.h"
 
 #include	"billboard.h"
-#include	"billboardManager.h"
+
 //ボールオブジェクト
 
 ID3D11Device* g_pDevice;
@@ -44,7 +44,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//テクスチャ画像読み込み
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\heart.png",
+	LoadFromWICFile(L"asset\\texture\\diamond.png",
 		WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
 	CreateShaderResourceView(g_pDevice, image.GetImages(),
 		image.GetImageCount(), metadata, &g_Texture);
@@ -148,7 +148,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		XMFLOAT3 pos = m_Position;
 		pos.y += 1.0f;
 		XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
-		XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+		XMFLOAT4 col = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
 		int bno = 1;
 		int wc = 1;
 		int hc = 1;
