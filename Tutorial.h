@@ -10,6 +10,7 @@
 #include "enemySpawner.h"
 #include "bomb.h"
 #include "Dictionary.h"
+#include "billboardManager.h"
 
 class MANAGER;
 
@@ -27,6 +28,7 @@ private:
 
 	FIELD_NO m_NowField;
 
+	BillboardManager m_BillboardManager;
 public:
 	void Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Tutorial_Finalize();
