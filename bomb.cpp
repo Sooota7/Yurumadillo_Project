@@ -66,6 +66,31 @@ int GetBomb2(int x, int y, int z)
 
 
 }
+
+int GetBomb3(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return tutorial_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckBomb(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -77,6 +102,9 @@ int CheckBomb(int x, int y, int z,FIELD_NO no)
 		break;
 	case NO_2:
 		return GetBomb2(x, y, z);
+		break;
+	case NO_3:
+		return GetBomb3(x, y, z);
 		break;
 	default:
 		break;
