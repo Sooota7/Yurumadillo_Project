@@ -22,7 +22,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 
-	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
+	m_Position = XMFLOAT3(7.0f, 8.0f, 5.0f);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
