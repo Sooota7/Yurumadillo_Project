@@ -194,6 +194,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_BillboardManager.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -203,5 +204,6 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_BillboardManager.Initialize(pDevice, pContext);
 }
 

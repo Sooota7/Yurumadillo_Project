@@ -45,7 +45,8 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	m_Manager = manager;
 
-	
+	m_BillboardManager.Initialize(pDevice, pContext);
+
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
 	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
@@ -80,6 +81,8 @@ void TUTORIAL::Tutorial_Finalize()
 	//Effect_Finalize();
 	//Score_Finalize();
 	//Polygon3D_Finalize();
+	m_BillboardManager.Finalize();
+
 	Camera_Finalize();	//カメラ終了処理
 
 	UnloadAudio(g_BgmID);//サウンドの解放
@@ -170,7 +173,7 @@ void TUTORIAL::Tutorial_Draw()
 	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(FALSE);
 
-
+	m_BillboardManager.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -187,6 +190,7 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_BillboardManager.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -196,5 +200,6 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_BillboardManager.Initialize(pDevice, pContext);
 }
 
