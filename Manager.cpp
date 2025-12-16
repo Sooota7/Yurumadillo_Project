@@ -72,6 +72,7 @@ void	MANAGER::Manager_Update()
 
 void	MANAGER::Manager_Draw()
 { 
+
 	switch (m_Scene)	//現在シーンの描画関数を呼び出す
 	{
 		case SCENE_NONE:
@@ -110,6 +111,7 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			if (scene != SCENE_PAUSE)
 			{
 				m_Game.Game_Finalize();
+				m_GameInitialized = false;
 			}
 		break;		
 		case SCENE_PAUSE:

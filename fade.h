@@ -33,6 +33,7 @@ public:
 
 	void	Fade_SetFade(int fadeframe, XMFLOAT4 color, FADE_STATE sta, SCENE sce);
 	SCENE	Fade_GetScene() { return scene; };
+	void	Fade_SetScene(SCENE sce) { scene = sce; };
 	
 	float Fade_GetColorW() { return fadecolor.w; };
 
