@@ -257,6 +257,9 @@ enum SCENE
 {
 	SCENE_NONE = 0,		//何もなし
 	SCENE_TITLE,		//タイトルシーン
+	SCENE_PROLOGUE,		//プロローグシーン
+	SCENE_MENU,			//メニューシーン
+	SCENE_TUTORIAL,		//チュートリアルシーン
 	SCENE_GAME,			//ゲームシーン
 	SCENE_PAUSE,		//ポーズシーン
 	SCENE_RESULT,		//リザルトルシーン
