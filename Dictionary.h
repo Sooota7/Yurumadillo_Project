@@ -185,3 +185,9 @@ enum SCENE
 	SCENE_PAUSE,		//ポーズシーン
 	SCENE_RESULT,		//リザルトルシーン
 };
+
+enum BILLBOARD_TEXTURE
+{
+	TEST = 0,
+	MAX,
+};

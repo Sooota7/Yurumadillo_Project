@@ -18,6 +18,8 @@
 
 #include "Ball.h"
 
+#include "billboard.h"
+
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
 LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
@@ -35,6 +37,8 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
+
+	m_BillboardManager.Initialize(pDevice, pContext);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -82,6 +86,8 @@ void GAME::Game_Finalize()
 	//Polygon3D_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
+	m_BillboardManager.Finalize();
+
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
@@ -95,6 +101,7 @@ void GAME::Game_Update()
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 
+	
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
@@ -159,9 +166,9 @@ void GAME::Game_Draw()
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
-	m_Player.Player_Draw();
+
 	m_Map.Field_Draw();
-	m_Player.Player_Draw();
+	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
 
@@ -170,7 +177,7 @@ void GAME::Game_Draw()
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(FALSE);
 
-
+	m_BillboardManager.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();

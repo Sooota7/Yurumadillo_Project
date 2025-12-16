@@ -1,9 +1,17 @@
+// ============================================================================
+// 
+// billboard.cpp             制作者: 杉森奏太
+// 日付: 12/16
+//
+// ============================================================================
+
+
 #include "billboard.h"
 #include "Camera.h"
 #include "shader.h"
 
 //グローバル変数
-static constexpr int NUM_VERTEX = 6; // 使用できる最大頂点数
+
 static ID3D11Buffer* g_pVertexBuffer = nullptr; // 頂点バッファ
 // 注意！初期化で外部から設定されるもの。Release不要。
 static ID3D11Device* g_pDevice = nullptr;

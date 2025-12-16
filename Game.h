@@ -10,7 +10,7 @@
 #include "enemySpawner.h"
 #include "bomb.h"
 #include "Dictionary.h"
-
+#include "billboardManager.h"
 class MANAGER;
 
 class GAME
@@ -26,6 +26,8 @@ private:
 	COLLISION collision;
 
 	FIELD_NO m_NowField;
+
+	BillboardManager m_BillboardManager;
 
 public:
 	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
