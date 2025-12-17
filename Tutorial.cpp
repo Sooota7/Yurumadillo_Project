@@ -28,7 +28,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_1;
+	m_NowField = FIELD_NO::NO_3;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -98,15 +98,20 @@ void TUTORIAL::Tutorial_Update()
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
-		if (m_NowField == FIELD_NO::NO_1)
+		if (m_NowField == FIELD_NO::NO_3)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
+			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
+			m_NowField = FIELD_NO::NO_4;
 		}
-		else if (m_NowField == FIELD_NO::NO_2)
+		else if (m_NowField == FIELD_NO::NO_4)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_NowField = FIELD_NO::NO_1;
+			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
+			m_NowField = FIELD_NO::NO_5;
+		}
+		else if (m_NowField == FIELD_NO::NO_5)
+		{
+			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_3);
+			m_NowField = FIELD_NO::NO_3;
 		}
 	}
 	
@@ -121,6 +126,7 @@ void TUTORIAL::Tutorial_Update()
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
+	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -138,16 +144,21 @@ void TUTORIAL::Tutorial_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_NowField == FIELD_NO::NO_1)
+		if (m_NowField == FIELD_NO::NO_3)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
+			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
+			m_NowField = FIELD_NO::NO_4;
 		}
-		else if (m_NowField == FIELD_NO::NO_2)
+		else if (m_NowField == FIELD_NO::NO_4)
+		{
+			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
+			m_NowField = FIELD_NO::NO_5;
+		}
+		else if (m_NowField == FIELD_NO::NO_5)
 		{
 			//Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
 			m_Manager->SetScene(SCENE_GAME);
-			m_NowField = FIELD_NO::NO_1;
+			m_NowField = FIELD_NO::NO_3;
 		}
 	}
 }

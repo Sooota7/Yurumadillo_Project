@@ -93,6 +93,55 @@ int GetMap3(int x, int y, int z)
 
 }
 
+int GetMap4(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_balloon_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_balloon_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return tutorial_balloon_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+int GetMap5(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_mouse_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_mouse_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return tutorial_mouse_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckMap(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -107,6 +156,12 @@ int CheckMap(int x, int y, int z,FIELD_NO no)
 		break;
 	case NO_3:
 		return GetMap3(x, y, z);
+		break;
+	case NO_4:
+		return GetMap4(x, y, z);
+		break;
+	case NO_5:
+		return GetMap4(x, y, z);
 		break;
 	default:
 		break;

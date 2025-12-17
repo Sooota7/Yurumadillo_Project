@@ -661,3 +661,71 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 	}
 	return hit;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////
+// 要修正
+////////////////////////////////////////////////////////////////////////////////////
+float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
+{
+	float		hit = 0.0f;				// ヒットした方向
+	//BALL*		Ball = GetBall();		// ボールの情報
+
+	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
+	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
+
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//スローのときのみ当たり判定を取る
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			for (int i = 0; i < Enemy_Spawner_MAX; i++)
+			{
+
+				if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+				{//エネミーが存在するとき
+
+					XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
+					XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
+
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = EnemyPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > EnemyPos.x &&
+						BombPos.x - 1 < EnemyPos.x)
+					{
+						if (BombPos.y + 1 > EnemyPos.y &&
+							BombPos.y - 1 < EnemyPos.y)
+						{
+							if (BombPos.z + 1 > EnemyPos.z &&
+								BombPos.z - 1 < EnemyPos.z)
+							{
+								test = true;//当たった
+							}
+						}
+					}
+
+					//ボムのステートを爆発に変更
+					if (test)
+					{
+						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+						test = false;
+
+					}
+
+				}
+			}
+		}
+	}
+	return hit;
+}

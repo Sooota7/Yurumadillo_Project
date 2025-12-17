@@ -8,9 +8,8 @@
 using namespace DirectX;
 
 #include	"model.h"
-#include    "bombSource.h"
 
-#define PLAYER_SPEEDMAX (0.05f)      //譛鬮倬溷ｺｦ
+#define PLAYER_SPEEDMAX (0.05f)      //スピードマックス
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
@@ -21,18 +20,21 @@ using namespace DirectX;
 #define PLAYER_RESPAWN (-3.0f)         //これ以上下に行くと死
 #define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
 #define PLAYER_HP (100.0f)			 //HP
+#define PLAYER_BALLOON_SPEED (0.1)        //風船の上昇速度
+#define PLAYER_BALLOON_FALLSPEED (-0.05f)   //風船の下降速度
 
-//繝懊・繝ｫ縺ｮ迥ｶ諷・
+//プレイヤーのステート
 enum PLAYER_STATE
 {
 	PLAYER_STATE_IDLE = 0,	//通常
 	PLAYER_STATE_MOVE,		//ムーブ
 	PLAYER_STATE_JUMP,		//ジャンプ
+	PLAYER_STATE_BALLOON,	//風船持ってる
 	PLAYER_STATE_RESPAWN,   //リスポーン
 	PLAYER_STATE_DEATH,		//死
 };
 
-//繝懊・繝ｫ讒矩菴・
+//プレイヤーのクラス
 class PLAYER
 {
 private:
@@ -45,15 +47,18 @@ private:
 	PLAYER_STATE	m_State;		//ステート
 	MODEL* m_Model[2];		//モデル
 
-	 BOMBSOURCE* m_Bomb;
 
 	 bool JumpCount;
 	 float m_Hp;
+	 bool BalloonFlag;
+	 bool BalloomUp;
+	 bool BalloomNow;
 
 private:
 	void	Player_Idle();
 	void	Player_Move();
 	void    Player_Jump();
+	void    Player_Balloon();
 	void    Player_Respawn();
 	void    Player_Death();
 
@@ -77,6 +82,9 @@ public:
 
 	void SetPlayerJump(bool jump) { JumpCount = jump; };
 	BOOL GetPlayerJump() { return JumpCount; };
+
+	void SetPlayerBalloon(bool balloon) { BalloonFlag = balloon; };
+	BOOL GetPlayerBallon() { return BalloonFlag; };
 
 	void SetPlayerHp(float hp ) { m_Hp = hp; };
 	FLOAT GetPlayerHp() { return m_Hp; };

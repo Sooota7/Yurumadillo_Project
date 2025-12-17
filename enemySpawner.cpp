@@ -61,6 +61,74 @@ int GetEnemy2(int x, int y, int z)
 
 }
 
+//マップ3
+int GetEnemy3(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_pos_nor[y][x];
+
+		break;
+	case(2):
+		return tutorial_pos_high[y][x];
+
+		break;
+	default:
+		break;
+	}
+}
+
+
+//マップ4
+int GetEnemy4(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_balloon_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_balloon_pos_nor[y][x];
+
+		break;
+	case(2):
+		return tutorial_balloon_pos_high[y][x];
+
+		break;
+	default:
+		break;
+	}
+}
+
+
+//マップ5
+int GetEnemy5(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_mouse_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_mouse_pos_nor[y][x];
+
+		break;
+	case(2):
+		return tutorial_mouse_pos_high[y][x];
+
+		break;
+	default:
+		break;
+	}
+}
+
 //セットするマップ判別
 int CheckEnemy(int x, int y, int z, FIELD_NO no)
 {
@@ -73,6 +141,15 @@ int CheckEnemy(int x, int y, int z, FIELD_NO no)
 		break;
 	case NO_2:
 		return GetEnemy2(x, y, z);
+		break;
+	case NO_3:
+		return GetEnemy3(x, y, z);
+		break;
+	case NO_4:
+		return GetEnemy4(x, y, z);
+		break;
+	case NO_5:
+		return GetEnemy5(x, y, z);
 		break;
 	default:
 		break;

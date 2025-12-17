@@ -22,7 +22,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 
-	m_Position = XMFLOAT3(7.0f, 8.0f, 5.0f);
+	m_Position = XMFLOAT3(7.0f, 8.0f, 0.0f);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -33,7 +33,9 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	m_Hp = PLAYER_HP;
 	JumpCount = true;
-
+	BalloonFlag = false;
+	BalloomUp = false;
+	BalloomNow = false;
 	g_StopTime = 0.0f;
 
 }
@@ -55,6 +57,9 @@ void	PLAYER::Player_Update()
 		break;
 	case PLAYER_STATE::PLAYER_STATE_JUMP :
 		Player_Jump();
+		break;
+	case PLAYER_STATE::PLAYER_STATE_BALLOON :
+		Player_Balloon();
 		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
@@ -123,6 +128,9 @@ void	PLAYER::Player_Draw()
 		ModelDraw(m_Model[0]);
 		break;
 	case PLAYER_STATE::PLAYER_STATE_MOVE:
+		ModelDraw(m_Model[0]);
+		break;
+	case PLAYER_STATE::PLAYER_STATE_BALLOON:
 		ModelDraw(m_Model[0]);
 		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
@@ -197,6 +205,11 @@ void PLAYER::Player_Move()
         m_Velocity.z = 0.0f;
     }
 
+	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && JumpCount /*&&BalloonFlag==true*/)
+	{
+		BalloomUp = true;
+		m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+	}
     // ジャンプ
     if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
         m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
@@ -275,4 +288,24 @@ PLAYER* PLAYER::GetPlayer()
 }
 
 
+void PLAYER::Player_Balloon()
+{
 
+		if (BalloomUp == true)
+		{
+			m_Velocity.y = PLAYER_BALLOON_SPEED; //上昇
+		}
+		else if (BalloomUp == false)
+		{
+			m_Velocity.y = PLAYER_BALLOON_FALLSPEED;
+		}
+
+   		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && m_State == PLAYER_STATE::PLAYER_STATE_BALLOON)
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
+
+		
+
+
+}

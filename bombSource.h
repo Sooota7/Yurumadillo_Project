@@ -4,6 +4,7 @@
 #include	<d3d11.h>
 #include	<DirectXMath.h>
 #include	"direct3d.h"
+#include	"player.h"
 using namespace DirectX;
 
 #define		BOMB_RADIUS		(0.5f)

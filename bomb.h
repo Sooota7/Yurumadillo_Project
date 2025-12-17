@@ -13,7 +13,7 @@ using namespace DirectX;
 #include	"model.h"
 #include	"bombSource.h"
 #include	"Dictionary.h"
-
+#include "player.h"
 // É}ÉNÉçíËã`
 
 #define		BOMB_NUM_MAX	(100)
