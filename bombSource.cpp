@@ -2,7 +2,6 @@
 #include	"keyboard.h"
 #include	"collision.h"
 #include	"mouse.h"
-
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
@@ -20,14 +19,12 @@ void BOMBSOURCE::BombSource_Finalize(void)
 
 void BOMBSOURCE::BombSource_Safe()
 {
-	
 	m_Position.y -= BOMB_GRAVITY;
-	
 	if (Keyboard_IsKeyDownTrigger(KK_V)&&m_Touch)
 	{
 		m_State = BOMB_STATE::BOMB_ACTIVE_HAVE;
 		m_Touch = false;
-		m_Count = 0;
+		m_Count = 0;		
 	}
 }
 
@@ -168,7 +165,7 @@ void BOMBSOURCE::BombSource_Cool()
 void BOMBSOURCE::BombSource_Explosion()
 {
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 5.0f)
+	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;

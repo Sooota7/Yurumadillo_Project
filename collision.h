@@ -43,5 +43,7 @@ public:
 	float	PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb);
 	float	BombFieldCollision(BOMB* pBomb, MAPDATA* pField);
 	float	BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
+	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
+
 
 };
