@@ -9,43 +9,45 @@ using namespace DirectX;
 
 #include	"model.h"
 
-#define PLAYER_SPEEDMAX (0.05f)      //ƒXƒs[ƒhƒ}ƒbƒNƒX
+#include	"billboardManager.h"
+
+#define PLAYER_SPEEDMAX (0.05f)      //è­›é¬®å€¬æº·ï½ºï½¦
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
-#define PLAYER_ACCELERATION (0.01f)  //‰Á‘¬“x
-#define PLAYER_GRAVITY (0.01f)       //d—Í
-#define PLAYER_JUMP (0.25f)           //ƒWƒƒƒ“ƒv—Í
-#define PLAYER_FALLMAX (-0.2f)        //—Ž‰ºÅ‚‘¬“x
-#define PLAYER_RESPAWN (-3.0f)         //‚±‚êˆÈã‰º‚És‚­‚ÆŽ€
-#define PLAYER_MAGICRANGE (0.03f)    //–‚–@”ÍˆÍ
+#define PLAYER_ACCELERATION (0.01f)  //åŠ é€Ÿåº¦
+#define PLAYER_GRAVITY (0.01f)       //é‡åŠ›
+#define PLAYER_JUMP (0.25f)           //ã‚¸ãƒ£ãƒ³ãƒ—åŠ›
+#define PLAYER_FALLMAX (-0.2f)        //è½ä¸‹æœ€é«˜é€Ÿåº¦
+#define PLAYER_RESPAWN (-3.0f)         //ã“ã‚Œä»¥ä¸Šä¸‹ã«è¡Œãã¨æ­»
+#define PLAYER_MAGICRANGE (0.03f)    //é­”æ³•ç¯„å›²
 #define PLAYER_HP (100.0f)			 //HP
-#define PLAYER_BALLOON_SPEED (0.1)        //•—‘D‚Ìã¸‘¬“x
-#define PLAYER_BALLOON_FALLSPEED (-0.05f)   //•—‘D‚Ì‰º~‘¬“x
+#define PLAYER_BALLOON_SPEED (0.1)        //é¢¨èˆ¹ã®ä¸Šæ˜‡é€Ÿåº¦
+#define PLAYER_BALLOON_FALLSPEED (-0.05f)   //é¢¨èˆ¹ã®ä¸‹é™é€Ÿåº¦
 
-//ƒvƒŒƒCƒ„[‚ÌƒXƒe[ƒg
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ãƒˆ
 enum PLAYER_STATE
 {
-	PLAYER_STATE_IDLE = 0,	//’Êí
-	PLAYER_STATE_MOVE,		//ƒ€[ƒu
-	PLAYER_STATE_JUMP,		//ƒWƒƒƒ“ƒv
-	PLAYER_STATE_BALLOON,	//•—‘DŽ‚Á‚Ä‚é
-	PLAYER_STATE_RESPAWN,   //ƒŠƒXƒ|[ƒ“
-	PLAYER_STATE_DEATH,		//Ž€
+	PLAYER_STATE_IDLE = 0,	//é€šå¸¸
+	PLAYER_STATE_MOVE,		//ãƒ ãƒ¼ãƒ–
+	PLAYER_STATE_JUMP,		//ã‚¸ãƒ£ãƒ³ãƒ—
+	PLAYER_STATE_BALLOON,	//é¢¨èˆ¹æŒã£ã¦ã‚‹
+	PLAYER_STATE_RESPAWN,   //ãƒªã‚¹ãƒãƒ¼ãƒ³
+	PLAYER_STATE_DEATH,		//æ­»
 };
 
-//ƒvƒŒƒCƒ„[‚ÌƒNƒ‰ƒX
+//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¯ãƒ©ã‚¹
 class PLAYER
 {
 private:
-	XMFLOAT3	m_Position;	//ƒ|ƒWƒVƒ‡ƒ“
-	XMFLOAT3	m_Rotation;	//‰ñ“]
-	XMFLOAT3	m_Scaling;	//‘å‚«‚³
-	XMFLOAT3	m_Velocity;	//is•ûŒü
-	XMFLOAT3	m_Acceleration;	// ‰Á‘¬
+	XMFLOAT3	m_Position;	//ãƒã‚¸ã‚·ãƒ§ãƒ³
+	XMFLOAT3	m_Rotation;	//å›žè»¢
+	XMFLOAT3	m_Scaling;	//å¤§ãã•
+	XMFLOAT3	m_Velocity;	//é€²è¡Œæ–¹å‘
+	XMFLOAT3	m_Acceleration;	// åŠ é€Ÿ
 
-	PLAYER_STATE	m_State;		//ƒXƒe[ƒg
-	MODEL* m_Model[2];		//ƒ‚ƒfƒ‹
+	PLAYER_STATE	m_State;		//ã‚¹ãƒ†ãƒ¼ãƒˆ
+	MODEL* m_Model[2];		//ãƒ¢ãƒ‡ãƒ«
 
 
 	 bool JumpCount;
@@ -66,7 +68,7 @@ public:
 	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Player_Finalize();
 	void	Player_Update();
-	void	Player_Draw();
+	void	Player_Draw(BillboardManager* billboardManager);
 
 	void SetPlayerPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3 GetPlayerPosition() { return m_Position; };
