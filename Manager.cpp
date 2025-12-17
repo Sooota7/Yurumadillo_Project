@@ -10,7 +10,9 @@
 #include "Pause.h"
 #include "Result.h"
 #include "fade.h"
-
+#include "Menu.h"
+#include "Tutorial.h"
+#include "prologue.h"
 
 void	MANAGER::Manager_Initialize()
 { 
@@ -46,6 +48,16 @@ void	MANAGER::Manager_Update()
 	case SCENE_TITLE:
 		m_Title.Title_Update();
 		break;
+	case SCENE_PROLOGUE:
+		m_Prologue.Prologue_Update();
+		break;
+	case SCENE_MENU:
+		m_Menu.Menu_Update();
+		break;
+	case SCENE_TUTORIAL:
+		m_Tutorial.Tutorial_Update();
+		break;
+	
 	case SCENE_GAME:
 		m_Game.Game_Update();
 		break;
@@ -80,6 +92,16 @@ void	MANAGER::Manager_Draw()
 		case SCENE_TITLE:
 			m_Title.Title_Draw();	
 			break;
+		case SCENE_PROLOGUE:
+			m_Prologue.Prologue_Draw();	
+			break;
+		case SCENE_MENU:
+			m_Menu.Menu_Draw();
+			break;
+		case SCENE_TUTORIAL:
+			m_Tutorial.Tutorial_Draw();
+			break;
+		
 		case SCENE_GAME:
 			m_Game.Game_Draw();
 			break;
@@ -107,6 +129,16 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		case SCENE_TITLE:
 			m_Title.Title_Finalize();
 			break;
+		case SCENE_PROLOGUE:
+			m_Prologue.Prologue_Finalize();
+			break;
+		case SCENE_MENU:
+			m_Menu.Menu_Finalize();
+			break;
+		case SCENE_TUTORIAL:
+			m_Tutorial.Tutorial_Finalize();
+			break;
+		
 		case SCENE_GAME:
 			if (scene != SCENE_PAUSE)
 			{
@@ -133,6 +165,24 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			break;
 		case SCENE_TITLE:
 			m_Title.Title_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(),&m_Fade);
+			break;
+		case SCENE_PROLOGUE:
+			m_Prologue.Prologue_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(),&m_Fade);
+			break;
+		case SCENE_MENU:
+			m_Menu.Menu_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
+			break;
+		
+		case SCENE_TUTORIAL:
+			if (!m_TutorialInitialized)
+			{
+				m_Tutorial.Tutorial_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_TutorialInitialized = true;
+			}
 			break;
 		case SCENE_GAME:
 			if (!m_GameInitialized)

@@ -1,5 +1,5 @@
 
-//Game.h
+//Tutorial.h
 #pragma once
 
 #include "direct3d.h"
@@ -11,9 +11,10 @@
 #include "bomb.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
+
 class MANAGER;
 
-class GAME
+class TUTORIAL
 {
 private:
 	MANAGER* m_Manager;
@@ -28,13 +29,12 @@ private:
 	FIELD_NO m_NowField;
 
 	BillboardManager m_BillboardManager;
-
 public:
-	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
-	void Game_Finalize();
-	void Game_Update();
-	void Game_Draw();
+	void Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
+	void Tutorial_Finalize();
+	void Tutorial_Update();
+	void Tutorial_Draw();
 
-	void Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
+	void Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
 
 };

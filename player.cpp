@@ -6,10 +6,15 @@
 #include	"shader.h"
 #include	"collision.h"
 
+#include	"billboard.h"
+
 //ボールオブジェクト
 
 ID3D11Device* g_pDevice;
 ID3D11DeviceContext* g_pContext;
+
+static ID3D11ShaderResourceView* g_Texture = NULL;
+
 
 float g_StopTime = 0.0f;	// ボールが制止するまでの時間
 
@@ -34,6 +39,15 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	JumpCount = true;
 
 	g_StopTime = 0.0f;
+
+	//テクスチャ画像読み込み
+	TexMetadata		metadata;
+	ScratchImage	image;
+	LoadFromWICFile(L"asset\\texture\\diamond.png",
+		WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+	CreateShaderResourceView(g_pDevice, image.GetImages(),
+		image.GetImageCount(), metadata, &g_Texture);
+	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
 }
 void	PLAYER::Player_Finalize()
@@ -100,7 +114,7 @@ void	PLAYER::Player_Update()
 	}
 
 }
-void	PLAYER::Player_Draw()
+void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 {
 	//ワールド行列作成
 	XMMATRIX	scale = XMMatrixScaling(
@@ -139,6 +153,20 @@ void	PLAYER::Player_Draw()
 		ModelDraw(m_Model[0]);
 		break;
 	}
+
+	{
+		XMFLOAT3 pos = m_Position;
+		pos.y += 1.0f;
+		XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
+		XMFLOAT4 col = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+		int bno = 1;
+		int wc = 1;
+		int hc = 1;
+
+		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::TEST);
+		billboardManager->Register(bb);
+	}
+
 }
 
 
@@ -161,7 +189,7 @@ void	PLAYER::Player_Idle()
 	//停止中も重力はかかる
 	m_Velocity.y -= PLAYER_GRAVITY; 
 
-	
+
 }
 
 void PLAYER::Player_Move()

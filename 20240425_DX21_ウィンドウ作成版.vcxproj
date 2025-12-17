@@ -133,6 +133,8 @@
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="billboard.cpp" />
+    <ClCompile Include="billboardManager.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="bombSource.cpp" />
@@ -149,21 +151,26 @@
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mouse.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="Polygon3D.cpp" />
+    <ClCompile Include="prologue.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="Title.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="billboard.h" />
+    <ClInclude Include="billboardManager.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="bombSource.h" />
@@ -181,17 +188,20 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="mouse.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="Polygon3D.h" />
+    <ClInclude Include="prologue.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Tutorial.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader_pixel_2d.hlsl">

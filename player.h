@@ -10,6 +10,8 @@ using namespace DirectX;
 #include	"model.h"
 #include    "bombSource.h"
 
+#include	"billboardManager.h"
+
 #define PLAYER_SPEEDMAX (0.05f)      //最高速度
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
@@ -61,7 +63,7 @@ public:
 	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Player_Finalize();
 	void	Player_Update();
-	void	Player_Draw();
+	void	Player_Draw(BillboardManager* billboardManager);
 
 	void SetPlayerPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3 GetPlayerPosition() { return m_Position; };
