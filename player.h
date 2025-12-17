@@ -11,7 +11,7 @@ using namespace DirectX;
 
 #include	"billboardManager.h"
 
-#define PLAYER_SPEEDMAX (0.05f)      //譛鬮倬溷ｺｦ
+#define PLAYER_SPEEDMAX (0.05f)      //
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
