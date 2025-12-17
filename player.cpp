@@ -71,7 +71,6 @@ void	PLAYER::Player_Update()
 	m_Position.x += m_Velocity.x;
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
-<<<<<<< HEAD
 
 	// --- ここだけ変更（着地判定とバウンド防止） ---
 	float groundY = 0.0f; // 地面の高さ
@@ -82,13 +81,13 @@ void	PLAYER::Player_Update()
 		JumpCount = true;
 	}
 	// --- ここまで ---
-=======
+
 	
 	if (Keyboard_IsKeyDownTrigger(KK_ENTER))
 	{
 		m_Hp-=20.0f;
 	}
->>>>>>> fdd5f4338004d02a7260176432a10eb6fb6f6f2a
+
 
 	if (m_Position.y < PLAYER_RESPAWN)
 	{
