@@ -182,9 +182,12 @@ void TUTORIAL::Tutorial_Draw()
 	//2D描画
 	Light2.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(FALSE);
+
+
 
 	m_BillboardManager.Draw();
+
+	SetDepthTest(FALSE);
 
 	//Block_Draw();
 	//Effect_Draw();
