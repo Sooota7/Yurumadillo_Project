@@ -30,7 +30,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_1;
+	m_NowField = FIELD_NO::NO_2;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -146,17 +146,13 @@ void GAME::Game_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_NowField == FIELD_NO::NO_1)
+		if (m_Manager->GetClearCount() == 0) 
 		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			//Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_Manager->SetScene(SCENE_RESULT);
-			m_NowField = FIELD_NO::NO_1;
-		}
+			m_Manager->IncrementClearCount();
+		};
+		
+		m_Manager->SetScene(SCENE_RESULT);
+		
 	}
 }
 

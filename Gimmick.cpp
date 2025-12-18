@@ -1,9 +1,8 @@
-
-//Tutorial.cpp
+//Gimmick.cpp
 
 #include	"Manager.h"
 #include	"sprite.h"
-#include	"Tutorial.h"
+#include	"Gimmick.h"
 #include	"keyboard.h"
 
 #include	"player.h"
@@ -18,23 +17,27 @@
 
 #include "Ball.h"
 
+#include "billboard.h"
+
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
-LIGHTOBJECT		Light2;//<<<<<<ライト管理オブジェクト
+LIGHTOBJECT		Light3;//<<<<<<ライト管理オブジェクト
 
 
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
+void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_3;
+	m_NowField = FIELD_NO::NO_2;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
+
+	m_BillboardManager.Initialize(pDevice, pContext);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -45,7 +48,6 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	m_Manager = manager;
 
-	m_BillboardManager.Initialize(pDevice, pContext);
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
@@ -57,21 +59,21 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	XMFLOAT4	para;
 
 	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//環境光の色
-	Light2.SetAmbient(para);
+	Light3.SetAmbient(para);
 
 	para = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);//光の色
-	Light2.SetDiffuse(para);
+	Light3.SetDiffuse(para);
 
 	para = XMFLOAT4(0.5f, -1.0f, 0.0f, 1.0f);//光方向
 	float	len = sqrtf(para.x * para.x + para.y * para.y + para.z * para.z);
 	para.x /= len;
 	para.y /= len;
 	para.z /= len;
-	Light2.SetDirection(para);//光の方向（正規化済）
+	Light3.SetDirection(para);//光の方向（正規化済）
 
 }
 
-void TUTORIAL::Tutorial_Finalize()
+void GIMMICK::Gimmick_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -81,14 +83,14 @@ void TUTORIAL::Tutorial_Finalize()
 	//Effect_Finalize();
 	//Score_Finalize();
 	//Polygon3D_Finalize();
-	m_BillboardManager.Finalize();
-
 	Camera_Finalize();	//カメラ終了処理
+
+	m_BillboardManager.Finalize();
 
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
-void TUTORIAL::Tutorial_Update()
+void GIMMICK::Gimmick_Update()
 {
 	//更新処理
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
@@ -99,25 +101,21 @@ void TUTORIAL::Tutorial_Update()
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 
 
+
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
-		if (m_NowField == FIELD_NO::NO_3)
+		if (m_NowField == FIELD_NO::NO_1)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
-			m_NowField = FIELD_NO::NO_4;
+			Gimmick_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
+			m_NowField = FIELD_NO::NO_2;
 		}
-		else if (m_NowField == FIELD_NO::NO_4)
+		else if (m_NowField == FIELD_NO::NO_2)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
-			m_NowField = FIELD_NO::NO_5;
-		}
-		else if (m_NowField == FIELD_NO::NO_5)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_3);
-			m_NowField = FIELD_NO::NO_3;
+			Gimmick_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
+			m_NowField = FIELD_NO::NO_1;
 		}
 	}
-	
+
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
 		m_Manager->SetScene(SCENE_PAUSE);
@@ -143,51 +141,39 @@ void TUTORIAL::Tutorial_Update()
 	//Effect_Update();
 	//Score_Update();
 	//Polygon3D_Update();
-	
+
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_NowField == FIELD_NO::NO_3)
+		if (m_Manager->GetClearCount() == 1)
 		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
-			m_NowField = FIELD_NO::NO_4;
-		}
-		else if (m_NowField == FIELD_NO::NO_4)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
-			m_NowField = FIELD_NO::NO_5;
-		}
-		else if (m_NowField == FIELD_NO::NO_5)
-		{
-			//Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_Manager->SetScene(SCENE_STAGESELECTION);
-			m_NowField = FIELD_NO::NO_3;
-		}
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
+
 	}
 }
 
-void TUTORIAL::Tutorial_Draw()
-{ 
-	Light2.SetEnable(TRUE);			//ライティングON
-	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
+void GIMMICK::Gimmick_Draw()
+{
+	Light3.SetEnable(TRUE);			//ライティングON
+	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
-	m_Player.Player_Draw(&m_BillboardManager);
+
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
 
 	//2D描画
-	Light2.SetEnable(FALSE);			//ライティングOFF
-	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
-
-
+	Light3.SetEnable(FALSE);			//ライティングOFF
+	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
+	SetDepthTest(FALSE);
 
 	m_BillboardManager.Draw();
-
-	SetDepthTest(FALSE);
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -197,7 +183,7 @@ void TUTORIAL::Tutorial_Draw()
 
 }
 
-void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
+void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
@@ -211,9 +197,9 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
-	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
-	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
-	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_Map.Field_Initialize(pDevice, pContext, no); // フィールドの初期化
+	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, no);
+	m_bomb.Bomb_Initialize(pDevice, pContext, no);
 	m_BillboardManager.Initialize(pDevice, pContext);
 }
 

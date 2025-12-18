@@ -1,32 +1,32 @@
 
 
-//Result.cpp
+//Ending.cpp
 #include	"Manager.h"
 #include	"sprite.h"
 #include	"keyboard.h"
 
-#include	"Result.h"
+#include	"Ending.h"
 
 #include "fade.h"
 #include "shader.h"
+//aaa
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
 
-void RESULT::Result_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade, MANAGER* manager)
+void ENDING::Ending_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
 	m_Fade = fade;
-	m_Manager = manager;
 
 	//テクスチャ読み込みなど
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\Result.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\ending.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
@@ -35,31 +35,26 @@ void RESULT::Result_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	m_Fade->Fade_SetFade(60.0f, color, FADE_IN, SCENE_GAME);
 
 }
-void RESULT::Result_Finalize()
+void ENDING::Ending_Finalize()
 {
 	//テクスチャの解放など
 	SAFE_RELEASE(g_Texture);
 
 }
-void RESULT::Result_Update()
+void ENDING::Ending_Update()
 { 
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE)&&m_Manager->GetClearCount()<STAGE_MAX)
+	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE))
 	{
 		//フェードアウトさせてシーンを切り替える
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_STAGESELECTION);
+		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_TITLE);
 	}
-	else if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE) && m_Manager->GetClearCount() == STAGE_MAX)
-	{
-		//フェードアウトさせてシーンを切り替える
-		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_ENDING);
-	}
+
 }
-void RESULT::Result_Draw()
+void ENDING::Ending_Draw()
 {
 	// シェーダーを描画パイプラインに設定
 	Shader_Begin();

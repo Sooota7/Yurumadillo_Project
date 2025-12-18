@@ -11,6 +11,11 @@
 #include "Menu.h"
 #include "Tutorial.h"
 #include "prologue.h"
+#include "StageSelection.h"
+#include "Ending.h"
+#include "Gimmick.h"
+#include "EnemyLush.h"
+#include "Boss.h"
 
 class MANAGER
 {
@@ -27,8 +32,18 @@ private:
 	GAME  m_Game;
 	PAUSE m_Pause;
 	RESULT m_Result;
+	STAGESELECTION m_StageSelection;
+	ENDING m_Ending;
+	GIMMICK m_Gimmick;
+	ENEMYLUSH m_EnemyLush;
+	BOSS m_Boss;
 	bool m_GameInitialized = false;
 	bool m_TutorialInitialized = false;
+	bool m_GimmickInitialized = false;
+	bool m_EnemyLushInitialized = false;
+	bool m_BossInitialized = false;
+
+	int m_ClearCount = 0;
 
 public:
 	void	Manager_Initialize();
@@ -38,4 +53,8 @@ public:
 
 	void	SetScene(SCENE scene);
 
+	void IncrementClearCount() { ++m_ClearCount; };
+	
+	int  GetClearCount() const { return m_ClearCount; };
+	
 };
