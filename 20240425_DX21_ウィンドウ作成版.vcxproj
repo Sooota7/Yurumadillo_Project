@@ -138,16 +138,20 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="bombSource.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Ending.cpp" />
+    <ClCompile Include="Enemylush.cpp" />
     <ClCompile Include="EnemyNormal.cpp" />
     <ClCompile Include="enemySpawner.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gimmick.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
@@ -163,6 +167,7 @@
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="StageSelection.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
   </ItemGroup>
@@ -174,18 +179,22 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="bombSource.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_ostream.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="Ending.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Enemylush.h" />
     <ClInclude Include="EnemyNormal.h" />
     <ClInclude Include="enemySpawner.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Gimmick.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />
@@ -200,6 +209,7 @@
     <ClInclude Include="score.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="StageSelection.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
   </ItemGroup>

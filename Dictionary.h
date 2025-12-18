@@ -407,14 +407,19 @@ const int tutorial_mouse_pos_high[FIELD_WIDTH_Z][FIELD_WIDTH_X]
 
 enum SCENE
 {
-	SCENE_NONE = 0,		//何もなし
-	SCENE_TITLE,		//タイトルシーン
-	SCENE_PROLOGUE,		//プロローグシーン
-	SCENE_MENU,			//メニューシーン
-	SCENE_TUTORIAL,		//チュートリアルシーン
-	SCENE_GAME,			//ゲームシーン
-	SCENE_PAUSE,		//ポーズシーン
-	SCENE_RESULT,		//リザルトルシーン
+	SCENE_NONE = 0,		  //何もなし
+	SCENE_TITLE,		  //タイトルシーン
+	SCENE_PROLOGUE,		  //プロローグシーン
+	SCENE_MENU,			  //メニューシーン
+	SCENE_TUTORIAL,		  //チュートリアルシーン
+	SCENE_GAME,			  //ゲームシーン
+	SCENE_PAUSE,		  //ポーズシーン
+	SCENE_RESULT,		  //リザルトルシーン
+	SCENE_STAGESELECTION, //ステージセレクション
+	SCENE_ENDING,         //エンディングシーン
+	SCENE_GIMMICK,        //ギミックシーン
+	SCENE_ENEMYLUSH,	  //敵大群シーン
+	SCENE_BOSS,           //ボスシーン
 };
 
 enum BILLBOARD_TEXTURE
@@ -422,3 +427,5 @@ enum BILLBOARD_TEXTURE
 	TEST = 0,
 	MAX,
 };
+
+#define STAGE_MAX 4 //ステージ数(チュートリアルは除く)

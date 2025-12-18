@@ -13,6 +13,11 @@
 #include "Menu.h"
 #include "Tutorial.h"
 #include "prologue.h"
+#include "StageSelection.h"
+#include "Ending.h"
+#include "Gimmick.h"
+#include "EnemyLush.h"
+#include "Boss.h"
 
 void	MANAGER::Manager_Initialize()
 { 
@@ -54,6 +59,9 @@ void	MANAGER::Manager_Update()
 	case SCENE_MENU:
 		m_Menu.Menu_Update();
 		break;
+	case SCENE_STAGESELECTION:
+		m_StageSelection.StageSelection_Update();
+		break;
 	case SCENE_TUTORIAL:
 		m_Tutorial.Tutorial_Update();
 		break;
@@ -61,11 +69,23 @@ void	MANAGER::Manager_Update()
 	case SCENE_GAME:
 		m_Game.Game_Update();
 		break;
+	case SCENE_GIMMICK:
+		m_Gimmick.Gimmick_Update();
+		break;
+	case SCENE_ENEMYLUSH:
+		m_EnemyLush.Enemylush_Update();
+		break;
+	case SCENE_BOSS:
+		m_Boss.Boss_Update();
+		break;
 	case SCENE_PAUSE:
 		m_Pause.Pause_Update();
 		break;
 	case SCENE_RESULT:
 		m_Result.Result_Update();
+		break;
+	case SCENE_ENDING:
+		m_Ending.Ending_Update();
 		break;
 	default:
 		break;
@@ -98,18 +118,32 @@ void	MANAGER::Manager_Draw()
 		case SCENE_MENU:
 			m_Menu.Menu_Draw();
 			break;
+		case  SCENE_STAGESELECTION :
+			m_StageSelection.StageSelection_Draw();
+			break;
 		case SCENE_TUTORIAL:
 			m_Tutorial.Tutorial_Draw();
 			break;
-		
 		case SCENE_GAME:
 			m_Game.Game_Draw();
+			break;
+		case SCENE_GIMMICK:
+			m_Gimmick.Gimmick_Draw();
+			break;
+		case SCENE_ENEMYLUSH:
+			m_EnemyLush.Enemylush_Draw();
+			break;
+		case SCENE_BOSS:
+			m_Boss.Boss_Draw();
 			break;
 		case SCENE_PAUSE:
 			m_Pause.Pause_Draw();
 			break;
 		case SCENE_RESULT:
 			m_Result.Result_Draw();
+			break;
+		case SCENE_ENDING:
+			m_Ending.Ending_Draw();
 			break;
 		default:
 			break;
@@ -124,36 +158,62 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 	//実行中のシーンを終了させる
 	switch (m_Scene)	//現在シーンの終了関数を呼び出す
 	{
-		case SCENE_NONE:
-			break;
-		case SCENE_TITLE:
-			m_Title.Title_Finalize();
-			break;
-		case SCENE_PROLOGUE:
-			m_Prologue.Prologue_Finalize();
-			break;
-		case SCENE_MENU:
-			m_Menu.Menu_Finalize();
-			break;
-		case SCENE_TUTORIAL:
-			m_Tutorial.Tutorial_Finalize();
-			break;
-		
-		case SCENE_GAME:
-			if (scene != SCENE_PAUSE)
-			{
-				m_Game.Game_Finalize();
-				m_GameInitialized = false;
-			}
-		break;		
-		case SCENE_PAUSE:
-			m_Pause.Pause_Finalize();
-			break;
-		case SCENE_RESULT:
-			m_Result.Result_Finalize();
-			break;
-		default:
-			break;
+	case SCENE_NONE:
+		break;
+	case SCENE_TITLE:
+		m_Title.Title_Finalize();
+		break;
+	case SCENE_PROLOGUE:
+		m_Prologue.Prologue_Finalize();
+		break;
+	case SCENE_MENU:
+		m_Menu.Menu_Finalize();
+		break;
+	case SCENE_STAGESELECTION:
+		m_StageSelection.StageSelection_Finalize();
+		break;
+	case SCENE_TUTORIAL:
+		m_Tutorial.Tutorial_Finalize();
+		break;
+	case SCENE_GAME:
+		if (scene != SCENE_PAUSE)
+		{
+			m_Game.Game_Finalize();
+			m_GameInitialized = false;
+		}
+		break;
+	case SCENE_GIMMICK:
+		if (scene != SCENE_PAUSE)
+		{
+			m_Gimmick.Gimmick_Finalize();
+			m_GimmickInitialized = false;
+		}
+		break;
+	case SCENE_ENEMYLUSH:
+		if (scene != SCENE_PAUSE)
+		{
+			m_EnemyLush.Enemylush_Finalize();
+			m_EnemyLushInitialized = false;
+		}
+		break;
+	case SCENE_BOSS:
+		if (scene != SCENE_PAUSE)
+		{
+			m_Boss.Boss_Finalize();
+			m_BossInitialized = false;
+		}
+		break;
+	case SCENE_PAUSE:
+		m_Pause.Pause_Finalize();
+		break;
+	case SCENE_RESULT:
+		m_Result.Result_Finalize();
+		break;
+	case SCENE_ENDING:
+		m_Ending.Ending_Finalize();
+		break;
+	default:
+		break;
 	}
 
 	m_Scene = scene;	//指定のシーンへ切り替える
@@ -171,6 +231,9 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			break;
 		case SCENE_MENU:
 			m_Menu.Menu_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
+			break;
+		case SCENE_STAGESELECTION:
+			m_StageSelection.StageSelection_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
 			break;
 		
 		case SCENE_TUTORIAL:
@@ -194,12 +257,48 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 				);
 				m_GameInitialized = true;
 			}
-		break;		
+			break;		
+		case SCENE_GIMMICK:
+			if (!m_GimmickInitialized)
+			{
+				m_Gimmick.Gimmick_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_GimmickInitialized = true;
+			}
+			break;
+		case SCENE_ENEMYLUSH:
+			if (!m_EnemyLushInitialized)
+			{
+				m_EnemyLush.Enemylush_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_EnemyLushInitialized = true;
+			}
+			break;
+		case SCENE_BOSS:
+			if (!m_BossInitialized)
+			{
+				m_Boss.Boss_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_BossInitialized = true;
+			}
+			break;
 		case SCENE_PAUSE:
 			m_Pause.Pause_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
 			break;
 		case SCENE_RESULT:
-			m_Result.Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
+			m_Result.Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
+			break;
+		case SCENE_ENDING:
+			m_Ending.Ending_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
 			break;
 		default:
 			break;

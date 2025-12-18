@@ -160,7 +160,7 @@ void TUTORIAL::Tutorial_Update()
 		else if (m_NowField == FIELD_NO::NO_5)
 		{
 			//Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_Manager->SetScene(SCENE_GAME);
+			m_Manager->SetScene(SCENE_STAGESELECTION);
 			m_NowField = FIELD_NO::NO_3;
 		}
 	}
