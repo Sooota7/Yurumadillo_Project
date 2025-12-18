@@ -156,6 +156,7 @@
     <ClCompile Include="mouse.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="playerUI.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="Polygon3D.cpp" />
     <ClCompile Include="prologue.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="mouse.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playerUI.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="Polygon3D.h" />
     <ClInclude Include="prologue.h" />
