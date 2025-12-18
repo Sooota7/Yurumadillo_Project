@@ -1,9 +1,9 @@
 
-//Game.cpp
+//Boss.cpp
 
 #include	"Manager.h"
 #include	"sprite.h"
-#include	"Game.h"
+#include	"Boss.h"
 #include	"keyboard.h"
 
 #include	"player.h"
@@ -22,13 +22,13 @@
 
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
-LIGHTOBJECT		Light;//<<<<<<ライト管理オブジェクト
+LIGHTOBJECT		Light4;//<<<<<<ライト管理オブジェクト
 
 
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
+void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
 	m_NowField = FIELD_NO::NO_2;
 
@@ -60,21 +60,21 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	XMFLOAT4	para;
 
 	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//環境光の色
-	Light.SetAmbient(para);
+	Light4.SetAmbient(para);
 
 	para = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);//光の色
-	Light.SetDiffuse(para);
+	Light4.SetDiffuse(para);
 
 	para = XMFLOAT4(0.5f, -1.0f, 0.0f, 1.0f);//光方向
 	float	len = sqrtf(para.x * para.x + para.y * para.y + para.z * para.z);
 	para.x /= len;
 	para.y /= len;
 	para.z /= len;
-	Light.SetDirection(para);//光の方向（正規化済）
+	Light4.SetDirection(para);//光の方向（正規化済）
 
 }
 
-void GAME::Game_Finalize()
+void BOSS::Boss_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -91,7 +91,7 @@ void GAME::Game_Finalize()
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
-void GAME::Game_Update()
+void BOSS::Boss_Update()
 {
 	//更新処理
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
@@ -107,12 +107,12 @@ void GAME::Game_Update()
 	{
 		if (m_NowField == FIELD_NO::NO_1)
 		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
+			Boss_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
 			m_NowField = FIELD_NO::NO_2;
 		}
 		else if (m_NowField == FIELD_NO::NO_2)
 		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
+			Boss_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
 			m_NowField = FIELD_NO::NO_1;
 		}
 	}
@@ -146,7 +146,7 @@ void GAME::Game_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_Manager->GetClearCount() == 0) 
+		if (m_Manager->GetClearCount() == 3) 
 		{
 			m_Manager->IncrementClearCount();
 		};
@@ -156,10 +156,10 @@ void GAME::Game_Update()
 	}
 }
 
-void GAME::Game_Draw()
+void BOSS::Boss_Draw()
 { 
-	Light.SetEnable(TRUE);			//ライティングON
-	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
+	Light4.SetEnable(TRUE);			//ライティングON
+	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
@@ -170,8 +170,8 @@ void GAME::Game_Draw()
 	m_bomb.Bomb_Draw();
 
 	//2D描画
-	Light.SetEnable(FALSE);			//ライティングOFF
-	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
+	Light4.SetEnable(FALSE);			//ライティングOFF
+	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(FALSE);
 
 	m_BillboardManager.Draw();
@@ -184,7 +184,7 @@ void GAME::Game_Draw()
 
 }
 
-void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
+void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
