@@ -12,6 +12,7 @@
 #include "Dictionary.h"
 #include "billboardManager.h"
 #include "playerUI.h"
+#include "bombUI.h"
 class MANAGER;
 
 class GAME
@@ -31,6 +32,7 @@ private:
 	BillboardManager m_BillboardManager;
 
 	PlayerUI m_PlayerUI;
+	BombUI m_BombUI;
 public:
 	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Game_Finalize();
