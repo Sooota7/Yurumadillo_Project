@@ -7,7 +7,7 @@
 #include	"direct3d.h"
 using namespace DirectX;
 
-#include	"model.h"
+#include	"parts.h"
 
 #include	"billboardManager.h"
 
@@ -34,6 +34,16 @@ enum PLAYER_STATE
 	PLAYER_STATE_BALLOON,	//風船持ってる
 	PLAYER_STATE_RESPAWN,   //リスポーン
 	PLAYER_STATE_DEATH,		//死
+};
+
+enum PLAYER_PARTS
+{
+	PARTS_HEAD,
+	PARTS_ARM_RIGHT,
+	PARTS_ARM_LEFT,
+	PARTS_LEG_RIGHT,
+	PARTS_LEG_LEFT,
+	PARTS_MAX
 };
 
 //プレイヤーのクラス

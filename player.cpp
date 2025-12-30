@@ -24,6 +24,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	for(int i =0;)
 	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 
