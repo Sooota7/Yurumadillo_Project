@@ -180,9 +180,20 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE::ENEMY_TYPE_NONE);
 	}
 
+	// ======================================================
+	// なんか違ったら変えて
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
+	{
+		m_EnemyButterfly[i].Initialize(g_pDevice, g_pContext);
+		m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_NONE);
+	}
+	 
+	// ======================================================
+
 
 	//マップのセット
 	int a = 0;
+	int b = 0;
 
 	for (int q = 0; q < 3; q++)
 	{
@@ -201,6 +212,11 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 					a++;
 					MaxNum++;
 					break;
+				case 7:
+					m_EnemyButterfly[b].SetEnemyPosition(XMFLOAT3(l, q, i));
+					m_EnemyButterfly[b].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY);
+					b++;
+					MaxNum++;
 				}
 
 				
@@ -217,6 +233,9 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		case ENEMY_TYPE_NONE:
 			break;
 		case ENEMY_TYPE_NORMAL:
+			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
+			break;
+		case ENEMY_TYPE_BUTTERFLY:
 			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
 			break;
 		case ENEMY_TYPE_MAX:
@@ -344,9 +363,89 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			default:
 				break;
 			}
+
+			
 		}
 	}
 
+	// 蝶
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
+	{
+		//死亡、存在しない場合書かない
+		if (m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE &&
+			m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
+		{
+			XMFLOAT3 mapPos = m_EnemyButterfly[i].GetEnemyPosition();
+
+			//スケーリング行列の作成
+			XMMATRIX	ScalingMatrix = XMMatrixScaling
+			(
+				1.0f,
+				1.0f,
+				1.0f
+			);
+			//平行移動行列の作成
+			XMMATRIX	TranslationMatrix = XMMatrixTranslation
+			(
+				mapPos.x,
+				mapPos.y,
+				mapPos.z
+			);
+
+			//回転行列の作成
+			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+			(
+				XMConvertToRadians(0.0f),
+				//XMConvertToRadians(rot),
+				//XMConvertToRadians(rot),
+				XMConvertToRadians(0.0f),
+				XMConvertToRadians(0.0f)
+			);
+			//ワールド行列の作成
+			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+			//最終的な変換行列を作成
+			XMMATRIX WVP = World * VP;//(VP = View*Projection)
+			//DirectXへ行列をセット
+			Shader_SetMatrix(WVP);
+
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+			//頂点バッファをセット
+			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			UINT	offset = 0;
+			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+			//インデックスバッファをセット
+			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			//描画リクエスト
+			//モデル一個しかないから追加するときに変える
+			switch (m_EnemyButterfly[i].GetEnemyButterflyState())
+			{
+			case ENEMY_BUTTERFLY_STATE_IDLE:
+				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				break;
+			case ENEMY_BUTTERFLY_STATE_MOVE:
+				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				break;
+			case ENEMY_BUTTERFLY_STATE_DIRECTION:
+				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				break;
+			case ENEMY_BUTTERFLY_STATE_ATTACK:
+				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				break;
+			case ENEMY_BUTTERFLY_STATE_DEAD:
+
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
@@ -374,6 +473,28 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 
 	}
 	
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
+	{
+		switch (m_EnemyButterfly[i].GetEnemyButterflyType())
+		{
+		case ENEMY_TYPE_NONE:
+			break;
+		case ENEMY_TYPE_BUTTERFLY:
+			m_EnemyButterfly[i].Update(pPlayerPos);
+			break;
+		case ENEMY_TYPE_DEAD:
+			EnemySpawner_SetKillNum(1);						//死んだらカウントする
+			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE_NONE);	//存在を消す
+			break;
+		case ENEMY_TYPE_MAX:
+			break;
+		default:
+			break;
+		}
+
+
+
+	}
 }
 
 ENEMY_NORMAL* ENEMYSPAWNER::EnemySpawner_GetEnemy()

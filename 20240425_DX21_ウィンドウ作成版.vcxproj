@@ -138,6 +138,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="bombSource.cpp" />
+    <ClCompile Include="bombUI.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Ending.cpp" />
+    <ClCompile Include="EnemyButterfly.cpp" />
     <ClCompile Include="Enemylush.cpp" />
     <ClCompile Include="EnemyNormal.cpp" />
     <ClCompile Include="enemySpawner.cpp" />
@@ -180,6 +182,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="bombSource.h" />
+    <ClInclude Include="bombUI.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Ending.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyButterfly.h" />
     <ClInclude Include="Enemylush.h" />
     <ClInclude Include="EnemyNormal.h" />
     <ClInclude Include="enemySpawner.h" />
