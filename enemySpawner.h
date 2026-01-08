@@ -13,6 +13,7 @@ using namespace DirectX;
 #include	"model.h"
 #include	"Dictionary.h"
 #include	"EnemyNormal.h"
+#include	"EnemyButterfly.h"
 
 // マクロ定義
 
@@ -29,6 +30,7 @@ private:
 	int NowKillNum;
 
 	ENEMY_NORMAL	m_Enemy[Enemy_Spawner_MAX];
+	ENEMY_BUTTERFLY	m_EnemyButterfly[Enemy_Spawner_MAX];
 	MODEL* m_Model[ENEMY_TYPE_MAX] = { NULL };//デバッグ
 
 public:
@@ -38,6 +40,7 @@ public:
 	void	EnemySpawner_Draw(void);
 	void	EnemySpawner_Update(XMFLOAT3 pPlayerPos);
 	ENEMY_NORMAL* EnemySpawner_GetEnemy();
+	ENEMY_BUTTERFLY* EnemySpawner_GetEnemyButterfly();
 
 	int		EnemySpawner_GetEnemyNum();
 	void	EnemySpawner_SetKillNum(int killnum);

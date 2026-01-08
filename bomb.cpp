@@ -167,7 +167,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					break;
 				}
 
-				
+
 			}
 		}
 	}

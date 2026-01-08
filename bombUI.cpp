@@ -101,6 +101,12 @@ void BombUI::Draw()
 	//UI背景描画 ================
 	DrawSprite(size, color, 1, 1, 1);
 
+	if (m_BombType == 100)
+	{
+		return;
+	}
+
+
 	// 爆弾のタイプ毎のテクスチャを設定
 	SetBombTexture();
 	size = XMFLOAT2(50.0f, 50.0f);
@@ -118,6 +124,11 @@ void BombUI::CheckBombState()
 		if (bombs[i].BombSource_GetState() == BOMB_ACTIVE_HAVE)
 		{
 			m_BombType = 1;
+			break;
+		}
+		else
+		{
+			m_BombType = 100;
 		}
 	}
 }
