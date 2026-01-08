@@ -217,6 +217,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 					m_EnemyButterfly[b].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY);
 					b++;
 					MaxNum++;
+					break;
 				}
 
 				
@@ -236,7 +237,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
 			break;
 		case ENEMY_TYPE_BUTTERFLY:
-			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
+			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -367,8 +368,8 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			
 		}
 	}
-
-	// 蝶
+	// いったんそのまま
+	// 浮いてる敵
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		//死亡、存在しない場合書かない
@@ -395,11 +396,12 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			//回転行列の作成
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
-				XMConvertToRadians(0.0f),
+				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().x),
 				//XMConvertToRadians(rot),
 				//XMConvertToRadians(rot),
-				XMConvertToRadians(0.0f),
-				XMConvertToRadians(0.0f)
+				m_EnemyButterfly[i].GetEnemyRotation().y,
+				//XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().y),
+				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().z)
 			);
 			//ワールド行列の作成
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
@@ -473,6 +475,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 
 	}
 	
+	// 浮いてる敵
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		switch (m_EnemyButterfly[i].GetEnemyButterflyType())
@@ -500,6 +503,11 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 ENEMY_NORMAL* ENEMYSPAWNER::EnemySpawner_GetEnemy()
 {
 	return m_Enemy;
+}
+
+ENEMY_BUTTERFLY* ENEMYSPAWNER::EnemySpawner_GetEnemyButterfly()
+{
+	return m_EnemyButterfly;
 }
 
 //配置した数、倒すべき敵の数

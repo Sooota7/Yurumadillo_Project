@@ -44,7 +44,31 @@ void ENEMY_BUTTERFLY::Finalize()
 void ENEMY_BUTTERFLY::Update(XMFLOAT3 chasePos)
 {
 	// 敵の向きをプレイヤーに向ける
+	XMFLOAT3 direction;
 
+	direction.x = chasePos.x - m_Position.x;
+	direction.y = 0.0f;
+	direction.z = chasePos.z - m_Position.z;
+
+	// 距離
+	float length = sqrtf((direction.x * direction.x) +
+		(direction.z * direction.z));
+
+	if (length != 0.0f)
+	{// 正規化
+		direction.x /= length;
+		direction.z /= length;
+
+		float yaw = atan2(direction.x, direction.z);
+
+
+		// [-π, π] に正規化
+		if (yaw > XM_PI) yaw -= XM_2PI;
+		if (yaw < -XM_PI) yaw += XM_2PI;
+
+
+		m_Rotation.y = yaw;
+	}
 
 	// ホバリング
 	m_Position.y += sinf(cycle) * SWING_WIDTH;
@@ -129,8 +153,12 @@ void ENEMY_BUTTERFLY::Enemy_Butterfly_Direction(XMFLOAT3 chasePos)
 	{// 正規化
 		direction.x /= length;
 		direction.z /= length;
+
+		/*const float yaw = atan2f(direction.x, direction.z);
+		m_Rotation.y = yaw;*/
 	}
 
+	// プレイヤーの方向を向く
 
 	if (length < 2.5f) // アルファテスト用
 	{// プレイヤーとの距離が近すぎたら

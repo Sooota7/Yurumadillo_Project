@@ -40,6 +40,7 @@ public:
 	void	EnemySpawner_Draw(void);
 	void	EnemySpawner_Update(XMFLOAT3 pPlayerPos);
 	ENEMY_NORMAL* EnemySpawner_GetEnemy();
+	ENEMY_BUTTERFLY* EnemySpawner_GetEnemyButterfly();
 
 	int		EnemySpawner_GetEnemyNum();
 	void	EnemySpawner_SetKillNum(int killnum);

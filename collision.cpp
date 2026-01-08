@@ -262,6 +262,7 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
+	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
@@ -269,6 +270,94 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 		{
 			XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
 			XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
+			float BoxTop;	// BOXの+Y面の座標
+
+			BoxTop = EnemyPos.y + BOX_RADIUS;
+
+			// 壁としての判定処理
+			if (EnemyPos.y - BOX_RADIUS < PlayerPos.y &&
+				PlayerPos.y < BoxTop - 0.1f)
+			{
+				if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
+					PlayerPos.z < EnemyPos.z + BOX_RADIUS)
+				{
+					if (EnemyPos.x - BOX_RADIUS < PlayerPos.x + BALL_RADIUS &&
+						PlayerPos.x < EnemyPos.x - BOX_RADIUS)
+					{//BOXの-X面にぶつかったので座標の補正
+						PlayerPos.x += (EnemyPos.x - BOX_RADIUS) - (PlayerPos.x + BALL_RADIUS);
+						PlayerVel.x *= -COE; //移動ベクトルの反転
+						hit = COLLISION_HIT::HIT_WALL_3;
+					}
+					else if (EnemyPos.x + BOX_RADIUS > PlayerPos.x - BALL_RADIUS &&
+						PlayerPos.x > EnemyPos.x + BOX_RADIUS)
+					{//BOXの+X面にぶつかった
+						PlayerPos.x += (EnemyPos.x + BOX_RADIUS) - (PlayerPos.x - BALL_RADIUS);
+						PlayerVel.x *= -COE;
+						hit = COLLISION_HIT::HIT_WALL_1;
+					}
+				}
+				else if (EnemyPos.x - BOX_RADIUS < PlayerPos.x &&
+					PlayerPos.x < EnemyPos.x + BOX_RADIUS)
+				{
+					if (EnemyPos.z - BOX_RADIUS < PlayerPos.z + BALL_RADIUS &&
+						PlayerPos.z < EnemyPos.z - BOX_RADIUS)
+					{//BOXの-Z面にぶつかったので座標の補正
+						PlayerPos.z += (EnemyPos.z - BOX_RADIUS) - (PlayerPos.z + BALL_RADIUS);
+						PlayerVel.z *= -COE; //移動ベクトルの反転
+						hit = COLLISION_HIT::HIT_WALL_0;
+					}
+					else if (EnemyPos.z + BOX_RADIUS > PlayerPos.z - BALL_RADIUS &&
+						PlayerPos.z > EnemyPos.z + BOX_RADIUS)
+					{//BOXの+Z面にぶつかった
+						PlayerPos.z += (EnemyPos.z + BOX_RADIUS) - (PlayerPos.z - BALL_RADIUS);
+						PlayerVel.z *= -COE;
+						hit = COLLISION_HIT::HIT_WALL_2;
+					}
+				}
+			}
+			//地面として判定処理
+			else
+			{
+				if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
+					PlayerPos.z < EnemyPos.z + BOX_RADIUS)
+				{
+					if (EnemyPos.x - BOX_RADIUS < PlayerPos.x &&
+						PlayerPos.x < EnemyPos.x + BOX_RADIUS)
+					{
+						if (EnemyPos.y - BOX_RADIUS < PlayerPos.y + BALL_RADIUS &&
+							PlayerPos.y < EnemyPos.y - BOX_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							PlayerPos.y += (EnemyPos.y - BOX_RADIUS) - (PlayerPos.y + BALL_RADIUS);
+							EnemyVel.y *= -COE; //移動ベクトルの反転
+							//hit = 
+						}
+						else if (BoxTop > PlayerPos.y - BALL_RADIUS &&
+							PlayerPos.y > BoxTop)
+						{//BOXの+X面にぶつかった
+							PlayerPos.y += (BoxTop)-(PlayerPos.y - BALL_RADIUS);
+							EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
+							hit = COLLISION_HIT::HIT_GROUND;
+						}
+					}
+				}
+			}
+
+
+			pPlayer->SetPlayerPosition(PlayerPos);
+			pPlayer->SetPlayerVelocity(PlayerVel);
+
+
+			return hit;
+		}
+	}
+
+	// 浮いてる敵
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
+	{
+		if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
+			XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
 			float BoxTop;	// BOXの+Y面の座標
 
 			BoxTop = EnemyPos.y + BOX_RADIUS;
@@ -606,6 +695,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
+	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
 
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -658,6 +748,59 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			}
 		}
 	}
+
+	// 浮いてる敵
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//爆発したときのみ当たり判定を取る
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			for (int i = 0; i < Enemy_Spawner_MAX; i++)
+			{
+
+				if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+				{//エネミーが存在するとき
+
+					XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
+					XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = EnemyPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > EnemyPos.x &&
+						BombPos.x - 1 < EnemyPos.x)
+					{
+						if (BombPos.y + 1 > EnemyPos.y &&
+							BombPos.y - 1 < EnemyPos.y)
+						{
+							if (BombPos.z + 1 > EnemyPos.z &&
+								BombPos.z - 1 < EnemyPos.z)
+							{
+								test = true;//死亡フラグ
+							}
+						}
+					}
+
+					//ステートを死亡に移動
+					if (test)
+					{
+						enemyB[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
+					}
+
+				}
+			}
+		}
+	}
+
 	return hit;
 }
 
@@ -672,6 +815,7 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
+	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
 
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -726,5 +870,61 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			}
 		}
 	}
+
+
+	// 浮いてる敵
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//スローのときのみ当たり判定を取る
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			for (int i = 0; i < Enemy_Spawner_MAX; i++)
+			{
+
+				if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+				{//エネミーが存在するとき
+
+					XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
+					XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = EnemyPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > EnemyPos.x &&
+						BombPos.x - 1 < EnemyPos.x)
+					{
+						if (BombPos.y + 1 > EnemyPos.y &&
+							BombPos.y - 1 < EnemyPos.y)
+						{
+							if (BombPos.z + 1 > EnemyPos.z &&
+								BombPos.z - 1 < EnemyPos.z)
+							{
+								test = true;//当たった
+							}
+						}
+					}
+
+					//ボムのステートを爆発に変更
+					if (test)
+					{
+						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+						test = false;
+
+					}
+
+				}
+			}
+		}
+	}
+
 	return hit;
 }
