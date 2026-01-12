@@ -183,7 +183,8 @@ void ENEMY_BUTTERFLY::Enemy_Butterfly_Direction(XMFLOAT3 chasePos)
 
 void ENEMY_BUTTERFLY::Enemy_Butterfly_Attack(XMFLOAT3 chasePos)
 {
-	// •Ší‚ğ¶¬‚·‚é
+	// •Ší‚Íweapon‘¤‚Å¶¬
+	SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_IDLE);
 }
 
 void ENEMY_BUTTERFLY::Enemy_Butterfly_Dead()

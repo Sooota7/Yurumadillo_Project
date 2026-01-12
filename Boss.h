@@ -22,6 +22,7 @@ private:
 	CAMERA m_Camera;
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
+	WEAPON m_Weapon;
 
 	COLLISION collision;
 
