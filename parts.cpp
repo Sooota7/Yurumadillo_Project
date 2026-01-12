@@ -4,8 +4,8 @@
 
 //ボールオブジェクト
 
-ID3D11Device* g_pDevice;
-ID3D11DeviceContext* g_pContext;
+static ID3D11Device* g_pDevice;
+static ID3D11DeviceContext* g_pContext;
 
 
 
@@ -26,13 +26,31 @@ void PARTS::PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	
+	m_AnimNowPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	lasPosMax = 0;
+	NowPos = 0;
+	for (int i = 0; i < LASTPOS; i++)
+	{
+		m_AnimLastPosition[i] = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	}
+
+	m_AnimLastPosition_Use = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
+	m_Loop = false;
 	m_Model = ModelLoad(model);
+
+	//for (int i = 0; i < FRAME_MAX; i++)
+	//{
+	//	m_Frame[i].InitializeFrame();
+	//}
+
 }
 
 void PARTS::PartsFinalize()
 {
+	ModelRelease(m_Model);
 }
 
 void PARTS::PartsUpdate()
@@ -69,3 +87,19 @@ void PARTS::PartsDraw()
 	ModelDraw(m_Model);
 
 }
+
+
+//
+//void FRAME::InitializeFrame()
+//{
+//	m_Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	m_Scaling  = XMFLOAT3(1.0f, 1.0f, 1.0f);
+//}
+//
+//void FRAME::FinalizeFrame()
+//{
+//	m_Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+//	m_Scaling  = XMFLOAT3(1.0f, 1.0f, 1.0f);
+//}
