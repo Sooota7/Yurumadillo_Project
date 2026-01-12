@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "enemySpawner.h"
 #include "bomb.h"
+#include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
 class MANAGER;
