@@ -192,7 +192,6 @@ void MAP::MapData_Initialize(XMFLOAT3 pPos,FIELD pNo)
 {
 	position = pPos;
 	no = pNo;
-	//rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 void  MAP::MapData_Finalize(void)

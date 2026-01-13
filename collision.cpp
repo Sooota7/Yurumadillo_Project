@@ -1627,7 +1627,7 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 		if (hit && !Weapon[i].WeaponSource_GetIsDamage() 
 			&& !Weapon[i].WeaponSource_GetState()== WEAPON_NONE )
 		{
- 			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 20);
+			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 20);
 			Weapon[i].WeaponSource_SetIsDamage(true);
 		}
 

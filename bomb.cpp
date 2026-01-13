@@ -171,7 +171,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					m_RunBomb[b].Runbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
 					b++;
 					break;
-				case 5:
+				case 7:
 					m_FlowtBomb[c].Flowtbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
 					c++;
 					break;
