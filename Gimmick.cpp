@@ -29,7 +29,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_2;
+	m_NowField = FIELD_NO::NO_1;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化

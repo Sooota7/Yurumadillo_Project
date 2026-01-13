@@ -24,6 +24,10 @@ enum FIELD
 
 	FIELD_OBT_1, // ゴール
 
+	FIELD_BUTTON, // ボタン
+
+	FIELD_GIMMICK_0, // 動く床
+
 	FIELD_MAX
 };
 
@@ -35,6 +39,7 @@ private:
 	XMFLOAT3	position;	//ブロックの座標
 	FIELD		no;		//ブロックの種類
 	//その他必要な物は追加する
+	//XMFLOAT3	rot;	// ブロックの回転
 
 public:
 
