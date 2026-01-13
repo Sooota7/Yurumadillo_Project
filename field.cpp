@@ -479,8 +479,9 @@ void  MAPDATA::Field_Draw(void)
 	//MAP‚Ì•\Ž¦
 	int i = 0;
 
-	static float rot = 0.0f;
-	rot -= 0.5f;
+
+
+
 
 	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
@@ -551,6 +552,17 @@ void  MAPDATA::Field_Draw(void)
 
 void  MAPDATA::Field_Update(void)
 {
+	int i = 0;
+
+	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
+	{
+		if (m_Map[i].MapData_GetNo() == FIELD_OBT_1)
+		{
+			// Gimmickfield_Update()
+		}
+		i++;
+	}
+
 }
 
 
