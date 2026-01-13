@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "enemySpawner.h"
 #include "bomb.h"
+#include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
 class MANAGER;
@@ -22,6 +23,7 @@ private:
 	CAMERA m_Camera;
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
+	WEAPON m_Weapon;
 
 	COLLISION collision;
 

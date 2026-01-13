@@ -14,6 +14,7 @@ using namespace DirectX;
 #include	"Dictionary.h"
 #include	"EnemyNormal.h"
 #include	"EnemyButterfly.h"
+#include	"weapon.h"
 
 // ƒ}ƒNƒ’è‹`
 
