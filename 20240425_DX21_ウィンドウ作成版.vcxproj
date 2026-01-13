@@ -152,6 +152,7 @@
     <ClCompile Include="enemySpawner.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="FlowtBombSource.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gimmick.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mouse.cpp" />
+    <ClCompile Include="parts.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerUI.cpp" />
@@ -167,6 +169,7 @@
     <ClCompile Include="Polygon3D.cpp" />
     <ClCompile Include="prologue.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="RunBombSource.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -198,6 +201,7 @@
     <ClInclude Include="enemySpawner.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="FlowtBombSource.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gimmick.h" />
     <ClInclude Include="keyboard.h" />
@@ -205,6 +209,7 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="parts.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerUI.h" />
@@ -212,6 +217,7 @@
     <ClInclude Include="Polygon3D.h" />
     <ClInclude Include="prologue.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="RunBombSource.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
