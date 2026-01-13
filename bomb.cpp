@@ -280,7 +280,7 @@ void BOMB::Bomb_Draw(void)
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			break;
