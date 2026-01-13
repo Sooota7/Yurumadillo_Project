@@ -7,7 +7,7 @@
 #include	"direct3d.h"
 using namespace DirectX;
 
-#include	"model.h"
+#include	"parts.h"
 
 #include	"billboardManager.h"
 
@@ -36,6 +36,17 @@ enum PLAYER_STATE
 	PLAYER_STATE_DEATH,		//死
 };
 
+enum PLAYER_PARTS
+{
+	PARTS_HEAD,
+	PARTS_BODY,
+	PARTS_ARM_RIGHT,
+	PARTS_ARM_LEFT,
+	PARTS_LEG_RIGHT,
+	PARTS_LEG_LEFT,
+	PARTS_MAX
+};
+
 //プレイヤーのクラス
 class PLAYER
 {
@@ -47,7 +58,7 @@ private:
 	XMFLOAT3	m_Acceleration;	// 加速
 
 	PLAYER_STATE	m_State;		//ステート
-	MODEL* m_Model[2];		//モデル
+	PARTS m_Model[PARTS_MAX];		//モデル
 
 
 	 bool JumpCount;
@@ -63,6 +74,21 @@ private:
 	void    Player_Balloon();
 	void    Player_Respawn();
 	void    Player_Death();
+
+	void	Player_SetParts();
+	
+	XMFLOAT3	Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame);
+	void		Player_SetAnimInis();
+
+	void	Player_SetAnim();
+	void	Player_SetAnimIdle();
+	void	Player_SetAnimMove();
+	void	Player_SetAnimJunp();
+	void	Player_SetAnimBaloon();
+	void	Player_SetAnimRespawn();
+	void	Player_SetAnimDeath();
+
+	XMFLOAT3 m_LastPos;
 
 public:
 	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

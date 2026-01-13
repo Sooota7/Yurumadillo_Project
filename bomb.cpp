@@ -148,6 +148,8 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	}*/
 
 	int a = 0;
+	int b = 0;
+	int c = 0;
 	for (int q = 0; q < 3; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
@@ -165,6 +167,14 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					m_Bomb[a].BombSource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
 					a++;
 					break;
+				case 4:
+					m_RunBomb[b].Runbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
+					b++;
+					break;
+				case 7:
+					m_FlowtBomb[c].Flowtbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
+					c++;
+					break;
 				}
 
 
@@ -179,6 +189,14 @@ void BOMB::Bomb_Finalize(void)
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bomb[i].BombSource_Finalize();
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_RunBomb[i].Runbombsource_Finalize();
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_FlowtBomb[i].Flowtbombsource_Finalize();
 	}
 
 	for (int i = 0; i < BOMB_STATE::BOMB_MAX; i++)
@@ -213,6 +231,7 @@ void BOMB::Bomb_Draw(void)
 	
 	static float rot = 0.0f;
 	rot -= 0.5f;
+
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -292,6 +311,162 @@ void BOMB::Bomb_Draw(void)
 
 
 	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+
+		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
+
+		//スケーリング行列の作成
+		XMMATRIX	ScalingMatrix = XMMatrixScaling
+		(
+			1.0f,
+			1.0f,
+			1.0f
+		);
+
+		//平行移動行列の作成
+		XMMATRIX	TranslationMatrix = XMMatrixTranslation
+		(
+			bombPos.x,
+			bombPos.y,
+			bombPos.z
+		);
+
+		//回転行列の作成
+		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		(
+			XMConvertToRadians(0.0f),
+			//XMConvertToRadians(rot),
+			//XMConvertToRadians(rot),
+			XMConvertToRadians(0.0f),
+			XMConvertToRadians(0.0f)
+		);
+		//ワールド行列の作成
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		//最終的な変換行列を作成
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
+		//DirectXへ行列をセット
+		Shader_SetMatrix(WVP);
+
+		//テクスチャをセット
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+		//頂点バッファをセット
+		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+		UINT	offset = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+		//インデックスバッファをセット
+		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		//描画リクエスト
+		switch (m_RunBomb[i].Runbombsource_GetState())
+		{
+		case BOMB_NONE:
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
+			break;
+		case BOMB_ITEM:
+			ModelDraw(m_Model[BOMB_ITEM]);
+			break;
+		case BOMB_ACTIVE_HAVE:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		case BOMB_ACTIVE_THROW:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		
+		case BOMB_EXPLOSION:
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			break;
+
+		case BOMB_COOL:
+			
+			break;
+		}
+
+
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+
+		XMFLOAT3 bombPos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
+
+		//スケーリング行列の作成
+		XMMATRIX	ScalingMatrix = XMMatrixScaling
+		(
+			1.0f,
+			1.0f,
+			1.0f
+		);
+
+		//平行移動行列の作成
+		XMMATRIX	TranslationMatrix = XMMatrixTranslation
+		(
+			bombPos.x,
+			bombPos.y,
+			bombPos.z
+		);
+
+		//回転行列の作成
+		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		(
+			XMConvertToRadians(0.0f),
+			//XMConvertToRadians(rot),
+			//XMConvertToRadians(rot),
+			XMConvertToRadians(0.0f),
+			XMConvertToRadians(0.0f)
+		);
+		//ワールド行列の作成
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		//最終的な変換行列を作成
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
+		//DirectXへ行列をセット
+		Shader_SetMatrix(WVP);
+
+		//テクスチャをセット
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+		//頂点バッファをセット
+		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+		UINT	offset = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+		//インデックスバッファをセット
+		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		//描画リクエスト
+		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
+		{
+		case BOMB_NONE:
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
+			break;
+		case BOMB_ITEM:
+			ModelDraw(m_Model[BOMB_ITEM]);
+			break;
+		case BOMB_ACTIVE_HAVE:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		case BOMB_ACTIVE_THROW:
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			break;
+		
+		case BOMB_EXPLOSION:
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			break;
+
+		case BOMB_COOL:
+			
+			break;
+		}
+
+
+	}
 }
 
 void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
@@ -321,11 +496,71 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 			break;
 		}
 	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_RunBomb[i].Runbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_RunBomb[i].Runbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_RunBomb[i].Runbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_RunBomb[i].Runbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_RunBomb[i].Runbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_RunBomb[i].Runbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_FlowtBomb[i].Flowtbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_FlowtBomb[i].Flowtbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_FlowtBomb[i].Flowtbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_FlowtBomb[i].Flowtbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 BOMBSOURCE* BOMB::Bomb_GetBomb()
 {
 	return m_Bomb->BombSource_GetBombSource();
+}
+
+RUNBOMBSOURCE* BOMB::Bomb_GetRunBomb()
+{
+	return m_RunBomb->Runbombsource_GetRunbombsource();
+}
+
+FLOWTBOMBSOURCE* BOMB::Bomb_GetFlowtBomb()
+{
+	return m_FlowtBomb->Flowtbombsource_GetFlowtbombsource();
 }
 
 
