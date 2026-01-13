@@ -37,6 +37,7 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
+	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
 	m_BillboardManager.Initialize(pDevice, pContext);
 
@@ -80,6 +81,7 @@ void BOSS::Boss_Finalize()
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_Weapon.Weapon_Finalize();
 	//Block_Finalize();
 	//Effect_Finalize();
 	//Score_Finalize();
@@ -100,6 +102,7 @@ void BOSS::Boss_Update()
 	m_Map.Field_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
 	
 
@@ -129,6 +132,8 @@ void BOSS::Boss_Update()
 	collision.BombFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
+	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -168,6 +173,7 @@ void BOSS::Boss_Draw()
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
+	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light4.SetEnable(FALSE);			//ライティングOFF
@@ -191,6 +197,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
@@ -201,6 +208,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
 }
 
