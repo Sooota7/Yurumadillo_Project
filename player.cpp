@@ -24,7 +24,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	float downSize = 6.0f;
+	float downSize = 10.0f;
 
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
@@ -544,22 +544,22 @@ void PLAYER::Player_SetAnimInis()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.65f, 0.0f));
 				break;
 			case PARTS_BODY:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.6f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.6f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_LEG_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
 				break;
 			case PARTS_LEG_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
 				break;
 			default:
 				break;
