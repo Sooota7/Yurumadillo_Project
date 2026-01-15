@@ -558,7 +558,7 @@ void  MAPDATA::Field_Update(void)
 	{
 		if (m_Map[i].MapData_GetNo() == FIELD_OBT_1)
 		{
-			// Gimmickfield_Update()
+			m_Map[i].MapData_Update();
 		}
 		i++;
 	}
