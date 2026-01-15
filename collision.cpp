@@ -118,11 +118,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						PlayerPos.y > BoxTop)
 					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
-<<<<<<< HEAD
+
 						PlayerVel.y = 0;//PlayerVel.y * (-COE * 1.0f);
-=======
+
 						PlayerVel.y = 0;
->>>>>>> 011c443c965361ca908424032e09df541c40ce58
+
 						hit = COLLISION_HIT::HIT_GROUND;
 						if (PlayerJump == false)
 						{
