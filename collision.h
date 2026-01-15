@@ -16,6 +16,7 @@ using namespace DirectX;
 #include	"EnemyNormal.h"
 #include	"enemySpawner.h"
 #include	"bomb.h"
+#include	"weapon.h"
 
 #include    "player.h"
 
@@ -43,5 +44,8 @@ public:
 	float	PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb);
 	float	BombFieldCollision(BOMB* pBomb, MAPDATA* pField);
 	float	BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
+	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
+	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);
+	float	PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon);
 
 };

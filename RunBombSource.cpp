@@ -1,8 +1,9 @@
-#include "bombSource.h"
+#include"RunBombSource.h"
 #include	"keyboard.h"
 #include	"collision.h"
 #include	"mouse.h"
-void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
+
+void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
 	m_Position = pos;
@@ -11,29 +12,27 @@ void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 	m_Touch = false;
 }
 
-void BOMBSOURCE::BombSource_Finalize(void)
+void RUNBOMBSOURCE::Runbombsource_Finalize(void)
 {
-	
 }
 
-
-void BOMBSOURCE::BombSource_Safe()
+void RUNBOMBSOURCE::Runbombsource_Safe()
 {
 	m_Position.y -= BOMB_GRAVITY;
-	if (Keyboard_IsKeyDownTrigger(KK_V)&&m_Touch)
+	if (Keyboard_IsKeyDownTrigger(KK_V) && m_Touch)
 	{
 		m_State = BOMB_STATE::BOMB_ACTIVE_HAVE;
 		m_Touch = false;
-		m_Count = 0;		
+		m_Count = 0;
 	}
 }
 
-void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
+void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
 	m_Position.y += 1.0f;
 
-	
+
 
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 5.0f)
@@ -42,33 +41,7 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 		m_Count = 0;
 	}
 
-	////動き
-	//if (Keyboard_IsKeyDownTrigger(KK_B))//トリガーでチェック！
-	//{
-	//	
 
-	//	m_Velocity.x = sinf(XMConvertToRadians(pPlayerRot.y));
-	//	//m_Velocity.y = 1.0f;
-	//	m_Velocity.z = cosf(XMConvertToRadians(pPlayerRot.y));
-
-	//	XMFLOAT3	power = XMFLOAT3(1.0f, 1.0f, 1.0f);
-	//	power.z *= BOMB_SPEED_MAX * 0.1f;
-
-	//	m_Velocity.x *= power.z;
-	//	/*if (power.z < 0.16f)
-	//	{
-	//		m_Velocity.y = 0.0f;
-	//	}
-	//	else*/
-	//	//{//それなりのパワーの場合、ボール浮かす
-	//		m_Velocity.y = power.z * 1.5f;
-	//	//}
-	//	m_Velocity.z *= power.z;
-
-	//	
-	//	m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
-	//}
-	
 	if (Mouse_IsLeftDownTrigger())
 	{
 		// プレイヤーの向き
@@ -85,11 +58,11 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 			pVecZ /= len;
 		}
 
-		float speed = BOMB_SPEED_MAX*BOMB_THROW_POWER;
+		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
 		// 投げる速度
 		m_Velocity.x = pVecX * speed;
-		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+		m_Velocity.y = pPlayerPos.y + 0.5f;
 		m_Velocity.z = pVecZ * speed;
 
 		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
@@ -98,12 +71,10 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 
 }
 
-
-void BOMBSOURCE::BombSource_Active_Throw()
+void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 {
-	
 	m_Position.x += m_Velocity.x;
-	m_Position.y += m_Velocity.y;
+	m_Position.y = m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 
 	//落下判定
@@ -113,9 +84,9 @@ void BOMBSOURCE::BombSource_Active_Throw()
 		return;
 	}
 
-	m_Velocity.x *= 0.98f;//速度を適当に減衰させる
-	m_Velocity.y *= 0.98f;//追加する
-	m_Velocity.z *= 0.98f;
+	//m_Velocity.x *= 0.98f;//速度を適当に減衰させる
+	m_Velocity.y = 0.98f;//追加する
+	//m_Velocity.z *= 0.98f;
 
 	//静止チェック
 	float	len =
@@ -144,14 +115,15 @@ void BOMBSOURCE::BombSource_Active_Throw()
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
 	}
-	
-	
+
+
 	m_Velocity.y -= BOMB_GRAVITY;
-	
+
+
 
 }
 
-void BOMBSOURCE::BombSource_Cool()
+void RUNBOMBSOURCE::Runbombsource_Cool()
 {
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 5.0f)
@@ -162,7 +134,7 @@ void BOMBSOURCE::BombSource_Cool()
 	}
 }
 
-void BOMBSOURCE::BombSource_Explosion()
+void RUNBOMBSOURCE::Runbombsource_Explosion()
 {
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
@@ -172,8 +144,7 @@ void BOMBSOURCE::BombSource_Explosion()
 	}
 }
 
-//BombSource_Active_Throw
-void BOMBSOURCE::BombSource_Active_Type()
+void RUNBOMBSOURCE::Runbombsource_Active_Type()
 {
 	switch (m_Type)
 	{
@@ -186,10 +157,9 @@ void BOMBSOURCE::BombSource_Active_Type()
 	case TYPE_RUN:
 
 		break;
-	
+
 	default:
 		break;
 	}
 
 }
-

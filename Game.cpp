@@ -30,16 +30,18 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_3;
+	m_NowField = FIELD_NO::NO_2;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
+	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
 	m_BillboardManager.Initialize(pDevice, pContext);
-
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
@@ -80,6 +82,7 @@ void GAME::Game_Finalize()
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_Weapon.Weapon_Finalize();
 	//Block_Finalize();
 	//Effect_Finalize();
 	//Score_Finalize();
@@ -87,6 +90,8 @@ void GAME::Game_Finalize()
 	Camera_Finalize();	//カメラ終了処理
 
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
 
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
@@ -100,8 +105,10 @@ void GAME::Game_Update()
 	m_Map.Field_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(),&m_EnemyNormal);
 
-	
+	m_PlayerUI.Update();
+	m_BombUI.Update();
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
@@ -128,6 +135,9 @@ void GAME::Game_Update()
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
+	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
+	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -145,17 +155,13 @@ void GAME::Game_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_NowField == FIELD_NO::NO_1)
+		if (m_Manager->GetClearCount() == 0) 
 		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			//Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_Manager->SetScene(SCENE_RESULT);
-			m_NowField = FIELD_NO::NO_1;
-		}
+			m_Manager->IncrementClearCount();
+		};
+		
+		m_Manager->SetScene(SCENE_RESULT);
+		
 	}
 }
 
@@ -171,6 +177,7 @@ void GAME::Game_Draw()
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
+	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
@@ -178,6 +185,8 @@ void GAME::Game_Draw()
 	SetDepthTest(FALSE);
 
 	m_BillboardManager.Draw();
+	m_PlayerUI.Draw();
+	m_BombUI.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -194,7 +203,10 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
+	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -204,6 +216,9 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 }
 

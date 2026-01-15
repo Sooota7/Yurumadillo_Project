@@ -1,5 +1,5 @@
 
-//Game.h
+//Enemylush.h
 #pragma once
 
 #include "direct3d.h"
@@ -12,11 +12,9 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
-#include "playerUI.h"
-#include "bombUI.h"
 class MANAGER;
 
-class GAME
+class ENEMYLUSH
 {
 private:
 	MANAGER* m_Manager;
@@ -33,14 +31,12 @@ private:
 
 	BillboardManager m_BillboardManager;
 
-	PlayerUI m_PlayerUI;
-	BombUI m_BombUI;
 public:
-	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
-	void Game_Finalize();
-	void Game_Update();
-	void Game_Draw();
+	void Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
+	void Enemylush_Finalize();
+	void Enemylush_Update();
+	void Enemylush_Draw();
 
-	void Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
+	void Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
 
 };

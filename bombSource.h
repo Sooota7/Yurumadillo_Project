@@ -4,6 +4,7 @@
 #include	<d3d11.h>
 #include	<DirectXMath.h>
 #include	"direct3d.h"
+#include	"player.h"
 using namespace DirectX;
 
 #define		BOMB_RADIUS		(0.5f)
@@ -23,7 +24,13 @@ enum BOMB_STATE
 
 };
 
-
+enum BOMB_TYPE
+{
+	TYPE_NORMAL,
+	TYPE_FLOW,
+	TYPE_RUN,
+	TYPE_MAX
+};
 
 class BOMBSOURCE
 {
@@ -39,6 +46,7 @@ private:
 	float		m_LimitCount;	//
 	bool		m_Touch;
 	
+	BOMB_TYPE	m_Type;
 	
 public:
 
@@ -52,6 +60,10 @@ public:
 	void		BombSource_Cool();
 	void		BombSource_Explosion();
 
+	void		BombSource_Active_Type();
+
+
+	//セッター及びゲッター
 	void		BombSource_SetPosition(XMFLOAT3 pos)	{ m_Position = pos; };
 	XMFLOAT3	BombSource_GetPosition()	{ return m_Position; };
 

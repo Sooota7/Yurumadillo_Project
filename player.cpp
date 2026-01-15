@@ -23,10 +23,43 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	m_Model[0] = ModelLoad("asset\\model\\test_player.fbx");
-	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
+	float downSize = 6.0f;
 
-	m_Position = XMFLOAT3(7.0f, 8.0f, 5.0f);
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		switch (i)
+		{
+		case PARTS_HEAD:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\head.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			break;
+		case PARTS_BODY:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\body.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			break;
+		case PARTS_ARM_RIGHT:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\hand.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f/ downSize, 1.0f/ downSize, 1.0f/ downSize));
+			break;
+		case PARTS_ARM_LEFT:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\handL.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			break;
+		case PARTS_LEG_RIGHT:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\leg.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			break;
+		case PARTS_LEG_LEFT:
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\legL.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+	m_Position = XMFLOAT3(7.0f, 8.0f, 0.0f);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -35,9 +68,13 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
 
+	m_LastPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	m_Hp = PLAYER_HP;
 	JumpCount = true;
-
+	BalloonFlag = false;
+	BalloomUp = false;
+	BalloomNow = false;
 	g_StopTime = 0.0f;
 
 	//テクスチャ画像読み込み
@@ -49,15 +86,21 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
+	Player_SetAnimInis();
+
 }
 void	PLAYER::Player_Finalize()
 {
-	ModelRelease(m_Model[0]);
-	ModelRelease(m_Model[1]);
-
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		m_Model[i].PartsFinalize();
+	}
 }
+
+
 void	PLAYER::Player_Update()
 {
+	Player_SetAnim();
 	switch (m_State)
 	{
 	case PLAYER_STATE::PLAYER_STATE_IDLE:
@@ -68,6 +111,9 @@ void	PLAYER::Player_Update()
 		break;
 	case PLAYER_STATE::PLAYER_STATE_JUMP :
 		Player_Jump();
+		break;
+	case PLAYER_STATE::PLAYER_STATE_BALLOON :
+		Player_Balloon();
 		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
@@ -113,6 +159,9 @@ void	PLAYER::Player_Update()
 		m_State = PLAYER_STATE::PLAYER_STATE_DEATH;
 	}
 
+	Player_SetParts();
+
+
 }
 void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 {
@@ -140,18 +189,24 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 	Shader_SetWorldMatrix(world);
 	Shader_SetMatrix(wvp);
 
-	//モデルの描画リクエスト
-	switch (m_State)
+	for (int i = 0; i < PARTS_MAX; i++)
 	{
-	case PLAYER_STATE::PLAYER_STATE_IDLE:
-		ModelDraw(m_Model[0]);
-		break;
-	case PLAYER_STATE::PLAYER_STATE_MOVE:
-		ModelDraw(m_Model[0]);
-		break;
-	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
-		ModelDraw(m_Model[0]);
-		break;
+		//モデルの描画リクエスト
+		switch (m_State)
+		{
+		case PLAYER_STATE::PLAYER_STATE_IDLE:
+			m_Model[i].PartsDraw();
+			break;
+		case PLAYER_STATE::PLAYER_STATE_MOVE:
+			m_Model[i].PartsDraw();
+			break;
+		case PLAYER_STATE::PLAYER_STATE_BALLOON:
+			m_Model[i].PartsDraw();
+			break;
+		case PLAYER_STATE::PLAYER_STATE_RESPAWN:
+			m_Model[i].PartsDraw();
+			break;
+		}
 	}
 
 	{
@@ -235,6 +290,11 @@ void PLAYER::Player_Move()
         m_Velocity.z = 0.0f;
     }
 
+	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && JumpCount /*&&BalloonFlag==true*/)
+	{
+		BalloomUp = true;
+		m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+	}
     // ジャンプ
     if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
         m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
@@ -286,9 +346,6 @@ void   PLAYER::Player_Jump()
 	}
 }
 
-
-
-
 void    PLAYER::Player_Respawn()
 {
 	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
@@ -306,13 +363,475 @@ void PLAYER::Player_Death()
 	
 }
 
-
 PLAYER* PLAYER::GetPlayer()
 {
 	return this;
 }
 
+void PLAYER::Player_Balloon()
+{
+
+		if (BalloomUp == true)
+		{
+			m_Velocity.y = PLAYER_BALLOON_SPEED; //上昇
+		}
+		else if (BalloomUp == false)
+		{
+			m_Velocity.y = PLAYER_BALLOON_FALLSPEED;
+		}
+
+   		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && m_State == PLAYER_STATE::PLAYER_STATE_BALLOON)
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
+
+		
+
+
+<<<<<<< HEAD
+
+
+=======
+}
+
+float l = 0;
+
+//アニメーション処理
+void PLAYER::Player_SetParts()
+{
+	
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		XMFLOAT3 pos = m_Position;
+		XMFLOAT3 rot = m_Model[PARTS_BODY].GetPartsRotation();
+
+		switch (i)
+		{
+		case PARTS_HEAD:
+		case PARTS_BODY:
+		case PARTS_ARM_RIGHT:
+		case PARTS_ARM_LEFT:
+		case PARTS_LEG_RIGHT:
+		case PARTS_LEG_LEFT:
+			pos = Player_Anim(&m_Model[i], rot, (int)l);
+
+		case PARTS_MAX:
+			break;
+		default:
+			break;
+		}
+		//rot.y = XMConvertToRadians(GetCameraYoko());
+
+		switch (i)
+		{
+		case PARTS_HEAD:
+			
+			m_Model[i].PartsSet(pos, m_Rotation);
+			break;
+		case PARTS_BODY:
+			//pos = Player_LeftLeg2(&m_Model[i], rot);
+			m_Model[i].PartsSet(pos, m_Rotation);
+			break;
+		case PARTS_ARM_RIGHT:
+			//pos = Player_LeftLeg2(&m_Model[i], rot);
+			m_Model[i].PartsSet(pos, rot);
+			break;
+		case PARTS_ARM_LEFT:
+			//pos = Player_LeftLeg2(&m_Model[i], rot);
+			m_Model[i].PartsSet(pos, rot);
+			break;
+		case PARTS_LEG_RIGHT:
+			//pos = Player_LeftLeg2(&m_Model[i], rot);
+			m_Model[i].PartsSet(pos, rot);
+			break;
+		case PARTS_LEG_LEFT:
+			//pos = Player_LeftLeg2(&m_Model[i],rot);
+			m_Model[i].PartsSet(pos, rot);
+			break;
+		
+		default:
+			break;
+		}
+	}
+	l += (1.0f/30.0f);
+	/*if (l >= FRAME_MAX)
+	{
+		l = 0;
+	}*/
+}
+
+
+float tes00 = 30.0f;
+int tes12 = 7;
+
+XMFLOAT3 PLAYER::Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame)
+{
+	XMFLOAT3 pos = GetPlayerPosition();
+	XMFLOAT3 InisPos = parts->GetInisPosition();
+	XMFLOAT3 nowPos = parts->GetNowPosition();
+	XMFLOAT3 lastPos = parts->GetAnimLastPosition(parts->GetNowPos());
+	bool	 loop = parts->GetAnimLoop();
+
+	//x値
+	pos.x -= InisPos.x * cosf(rot.y);
+	pos.z += InisPos.x * sinf(rot.y);
+
+	//z値
+	pos.x -= InisPos.z * cosf(rot.y);
+	pos.z += InisPos.z * sinf(rot.y);
+
+	//ｙ値
+	pos.y += InisPos.y;
+
+	XMFLOAT3 tesPos = parts->GetAnimLastPosition(0);
+	
+	nowPos.x += tesPos.x / 6;
+	nowPos.z += tesPos.z / 6;
+	 
+	//nowPos = parts->m_Frame[7].GetPosition();
+	/*if (nowPos.x >= tesPos.x&&tesPos.x>=0)
+	{
+		if (tes12 == 7)
+		{
+
+		}
+	}
+	else if (nowPos.x < tesPos.x && tesPos.x<0)
+	{
+
+	}*/
+
+	nowPos.z += lastPos.z / tes00;
+	
+	pos.x += (nowPos.z * sinf(rot.y));
+	pos.z += (nowPos.z * cosf(rot.y));
+
+
+	//if (loop)
+	//{
+	//	lastPos.z = -lastPos.z;
+	//}
+
+	
+	
+
+	//pos.x += nowPos.z * sinf(rot.y);
+	//pos.z += nowPos.z * cosf(rot.y);
+
+	//parts->SetAnimLoop(loop);
+	////parts->SetAnimLastPosition(lastPos);
+	//parts->SetNowPosition(nowPos);
+	return pos;
+}
+
+void PLAYER::Player_SetAnim()
+{
+	switch (m_State)
+	{
+	case PLAYER_STATE_IDLE:
+		Player_SetAnimIdle();
+		break;
+	case PLAYER_STATE_MOVE:
+		Player_SetAnimMove();
+		break;
+	case PLAYER_STATE_JUMP:
+		Player_SetAnimJunp();
+		break;
+	case PLAYER_STATE_BALLOON:
+		break;
+	case PLAYER_STATE_RESPAWN:
+		break;
+	case PLAYER_STATE_DEATH:
+		break;
+	default:
+		break;
+	}
+}
+void PLAYER::Player_SetAnimInis()
+{
+	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
+
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		for (int i = 0; i < PARTS_MAX; i++)
+		{
+			switch (i)
+			{
+			case PARTS_HEAD:
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				break;
+			case PARTS_BODY:
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
+				break;
+			case PARTS_ARM_RIGHT:
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.6f, 0.5f, 0.0f));
+				break;
+			case PARTS_ARM_LEFT:
+				m_Model[i].SetInisPosition(XMFLOAT3(0.6f, 0.5f, 0.0f));
+				break;
+			case PARTS_LEG_RIGHT:
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.0f, 0.0f));
+				break;
+			case PARTS_LEG_LEFT:
+				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.0f, 0.0f));
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
+}
+
+void PLAYER::Player_SetAnimIdle()
+{
+	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
+
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		for (int i = 0; i < PARTS_MAX; i++)
+		{
+			switch (i)
+			{
+			case PARTS_HEAD:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			case PARTS_BODY:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			case PARTS_ARM_RIGHT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			case PARTS_ARM_LEFT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			case PARTS_LEG_RIGHT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			case PARTS_LEG_LEFT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
+}
+
+void PLAYER::Player_SetAnimMove()
+{
+	Player_SetAnimInis();
+	/*
+	////7 15 22 30
+	//int animPoint[] = { 7,15,22,29 };
+	//for (int i = 0; i < PARTS_MAX; i++)
+	//{
+	//	switch (i)
+	//	{
+	//	case PARTS_HEAD:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	case PARTS_BODY:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	case PARTS_ARM_RIGHT:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.4f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.4f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	case PARTS_ARM_LEFT:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.4f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.4f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	case PARTS_LEG_RIGHT:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.3f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, +0.3f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	case PARTS_LEG_LEFT:
+	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.3f));
+	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.3f));
+	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+
+	
+	
+
+	//for (int a = 0; a < PARTS_MAX; a++)
+	//{
+	//	
+	//		int y = 0;
+
+	//	switch (a)
+	//	{
+	//	case PARTS_HEAD:
+	//	case PARTS_BODY:
+	//	case PARTS_ARM_RIGHT:
+	//	case PARTS_ARM_LEFT:
+	//	case PARTS_LEG_RIGHT:
+	//	case PARTS_LEG_LEFT:
+
+	//		for (int i : animPoint)
+	//		{
+
+	//			XMFLOAT3 nextPos = m_Model[a].m_Frame[i].GetPosition();
+	//			XMFLOAT3 pos = m_Model[a].m_Frame[y].GetPosition();
+
+	//			for (int p = (y); p < (i - y); p++)
+	//			{
+	//				if (pos.x > nextPos.x)
+	//				{
+	//					pos.x += (pos.x - nextPos.x / (i - y)) + (-pos.x / (i - y));
+	//				}
+	//				else
+	//				{
+	//					pos.x -= ( nextPos.x - pos.x/ (i - y)) + (-pos.x / (i - y));
+	//				}
+
+	//				if (pos.y > nextPos.y)
+	//				{
+	//					pos.y += (pos.y - nextPos.y / (i - y)) + (-pos.y / (i - y));
+	//				}
+	//				else
+	//				{
+	//					pos.y -= (nextPos.y - pos.y / (i - y)) + (-pos.y / (i - y));
+	//				}
+
+	//				if (pos.z > nextPos.z)
+	//				{
+	//					pos.z += (pos.z - nextPos.z / (i - y)) + (-pos.z / (i - y));
+	//				}
+	//				else
+	//				{
+	//					pos.z -= (nextPos.z - pos.z / (i - y)) + (-pos.z / (i - y));
+	//				}
+
+	//				m_Model[a].m_Frame[p].SetPosition(pos);
+	//			}
+
+	//			y = i;
+	//		}
+	//		
+	//		break;
+	//	case PARTS_MAX:
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+		
+	*/
 
 
 
+	//for (int i = 0; i < PARTS_MAX; i++)
+	//{
+	//	switch (i)
+	//	{
+	//	case PARTS_HEAD:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+	//		break;
+	//	case PARTS_BODY:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+	//		break;
+	//	case PARTS_ARM_RIGHT:
+	//		m_Model[i].SetlasPosMax(2);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.5f, 0.0f, -0.5f),0);
+	//		break;
+	//	case PARTS_ARM_LEFT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.5f, 0.0f, 0.5f),0);
+	//		break;
+	//	case PARTS_LEG_RIGHT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.3f, 0.0f, -0.3f),0);
+	//		break;
+	//	case PARTS_LEG_LEFT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.3f, 0.0f, 0.3f),0);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
+}
 
+void PLAYER::Player_SetAnimJunp()
+{
+	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
+
+	for (int i = 0; i < PARTS_MAX; i++)
+	{
+		for (int i = 0; i < PARTS_MAX; i++)
+		{
+			switch (i)
+			{
+			case PARTS_HEAD:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
+				break;
+			case PARTS_BODY:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
+				break;
+			case PARTS_ARM_RIGHT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.6f, 0.0f), 0);
+				break;
+			case PARTS_ARM_LEFT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.6f, 0.0f), 0);
+				break;
+			case PARTS_LEG_RIGHT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
+				break;
+			case PARTS_LEG_LEFT:
+				m_Model[i].SetlasPosMax(0);
+				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
+}
+
+void PLAYER::Player_SetAnimBaloon()
+{
+}
+
+void PLAYER::Player_SetAnimRespawn()
+{
+}
+
+void PLAYER::Player_SetAnimDeath()
+{
+}
+
+>>>>>>> ee2012164638df15d47a7e377650f3f9bb48833f
