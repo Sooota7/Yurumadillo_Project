@@ -155,6 +155,10 @@
     <ClCompile Include="FlowtBombSource.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gimmick.cpp" />
+    <ClCompile Include="gimmickButton.cpp" />
+    <ClCompile Include="gimmickData.cpp" />
+    <ClCompile Include="gimmickField.cpp" />
+    <ClCompile Include="gimmickGate.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
@@ -206,6 +210,10 @@
     <ClInclude Include="FlowtBombSource.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gimmick.h" />
+    <ClInclude Include="gimmickButton.h" />
+    <ClInclude Include="gimmickData.h" />
+    <ClInclude Include="gimmickField.h" />
+    <ClInclude Include="gimmickGate.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />

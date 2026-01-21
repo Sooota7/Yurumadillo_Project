@@ -11,6 +11,7 @@ using namespace DirectX;
 
 
 #include	"field.h"
+#include	"gimmickData.h"
 #include	"Ball.h"
 #include	"Enemy.h"
 #include	"EnemyNormal.h"
@@ -47,5 +48,10 @@ public:
 	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);
 	float	PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon);
+
+	/*float PlayerButtonCollision(PLAYER* pPlayer,
+		const GIMMICK_BUTTON* pButtons,
+		int buttonCount,
+		GIMMICK_CHANNEL_TABLE* pTable);*/
 
 };
