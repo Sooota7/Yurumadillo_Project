@@ -24,29 +24,35 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	float downSize = 10.0f;
+
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
 		switch (i)
 		{
 		case PARTS_HEAD:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\test.fbx");
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\head.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_BODY:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\test.fbx");
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\body.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_ARM_RIGHT:
 			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\hand.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f/10, 1.0f/10, 1.0f/10));
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f/ downSize, 1.0f/ downSize, 1.0f/ downSize));
 			break;
 		case PARTS_ARM_LEFT:
 			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\handL.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / 10, 1.0f / 10, 1.0f / 10));
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_LEG_RIGHT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\test.fbx");
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\leg.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_LEG_LEFT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\test.fbx");
+			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\legL.fbx");
+			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		default:
 			break;
@@ -406,12 +412,10 @@ void PLAYER::Player_SetParts()
 		{
 		case PARTS_HEAD:
 			
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.25f, 1.25f, 1.25f));
 			m_Model[i].PartsSet(pos, m_Rotation);
 			break;
 		case PARTS_BODY:
 			//pos = Player_LeftLeg2(&m_Model[i], rot);
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f, 1.5f, 1.0f));
 			m_Model[i].PartsSet(pos, m_Rotation);
 			break;
 		case PARTS_ARM_RIGHT:
@@ -540,22 +544,22 @@ void PLAYER::Player_SetAnimInis()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.65f, 0.0f));
 				break;
 			case PARTS_BODY:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.5f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.5f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_LEG_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
 				break;
 			case PARTS_LEG_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
 				break;
 			default:
 				break;
@@ -728,38 +732,38 @@ void PLAYER::Player_SetAnimMove()
 
 
 
-	for (int i = 0; i < PARTS_MAX; i++)
-	{
-		switch (i)
-		{
-		case PARTS_HEAD:
-			m_Model[i].SetlasPosMax(0);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
-			break;
-		case PARTS_BODY:
-			m_Model[i].SetlasPosMax(0);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
-			break;
-		case PARTS_ARM_RIGHT:
-			m_Model[i].SetlasPosMax(2);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.5f, 0.0f, -0.5f),0);
-			break;
-		case PARTS_ARM_LEFT:
-			m_Model[i].SetlasPosMax(0);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(0.5f, 0.0f, 0.5f),0);
-			break;
-		case PARTS_LEG_RIGHT:
-			m_Model[i].SetlasPosMax(0);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.3f, 0.0f, -0.3f),0);
-			break;
-		case PARTS_LEG_LEFT:
-			m_Model[i].SetlasPosMax(0);
-			m_Model[i].SetAnimLastPosition(XMFLOAT3(0.3f, 0.0f, 0.3f),0);
-			break;
-		default:
-			break;
-		}
-	}
+	//for (int i = 0; i < PARTS_MAX; i++)
+	//{
+	//	switch (i)
+	//	{
+	//	case PARTS_HEAD:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+	//		break;
+	//	case PARTS_BODY:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+	//		break;
+	//	case PARTS_ARM_RIGHT:
+	//		m_Model[i].SetlasPosMax(2);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.5f, 0.0f, -0.5f),0);
+	//		break;
+	//	case PARTS_ARM_LEFT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.5f, 0.0f, 0.5f),0);
+	//		break;
+	//	case PARTS_LEG_RIGHT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.3f, 0.0f, -0.3f),0);
+	//		break;
+	//	case PARTS_LEG_LEFT:
+	//		m_Model[i].SetlasPosMax(0);
+	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.3f, 0.0f, 0.3f),0);
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//}
 }
 
 void PLAYER::Player_SetAnimJunp()
