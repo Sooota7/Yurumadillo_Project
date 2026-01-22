@@ -39,9 +39,7 @@ void PROLOGUE::Prologue_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	LoadFromWICFile(L"asset\\texture\\4.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[3]);
 	assert(g_Texture[3]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\5.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[4]);
-	assert(g_Texture[4]);//読み込み失敗時にダイアログを表示
+	
 	//フェードインのセット
 	XMFLOAT4	color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	m_Fade->Fade_SetFade(60.0f, color, FADE_IN, SCENE_GAME);

@@ -12,6 +12,8 @@
 #include "fade.h"
 #include "Menu.h"
 #include "Tutorial.h"
+#include "Tutorial2.h"
+#include "Tutorial3.h"
 #include "prologue.h"
 #include "StageSelection.h"
 #include "Ending.h"
@@ -64,6 +66,12 @@ void	MANAGER::Manager_Update()
 		break;
 	case SCENE_TUTORIAL:
 		m_Tutorial.Tutorial_Update();
+		break;
+	case SCENE_TUTORIAL2:
+		m_Tutorial2.Tutorial2_Update();
+		break;
+	case SCENE_TUTORIAL3:
+		m_Tutorial3.Tutorial3_Update();
 		break;
 	
 	case SCENE_GAME:
@@ -124,6 +132,12 @@ void	MANAGER::Manager_Draw()
 		case SCENE_TUTORIAL:
 			m_Tutorial.Tutorial_Draw();
 			break;
+		case SCENE_TUTORIAL2:
+			m_Tutorial2.Tutorial2_Draw();
+			break;
+		case SCENE_TUTORIAL3:
+			m_Tutorial3.Tutorial3_Draw();
+			break;
 		case SCENE_GAME:
 			m_Game.Game_Draw();
 			break;
@@ -174,6 +188,12 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		break;
 	case SCENE_TUTORIAL:
 		m_Tutorial.Tutorial_Finalize();
+		break;
+	case SCENE_TUTORIAL2:
+		m_Tutorial2.Tutorial2_Finalize();
+		break;
+	case SCENE_TUTORIAL3:
+		m_Tutorial3.Tutorial3_Finalize();
 		break;
 	case SCENE_GAME:
 		if (scene != SCENE_PAUSE)
@@ -240,6 +260,28 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			if (!m_TutorialInitialized)
 			{
 				m_Tutorial.Tutorial_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_TutorialInitialized = true;
+			}
+			break;
+		case SCENE_TUTORIAL2:
+			if (!m_TutorialInitialized2)
+			{
+				m_Tutorial2.Tutorial2_Initialize(
+					Direct3D_GetDevice(),
+					Direct3D_GetDeviceContext(),
+					this
+				);
+				m_TutorialInitialized = true;
+			}
+			break;
+		case SCENE_TUTORIAL3:
+			if (!m_TutorialInitialized3)
+			{
+				m_Tutorial3.Tutorial3_Initialize(
 					Direct3D_GetDevice(),
 					Direct3D_GetDeviceContext(),
 					this
