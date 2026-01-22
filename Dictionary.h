@@ -411,7 +411,9 @@ enum SCENE
 	SCENE_TITLE,		  //タイトルシーン
 	SCENE_PROLOGUE,		  //プロローグシーン
 	SCENE_MENU,			  //メニューシーン
-	SCENE_TUTORIAL,		  //チュートリアルシーン
+	SCENE_TUTORIAL,		  //ノーマルチュートリアルシーン
+	SCENE_TUTORIAL2,		  //（　　　）チュートリアルシーン
+	SCENE_TUTORIAL3,		  //（　　　）チュートリアルシーン
 	SCENE_GAME,			  //ゲームシーン
 	SCENE_PAUSE,		  //ポーズシーン
 	SCENE_RESULT,		  //リザルトルシーン
