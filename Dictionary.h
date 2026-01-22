@@ -25,6 +25,48 @@ enum FIELD_NO
 };
 
 
+enum GIMMICK_BUTTON_TYPE
+{
+	a = 10,
+	b,
+	c,
+	d,
+	e,
+	f,
+	g,
+	h,
+	i,
+	j,
+};
+
+enum GIMMICK_FIELD_TYPE
+{
+	k = 20,
+	l,
+	n,
+	m,
+	o,
+	p,
+	q,
+	r,
+	s,
+	t,
+};
+
+enum GIMMICK_GATE_TYPE
+{
+	u = 30,
+	v,
+	w,
+	x,
+	y,
+	z,
+	A,
+	B,
+	C,
+	D,
+};
+
 const int FIELD_WIDTH_X{ 15 };
 const int FIELD_WIDTH_Z{ 20 };
 

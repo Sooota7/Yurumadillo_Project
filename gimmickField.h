@@ -17,7 +17,7 @@ public:
     XMFLOAT3 m_Velocity;
     float    m_Count;
 
-private:
+
     int      m_Channel;           // 連動チャンネル（下1桁）
     XMFLOAT3 m_TargetPosition;    // ON時の目標
     float    m_MoveSpeed;         // unit/sec

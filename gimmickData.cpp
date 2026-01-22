@@ -375,32 +375,18 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	int a = 0;
 	int b = 0;
 	int c = 0;
+	Channels_Reset();
+
 	for (int q = 0; q < 3; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
 		{
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
+				int chip =  CheckGimmick(l, i, q, no);
+				if (chip <= 0) { continue; }
 
-				switch (CheckGimmick(l, i, q, no))
-				{
-				case 0:
-					break;
-				case 1:
-					break;
-				case 3:
-					m_GimmickButton[a].GimmickButton_Initialize(XMFLOAT3(l, q, i));
-					a++;
-					break;
-				case 4:
-					m_GimmickField[b].GimmickField_Initialize(XMFLOAT3(l, q, i));
-					b++;
-					break;
-				case 7:
-					m_GimmickGate[c].GimmickGate_Initialize(XMFLOAT3(l, q, i));
-					c++;
-					break;
-				}
+				
 
 
 			}

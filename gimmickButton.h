@@ -13,7 +13,7 @@ using namespace DirectX;
 class GIMMICK_BUTTON
 {
 public:
-private:
+
 
 	XMFLOAT3	m_FirstPosition;		//最初の座標
 	XMFLOAT3	m_Position;				//ボタンの座標
