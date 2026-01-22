@@ -10,6 +10,8 @@
 #include "dictionary.h"
 #include "Menu.h"
 #include "Tutorial.h"
+#include "Tutorial2.h"
+#include "Tutorial3.h"
 #include "prologue.h"
 #include "StageSelection.h"
 #include "Ending.h"
@@ -29,6 +31,8 @@ private:
 	PROLOGUE m_Prologue;
 	MENU  m_Menu;
 	TUTORIAL m_Tutorial;
+	TUTORIAL2 m_Tutorial2;
+	TUTORIAL3 m_Tutorial3;
 	GAME  m_Game;
 	PAUSE m_Pause;
 	RESULT m_Result;
@@ -39,6 +43,8 @@ private:
 	BOSS m_Boss;
 	bool m_GameInitialized = false;
 	bool m_TutorialInitialized = false;
+	bool m_TutorialInitialized2 = false;
+	bool m_TutorialInitialized3 = false;
 	bool m_GimmickInitialized = false;
 	bool m_EnemyLushInitialized = false;
 	bool m_BossInitialized = false;

@@ -161,7 +161,7 @@ int CheckMap(int x, int y, int z,FIELD_NO no)
 		return GetMap4(x, y, z);
 		break;
 	case NO_5:
-		return GetMap4(x, y, z);
+		return GetMap5(x, y, z);
 		break;
 	default:
 		break;

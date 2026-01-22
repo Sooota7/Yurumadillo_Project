@@ -5,7 +5,7 @@
 #include "direct3d.h"
 #include "fade.h"
 
-#define MAX_PROLOGUE_TEXTURE	(5)
+#define MAX_PROLOGUE_TEXTURE	(4)
 
 class PROLOGUE
 {

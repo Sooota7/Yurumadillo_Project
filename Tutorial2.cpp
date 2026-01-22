@@ -1,9 +1,9 @@
 
-//Tutorial.cpp
+//Tutorial2.cpp
 
 #include	"Manager.h"
 #include	"sprite.h"
-#include	"Tutorial.h"
+#include	"Tutorial2.h"
 #include	"keyboard.h"
 
 #include	"player.h"
@@ -20,15 +20,15 @@
 
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
 
-LIGHTOBJECT		Light2;//<<<<<<ライト管理オブジェクト
+LIGHTOBJECT		Light7;//<<<<<<ライト管理オブジェクト
 
 
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
-void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
+void TUTORIAL2::Tutorial2_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_3;
+	m_NowField = FIELD_NO::NO_4;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -58,21 +58,21 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	XMFLOAT4	para;
 
 	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//環境光の色
-	Light2.SetAmbient(para);
+	Light7.SetAmbient(para);
 
 	para = XMFLOAT4(0.6f, 0.6f, 0.6f, 1.0f);//光の色
-	Light2.SetDiffuse(para);
+	Light7.SetDiffuse(para);
 
 	para = XMFLOAT4(0.5f, -1.0f, 0.0f, 1.0f);//光方向
 	float	len = sqrtf(para.x * para.x + para.y * para.y + para.z * para.z);
 	para.x /= len;
 	para.y /= len;
 	para.z /= len;
-	Light2.SetDirection(para);//光の方向（正規化済）
+	Light7.SetDirection(para);//光の方向（正規化済）
 
 }
 
-void TUTORIAL::Tutorial_Finalize()
+void TUTORIAL2::Tutorial2_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -91,7 +91,7 @@ void TUTORIAL::Tutorial_Finalize()
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
-void TUTORIAL::Tutorial_Update()
+void TUTORIAL2::Tutorial2_Update()
 {
 	//更新処理
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
@@ -140,15 +140,16 @@ void TUTORIAL::Tutorial_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		m_Manager->SetScene(SCENE_TUTORIAL2);
+		m_Manager->SetScene(SCENE_TUTORIAL3);
+		m_NowField = FIELD_NO::NO_4;
 		
 	}
 }
 
-void TUTORIAL::Tutorial_Draw()
+void TUTORIAL2::Tutorial2_Draw()
 { 
-	Light2.SetEnable(TRUE);			//ライティングON
-	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
+	Light7.SetEnable(TRUE);			//ライティングON
+	Shader_SetLight(Light7.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
 
 	Camera_Draw();		//Drawの最初で呼ぶ！
@@ -160,8 +161,8 @@ void TUTORIAL::Tutorial_Draw()
 	m_Weapon.Weapon_Draw();
 
 	//2D描画
-	Light2.SetEnable(FALSE);			//ライティングOFF
-	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
+	Light7.SetEnable(FALSE);			//ライティングOFF
+	Shader_SetLight(Light7.Light);	//ライト構造体をシェーダーへセット
 
 
 
@@ -177,7 +178,7 @@ void TUTORIAL::Tutorial_Draw()
 
 }
 
-void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
+void TUTORIAL2::Tutorial2_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
