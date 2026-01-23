@@ -20,11 +20,12 @@ private:
 	MANAGER* m_Manager;
 	PLAYER m_Player;
 	MAPDATA m_Map;
+	GIMMICK_DATA m_GimmickData;
 	CAMERA m_Camera;
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
-
+	
 	COLLISION collision;
 
 	FIELD_NO m_NowField;
