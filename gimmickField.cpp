@@ -6,15 +6,14 @@ void GIMMICK_FIELD::GimmickField_Initialize(XMFLOAT3 pos)
 {
 	m_FirstPosition = pos;
 	m_Position = pos;
+	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Count = 0.0f;
-    m_FirstPosition = pos;
-    m_Position = pos;
-    m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+   
     m_Count = 0.0f;
 
     m_Channel = 0;
-    m_TargetPosition = XMFLOAT3(pos.x, pos.y + 1.0f, pos.z); // マップチップで設定したい
+    m_TargetPosition = XMFLOAT3(pos.x, pos.y , pos.z); // マップチップで設定したい
     m_MoveSpeed = FIELD_MOVE_SPEED;
 
 }
@@ -26,6 +25,8 @@ void GIMMICK_FIELD::GimmickField_Finalize(void)
 
 void GIMMICK_FIELD::GimmickField_Update(bool isOn)
 {
+    XMFLOAT3 preview = m_Position; // 直前位置
+
 	// 目標地点の設定
     XMFLOAT3 dst;
     if (isOn)
@@ -67,5 +68,12 @@ void GIMMICK_FIELD::GimmickField_Update(bool isOn)
             m_Position.z += diff.z * step;
         }
     }
+
+
+    // 移動差分を速度として保存
+    m_Velocity.x = m_Position.x - preview.x;
+    m_Velocity.y = m_Position.y - preview.y;
+    m_Velocity.z = m_Position.z - preview.z;
+
 
 }

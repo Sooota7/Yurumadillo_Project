@@ -5,6 +5,8 @@
 #include "gimmickButton.h"
 using namespace DirectX;
 
+
+
 enum GATE_STATE
 {
     GATE_NONE,
@@ -14,6 +16,14 @@ enum GATE_STATE
     GATE_CLOSING,
 	GATE_MAX
 };
+
+// 左右
+enum GATE_SIDE
+{
+    GATE_SIDE_LEFT = 0,
+    GATE_SIDE_RIGHT = 1
+};
+
 
 class GIMMICK_GATE
 {
@@ -25,7 +35,7 @@ public:
     XMFLOAT3 m_Velocity;
     float    m_Count;
 
-private:
+    GATE_SIDE  m_Side;     // S左右
     int       m_Channel; // 連動チャンネル（下1桁）
     GATE_STATE m_State;
     float      m_Open; // 0.0=閉, 1.0=全開
@@ -47,4 +57,9 @@ public:
     float      GimmickGate_GetOpen() const { return m_Open; }
 
     GIMMICK_GATE* GetGimmickGate() { return this; }
+
+
+    void      GimmickGate_SetSide(GATE_SIDE s) { m_Side = s; }
+    GATE_SIDE GimmickGate_GetSide() { return m_Side; }
+
 };

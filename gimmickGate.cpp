@@ -12,6 +12,7 @@ void GIMMICK_GATE::GimmickGate_Initialize(XMFLOAT3 pos)
     m_Channel = 0;
     m_State = GATE_CLOSED;
     m_Open = 0.0f;
+    m_Side = GATE_SIDE_RIGHT;
 }
 
 void GIMMICK_GATE::GimmickGate_Finalize(void)
@@ -25,7 +26,7 @@ void GIMMICK_GATE::GimmickGate_Update(bool isOn)
     float speed = 2.0f * (1.0f / 60.0f);
 
 
-    if (isOn)
+    if (!isOn)
 	{// ŠJ‚­•ûŒü
         if (m_Open < 1.0f)
         {

@@ -9,20 +9,25 @@
 #include	"player.h"
 
 // マクロ定義
-#define GIM_BUTTON_MIN 10  // 10-19
-#define GIM_BUTTON_MAX 19
-#define GIM_FIELD_MIN  20  // 20-29
-#define GIM_FIELD_MAX  29
-#define GIM_GATE_MIN   30  // 30-39
-#define GIM_GATE_MAX   39
+#define GIM_BUTTON_MIN (10)  // 10-19
+#define GIM_BUTTON_MAX (19)
+#define GIM_FIELD_MIN  (20)  // 20-29
+#define GIM_FIELD_MAX  (29)  
+#define GIM_GATE_MAX (30)    // 30-39
+#define GIM_GATE_MAX (39)
+#define GIM_TARGET_MIN   (40)  // 40-49
+#define GIM_TARGET_MAX   (49)
 
 
 // --- channel は下1桁（0..9） ---
 #define MAX_CHANNEL 10
 
 // --- 必要ボタン数（固定） ---
-#define NEED_BUTTONS_FIELD 1
-#define NEED_BUTTONS_GATE  2
+#define NEED_BUTTONS_FIELD (1)
+#define NEED_BUTTONS_GATE  (2)
+
+// ゲート関連
+#define GATE_MAX_OPEN_OFFSET (1.50f)
 
 #define		GIMMICK_NUM_MAX	(10)
 #define		GIMMICK_TYPE_MAX	(2)
@@ -80,4 +85,6 @@ public:
     int             GetGateCount() const { return m_GateCount; }
 
 	GIMMICK_DATA* GetGimmickData() { return this; };
+
+	void SetupGateSides(GIMMICK_DATA* self); // ゲートの左右設定
 };

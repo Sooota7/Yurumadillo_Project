@@ -6,8 +6,8 @@
 using namespace DirectX;
 
 
-#define BUTTON_PRESS_DEPTH (0.20f) // ‰Ÿ‰º‚Å’¾‚Þ‹——£(Y-)
-#define BUTTON_MOVE_SPEED (6.0f)  // unit/sec
+#define BUTTON_PRESS_DEPTH (0.40f) // ‰Ÿ‰º‚Å’¾‚Þ‹——£(Y-)
+#define BUTTON_MOVE_SPEED (5.0f)  // unit/sec
 
 
 class GIMMICK_BUTTON

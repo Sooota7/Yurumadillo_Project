@@ -349,6 +349,15 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	{
+		TexMetadata metadata;
+		ScratchImage image;
+		// フォルダ/ファイル名は field.cpp と統一
+		LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
+		CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
+		assert(g_Texture); // 必要なら追加
+	}
+
 	for (int i = 0; i < GIMMICK_STATE::GIMMICK_STATE_MAX; i++)
 	{
 		switch (i)
@@ -372,9 +381,10 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	}
 
 
-	int a = 0;
-	int b = 0;
-	int c = 0;
+	m_ButtonCount = 0;
+	m_FieldCount = 0;
+	m_GateCount = 0;
+
 	Channels_Reset();
 
 	for (int q = 0; q < 3; q++)
@@ -384,15 +394,82 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
 				int chip =  CheckGimmick(l, i, q, no);
-				if (chip <= 0) { continue; }
+				if (chip < 10) { continue; }
 
-				
+				// ギミックの種類
+				int num = chip / 10;  // 1 ボタン 2 フィールド 3 ゲート
+				// ギミックのチャンネル番号
+				int ch = chip % 10;   // チャンネル番号	
+
+				if (num == 1)
+				{
+					if (m_ButtonCount < GIMMICK_NUM_MAX)
+					{
+						XMFLOAT3 pos = XMFLOAT3((float)l, (float)q, (float)i);
+						m_GimmickButton[m_ButtonCount].GimmickButton_Initialize(pos);
+						m_GimmickButton[m_ButtonCount].GimmickButton_SetChannel(ch);
+						m_GimmickButton[m_ButtonCount].GimmickButton_SetPosition(pos);
+						m_ButtonCount++;
+					}
+				}
+				else if (num == 2)
+				{
+					if (m_FieldCount < GIMMICK_NUM_MAX)
+					{
+						XMFLOAT3 pos = XMFLOAT3((float)l, (float)q, (float)i);
+						m_GimmickField[m_FieldCount].GimmickField_Initialize(pos);
+						m_GimmickField[m_FieldCount].GimmickField_SetChannel(ch);
+						// targetPos設定
+						// ★ このFieldのチャネル
+						int fieldCh = ch;
+
+						bool find = false;
+						for (int q = 0; q < 3; q++)
+						{
+							for (int i = 0; i < FIELD_WIDTH_Z; i++)
+							{
+								for (int l = 0; l < FIELD_WIDTH_X; l++)
+								{
+
+									int targetChip = CheckGimmick(l, i, q, no);
 
 
+									int tNum = targetChip / 10;   // 4
+									int tCh = targetChip % 10;   // チャネル
+
+									// 同じチャネルの FieldTarget？
+									if (tNum == 4)
+									{
+										if (tCh == fieldCh)
+										{
+											XMFLOAT3 tgt = XMFLOAT3((float)l, (float)q, (float)i);
+
+											m_GimmickField[m_FieldCount].GimmickField_SetTargetPosition(tgt);
+											
+										}
+									}
+
+								}
+							}
+						}
+						m_FieldCount++;
+					}
+				}
+				else if (num == 3)
+				{
+					if (m_GateCount < GIMMICK_NUM_MAX)
+					{
+						XMFLOAT3 pos = XMFLOAT3((float)l, (float)q, (float)i);
+						m_GimmickGate[m_GateCount].GimmickGate_Initialize(pos);
+						m_GimmickGate[m_GateCount].GimmickGate_SetChannel(ch);
+						m_GateCount++;
+					}
+				}
 			}
 		}
 	}
 
+	SetupGateSides(this);
 }
 
 void GIMMICK_DATA::Gimmick_Data_Finalize(void)
@@ -439,7 +516,7 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 	//先にVP変換行列を作っておく
 	XMMATRIX	VP = View * Projection;
 
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+	for (int i = 0; i < m_ButtonCount; i++)
 	{
 
 		XMFLOAT3 gimmickPos = m_GimmickButton[i].GimmickButton_GetPosition();
@@ -447,9 +524,9 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
-			1.0f,
-			1.0f,
-			1.0f
+			1.2f,
+			0.5f,
+			1.2f
 		);
 
 		//平行移動行列の作成
@@ -464,8 +541,7 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
+
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
@@ -491,11 +567,11 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		//描画リクエスト
-		ModelDraw(m_Model[GIMMICK_STATE_BUTTON]);
+		ModelDraw(m_Model[GIMMICK_STATE::GIMMICK_STATE_BUTTON]);
 
 
 	}
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+	for (int i = 0; i < m_FieldCount; i++)
 	{
 
 		XMFLOAT3 gimmickPos = m_GimmickField[i].GimmickField_GetPosition();
@@ -503,9 +579,9 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
-			1.0f,
-			1.0f,
-			1.0f
+			m_GimmickField[i].m_Scaling.x,
+			m_GimmickField[i].m_Scaling.y,
+			m_GimmickField[i].m_Scaling.z
 		);
 
 		//平行移動行列の作成
@@ -520,8 +596,7 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
+			
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
@@ -550,77 +625,89 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		g_pContext->DrawIndexed(6 * 6, 0, 0);
 
 	}
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+	for (int i = 0; i < m_GateCount; i++)
 	{
+		XMFLOAT3 base = m_GimmickGate[i].GimmickGate_GetPosition();
+		float open = m_GimmickGate[i].GimmickGate_GetOpen();
 
-		XMFLOAT3 gimmickPos = m_GimmickGate[i].GimmickGate_GetPosition();
+		// スライド量
+		float offset = GATE_MAX_OPEN_OFFSET * open;
 
-		//スケーリング行列の作成
-		XMMATRIX	ScalingMatrix = XMMatrixScaling
-		(
-			1.0f,
-			1.0f,
-			1.0f
-		);
+		// 左右で符号を変える
+		GATE_SIDE side = m_GimmickGate[i].GimmickGate_GetSide();
+		if (side == GATE_SIDE_LEFT)
+		{
+			offset = -offset;
+		}
 
-		//平行移動行列の作成
-		XMMATRIX	TranslationMatrix = XMMatrixTranslation
-		(
-			gimmickPos.x,
-			gimmickPos.y,
-			gimmickPos.z
-		);
+		// ワールド行列：位置は X に offset を足す
+		XMMATRIX ScalingMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 
-		//回転行列の作成
-		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		XMMATRIX TranslationMatrix = XMMatrixTranslation(base.x + offset, base.y, base.z);
+
+
+		XMMATRIX RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ワールド行列の作成
-		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//最終的な変換行列を作成
-		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXへ行列をセット
-		Shader_SetMatrix(WVP);
 
-		//テクスチャをセット
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		XMMATRIX WVP = World * VP;
+		Shader_SetMatrix(WVP);
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//頂点バッファをセット
-		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
-		UINT	offset = 0;
-		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
-
-		//インデックスバッファをセット
+		UINT stride = sizeof(Vertex3D);
+		UINT offsetVB = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offsetVB);
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//描画リクエスト
 		g_pContext->DrawIndexed(6 * 6, 0, 0);
-		
 	}
+
 }
 
 void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+
+	// Button：自前アニメ（沈む）
+	for (int i = 0; i < m_ButtonCount; i++)
 	{
-		// ボタンの更新
+		m_GimmickButton[i].GimmickButton_Update();
 	}
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+
+	// Field：必要ボタン数 1
+	for (int i = 0; i < m_FieldCount; i++)
 	{
-		// フィールドの更新
+		// ギミックのチャンネル番号取得
+		int ch = m_GimmickField[i].GimmickField_GetChannel();
+		int cnt = Channels_GetCount(ch);
+
+		bool on = false;
+		if (cnt >= NEED_BUTTONS_FIELD)
+		{
+			on = true;
+		}
+		m_GimmickField[i].GimmickField_Update(on); // on:動作中、off:停止
 	}
-	for (int i = 0; i < GIMMICK_NUM_MAX; i++)
+
+
+	// Gate：必要ボタン数 2
+	for (int i = 0; i < m_GateCount; i++)
 	{
-		// ゲートの更新
+		int ch = m_GimmickGate[i].GimmickGate_GetChannel();
+		int cnt = Channels_GetCount(ch);
+
+		bool on = false;
+		if (cnt >= NEED_BUTTONS_GATE)
+		{
+			on = true;
+		}
+		m_GimmickGate[i].GimmickGate_Update(on);
 	}
+
 }
 
 void CreateGimmickBox()
@@ -667,5 +754,102 @@ void CreateGimmickBox()
 		CopyMemory(&index[0], &Gimmick_idxdata[0], sizeof(UINT) * 6 * 6);
 		g_pContext->Unmap(g_IndexBuffer, 0);
 
+	}
+}
+
+
+void GIMMICK_DATA::Channels_Reset()
+{
+	for (int i = 0; i < MAX_CHANNEL; i++)
+	{
+		m_ChannelOn[i] = false;
+		m_ChannelOnCount[i] = 0;
+	}
+}
+
+
+void GIMMICK_DATA::Channels_AddCount(int ch)
+{
+	if (ch >= 0)
+	{
+		if (ch < MAX_CHANNEL)
+		{
+			m_ChannelOn[ch] = true;
+			m_ChannelOnCount[ch] += 1;
+		}
+	}
+}
+
+
+int GIMMICK_DATA::Channels_GetCount(int ch) const
+{
+	if (ch >= 0)
+	{
+		if (ch < MAX_CHANNEL)
+		{
+			return m_ChannelOnCount[ch];
+		}
+	}
+	return 0;
+}
+
+
+bool GIMMICK_DATA::Channels_IsOn(int ch) const
+{
+	if (ch >= 0)
+	{
+		if (ch < MAX_CHANNEL)
+		{
+			return m_ChannelOn[ch];
+		}
+	}
+	return false;
+}
+
+
+void GIMMICK_DATA::SetupGateSides(GIMMICK_DATA* self)
+{
+	// チャンネルごとに Gate を集めて左右を割り振る
+	for (int ch = 0; ch < MAX_CHANNEL; ch++)
+	{
+		// 同一 ch のゲートを集める
+		int idx[2] = { -1, -1 };
+		int found = 0;
+
+		for (int i = 0; i < self->m_GateCount; i++)
+		{
+			if (self->m_GimmickGate[i].GimmickGate_GetChannel() == ch)
+			{
+				if (found < 2)
+				{
+					idx[found] = i;
+				}
+				found++;
+			}
+		}
+
+		if (found == 2)
+		{
+			// 中央Xを基準に左右判定（Zが異なる配置でもXで左右を決める）
+			XMFLOAT3 p0 = self->m_GimmickGate[idx[0]].GimmickGate_GetPosition();
+			XMFLOAT3 p1 = self->m_GimmickGate[idx[1]].GimmickGate_GetPosition();
+			float midX = (p0.x + p1.x) * 0.5f;
+
+			if (p0.x < midX)
+			{
+				self->m_GimmickGate[idx[0]].GimmickGate_SetSide(GATE_SIDE_LEFT);
+				self->m_GimmickGate[idx[1]].GimmickGate_SetSide(GATE_SIDE_RIGHT);
+			}
+			else
+			{
+				self->m_GimmickGate[idx[0]].GimmickGate_SetSide(GATE_SIDE_RIGHT);
+				self->m_GimmickGate[idx[1]].GimmickGate_SetSide(GATE_SIDE_LEFT);
+			}
+		}
+		else if (found == 1)
+		{
+			// 1枚だけ置かれている場合は暫定で右にしておく（必要なら仕様に合わせて変更）
+			self->m_GimmickGate[idx[0]].GimmickGate_SetSide(GATE_SIDE_RIGHT);
+		}
 	}
 }

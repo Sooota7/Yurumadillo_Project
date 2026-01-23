@@ -20,6 +20,8 @@ void GIMMICK_BUTTON::GimmickButton_Finalize(void)
 void GIMMICK_BUTTON::GimmickButton_Update(void)
 {
 
+    XMFLOAT3 preview = m_Position; // 直前位置を保持
+
     XMFLOAT3 target = m_FirstPosition;
 	// 押されている場合
     if (m_Touch)
@@ -56,5 +58,10 @@ void GIMMICK_BUTTON::GimmickButton_Update(void)
             m_Position.z += diff.z * step;
         }
     }
+
+    // 今フレームの移動差分（速度）を保存
+    m_Velocity.x = m_Position.x - preview.x;
+    m_Velocity.y = m_Position.y - preview.y;
+    m_Velocity.z = m_Position.z - preview.z;
 
 }
