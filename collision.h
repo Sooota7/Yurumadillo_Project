@@ -11,6 +11,7 @@ using namespace DirectX;
 
 
 #include	"field.h"
+#include	"gimmickData.h"
 #include	"Ball.h"
 #include	"Enemy.h"
 #include	"EnemyNormal.h"
@@ -21,6 +22,13 @@ using namespace DirectX;
 #include    "player.h"
 
 #define COE		(0.5f)
+#define GROUND_SLOP (0.05f) // 動くギミックの遊び幅（必要に応じて調整）
+
+
+#define GATE_PANEL_HALF_W (0.45f)  // 片側パネルのX半幅（＝厚み）: モデルに合わせて
+#define GATE_PANEL_HALF_H (0.50f)  // パネルのY半径
+#define GATE_PANEL_HALF_D (0.50f)  // パネルのZ半径（奥行）
+#define GATE_MAX_OPEN_OFFSET (0.50f) // 両開きで片側パネルが中心から離れる最大距離
 
 
 enum COLLISION_HIT
@@ -47,5 +55,13 @@ public:
 	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);
 	float	PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon);
+	float	PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
+	float	PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
+	float	PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
+	float   EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimmick);
+	float   EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimmick);
+	float   BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
+	float   BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
+	float   BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
 
 };

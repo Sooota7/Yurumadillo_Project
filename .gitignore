@@ -426,3 +426,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+shader_pixel_2d.cso
+shader_vertex_2d.cso

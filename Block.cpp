@@ -203,9 +203,14 @@ void  MAP::MapData_Finalize(void)
 
 void  MAP::MapData_Update(void)
 {
-	if (no == FIELD::FIELD_OBT_1)
+	/*if (no == FIELD::FIELD_OBT_1)
 	{
 
+	}*/
+
+	switch (no)
+	{
+		
 	}
 }
 
