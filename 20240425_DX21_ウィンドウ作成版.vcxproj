@@ -180,6 +180,8 @@
     <ClCompile Include="StageSelection.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="Tutorial2.cpp" />
+    <ClCompile Include="Tutorial3.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
@@ -234,6 +236,8 @@
     <ClInclude Include="StageSelection.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="Tutorial2.h" />
+    <ClInclude Include="Tutorial3.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="weaponSource.h" />
   </ItemGroup>

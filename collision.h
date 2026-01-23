@@ -27,8 +27,7 @@ using namespace DirectX;
 
 #define GATE_PANEL_HALF_W (0.45f)  // 片側パネルのX半幅（＝厚み）: モデルに合わせて
 #define GATE_PANEL_HALF_H (0.50f)  // パネルのY半径
-#define GATE_PANEL_HALF_D (0.50f)  // パネルのZ半径（奥行）
-#define GATE_MAX_OPEN_OFFSET (0.50f) // 両開きで片側パネルが中心から離れる最大距離
+#define GATE_PANEL_HALF_D (0.50f)  // パネルのZ半径（奥行
 
 
 enum COLLISION_HIT
