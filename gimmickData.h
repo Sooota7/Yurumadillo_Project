@@ -13,7 +13,7 @@
 #define GIM_BUTTON_MAX (19)
 #define GIM_FIELD_MIN  (20)  // 20-29
 #define GIM_FIELD_MAX  (29)  
-#define GIM_GATE_MAX (30)    // 30-39
+#define GIM_GATE_MIN (30)    // 30-39
 #define GIM_GATE_MAX (39)
 #define GIM_TARGET_MIN   (40)  // 40-49
 #define GIM_TARGET_MAX   (49)
