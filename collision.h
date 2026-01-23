@@ -60,5 +60,8 @@ public:
 	float	PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
 	float   EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimmick);
 	float   EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimmick);
+	float   BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
+	float   BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
+	float   BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
 
 };

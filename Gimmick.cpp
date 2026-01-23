@@ -104,9 +104,11 @@ void GIMMICK::Gimmick_Update()
 
 	collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
 	collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
+	collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
 
 	collision.PlayerGimmickCollision(&m_Player, &m_GimmickData);
 	collision.EnemyGimmickCollision(&m_EnemyNormal, &m_GimmickData);
+	collision.BombGimmickCollision(&m_bomb, &m_GimmickData);
 	
 	m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	collision.PlayerGateCollision(&m_Player, &m_GimmickData);

@@ -2413,3 +2413,471 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 	return 0.0f;
 
 }
+
+float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
+{
+
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
+
+	// --------- 共通：ボタンとフィールド配列 ---------
+	GIMMICK_BUTTON* buttons = pGimmick->GetButtons();
+	int btnCount = pGimmick->GetButtonCount();
+	GIMMICK_FIELD* fields = pGimmick->GetFields();
+	int fldCount = pGimmick->GetFieldCount();
+
+
+	// --------- 通常ボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int bt = Bomb[i].BombSource_GetState();
+		if (bt == BOMB_STATE::BOMB_ITEM ||
+			bt == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			bt == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = Bomb[i].BombSource_GetPosition();
+
+			// ボタンY追従（押下中かつXZ重なり）
+			for (int b = 0; b < btnCount; b++)
+			{
+				if (buttons[b].GimmickButton_GetTouch())
+				{
+					XMFLOAT3 bpos = buttons[b].GimmickButton_GetPosition();
+					if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+					{
+						if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+						{
+							XMFLOAT3 bvel = buttons[b].GimmickButton_GetVelocity();
+							pos.y += bvel.y;
+						}
+					}
+				}
+			}
+
+			// 可動フィールド追従（XZ重なり＋天面近傍）
+			for (int f = 0; f < fldCount; f++)
+			{
+				XMFLOAT3 fpos = fields[f].GimmickField_GetPosition();
+				if (fpos.z - BOX_RADIUS < pos.z && pos.z < fpos.z + BOX_RADIUS)
+				{
+					if (fpos.x - BOX_RADIUS < pos.x && pos.x < fpos.x + BOX_RADIUS)
+					{
+						float top = fpos.y + BOX_RADIUS;
+						if (top + GROUND_SLOP > pos.y - BOMB_RADIUS)
+						{
+							pos.x += fields[f].m_Velocity.x;
+							pos.y += fields[f].m_Velocity.y;
+							pos.z += fields[f].m_Velocity.z;
+						}
+					}
+				}
+			}
+
+			Bomb[i].BombSource_SetPosition(pos);
+		}
+	}
+	// --------- 走るボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = RunBomb[i].Runbombsource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = RunBomb[i].Runbombsource_GetPosition();
+
+			for (int b = 0; b < btnCount; b++)
+			{
+				if (buttons[b].GimmickButton_GetTouch())
+				{
+					XMFLOAT3 bpos = buttons[b].GimmickButton_GetPosition();
+					if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+					{
+						if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+						{
+							XMFLOAT3 bvel = buttons[b].GimmickButton_GetVelocity();
+							pos.y += bvel.y;
+						}
+					}
+				}
+			}
+
+			for (int f = 0; f < fldCount; f++)
+			{
+				XMFLOAT3 fpos = fields[f].GimmickField_GetPosition();
+				if (fpos.z - BOX_RADIUS < pos.z && pos.z < fpos.z + BOX_RADIUS)
+				{
+					if (fpos.x - BOX_RADIUS < pos.x && pos.x < fpos.x + BOX_RADIUS)
+					{
+						float top = fpos.y + BOX_RADIUS;
+						if (top + GROUND_SLOP > pos.y - BOMB_RADIUS)
+						{
+							pos.x += fields[f].m_Velocity.x;
+							pos.y += fields[f].m_Velocity.y;
+							pos.z += fields[f].m_Velocity.z;
+						}
+					}
+				}
+			}
+
+			RunBomb[i].Runbombsource_SetPosition(pos);
+		}
+	}
+	// --------- 浮遊ボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = FlowtBomb[i].Flowtbombsource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = FlowtBomb[i].Flowtbombsource_GetPosition();
+
+			for (int b = 0; b < btnCount; b++)
+			{
+				if (buttons[b].GimmickButton_GetTouch())
+				{
+					XMFLOAT3 bpos = buttons[b].GimmickButton_GetPosition();
+					if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+					{
+						if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+						{
+							XMFLOAT3 bvel = buttons[b].GimmickButton_GetVelocity();
+							pos.y += bvel.y;
+						}
+					}
+				}
+			}
+
+			for (int f = 0; f < fldCount; f++)
+			{
+				XMFLOAT3 fpos = fields[f].GimmickField_GetPosition();
+				if (fpos.z - BOX_RADIUS < pos.z && pos.z < fpos.z + BOX_RADIUS)
+				{
+					if (fpos.x - BOX_RADIUS < pos.x && pos.x < fpos.x + BOX_RADIUS)
+					{
+						float top = fpos.y + BOX_RADIUS;
+						if (top + GROUND_SLOP > pos.y - BOMB_RADIUS)
+						{
+							pos.x += fields[f].m_Velocity.x;
+							pos.y += fields[f].m_Velocity.y;
+							pos.z += fields[f].m_Velocity.z;
+						}
+					}
+				}
+			}
+
+			FlowtBomb[i].Flowtbombsource_SetPosition(pos);
+		}
+	}
+
+	return 0.0f;
+
+}
+
+
+float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
+{
+	float hit = 0.0f;
+
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
+
+	GIMMICK_BUTTON* Buttons = pGimmick->GetButtons();
+	int btnCount = pGimmick->GetButtonCount();
+	GIMMICK_FIELD* Fields = pGimmick->GetFields();
+	int fldCount = pGimmick->GetFieldCount();
+
+	// --------- 通常ボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = Bomb[i].BombSource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = Bomb[i].BombSource_GetPosition();
+			XMFLOAT3 vel = Bomb[i].BombSource_GetVelocity();
+
+			// --- Buttons：押下（上面） ---
+			for (int b = 0; b < btnCount; b++)
+			{
+				float BoxTop;
+				XMFLOAT3 bpos = Buttons[b].GimmickButton_GetPosition();
+				BoxTop = bpos.y + 0.2f;
+
+
+				// XZ 内側？
+				if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+				{
+					if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+					{
+						// 着地（交差）判定
+						bool landing = false;
+						if (BoxTop > pos.y - BOMB_RADIUS)
+						{
+							if (pos.y > BoxTop)
+							{
+								landing = true;
+							}
+						}
+
+						// 静止（底面が上面に±スロープで一致）判定
+						bool resting = false;
+						float diff = (pos.y - BOMB_RADIUS) - BoxTop; // 底面 - 上面
+						if (diff < GROUND_SLOP)
+						{
+							if (diff > -GROUND_SLOP)
+							{
+								resting = true;
+							}
+						}
+
+						if (landing || resting)
+						{
+							// 押し戻しと滑り止め（着地時／静止時ともに安定させる）
+							pos.y = BoxTop + BOMB_RADIUS;
+							vel.y = 0.0f;
+							vel.x = 0.0f;
+							vel.z = 0.0f;
+
+							// 押下
+							Buttons[b].GimmickButton_SetTouch(true);
+							int ch = Buttons[b].GimmickButton_GetChannel();
+							pGimmick->Channels_AddCount(ch);
+
+							hit = COLLISION_HIT::HIT_GROUND;
+						}
+					}
+				}
+
+			}
+
+
+			// --- Fields：AABB 押し戻し ---
+			for (int f = 0; f < fldCount; f++)
+			{
+				float BoxTop;
+				XMFLOAT3 fieldsPos = Fields[f].GimmickField_GetPosition();
+				BoxTop = fieldsPos.y + BOX_RADIUS;
+
+				// 側面帯
+				if (fieldsPos.y - BOX_RADIUS < pos.y && pos.y < BoxTop - 0.1f)
+				{
+					// ±X
+					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
+					{
+						if (fieldsPos.x - BOX_RADIUS < pos.x + BOMB_RADIUS && pos.x < fieldsPos.x - BOX_RADIUS)
+						{
+							pos.x += (fieldsPos.x - BOX_RADIUS) - (pos.x + BOMB_RADIUS);
+							vel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_3;
+						}
+						else if (fieldsPos.x + BOX_RADIUS > pos.x - BOMB_RADIUS && pos.x > fieldsPos.x + BOX_RADIUS)
+						{
+							pos.x += (fieldsPos.x + BOX_RADIUS) - (pos.x - BOMB_RADIUS);
+							vel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_1;
+						}
+					}
+					// ±Z
+					if (fieldsPos.x - BOX_RADIUS < pos.x && pos.x < fieldsPos.x + BOX_RADIUS)
+					{
+						if (fieldsPos.z - BOX_RADIUS < pos.z + BOMB_RADIUS && pos.z < fieldsPos.z - BOX_RADIUS)
+						{
+							pos.z += (fieldsPos.z - BOX_RADIUS) - (pos.z + BOMB_RADIUS);
+							vel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_0;
+						}
+						else if (fieldsPos.z + BOX_RADIUS > pos.z - BOMB_RADIUS && pos.z > fieldsPos.z + BOX_RADIUS)
+						{
+							pos.z += (fieldsPos.z + BOX_RADIUS) - (pos.z - BOMB_RADIUS);
+							vel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_2;
+						}
+					}
+				}
+				// 上面
+				else
+				{
+					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
+					{
+						if (fieldsPos.x - BOX_RADIUS < pos.x && pos.x < fieldsPos.x + BOX_RADIUS)
+						{
+							if (fieldsPos.y - BOX_RADIUS < pos.y + BOMB_RADIUS && pos.y < fieldsPos.y - BOX_RADIUS)
+							{
+								pos.y += (fieldsPos.y - BOX_RADIUS) - (pos.y + BOMB_RADIUS);
+								vel.y *= -COE;
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+							else if (BoxTop > pos.y - BOMB_RADIUS && pos.y > BoxTop)
+							{
+								pos.y += (BoxTop)-(pos.y - BOMB_RADIUS);
+								vel.y = 0.0f;
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+						}
+					}
+				}
+			}
+
+			Bomb[i].BombSource_SetPosition(pos);
+			Bomb[i].BombSource_SetVelocity(vel);
+		}
+	}
+
+	// --------- 走るボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = RunBomb[i].Runbombsource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = RunBomb[i].Runbombsource_GetPosition();
+			XMFLOAT3 vel = RunBomb[i].Runbombsource_GetVelocity();
+
+			// Buttons
+			for (int b = 0; b < btnCount; b++)
+			{
+				float BoxTop;
+				XMFLOAT3 bpos = Buttons[b].GimmickButton_GetPosition();
+				BoxTop = bpos.y + 0.2f;
+
+				if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+				{
+					if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+					{
+						if (BoxTop > pos.y - BOMB_RADIUS && pos.y > BoxTop)
+						{
+							pos.y += (BoxTop)-(pos.y - BOMB_RADIUS);
+							vel.y = 0.0f;
+							hit = COLLISION_HIT::HIT_GROUND;
+						}
+					}
+				}
+			}
+			// Fields
+			for (int f = 0; f < fldCount; f++)
+			{
+				float BoxTop;
+				XMFLOAT3 fieldsPos = Fields[f].GimmickField_GetPosition();
+				BoxTop = fieldsPos.y + BOX_RADIUS;
+
+				if (fieldsPos.y - BOX_RADIUS < pos.y && pos.y < BoxTop - 0.1f)
+				{
+					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
+					{
+						if (fieldsPos.x - BOX_RADIUS < pos.x + BOMB_RADIUS && pos.x < fieldsPos.x - BOX_RADIUS)
+						{
+							pos.x += (fieldsPos.x - BOX_RADIUS) - (pos.x + BOMB_RADIUS);
+							vel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_3;
+						}
+						else if (fieldsPos.x + BOX_RADIUS > pos.x - BOMB_RADIUS && pos.x > fieldsPos.x + BOX_RADIUS)
+						{
+							pos.x += (fieldsPos.x + BOX_RADIUS) - (pos.x - BOMB_RADIUS);
+							vel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_1;
+						}
+					}
+					if (fieldsPos.x - BOX_RADIUS < pos.x && pos.x < fieldsPos.x + BOX_RADIUS)
+					{
+						if (fieldsPos.z - BOX_RADIUS < pos.z + BOMB_RADIUS && pos.z < fieldsPos.z - BOX_RADIUS)
+						{
+							pos.z += (fieldsPos.z - BOX_RADIUS) - (pos.z + BOMB_RADIUS);
+							vel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_0;
+						}
+						else if (fieldsPos.z + BOX_RADIUS > pos.z - BOMB_RADIUS && pos.z > fieldsPos.z + BOX_RADIUS)
+						{
+							pos.z += (fieldsPos.z + BOX_RADIUS) - (pos.z - BOMB_RADIUS);
+							vel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_2;
+						}
+					}
+				}
+				else
+				{
+					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
+					{
+						if (fieldsPos.x - BOX_RADIUS < pos.x && pos.x < fieldsPos.x + BOX_RADIUS)
+						{
+							if (fieldsPos.y - BOX_RADIUS < pos.y + BOMB_RADIUS && pos.y < fieldsPos.y - BOX_RADIUS)
+							{
+								pos.y += (fieldsPos.y - BOX_RADIUS) - (pos.y + BOMB_RADIUS);
+								vel.y *= -COE;
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+							else if (BoxTop > pos.y - BOMB_RADIUS && pos.y > BoxTop)
+							{
+								pos.y += (BoxTop)-(pos.y - BOMB_RADIUS);
+								vel.y = 0.0f;
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+						}
+					}
+				}
+			}
+
+			RunBomb[i].Runbombsource_SetPosition(pos);
+			RunBomb[i].Runbombsource_SetVelocity(vel);
+		}
+	}
+
+	// --------- 浮遊ボム ---------
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = FlowtBomb[i].Flowtbombsource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = FlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT3 vel = FlowtBomb[i].Flowtbombsource_GetVelocity();
+
+			// Buttons：XZ+Y帯で押下扱い（浮遊でもONにできる仕様）
+			for (int b = 0; b < btnCount; b++)
+			{
+				float BoxTop;
+				XMFLOAT3 bpos = Buttons[b].GimmickButton_GetPosition();
+				BoxTop = bpos.y + 0.2f;
+
+				if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+				{
+					if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+					{
+						if (bpos.y - BOX_RADIUS < pos.y + BOMB_RADIUS && pos.y - BOMB_RADIUS < BoxTop)
+						{
+							hit = COLLISION_HIT::HIT_GROUND;
+						}
+					}
+				}
+			}
+
+			// 浮遊ボム：必要ならField押し戻しも追加可能（現状は省略 or 上面のみ）
+			FlowtBomb[i].Flowtbombsource_SetPosition(pos);
+			FlowtBomb[i].Flowtbombsource_SetVelocity(vel);
+		}
+	}
+
+	return hit;
+
+}
+
+float COLLISION::BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
+{
+
+	float hit = 0.0f;
+
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
+
+	GIMMICK_GATE* gates = pGimmick->GetGates();
+	int gateCount = pGimmick->GetGateCount();
+
+	return hit;
+}
