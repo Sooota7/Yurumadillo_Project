@@ -697,15 +697,23 @@ void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	// Gate：必要ボタン数 2
 	for (int i = 0; i < m_GateCount; i++)
 	{
-		int ch = m_GimmickGate[i].GimmickGate_GetChannel();
+		/*int ch = m_GimmickGate[i].GimmickGate_GetChannel();
 		int cnt = Channels_GetCount(ch);
 
-		bool on = false;
+		bool on = true;
 		if (cnt >= NEED_BUTTONS_GATE)
 		{
-			on = true;
+			on = false;
 		}
-		m_GimmickGate[i].GimmickGate_Update(on);
+		m_GimmickGate[i].GimmickGate_Update(on);*/
+
+		int ch = m_GimmickGate[i].GimmickGate_GetChannel();
+		int cnt = Channels_GetCount(ch);
+		// 押されている間は閉じ続ける（on=true）
+		// 誰も押していなければ開く（on=false）
+		bool close = (cnt > 0);
+		m_GimmickGate[i].GimmickGate_Update(close);
+
 	}
 
 }
