@@ -118,7 +118,15 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						PlayerPos.y > BoxTop)
 					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
-						PlayerVel.y = 0;
+						if (Map[i].MapData_GetNo() == FIELD_JUMP)
+						{// ƒWƒƒƒ“ƒv‘ä‚È‚ç”½”­ŒW”‚ğ‘å‚«‚­‚·‚é
+							PlayerVel.y *= -COE_JUMP;
+						}
+						else
+						{
+							PlayerVel.y = 0;
+						}
+
 						hit = COLLISION_HIT::HIT_GROUND;
 						if (PlayerJump == false)
 						{
