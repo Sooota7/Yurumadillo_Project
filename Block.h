@@ -24,6 +24,8 @@ enum FIELD
 
 	FIELD_OBT_1, // ÉSÅ[Éã
 
+	FIELD_JUMP, // íµÇÀÇÈè∞
+
 	FIELD_MAX
 };
 

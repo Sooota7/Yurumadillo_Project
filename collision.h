@@ -22,6 +22,7 @@ using namespace DirectX;
 #include    "player.h"
 
 #define COE		(0.5f)
+#define COE_JUMP		(2.0f)
 #define GROUND_SLOP (0.05f) // 動くギミックの遊び幅（必要に応じて調整）
 
 
