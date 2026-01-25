@@ -16,7 +16,7 @@ using namespace DirectX;
 
 class Billboard
 {
-private:
+public:
 	static constexpr int NUM_VERTEX = 6; // g—p‚Å‚«‚éÅ‘å’¸“_”
 	XMFLOAT3	m_Pos{};
 	XMFLOAT2	m_Size{};

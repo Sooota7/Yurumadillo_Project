@@ -10,6 +10,7 @@
 #include	"Block.h"
 #include	"field.h"
 #include	"Effect.h"
+#include	"background.h"
 #include	"score.h"
 #include	"Audio.h"
 
@@ -33,6 +34,7 @@ void TUTORIAL3::Tutorial3_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
@@ -75,6 +77,7 @@ void TUTORIAL3::Tutorial3_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 void TUTORIAL3::Tutorial3_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -98,6 +101,7 @@ void TUTORIAL3::Tutorial3_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
+	m_Background.Background_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
@@ -148,6 +152,7 @@ void TUTORIAL3::Tutorial3_Update()
 
 void TUTORIAL3::Tutorial3_Draw()
 { 
+	m_Background.Background_Draw();
 	Light6.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light6.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
@@ -182,6 +187,7 @@ void TUTORIAL3::Tutorial3_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -194,6 +200,7 @@ void TUTORIAL3::Tutorial3_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);

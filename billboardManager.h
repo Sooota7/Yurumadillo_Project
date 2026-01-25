@@ -20,7 +20,7 @@ using namespace DirectX;
 class BillboardManager
 {
 private:
-	static constexpr int BILLBOARD_MAX = 200; // 使用できる最大頂点数
+	static constexpr int BILLBOARD_MAX = 200; // 使用できる最大
 	int m_Count;
 
 	ID3D11Device* m_pDevice;

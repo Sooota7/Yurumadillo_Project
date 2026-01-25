@@ -132,6 +132,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="billboardManager.cpp" />
@@ -187,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="background.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="billboard.h" />
     <ClInclude Include="billboardManager.h" />
