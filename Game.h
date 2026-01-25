@@ -12,6 +12,7 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
+#include "background.h"
 #include "playerUI.h"
 #include "bombUI.h"
 class MANAGER;
@@ -32,6 +33,7 @@ private:
 	FIELD_NO m_NowField;
 
 	BillboardManager m_BillboardManager;
+	BACKGROUND m_Background;
 
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;

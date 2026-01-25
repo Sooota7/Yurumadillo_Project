@@ -469,6 +469,7 @@ enum SCENE
 enum BILLBOARD_TEXTURE
 {
 	TEST = 0,
+	EXPLOSION,
 	MAX,
 };
 

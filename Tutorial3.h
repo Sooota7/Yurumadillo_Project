@@ -12,6 +12,7 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
+#include "background.h"
 
 class MANAGER;
 
@@ -31,6 +32,7 @@ private:
 	FIELD_NO m_NowField;
 
 	BillboardManager m_BillboardManager;
+	BACKGROUND m_Background;
 public:
 	void Tutorial3_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Tutorial3_Finalize();

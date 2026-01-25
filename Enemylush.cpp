@@ -10,6 +10,7 @@
 #include	"Block.h"
 #include	"field.h"
 #include	"Effect.h"
+#include	"background.h"
 #include	"score.h"
 #include	"Audio.h"
 
