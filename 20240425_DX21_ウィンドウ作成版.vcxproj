@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anim.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="background.cpp" />
     <ClCompile Include="Ball.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="anim.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="background.h" />
     <ClInclude Include="Ball.h" />
