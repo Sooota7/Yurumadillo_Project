@@ -131,7 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anim.cpp" />
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="billboardManager.cpp" />
@@ -152,14 +154,20 @@
     <ClCompile Include="enemySpawner.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="FlowtBombSource.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gimmick.cpp" />
+    <ClCompile Include="gimmickButton.cpp" />
+    <ClCompile Include="gimmickData.cpp" />
+    <ClCompile Include="gimmickField.cpp" />
+    <ClCompile Include="gimmickGate.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="mouse.cpp" />
+    <ClCompile Include="parts.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playerUI.cpp" />
@@ -167,17 +175,22 @@
     <ClCompile Include="Polygon3D.cpp" />
     <ClCompile Include="prologue.cpp" />
     <ClCompile Include="Result.cpp" />
+    <ClCompile Include="RunBombSource.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="StageSelection.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="Tutorial2.cpp" />
+    <ClCompile Include="Tutorial3.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="anim.h" />
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="background.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="billboard.h" />
     <ClInclude Include="billboardManager.h" />
@@ -200,13 +213,19 @@
     <ClInclude Include="enemySpawner.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="FlowtBombSource.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gimmick.h" />
+    <ClInclude Include="gimmickButton.h" />
+    <ClInclude Include="gimmickData.h" />
+    <ClInclude Include="gimmickField.h" />
+    <ClInclude Include="gimmickGate.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="parts.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerUI.h" />
@@ -214,12 +233,15 @@
     <ClInclude Include="Polygon3D.h" />
     <ClInclude Include="prologue.h" />
     <ClInclude Include="Result.h" />
+    <ClInclude Include="RunBombSource.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="StageSelection.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="Tutorial2.h" />
+    <ClInclude Include="Tutorial3.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="weaponSource.h" />
   </ItemGroup>

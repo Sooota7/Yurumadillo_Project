@@ -6,6 +6,7 @@
 using namespace DirectX;
 
 #include	"model.h"
+#include	"anim.h"
 
 //#define FRAME_MAX (30)
 
@@ -44,6 +45,8 @@ private:
 	XMFLOAT3 m_AnimInisPosition;
 	int lasPosMax;
 	int NowPos;
+
+	ANIM fps;
 
 	//目標地点、動きのゴール
 	XMFLOAT3 m_AnimLastPosition[LASTPOS];

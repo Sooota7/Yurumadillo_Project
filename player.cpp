@@ -23,7 +23,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	float downSize = 6.0f;
+	float downSize = 10.0f;
 
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
@@ -77,6 +77,8 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	BalloomNow = false;
 	g_StopTime = 0.0f;
 
+	BombHave = false;
+
 	//テクスチャ画像読み込み
 	TexMetadata		metadata;
 	ScratchImage	image;
@@ -85,6 +87,14 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	CreateShaderResourceView(g_pDevice, image.GetImages(),
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
+
+	for (int i = 0; i < PLAYER_STATE::PLAYER_STATE_MAX; i++)
+	{
+		for (int y = 0; y < PLAYER_PARTS::PARTS_MAX; y++)
+		{
+			m_anim[i].anim[y].AnimInitialize();
+		}
+	}
 
 	Player_SetAnimInis();
 
@@ -100,7 +110,7 @@ void	PLAYER::Player_Finalize()
 
 void	PLAYER::Player_Update()
 {
-	Player_SetAnim();
+	//Player_SetAnim();
 	switch (m_State)
 	{
 	case PLAYER_STATE::PLAYER_STATE_IDLE:
@@ -163,6 +173,7 @@ void	PLAYER::Player_Update()
 
 
 }
+
 void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 {
 	//ワールド行列作成
@@ -223,7 +234,6 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 	}
 
 }
-
 
 void	PLAYER::Player_Idle()
 {
@@ -314,7 +324,7 @@ void PLAYER::Player_Move()
     if (v2 <= STOP_VELO)
     {
         g_StopTime++;
-        if (g_StopTime > 60.0f * 2)
+        if (g_StopTime > 60.0f * 0)
         {
             m_Velocity = XMFLOAT3(0, 0, 0);
             m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
@@ -404,23 +414,100 @@ void PLAYER::Player_SetParts()
 	{
 		XMFLOAT3 pos = m_Position;
 		XMFLOAT3 rot = m_Model[PARTS_BODY].GetPartsRotation();
+		XMFLOAT3 plasRot = m_Model[PARTS_BODY].GetPartsRotation();
 
-		switch (i)
+
+		if (JumpCount)
 		{
-		case PARTS_HEAD:
-		case PARTS_BODY:
-		case PARTS_ARM_RIGHT:
-		case PARTS_ARM_LEFT:
-		case PARTS_LEG_RIGHT:
-		case PARTS_LEG_LEFT:
-			pos = Player_Anim(&m_Model[i], rot, (int)l);
-
-		case PARTS_MAX:
-			break;
-		default:
-			break;
+			switch (i)
+			{
+			case PARTS_HEAD:
+				pos = Player_AnimPos(m_State, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_BODY:
+				pos = Player_AnimPos(m_State, PARTS_BODY, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_BODY, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_ARM_RIGHT:
+				pos = Player_AnimPos(m_State, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_ARM_LEFT:
+				pos = Player_AnimPos(m_State, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_LEG_RIGHT:
+				pos = Player_AnimPos(m_State, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_LEG_LEFT:
+				pos = Player_AnimPos(m_State, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_MAX:
+				break;
+			default:
+				break;
+			}
+			//rot.y = XMConvertToRadians(GetCameraYoko());
 		}
-		//rot.y = XMConvertToRadians(GetCameraYoko());
+		else
+		{
+			switch (i)
+			{
+			case PARTS_HEAD:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_BODY:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_BODY, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_BODY, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_ARM_RIGHT:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_ARM_LEFT:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_LEG_RIGHT:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_LEG_LEFT:
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_MAX:
+				break;
+			default:
+				break;
+			}
+			//rot.y = XMConvertToRadians(GetCameraYoko());
+		}
+		if (BombHave)
+		{
+			switch (i)
+			{
+			case PARTS_ARM_RIGHT:
+				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				break;
+			case PARTS_ARM_LEFT:
+				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				break;
+			default:
+				break;
+			}
+		}
+
+		rot.x += XMConvertToRadians(plasRot.x);
+		rot.y += XMConvertToRadians(plasRot.y);
+		rot.z += XMConvertToRadians(plasRot.z);
+
 
 		switch (i)
 		{
@@ -453,25 +540,26 @@ void PLAYER::Player_SetParts()
 			break;
 		}
 	}
-	l += (1.0f/30.0f);
-	/*if (l >= FRAME_MAX)
+	l += (1.0f/1.0f);
+	if (l >= 60)
 	{
 		l = 0;
-	}*/
+	}
 }
 
+//
+//float tes00 = 30.0f;
+//int tes12 = 7;
 
-float tes00 = 30.0f;
-int tes12 = 7;
-
-XMFLOAT3 PLAYER::Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame)
+XMFLOAT3 PLAYER::Player_AnimPos(PLAYER_STATE state, PLAYER_PARTS part,PARTS* parts, XMFLOAT3 rot,int frame)
 {
 	XMFLOAT3 pos = GetPlayerPosition();
 	XMFLOAT3 InisPos = parts->GetInisPosition();
 	XMFLOAT3 nowPos = parts->GetNowPosition();
-	XMFLOAT3 lastPos = parts->GetAnimLastPosition(parts->GetNowPos());
+	XMFLOAT3 lastPos = m_anim[state].anim[part].fps[frame].Position;
+	XMFLOAT3 lastRot = m_anim[state].anim[part].fps[frame].Rotation;
 	bool	 loop = parts->GetAnimLoop();
-
+	/*parts->GetAnimLastPosition(parts->GetNowPos());*/
 	//x値
 	pos.x -= InisPos.x * cosf(rot.y);
 	pos.z += InisPos.x * sinf(rot.y);
@@ -483,37 +571,45 @@ XMFLOAT3 PLAYER::Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame)
 	//ｙ値
 	pos.y += InisPos.y;
 
-	XMFLOAT3 tesPos = parts->GetAnimLastPosition(0);
-	
-	nowPos.x += tesPos.x / 6;
-	nowPos.z += tesPos.z / 6;
-	 
-	//nowPos = parts->m_Frame[7].GetPosition();
-	/*if (nowPos.x >= tesPos.x&&tesPos.x>=0)
-	{
-		if (tes12 == 7)
-		{
+	//x値
+	pos.x -= lastPos.x * cosf(rot.y);
+	pos.z += lastPos.x * sinf(rot.y);
 
-		}
-	}
-	else if (nowPos.x < tesPos.x && tesPos.x<0)
-	{
+	//z値
+	pos.z += lastPos.z * cosf(rot.y);
+	pos.x += lastPos.z * sinf(rot.y);
 
-	}*/
+	//ｙ値
+	pos.y += lastPos.y;
 
-	nowPos.z += lastPos.z / tes00;
-	
-	pos.x += (nowPos.z * sinf(rot.y));
-	pos.z += (nowPos.z * cosf(rot.y));
+	//XMFLOAT3 tesPos = parts->GetAnimLastPosition(0);
+	//
+	//nowPos.x += tesPos.x / 6;
+	//nowPos.z += tesPos.z / 6;
+	// 
+	////nowPos = parts->m_Frame[7].GetPosition();
+	///*if (nowPos.x >= tesPos.x&&tesPos.x>=0)
+	//{
+	//	if (tes12 == 7)
+	//	{
+
+	//	}
+	//}
+	//else if (nowPos.x < tesPos.x && tesPos.x<0)
+	//{
+
+	//}*/
+
+	//nowPos.z += lastPos.z / tes00;
+	//
+	//pos.x += (nowPos.z * sinf(rot.y));
+	//pos.z += (nowPos.z * cosf(rot.y));
 
 
 	//if (loop)
 	//{
 	//	lastPos.z = -lastPos.z;
 	//}
-
-	
-	
 
 	//pos.x += nowPos.z * sinf(rot.y);
 	//pos.z += nowPos.z * cosf(rot.y);
@@ -522,6 +618,24 @@ XMFLOAT3 PLAYER::Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame)
 	////parts->SetAnimLastPosition(lastPos);
 	//parts->SetNowPosition(nowPos);
 	return pos;
+}
+
+XMFLOAT3 PLAYER::Player_AnimRot(PLAYER_STATE state, PLAYER_PARTS part, PARTS* parts, XMFLOAT3 rot, int frame)
+{
+	XMFLOAT3 Rot = GetPlayerPosition();
+	XMFLOAT3 lastRot = m_anim[state].anim[part].fps[frame].Rotation;
+	
+	//x値
+	Rot.x = lastRot.x;
+	
+	//z値
+	Rot.z = lastRot.z ;
+	
+	//ｙ値
+	Rot.y = lastRot.y;
+
+	
+	return Rot;
 }
 
 void PLAYER::Player_SetAnim()
@@ -538,15 +652,20 @@ void PLAYER::Player_SetAnim()
 		Player_SetAnimJunp();
 		break;
 	case PLAYER_STATE_BALLOON:
+
 		break;
 	case PLAYER_STATE_RESPAWN:
 		break;
 	case PLAYER_STATE_DEATH:
 		break;
+	case PLAYER_STATE_MAX:
+		Player_SetAnimHave_MAX();
+		break;
 	default:
 		break;
 	}
 }
+
 void PLAYER::Player_SetAnimInis()
 {
 	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
@@ -558,28 +677,171 @@ void PLAYER::Player_SetAnimInis()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.65f, 0.0f));
 				break;
 			case PARTS_BODY:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.6f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_ARM_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.6f, 0.5f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
 				break;
 			case PARTS_LEG_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
 				break;
 			case PARTS_LEG_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.0f, 0.0f));
+				m_Model[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
 				break;
 			default:
 				break;
 			}
 		}
 
+	}
+	Player_SetAnimMove();
+	Player_SetAnimJunp();
+	Player_SetAnimHave_MAX();
+}
+
+//調整前
+void PLAYER::Player_SetAnimHokan(PLAYER_STATE state)
+{
+	for (int y = 0; y < PLAYER_PARTS::PARTS_MAX; y++)
+	{
+		for (int i = 0; i < FLAME_MAX; i++)
+		{
+			if (i != 0 && m_anim[state].anim[y].fps[i].SetPos)
+			{
+				int a = 0;
+
+				for (int i = 0; i < FLAME_MAX; i++)
+				{
+					if (!m_anim[state].anim[y].fps[i].Fill)
+					{
+						a = i;
+						break;
+					}
+				}
+
+				XMFLOAT3 pos{ 0.0f,0.0f,0.0f };
+				XMFLOAT3 rot{ 0.0f,0.0f,0.0f };
+
+				int waru = (i - a);
+
+				if (a == 0)
+				{
+					pos = {
+						(m_anim[state].anim[y].fps[i].Position.x - m_anim[state].anim[y].fps[a].Position.x) / waru,
+						(m_anim[state].anim[y].fps[i].Position.y - m_anim[state].anim[y].fps[a].Position.y) / waru,
+						(m_anim[state].anim[y].fps[i].Position.z - m_anim[state].anim[y].fps[a].Position.z) / waru };
+
+
+
+				}
+				else
+				{
+					pos = {
+						(m_anim[state].anim[y].fps[i].Position.x - m_anim[state].anim[y].fps[a - 1].Position.x) / waru,
+						(m_anim[state].anim[y].fps[i].Position.y - m_anim[state].anim[y].fps[a - 1].Position.y) / waru,
+						(m_anim[state].anim[y].fps[i].Position.z - m_anim[state].anim[y].fps[a - 1].Position.z) / waru };
+
+				}
+
+				if (a == 0)
+				{
+					rot = {
+						(m_anim[state].anim[y].fps[i].Rotation.x - m_anim[state].anim[y].fps[a].Rotation.x) / waru,
+						(m_anim[state].anim[y].fps[i].Rotation.y - m_anim[state].anim[y].fps[a].Rotation.y) / waru,
+						(m_anim[state].anim[y].fps[i].Rotation.z - m_anim[state].anim[y].fps[a].Rotation.z) / waru };
+
+
+
+				}
+				else
+				{
+					rot = {
+						(m_anim[state].anim[y].fps[i].Rotation.x - m_anim[state].anim[y].fps[a - 1].Rotation.x) / waru,
+						(m_anim[state].anim[y].fps[i].Rotation.y - m_anim[state].anim[y].fps[a - 1].Rotation.y) / waru,
+						(m_anim[state].anim[y].fps[i].Rotation.z - m_anim[state].anim[y].fps[a - 1].Rotation.z) / waru };
+
+				}
+
+				for (int l = a; l < i; l++)
+				{
+
+					if (!m_anim[state].anim[y].fps[l].Fill)
+					{
+						if (l == 0)
+						{
+							m_anim[state].anim[y].fps[l].Position.x = (m_anim[state].anim[y].fps[l].Position.x + pos.x);
+							m_anim[state].anim[y].fps[l].Position.y = (m_anim[state].anim[y].fps[l].Position.y + pos.y);
+							m_anim[state].anim[y].fps[l].Position.z = (m_anim[state].anim[y].fps[l].Position.z + pos.z);
+
+							if (fabs(m_anim[state].anim[y].fps[l].Position.x) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Position.x = 0.0f;
+							}
+							if (fabs(m_anim[state].anim[y].fps[l].Position.z) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Position.z = 0.0f;
+							}
+
+							m_anim[state].anim[y].fps[l].Rotation.x = (m_anim[state].anim[y].fps[l].Rotation.x + rot.x);
+							m_anim[state].anim[y].fps[l].Rotation.y = (m_anim[state].anim[y].fps[l].Rotation.y + rot.y);
+							m_anim[state].anim[y].fps[l].Rotation.z = (m_anim[state].anim[y].fps[l].Rotation.z + rot.z);
+
+							if (fabs(m_anim[state].anim[y].fps[l].Rotation.x) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Rotation.x = 0.0f;
+							}
+							if (fabs(m_anim[state].anim[y].fps[l].Rotation.z) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Rotation.z = 0.0f;
+							}
+
+							m_anim[state].anim[y].fps[l].Fill = true;
+						}
+						else
+						{
+
+							m_anim[state].anim[y].fps[l].Position.x = (m_anim[state].anim[y].fps[l - 1].Position.x + pos.x);
+							m_anim[state].anim[y].fps[l].Position.y = (m_anim[state].anim[y].fps[l - 1].Position.y + pos.y);
+							m_anim[state].anim[y].fps[l].Position.z = (m_anim[state].anim[y].fps[l - 1].Position.z + pos.z);
+
+							if (fabs(m_anim[state].anim[y].fps[l].Position.x) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Position.x = 0.0f;
+							}
+							if (fabs(m_anim[state].anim[y].fps[l].Position.z) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Position.z = 0.0f;
+							}
+
+							m_anim[state].anim[y].fps[l].Rotation.x = (m_anim[state].anim[y].fps[l - 1].Rotation.x + rot.x);
+							m_anim[state].anim[y].fps[l].Rotation.y = (m_anim[state].anim[y].fps[l - 1].Rotation.y + rot.y);
+							m_anim[state].anim[y].fps[l].Rotation.z = (m_anim[state].anim[y].fps[l - 1].Rotation.z + rot.z);
+
+							if (fabs(m_anim[state].anim[y].fps[l].Rotation.x) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Rotation.x = 0.0f;
+							}
+							if (fabs(m_anim[state].anim[y].fps[l].Rotation.z) < 1e-6f)
+							{
+								m_anim[state].anim[y].fps[l].Rotation.z = 0.0f;
+							}
+
+							m_anim[state].anim[y].fps[l].Fill = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				continue;
+			}
+		}
 	}
 }
 
@@ -627,7 +889,58 @@ void PLAYER::Player_SetAnimIdle()
 
 void PLAYER::Player_SetAnimMove()
 {
-	Player_SetAnimInis();
+
+
+	{//right_head
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(0,  { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	{//right_body
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(0,  { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	{//right_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,0.0f,0.2f }, { 0.0f,-20.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,0.0f,-0.2f }, { 0.0f,20.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	{//left_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,0.0f,-0.2f }, { 0.0f,-20.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,0.0f,0.2f }, { 0.0f,20.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+	{//right_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(14, { 0.0f,0.0f,-0.2f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(44, { 0.0f,0.0f,0.3f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	{//left_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(14, { 0.0f,0.0f,0.3f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(44, { 0.0f,0.0f,-0.2f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_MOVE].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	Player_SetAnimHokan(PLAYER_STATE::PLAYER_STATE_MOVE);
+
+	//Player_SetAnimInis();
 	/*
 	////7 15 22 30
 	//int animPoint[] = { 7,15,22,29 };
@@ -743,9 +1056,6 @@ void PLAYER::Player_SetAnimMove()
 	//}
 		
 	*/
-
-
-
 	//for (int i = 0; i < PARTS_MAX; i++)
 	//{
 	//	switch (i)
@@ -782,44 +1092,111 @@ void PLAYER::Player_SetAnimMove()
 
 void PLAYER::Player_SetAnimJunp()
 {
-	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
-
-	for (int i = 0; i < PARTS_MAX; i++)
-	{
-		for (int i = 0; i < PARTS_MAX; i++)
-		{
-			switch (i)
-			{
-			case PARTS_HEAD:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
-				break;
-			case PARTS_BODY:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
-				break;
-			case PARTS_ARM_RIGHT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.6f, 0.0f), 0);
-				break;
-			case PARTS_ARM_LEFT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.6f, 0.0f), 0);
-				break;
-			case PARTS_LEG_RIGHT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
-				break;
-			case PARTS_LEG_LEFT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f), 0);
-				break;
-			default:
-				break;
-			}
-		}
-
+	{//right_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,0.2f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(6,  { 0.0f,0.1f,0.1f});
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(22, { 0.0f,0.1f,-0.13f  });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,0.2f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(36, { 0.0f,0.1f,0.1f});
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(51, { 0.0f,0.1f,-0.13f  });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,0.2f,0.0f });
 	}
+
+
+
+	//{//right_arm
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,0.2f,0.0f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,0.1f,-0.1f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,0.1f,0.1f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,0.2f,0.0f });
+	//}
+
+	{//right_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(0, { 0.0f,0.2f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(6, { 0.0f,0.1f,0.1f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(22, { 0.0f,0.1f,-0.13f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,0.2f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(36, { 0.0f,0.1f,0.1f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(51, { 0.0f,0.1f,-0.13f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,0.2f,0.0f });
+	}
+
+	//{//left_arm
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,0.2f,0.0f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,0.1f,0.1f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,0.1f,-0.1f });
+	//	m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,0.2f,0.0f });
+	//}
+
+	{//right_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(0,  { 0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(14, { 0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(29, { 0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(44, { 0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(59, { 0.08f,0.0f,0.0f });
+	}
+
+	{//left_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(0,  { -0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(14, { -0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(29, { -0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(44, { -0.08f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_JUMP].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(59, { -0.08f,0.0f,0.0f });
+	}
+
+	Player_SetAnimHokan(PLAYER_STATE::PLAYER_STATE_JUMP);
+
+}
+
+void PLAYER::Player_SetAnimHave_MAX()
+{
+	{//right_head
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_HEAD].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+	{//right_body
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_BODY].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+	{//right_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(0, { 0.0f,0.6f,0.0f }, { 200.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,0.6f,0.0f }, { 200.0f,0.0f,0.0f });
+	}
+
+	{//left_arm
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(0, { 0.0f,0.6f,0.0f }, { 200.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,0.6f,0.0f }, { 200.0f,0.0f,0.0f });
+	}
+	{//right_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(14, { 0.0f,0.0f,-0.2f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(44, { 0.0f,0.0f,0.3f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_RIGHT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	{//left_leg
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(0, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(14, { 0.0f,0.0f,0.3f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(29, { 0.0f,0.0f,0.0f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(44, { 0.0f,0.0f,-0.2f });
+		m_anim[PLAYER_STATE::PLAYER_STATE_BALLOON].anim[PLAYER_PARTS::PARTS_LEG_LEFT].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	}
+
+	Player_SetAnimHokan(PLAYER_STATE::PLAYER_STATE_BALLOON);
+
 }
 
 void PLAYER::Player_SetAnimBaloon()

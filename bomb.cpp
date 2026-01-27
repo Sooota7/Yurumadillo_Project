@@ -91,6 +91,56 @@ int GetBomb3(int x, int y, int z)
 
 
 }
+
+int GetBomb4(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_balloon_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_balloon_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return tutorial_balloon_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
+
+int GetBomb5(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return tutorial_mouse_pos_row[y][x];
+
+		break;
+	case(1):
+		return tutorial_mouse_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return tutorial_mouse_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckBomb(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -106,6 +156,13 @@ int CheckBomb(int x, int y, int z,FIELD_NO no)
 	case NO_3:
 		return GetBomb3(x, y, z);
 		break;
+	case NO_4:
+		return GetBomb4(x, y, z);
+		break;
+	case NO_5:
+		return GetBomb5(x, y, z);
+		break;
+
 	default:
 		break;
 	}
@@ -299,7 +356,7 @@ void BOMB::Bomb_Draw(void)
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			break;

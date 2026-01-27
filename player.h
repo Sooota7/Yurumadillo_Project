@@ -34,6 +34,7 @@ enum PLAYER_STATE
 	PLAYER_STATE_BALLOON,	//風船持ってる
 	PLAYER_STATE_RESPAWN,   //リスポーン
 	PLAYER_STATE_DEATH,		//死
+	PLAYER_STATE_MAX
 };
 
 enum PLAYER_PARTS
@@ -45,6 +46,12 @@ enum PLAYER_PARTS
 	PARTS_LEG_RIGHT,
 	PARTS_LEG_LEFT,
 	PARTS_MAX
+};
+
+class PLAYER_ANIM
+{
+public:
+	ANIM anim[PARTS_MAX];
 };
 
 //プレイヤーのクラス
@@ -59,8 +66,9 @@ private:
 
 	PLAYER_STATE	m_State;		//ステート
 	PARTS m_Model[PARTS_MAX];		//モデル
+	PLAYER_ANIM m_anim[PLAYER_STATE_MAX];
 
-
+	bool BombHave;
 	 bool JumpCount;
 	 float m_Hp;
 	 bool BalloonFlag;
@@ -77,16 +85,22 @@ private:
 
 	void	Player_SetParts();
 	
-	XMFLOAT3	Player_Anim(PARTS* parts, XMFLOAT3 rot,int frame);
+	XMFLOAT3	Player_AnimPos(PLAYER_STATE state,PLAYER_PARTS part,PARTS* parts, XMFLOAT3 rot,int frame);
+	XMFLOAT3	Player_AnimRot(PLAYER_STATE state,PLAYER_PARTS part,PARTS* parts, XMFLOAT3 rot,int frame);
 	void		Player_SetAnimInis();
 
 	void	Player_SetAnim();
 	void	Player_SetAnimIdle();
 	void	Player_SetAnimMove();
 	void	Player_SetAnimJunp();
+	void	Player_SetAnimHave_MAX();
 	void	Player_SetAnimBaloon();
 	void	Player_SetAnimRespawn();
 	void	Player_SetAnimDeath();
+	void	Player_SetAnimHokan(PLAYER_STATE parts);
+
+	//使うならセッターゲッター用意
+	float	m_flame;
 
 	XMFLOAT3 m_LastPos;
 
@@ -116,6 +130,9 @@ public:
 
 	void SetPlayerHp(float hp ) { m_Hp = hp; };
 	FLOAT GetPlayerHp() { return m_Hp; };
+
+	void SetPlayerBombHave(bool have) { BombHave = have; };
+	bool GetPlayerBombave() { return BombHave; };
 
 	PLAYER_STATE GetPlayerState() { return m_State; };
 

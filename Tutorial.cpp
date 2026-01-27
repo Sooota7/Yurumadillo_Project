@@ -10,6 +10,7 @@
 #include	"Block.h"
 #include	"field.h"
 #include	"Effect.h"
+#include	"background.h"
 #include	"score.h"
 #include	"Audio.h"
 
@@ -33,6 +34,7 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
@@ -75,6 +77,7 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 void TUTORIAL::Tutorial_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -98,6 +101,7 @@ void TUTORIAL::Tutorial_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
+	m_Background.Background_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
@@ -105,21 +109,8 @@ void TUTORIAL::Tutorial_Update()
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
-		if (m_NowField == FIELD_NO::NO_3)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
-			m_NowField = FIELD_NO::NO_4;
-		}
-		else if (m_NowField == FIELD_NO::NO_4)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
-			m_NowField = FIELD_NO::NO_5;
-		}
-		else if (m_NowField == FIELD_NO::NO_5)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_3);
-			m_NowField = FIELD_NO::NO_3;
-		}
+		
+		
 	}
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
@@ -153,27 +144,14 @@ void TUTORIAL::Tutorial_Update()
 	//倒すべき敵の数と今まで倒した敵の数を比べる
 	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	{
-		if (m_NowField == FIELD_NO::NO_3)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_4);
-			m_NowField = FIELD_NO::NO_4;
-		}
-		else if (m_NowField == FIELD_NO::NO_4)
-		{
-			Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_5);
-			m_NowField = FIELD_NO::NO_5;
-		}
-		else if (m_NowField == FIELD_NO::NO_5)
-		{
-			//Tutorial_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_Manager->SetScene(SCENE_STAGESELECTION);
-			m_NowField = FIELD_NO::NO_3;
-		}
+		m_Manager->SetScene(SCENE_TUTORIAL2);
+		
 	}
 }
 
 void TUTORIAL::Tutorial_Draw()
 { 
+	m_Background.Background_Draw();
 	Light2.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light2.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
@@ -208,6 +186,7 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -220,6 +199,7 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);

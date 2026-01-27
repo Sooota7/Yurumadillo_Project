@@ -32,6 +32,13 @@ void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 				image.GetImageCount(), metadata, &m_pSRV[i]);
 			assert(m_pSRV[i]);
 			break;
+		case BILLBOARD_TEXTURE::EXPLOSION:
+			// テクスチャ読み込み（テスト）
+			LoadFromWICFile(L"Asset\\Texture\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, &metadata, image);
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_pSRV[i]);
+			assert(m_pSRV[i]);
+			break;
 		default:
 			break;
 		}
@@ -75,6 +82,9 @@ void BillboardManager::Draw()
 		case BILLBOARD_TEXTURE::TEST:
 			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::TEST]);
 			break;
+		case BILLBOARD_TEXTURE::EXPLOSION:
+			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::EXPLOSION]);
+			break;
 		default:
 			delete m_pBillboard[i];
 			m_pBillboard[i] = nullptr;
@@ -99,14 +109,14 @@ void BillboardManager::Update()
 
 void BillboardManager::Register(Billboard* pBillboard)
 {
-	if (!pBillboard) return;
+    if (!pBillboard) return;
 
-	if (m_Count >= BILLBOARD_MAX)
-	{
-		return;
-	}
+    if (m_Count < 0 || m_Count >= BILLBOARD_MAX)
+    {
+        return;
+    }
 
-	m_pBillboard[m_Count] = pBillboard;
+    m_pBillboard[m_Count] = pBillboard;
 
-	m_Count += 1;
+    m_Count += 1;
 }

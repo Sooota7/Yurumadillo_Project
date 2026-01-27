@@ -12,6 +12,7 @@ static ID3D11Buffer* g_VertexBuffer = NULL;
 static ID3D11Buffer* g_IndexBuffer = NULL;
 //テクスチャ変数
 static ID3D11ShaderResourceView* g_Texture;
+static ID3D11ShaderResourceView* g_Texture_Jump;
 
 #define		BOX_NUM_VERTEX (24)
 
@@ -161,7 +162,7 @@ int CheckMap(int x, int y, int z,FIELD_NO no)
 		return GetMap4(x, y, z);
 		break;
 	case NO_5:
-		return GetMap4(x, y, z);
+		return GetMap5(x, y, z);
 		break;
 	default:
 		break;
@@ -353,12 +354,22 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pContext = pContext;
 
 	// テクスチャ読み込み
-	TexMetadata metadata;
-	ScratchImage image;
-	LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(),
-		image.GetImageCount(), metadata, &g_Texture);
-	assert(g_Texture);
+	{
+		TexMetadata metadata;
+		ScratchImage image;
+		LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
+		CreateShaderResourceView(pDevice, image.GetImages(),
+			image.GetImageCount(), metadata, &g_Texture);
+		assert(g_Texture);
+	}
+	{
+		TexMetadata metadata;
+		ScratchImage image;
+		LoadFromWICFile(L"Asset\\Texture\\Brick.jpg", WIC_FLAGS_NONE, &metadata, image);
+		CreateShaderResourceView(pDevice, image.GetImages(),
+			image.GetImageCount(), metadata, &g_Texture_Jump);
+		assert(g_Texture_Jump);
+	}
 
 	int a = 0;
 
@@ -383,6 +394,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 				case 5:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_1);;
+					break;
+				case 9:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_JUMP);
 					break;
 
 				}
@@ -435,6 +449,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		case FIELD_OBT_1://障害物0
 			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
 			break;
+		case FIELD_JUMP:
+			CreateBox();
+			break;
 
 		}
 	}
@@ -479,8 +496,9 @@ void  MAPDATA::Field_Draw(void)
 	//MAPの表示
 	int i = 0;
 
-	static float rot = 0.0f;
-	rot -= 0.5f;
+
+
+
 
 	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
@@ -544,6 +562,12 @@ void  MAPDATA::Field_Draw(void)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
 		}
+		else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
+		{
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
+		}
 		i++;
 	}
 
@@ -551,6 +575,17 @@ void  MAPDATA::Field_Draw(void)
 
 void  MAPDATA::Field_Update(void)
 {
+	int i = 0;
+
+	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
+	{
+		if (m_Map[i].MapData_GetNo() == FIELD_OBT_1)
+		{
+			m_Map[i].MapData_Update();
+		}
+		i++;
+	}
+
 }
 
 
