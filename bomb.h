@@ -16,6 +16,7 @@ using namespace DirectX;
 #include	"FlowtBombSource.h"
 #include	"Dictionary.h"
 #include "player.h"
+#include     "billboardManager.h"
 // É}ÉNÉçíËã`
 
 #define		BOMB_NUM_MAX	(100)
@@ -40,7 +41,7 @@ public:
 
 	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,FIELD_NO no);
 	void	Bomb_Finalize(void);
-	void	Bomb_Draw(void);
+	void	Bomb_Draw(BillboardManager* billboardManager);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSOURCE* Bomb_GetRunBomb();

@@ -20,13 +20,13 @@ using namespace DirectX;
 class BillboardManager
 {
 private:
-	static constexpr int BILLBOARD_MAX = 200; // 使用できる最大
+	static constexpr int BILLBOARD_MAX = 256; // 使用できる最大
 	int m_Count;
 
 	ID3D11Device* m_pDevice;
 	ID3D11DeviceContext* m_pContext;
 
-	Billboard* m_pBillboard[200];
+	Billboard* m_pBillboard[BILLBOARD_MAX];
 
 	ID3D11ShaderResourceView* m_pSRV[BILLBOARD_TEXTURE::MAX];
 

@@ -271,7 +271,7 @@ void BOMB::Bomb_Finalize(void)
 	SAFE_RELEASE(g_Texture);
 }
 
-void BOMB::Bomb_Draw(void)
+void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 {
 
 	//シェーダーを描画パイプラインへ設定
@@ -289,6 +289,8 @@ void BOMB::Bomb_Draw(void)
 	static float rot = 0.0f;
 	rot -= 0.5f;
 
+	// test 
+	static int bno = 0;
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -352,6 +354,7 @@ void BOMB::Bomb_Draw(void)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			bno = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
@@ -359,10 +362,31 @@ void BOMB::Bomb_Draw(void)
 
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			{
+				XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_Bomb[i].BombSource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (2.0f / (wc * hc)) * (bno + 1))
+				{
+					bno++;
+				}
+				
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - (bno * 0.1f));
+
+				Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+				billboardManager->Register(bb);
+				
+
+			}
+
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
 
