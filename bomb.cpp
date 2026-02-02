@@ -239,6 +239,12 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		}
 	}
 	
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bbno[i] = 0;
+		m_Rbno[i] = 0;
+		m_Fbno[i] = 0;
+	}
 }
 
 void BOMB::Bomb_Finalize(void)
@@ -288,9 +294,6 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 	
 	static float rot = 0.0f;
 	rot -= 0.5f;
-
-	// test 
-	static int bno = 0;
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -354,7 +357,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
-			bno = 0;
+			m_Bbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
@@ -370,15 +373,18 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 				int wc = 3;
 				int hc = 3;
 
-				if (cnt > (2.0f / (wc * hc)) * (bno + 1))
+				if (cnt > (1.0f / (wc * hc)) * (m_Bbno[i] + 1))
 				{
-					bno++;
+					m_Bbno[i]++;
 				}
 				
-				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - (bno * 0.1f));
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-				Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
-				billboardManager->Register(bb);
+				if (m_Bbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Bbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
 				
 
 			}
@@ -454,6 +460,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			m_Rbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
@@ -532,6 +539,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			m_Fbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);

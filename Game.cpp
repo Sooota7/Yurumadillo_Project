@@ -188,9 +188,10 @@ void GAME::Game_Draw()
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(FALSE);
+
 
 	m_BillboardManager.Draw();
+	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
 

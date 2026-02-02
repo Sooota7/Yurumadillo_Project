@@ -32,8 +32,11 @@ private:
 
 
 	BOMBSOURCE		m_Bomb[BOMB_NUM_MAX];
+	int				m_Bbno[BOMB_NUM_MAX];
 	RUNBOMBSOURCE	m_RunBomb[BOMB_NUM_MAX];
+	int				m_Rbno[BOMB_NUM_MAX];
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
+	int				m_Fbno[BOMB_NUM_MAX];
 
 	MODEL*			m_Model[BOMB_MAX] = { NULL };//デバッグ
 
