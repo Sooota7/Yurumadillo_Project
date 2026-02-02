@@ -468,6 +468,30 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 		
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			{
+				XMFLOAT3 pos = m_RunBomb[i].Runbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_RunBomb[i].Runbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Rbno[i] + 1))
+				{
+					m_Rbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Rbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Rbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
+
 			break;
 
 		case BOMB_COOL:
@@ -547,6 +571,29 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 		
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			{
+				XMFLOAT3 pos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_FlowtBomb[i].Flowtbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Fbno[i] + 1))
+				{
+					m_Fbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Fbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Fbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
 			break;
 
 		case BOMB_COOL:
