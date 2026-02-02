@@ -33,7 +33,7 @@ private:
 public:
 	void Initialize(ID3D11Device* m_pDevice, ID3D11DeviceContext* m_pContext);
 	void Finalize();
-	void Draw();
+	void Draw(FIELD_NO fn);
 	void Update();
 
 	void Register(Billboard* pBillboard);

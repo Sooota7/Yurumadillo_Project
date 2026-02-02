@@ -190,7 +190,7 @@ void GAME::Game_Draw()
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 
 
-	m_BillboardManager.Draw();
+	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
