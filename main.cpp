@@ -55,6 +55,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance, LPSTR lpCmd, int nCmdShow)
 {
 
+	
+
 	//乱数の初期化
 	srand(timeGetTime());
 
@@ -107,9 +109,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	//ウィンドウ内部の更新要求
 	UpdateWindow(hWnd);
 
-	MANAGER manager;
+	static MANAGER manager;
 
 	Direct3D_Initialize(hWnd);
+
+	
+
 	Keyboard_Initialize();
 	Shader_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext()); // シェーダの初期化
 	InitializeSprite();//スプライトの初期化
