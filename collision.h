@@ -51,6 +51,7 @@ public:
 	float	PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy);
 	float	PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb);
 	float	BombFieldCollision(BOMB* pBomb, MAPDATA* pField);
+	float	EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField);
 	float	BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);

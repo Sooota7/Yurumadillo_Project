@@ -1178,6 +1178,176 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	return hit;  // ぶつかったかどうかを示す
 }
 
+float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
+{
+	float		hit = 0.0f;				// ヒットした方向
+	//BALL*		Ball = GetBall();		// ボールの情報
+
+	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
+	RUNBOMBSOURCE* pRunBomb = pBomb->Bomb_GetRunBomb();
+	FLOWTBOMBSOURCE* pFlowtBomb = pBomb->Bomb_GetFlowtBomb();
+
+	MAP* Map = pField->GetFieldMap();
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//スローのときのみ当たり判定を取る
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//壊れる床が存在するとき
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//当たった
+							}
+						}
+					}
+
+					//ボムのステートを爆発に変更
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//スローのときのみ当たり判定を取る
+		if (pRunBomb[i].Runbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pRunBomb[i].Runbombsource_GetPosition();
+			XMFLOAT3 BombVel = pRunBomb[i].Runbombsource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//壊れる床が存在するとき
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//当たった
+							}
+						}
+					}
+
+					//ボムのステートを爆発に変更
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//スローのときのみ当たり判定を取る
+		if (pFlowtBomb[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pFlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT3 BombVel = pFlowtBomb[i].Flowtbombsource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//壊れる床が存在するとき
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOXの+Y面の座標
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// 壁としての判定処理
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//当たった
+							}
+						}
+					}
+
+					//ボムのステートを爆発に変更
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	return hit;
+}
+
 //ボムとエネミーの当たり判定の不具合多いので修正する
 float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 {
