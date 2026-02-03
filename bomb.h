@@ -35,6 +35,9 @@ private:
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
 
 	MODEL*			m_Model[BOMB_MAX] = { NULL };//デバッグ
+	MODEL* m_BombModel[BOMB_TYPE::TYPE_MAX];
+	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
+	MODEL* m_NorBombModel;
 
 public:
 

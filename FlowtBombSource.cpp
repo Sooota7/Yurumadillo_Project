@@ -30,7 +30,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
 void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 1.0f;
+	m_Position.y += 1.5f;
 
 
 

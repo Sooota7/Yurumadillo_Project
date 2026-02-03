@@ -139,7 +139,7 @@ void GAME::Game_Update()
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+	//collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 

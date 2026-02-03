@@ -175,6 +175,48 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	m_NorBombModel = ModelLoad("asset\\model\\AliceObjCool.fbx");
+
+	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
+	{
+		switch (i)
+		{
+		case TYPE_NORMAL:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceBomb.fbx");
+			break;
+		case TYPE_FLOW:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+			break;
+		case TYPE_RUN:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceRunBomb.fbx");
+			break;
+		case TYPE_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
+	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
+	{
+		switch (i)
+		{
+		case TYPE_NORMAL:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceObj.fbx");
+			break;
+		case TYPE_FLOW:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+			break;
+		case TYPE_RUN:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceRunObj.fbx");
+			break;
+		case TYPE_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
 	for (int i = 0; i < BOMB_STATE::BOMB_MAX; i++)
 	{
 		switch (i)
@@ -185,7 +227,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 			m_Model[i] = ModelLoad("asset\\model\\ball.fbx");
 			break;
 		case BOMB_ACTIVE_HAVE:
-			m_Model[i] = ModelLoad("asset\\model\\test_bomb.fbx");
+			m_Model[i] = ModelLoad("asset\\model\\test_Bomb.fbx");
 			break;
 		case BOMB_EXPLOSION:
 			m_Model[i] = ModelLoad("asset\\model\\test_explosion.fbx");
@@ -285,7 +327,7 @@ void BOMB::Bomb_Draw(void)
 	//先にVP変換行列を作っておく
 	XMMATRIX	VP = View * Projection;
 
-	
+
 	static float rot = 0.0f;
 	rot -= 0.5f;
 
@@ -348,13 +390,13 @@ void BOMB::Bomb_Draw(void)
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 
 		case BOMB_EXPLOSION:
@@ -362,16 +404,14 @@ void BOMB::Bomb_Draw(void)
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
-
-
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 
-		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
+		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetFirstPosition();
 
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
@@ -420,27 +460,102 @@ void BOMB::Bomb_Draw(void)
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		//描画リクエスト
+		switch (m_Bomb[i].BombSource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			break;
+		case BOMB_ACTIVE_HAVE:
+			ModelDraw(m_NorBombModel);
+			break;
+		case BOMB_ACTIVE_THROW:
+			ModelDraw(m_NorBombModel);
+			break;
+
+		case BOMB_EXPLOSION:
+			ModelDraw(m_NorBombModel);
+			break;
+
+		case BOMB_COOL:
+			ModelDraw(m_NorBombModel);
+			break;
+		}
+
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+
+		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
+		XMFLOAT3 bombRot = m_RunBomb[i].Runbombsource_GetRotation();
+
+		//スケーリング行列の作成
+		XMMATRIX	ScalingMatrix = XMMatrixScaling
+		(
+			1.0f,
+			1.0f,
+			1.0f
+		);
+
+		//平行移動行列の作成
+		XMMATRIX	TranslationMatrix = XMMatrixTranslation
+		(
+			bombPos.x,
+			bombPos.y,
+			bombPos.z
+		);
+
+		//回転行列の作成
+		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		(
+			bombRot.x,
+			bombRot.y,
+			bombRot.z
+		);
+		//ワールド行列の作成
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		//最終的な変換行列を作成
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
+		//DirectXへ行列をセット
+		Shader_SetMatrix(WVP);
+
+		//テクスチャをセット
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+		//頂点バッファをセット
+		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+		UINT	offset = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+		//インデックスバッファをセット
+		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		//描画リクエスト
 		switch (m_RunBomb[i].Runbombsource_GetState())
 		{
 		case BOMB_NONE:
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
 
@@ -504,27 +619,29 @@ void BOMB::Bomb_Draw(void)
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
 
 
 	}
 }
+	
+
 
 void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
