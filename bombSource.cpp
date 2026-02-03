@@ -2,6 +2,9 @@
 #include	"keyboard.h"
 #include	"collision.h"
 #include	"mouse.h"
+#include	"billboard.h"
+#include	"billboardManager.h"
+
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;

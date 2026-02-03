@@ -6,14 +6,14 @@
 #include "player.h"
 
 
-//ƒOƒ[ƒoƒ‹•Ï”
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
-//’¸“_ƒoƒbƒtƒ@
+//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_VertexBuffer = NULL;
-//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_IndexBuffer = NULL;
-//ƒeƒNƒXƒ`ƒƒ•Ï”
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ•°
 static ID3D11ShaderResourceView* g_Texture;
 
 
@@ -281,6 +281,12 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		}
 	}
 	
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bbno[i] = 0;
+		m_Rbno[i] = 0;
+		m_Fbno[i] = 0;
+	}
 }
 
 void BOMB::Bomb_Finalize(void)
@@ -313,31 +319,30 @@ void BOMB::Bomb_Finalize(void)
 	SAFE_RELEASE(g_Texture);
 }
 
-void BOMB::Bomb_Draw(void)
+void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 {
 
-	//ƒVƒF[ƒ_[‚ğ•`‰æƒpƒCƒvƒ‰ƒCƒ“‚Öİ’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’æç”»ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã¸è¨­å®š
 	Shader_Begin();
 
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñì¬
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ä½œæˆ
 	XMMATRIX	Projection = GetProjectionMatrix();
-	//ƒrƒ…[s—ñì¬
+	//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ä½œæˆ
 	XMMATRIX	View = GetViewMatrix();
-	//æ‚ÉVP•ÏŠ·s—ñ‚ğì‚Á‚Ä‚¨‚­
+	//å…ˆã«VPå¤‰æ›è¡Œåˆ—ã‚’ä½œã£ã¦ãŠã
 	XMMATRIX	VP = View * Projection;
 
 
 	static float rot = 0.0f;
 	rot -= 0.5f;
 
-
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 
 		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetPosition();
 
-		//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+		//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -345,7 +350,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//•½sˆÚ“®s—ñ‚Ìì¬
+		//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -353,7 +358,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//‰ñ“]s—ñ‚Ìì¬
+		//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -362,28 +367,28 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+		//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectX‚Ös—ñ‚ğƒZƒbƒg
+		//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 		Shader_SetMatrix(WVP);
 
-		//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-		UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+		UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+		//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//•`‰æƒŠƒNƒGƒXƒg
+		//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 		switch (m_Bomb[i].BombSource_GetState())
 		{
 		case BOMB_NONE:
@@ -393,14 +398,39 @@ void BOMB::Bomb_Draw(void)
 			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
+			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			m_Bbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ƒeƒXƒg‚ÍƒcƒŠ[
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//ãƒ†ã‚¹ãƒˆã¯ãƒ„ãƒªãƒ¼
+			{
+				XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_Bomb[i].BombSource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Bbno[i] + 1))
+				{
+					m_Bbno[i]++;
+				}
+				
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Bbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Bbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+				
+
+			}
+
 			break;
 
 		case BOMB_COOL:
@@ -413,7 +443,7 @@ void BOMB::Bomb_Draw(void)
 
 		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetFirstPosition();
 
-		//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+		//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -421,7 +451,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//•½sˆÚ“®s—ñ‚Ìì¬
+		//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -429,7 +459,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//‰ñ“]s—ñ‚Ìì¬
+		//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -438,28 +468,28 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+		//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectX‚Ös—ñ‚ğƒZƒbƒg
+		//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 		Shader_SetMatrix(WVP);
 
-		//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-		UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+		UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+		//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//•`‰æƒŠƒNƒGƒXƒg
+		//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 		switch (m_Bomb[i].BombSource_GetState())
 		{
 		case BOMB_NONE:
@@ -490,7 +520,7 @@ void BOMB::Bomb_Draw(void)
 		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
 		XMFLOAT3 bombRot = m_RunBomb[i].Runbombsource_GetRotation();
 
-		//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+		//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -498,7 +528,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//•½sˆÚ“®s—ñ‚Ìì¬
+		//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -506,35 +536,35 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//‰ñ“]s—ñ‚Ìì¬
+		//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			bombRot.x,
 			bombRot.y,
 			bombRot.z
 		);
-		//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+		//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectX‚Ös—ñ‚ğƒZƒbƒg
+		//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 		Shader_SetMatrix(WVP);
 
-		//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-		UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+		UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+		//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//•`‰æƒŠƒNƒGƒXƒg
+		//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 		switch (m_RunBomb[i].Runbombsource_GetState())
 		{
 		case BOMB_NONE:
@@ -551,7 +581,31 @@ void BOMB::Bomb_Draw(void)
 			break;
 
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ƒeƒXƒg‚ÍƒcƒŠ[
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//ãƒ†ã‚¹ãƒˆã¯ãƒ„ãƒªãƒ¼
+			{
+				XMFLOAT3 pos = m_RunBomb[i].Runbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_RunBomb[i].Runbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Rbno[i] + 1))
+				{
+					m_Rbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Rbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Rbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
+
 			break;
 
 		case BOMB_COOL:
@@ -566,7 +620,7 @@ void BOMB::Bomb_Draw(void)
 
 		XMFLOAT3 bombPos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
 
-		//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+		//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -574,7 +628,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//•½sˆÚ“®s—ñ‚Ìì¬
+		//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -582,7 +636,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//‰ñ“]s—ñ‚Ìì¬
+		//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -591,28 +645,28 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+		//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectX‚Ös—ñ‚ğƒZƒbƒg
+		//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 		Shader_SetMatrix(WVP);
 
-		//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-		UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+		UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+		//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//•`‰æƒŠƒNƒGƒXƒg
+		//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
 		{
 		case BOMB_NONE:
@@ -629,7 +683,30 @@ void BOMB::Bomb_Draw(void)
 			break;
 
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ƒeƒXƒg‚ÍƒcƒŠ[
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//ãƒ†ã‚¹ãƒˆã¯ãƒ„ãƒªãƒ¼
+			{
+				XMFLOAT3 pos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_FlowtBomb[i].Flowtbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Fbno[i] + 1))
+				{
+					m_Fbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Fbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Fbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
 			break;
 
 		case BOMB_COOL:
