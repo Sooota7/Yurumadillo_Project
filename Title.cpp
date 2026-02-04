@@ -9,6 +9,7 @@
 
 #include "fade.h"
 #include "shader.h"
+#include "inputx.h"
 //aaa
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
@@ -83,6 +84,14 @@ void TITLE::Title_Update()
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_PROLOGUE);
 	}
 
+	if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && (m_Fade->GetFadeState() == FADE_NONE))
+	{
+		PlayAudio(g_SeID, false);		//再生開始（ループあり）
+
+		//フェードアウトさせてシーンを切り替える
+		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_PROLOGUE); 
+	}
 }
 void TITLE::Title_Draw()
 {
