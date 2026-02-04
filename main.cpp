@@ -22,6 +22,8 @@
 
 #include "mouse.h"
 
+#include "inputx.h"
+
 ///////////////////////////////////////////
 #define		SCREEN_WIDTH	(1920)
 #define		SCREEN_HEIGHT	(1080)
@@ -124,6 +126,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	Mouse_Initialize(hWnd);
 	Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE); // マウスルック開始
 
+	InitInput(hInstance, hWnd);	// コントローラー初期化
 
 	manager.Manager_Initialize();
 
@@ -170,6 +173,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 #endif
 
 				//更新処理
+				UpdateInput();		// コントローラー更新
 				manager.Manager_Update();
 
 				//描画処理
@@ -186,6 +190,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	manager.Manager_Finalize();
 
+	UninitInput();		// コントローラー終了処理
 
 	UninitAudio();		//サウンドの終了
 

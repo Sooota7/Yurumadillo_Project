@@ -21,21 +21,6 @@ float g_StopTime = 0.0f;	// ボールが制止するまでの時間
 
 void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	//static MODEL* test5 = ModelLoad("asset\\model\\leg.fbx");
-	//static MODEL* test4 = ModelLoad("asset\\model\\hand.fbx");
-
-
-	//static MODEL* test8 = ModelLoad("asset\\model\\handL.fbx");
-	//static MODEL* test6 = ModelLoad("asset\\model\\legL.fbx");	
-	//static MODEL* test2 = ModelLoad("asset\\model\\body.fbx");
-	//static MODEL* test =  ModelLoad("asset\\model\\head.fbx");
-
-
-
-	//Sleep(10000);
-
-
-
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
