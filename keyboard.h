@@ -20,6 +20,9 @@
 #include <windows.h>
 #include <memory>
 
+static bool input = false;
+
+static bool InputKeyKonCheck() { return input; };
 
 // ƒL[—ñ‹“
 typedef enum Keyboard_Keys_tag
