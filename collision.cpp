@@ -118,12 +118,12 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						PlayerPos.y > BoxTop)
 					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
-<<<<<<< HEAD
+
 
 						PlayerVel.y = 0;//PlayerVel.y * (-COE * 1.0f);
 
 						PlayerVel.y = 0;
-=======
+
 						if (Map[i].MapData_GetNo() == FIELD_JUMP)
 						{// ƒWƒƒƒ“ƒv‘ä‚È‚ç”½”­ŒW”‚ð‘å‚«‚­‚·‚é
 							PlayerVel.y *= -COE_JUMP;
@@ -132,7 +132,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						{
 							PlayerVel.y = 0;
 						}
->>>>>>> 5b28726fa53c818e5b732b07e8f83d8871585c3f
+
 
 						hit = COLLISION_HIT::HIT_GROUND;
 						if (PlayerJump == false)

@@ -396,12 +396,6 @@ void PLAYER::Player_Balloon()
 		}
 
 		
-
-
-<<<<<<< HEAD
-
-
-=======
 }
 
 float l = 0;
@@ -1211,4 +1205,3 @@ void PLAYER::Player_SetAnimDeath()
 {
 }
 
->>>>>>> ee2012164638df15d47a7e377650f3f9bb48833f
