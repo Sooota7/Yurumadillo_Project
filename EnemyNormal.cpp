@@ -10,6 +10,8 @@
 #include	"collision.h"
 #include	"player.h"
 
+
+
 static ID3D11Device* g_pDevice;
 static ID3D11DeviceContext* g_pContext;
 
@@ -105,15 +107,15 @@ void	ENEMY_NORMAL::Enemy_Normal_Move()
 
 	m_Position.y -= 1.0 / 60.0f;
 
-	// 静止チェック
-	float	len = (m_Velocity.x * m_Velocity.x +
-		m_Velocity.y * m_Velocity.y +
-		m_Velocity.z * m_Velocity.z);
-	if (len <= 0.0002f)
-	{
-		m_Velocity = XMFLOAT3(0, 0, 0);
-		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_IDLE;
-	}
+	//// 静止チェック
+	//float	len = (m_Velocity.x * m_Velocity.x +
+	//	m_Velocity.y * m_Velocity.y +
+	//	m_Velocity.z * m_Velocity.z);
+	//if (len <= 0.0002f)
+	//{
+	//	m_Velocity = XMFLOAT3(0, 0, 0);
+	//	m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_IDLE;
+	//}
 
 
 }

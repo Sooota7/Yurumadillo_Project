@@ -11,6 +11,7 @@ class PROLOGUE
 {
 private:
 	FadeObject* m_Fade;
+	int	g_SeID{ NULL };
 
 public:
 	void Prologue_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade);

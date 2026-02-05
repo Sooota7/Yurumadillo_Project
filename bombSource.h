@@ -69,6 +69,9 @@ public:
 
 
 	//セッター及びゲッター
+	void		BombSource_SetFirstPosition(XMFLOAT3 pos)	{ m_FirstPosition = pos; };
+	XMFLOAT3	BombSource_GetFirstPosition()	{ return m_FirstPosition; };
+
 	void		BombSource_SetPosition(XMFLOAT3 pos)	{ m_Position = pos; };
 	XMFLOAT3	BombSource_GetPosition()	{ return m_Position; };
 
@@ -78,6 +81,7 @@ public:
 	void		BombSource_SetState(BOMB_STATE state) { m_State = state; };
 	BOMB_STATE	BombSource_GetState()		{ return m_State; };
 
+	void		BombSource_SetCount(float count) { m_Count = count; };
 	float		BombSource_GetCount() { return m_Count; };
 
 	void		BombSource_SetTouch(bool check) { m_Touch = check; };

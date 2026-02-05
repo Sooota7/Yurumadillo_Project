@@ -131,7 +131,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anim.cpp" />
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="background.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="billboard.cpp" />
     <ClCompile Include="billboardManager.cpp" />
@@ -157,6 +159,11 @@
     <ClCompile Include="FlowtBombSource.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gimmick.cpp" />
+    <ClCompile Include="gimmickButton.cpp" />
+    <ClCompile Include="gimmickData.cpp" />
+    <ClCompile Include="gimmickField.cpp" />
+    <ClCompile Include="gimmickGate.cpp" />
+    <ClCompile Include="inputx.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
@@ -184,7 +191,9 @@
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="anim.h" />
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="background.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="billboard.h" />
     <ClInclude Include="billboardManager.h" />
@@ -212,6 +221,11 @@
     <ClInclude Include="FlowtBombSource.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gimmick.h" />
+    <ClInclude Include="gimmickButton.h" />
+    <ClInclude Include="gimmickData.h" />
+    <ClInclude Include="gimmickField.h" />
+    <ClInclude Include="gimmickGate.h" />
+    <ClInclude Include="inputx.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />

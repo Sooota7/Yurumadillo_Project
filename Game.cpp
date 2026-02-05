@@ -10,6 +10,7 @@
 #include	"Block.h"
 #include	"field.h"
 #include	"Effect.h"
+#include	"background.h"
 #include	"score.h"
 #include	"Audio.h"
 
@@ -35,6 +36,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
@@ -79,6 +81,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 void GAME::Game_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -103,6 +106,7 @@ void GAME::Game_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
+	m_Background.Background_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(),&m_EnemyNormal);
@@ -135,7 +139,7 @@ void GAME::Game_Update()
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+	//collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 
@@ -167,6 +171,8 @@ void GAME::Game_Update()
 
 void GAME::Game_Draw()
 { 
+	m_Background.Background_Draw();
+
 	Light.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
@@ -176,15 +182,16 @@ void GAME::Game_Draw()
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw();
+	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(FALSE);
 
-	m_BillboardManager.Draw();
+
+	m_BillboardManager.Draw(m_NowField);
+	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
 
@@ -200,6 +207,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -214,6 +222,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);

@@ -10,6 +10,7 @@
 #include	"Block.h"
 #include	"field.h"
 #include	"Effect.h"
+#include	"background.h"
 #include	"score.h"
 #include	"Audio.h"
 
@@ -35,6 +36,7 @@ void ENEMYLUSH::Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
@@ -78,6 +80,7 @@ void ENEMYLUSH::Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 void ENEMYLUSH::Enemylush_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -100,6 +103,7 @@ void ENEMYLUSH::Enemylush_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
+	m_Background.Background_Update();
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
@@ -163,6 +167,7 @@ void ENEMYLUSH::Enemylush_Update()
 
 void ENEMYLUSH::Enemylush_Draw()
 { 
+	m_Background.Background_Draw();
 	Light5.SetEnable(TRUE);			//ライティングON
 	Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
@@ -172,16 +177,15 @@ void ENEMYLUSH::Enemylush_Draw()
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw();
+	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light5.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+	
+	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
-
-	m_BillboardManager.Draw();
-
 	//Block_Draw();
 	//Effect_Draw();
 	//Score_Draw();
@@ -194,6 +198,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 {
 
 	m_Map.Field_Finalize();	// フィールドの終了処理
+	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
@@ -206,6 +211,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
+	m_Background.Background_Initialize(pDevice, pContext);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);

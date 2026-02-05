@@ -14,6 +14,7 @@ class RUNBOMBSOURCE
 	XMFLOAT3	m_FirstPosition;		//爆弾の座標
 	XMFLOAT3	m_Position;		//爆弾の座標
 	XMFLOAT3	m_Velocity;		//速度
+	XMFLOAT3	m_Rotation;		//速度
 	XMFLOAT3	m_Acceleration;	//落下速度
 	float		m_Count;		//爆発までのカウント
 	float		m_StopTime;		//静止するまでの時間
@@ -41,6 +42,9 @@ public:
 	//セッター及びゲッター
 	void		Runbombsource_SetPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3	Runbombsource_GetPosition() { return m_Position; };
+
+	void		Runbombsource_SetRotation(XMFLOAT3 rot) { m_Rotation = rot; };
+	XMFLOAT3	Runbombsource_GetRotation() { return m_Rotation; };
 
 	void		Runbombsource_SetVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
 	XMFLOAT3	Runbombsource_GetVelocity() { return m_Velocity; };

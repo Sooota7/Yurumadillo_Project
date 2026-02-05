@@ -10,9 +10,10 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
-#include "BossMonster.h" // ’Ç‰Á: BOSSMONSTERŒ^‚ÌéŒ¾‚ª•K—v
+#include "BossMonster.h" // ï¿½Ç‰ï¿½: BOSSMONSTERï¿½^ï¿½ÌéŒ¾ï¿½ï¿½ï¿½Kï¿½v
 #include "BossObj.h"
 
+#include "background.h"
 class MANAGER;
 
 class BOSS
@@ -32,6 +33,7 @@ private:
 	FIELD_NO m_NowField;
 
 	BillboardManager m_BillboardManager;
+	BACKGROUND m_Background;
 public:
 	void Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Boss_Finalize();
