@@ -1927,41 +1927,7 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 	}
 
 	return hit;  // ぶつかったかどうかを示す
-}
 
-//////当たり判定分からん//////
-float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
-{
-	bool hit = false;
-
-	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
-	float playerRadius = PLAYER_RADIUS;
-
-	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
-	{
-		if (!bossObjs[i].IsActive()) continue;
-
-		XMFLOAT3 bossPos = bossObjs[i].GetBossObjPosition();
-		float bossRadius = BOSSOBJ_RADIUS;
-
-		float dx = playerPos.x - bossPos.x;
-		float dy = playerPos.y - bossPos.y;
-		float dz = playerPos.z - bossPos.z;
-
-		float distSq = dx * dx + dy * dy + dz * dz;
-		float r = playerRadius + bossRadius;
-
-		if (distSq <= r * r)
-		{
-			hit = true;
-
-			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - BOSSOBJ_DAMAGE);
-			bossObjs[i].SetActive(false);
-		}
-	}
-
-	return hit ? 1.0f : 0.0f;
-}
 	for (int i = 0; i < pGimmick->GetFieldCount(); i++)
 	{
 		bool on_this = false; // ← このボタンに対して今フレーム接地したか
@@ -2059,6 +2025,42 @@ float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
 	if (grounded_any) { hit = COLLISION_HIT::HIT_GROUND; } // ← 最終まとめ
 	return hit;  // ぶつかったかどうかを示す
 }
+
+//////当たり判定分からん//////
+float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
+{
+	bool hit = false;
+
+	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
+	float playerRadius = PLAYER_RADIUS;
+
+	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
+	{
+		if (!bossObjs[i].IsActive()) continue;
+
+		XMFLOAT3 bossPos = bossObjs[i].GetBossObjPosition();
+		float bossRadius = BOSSOBJ_RADIUS;
+
+		float dx = playerPos.x - bossPos.x;
+		float dy = playerPos.y - bossPos.y;
+		float dz = playerPos.z - bossPos.z;
+
+		float distSq = dx * dx + dy * dy + dz * dz;
+		float r = playerRadius + bossRadius;
+
+		if (distSq <= r * r)
+		{
+			hit = true;
+
+			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - BOSSOBJ_DAMAGE);
+			bossObjs[i].SetActive(false);
+		}
+	}
+
+	return hit ? 1.0f : 0.0f;
+}
+	
+
 
 float COLLISION::PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 {
