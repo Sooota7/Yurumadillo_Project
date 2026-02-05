@@ -5,6 +5,7 @@
 #include	"keyboard.h"
 #include    "mouse.h"
 //#include	"Ball.h"
+//#include	"billboard.h"
 
 #include "player.h"
 //グローバル変数
@@ -12,13 +13,17 @@ static	CAMERA	CameraObject;
 
 XMFLOAT3		g_BallPosOld;
 
+static ID3D11Device* g_pDevice = nullptr;
+static ID3D11DeviceContext* g_pContext = nullptr;
+
+
 // 調整可
 static float rangeCamera = 4.5f;   // カメラとプレイヤーの距離
 static float cameraHeight = 0.5f;      // カメラの高さ
 static float cameraYoko = 180.0f;      // 横調整
 static float cameraTate = 20.0f;     // 縦調整
 
-void	Camera_Initialize(XMFLOAT3 BallPos)
+void	Camera_Initialize(XMFLOAT3 Pos)
 {
 	CameraObject.Position = XMFLOAT3(0.0f, 3.0f, -4.0f);
 	CameraObject.AtPosition = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -31,15 +36,20 @@ void	Camera_Initialize(XMFLOAT3 BallPos)
 	CameraObject.NearClip = 0.5f;
 	CameraObject.FarClip = 1000.0f;
 
-	g_BallPosOld = BallPos;
+	g_BallPosOld = Pos;
 
+
+	g_pDevice = Direct3D_GetDevice();
+	g_pContext = Direct3D_GetDeviceContext();
+
+	
 }
 
 void	Camera_Finalize()
 {
 	return;
 }
-void Camera_Update(XMFLOAT3 BallPos)
+void Camera_Update(XMFLOAT3 Pos)
 {
 	// ================================
 	// マウス入力の取得
@@ -91,7 +101,7 @@ void Camera_Update(XMFLOAT3 BallPos)
 	// ================================
 	// 注視点（プレイヤー）
 	// ================================
-	CameraObject.AtPosition = BallPos;
+	CameraObject.AtPosition = Pos;
 
 	// ================================
 	// カメラ座標計算
@@ -105,9 +115,9 @@ void Camera_Update(XMFLOAT3 BallPos)
 	float offsetZ = cosf(radYoko) * horiz;
 	float offsetY = sinf(radTate) * rangeCamera;
 
-	CameraObject.Position.x = BallPos.x + offsetX;
-	CameraObject.Position.y = BallPos.y + offsetY + cameraHeight;
-	CameraObject.Position.z = BallPos.z + offsetZ;
+	CameraObject.Position.x = Pos.x + offsetX;
+	CameraObject.Position.y = Pos.y + offsetY + cameraHeight;
+	CameraObject.Position.z = Pos.z + offsetZ;
 
 	CameraObject.UpVector = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
@@ -159,6 +169,22 @@ void	Camera_Draw()
 		vUp
 	);
 
+	//SetDepthTest(TRUE);
+	//SetBlendState(BLENDSTATE_ALFA);
+	////テクスチャのセット
+	//g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+	//XMFLOAT3 pos = CameraObject.Position;
+	//pos.z += 1.0f;
+	//XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
+	//XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//int bno = 1;
+	//int wc = 1;
+	//int hc = 1;
+
+	//Billboard bb(pos, size, col, bno, wc, hc);
+	//bb.Billboard_Draw();
+
+	
 	return;
 
 }
