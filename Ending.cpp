@@ -4,6 +4,7 @@
 #include	"Manager.h"
 #include	"sprite.h"
 #include	"keyboard.h"
+#include	"inputx.h"
 
 #include	"Ending.h"
 
@@ -46,7 +47,8 @@ void ENDING::Ending_Update()
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE))
+	if ((Keyboard_IsKeyDownTrigger(KK_ENTER) || IsButtonPressed(0, XINPUT_GAMEPAD_B)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE))
 	{
 		//フェードアウトさせてシーンを切り替える
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
