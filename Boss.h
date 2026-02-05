@@ -1,10 +1,8 @@
-
 //Boss.h
 #pragma once
 
 #include "direct3d.h"
 #include "player.h"
-#include "Ball.h"
 #include "collision.h"
 #include "camera.h"
 #include "enemySpawner.h"
@@ -12,6 +10,9 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
+#include "BossMonster.h" // �ǉ�: BOSSMONSTER�^�̐錾���K�v
+#include "BossObj.h"
+
 #include "background.h"
 class MANAGER;
 
@@ -26,6 +27,7 @@ private:
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
 
+	BOSSMONSTER m_BossMonster;
 	COLLISION collision;
 
 	FIELD_NO m_NowField;
