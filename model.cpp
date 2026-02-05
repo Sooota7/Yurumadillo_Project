@@ -65,7 +65,7 @@ MODEL* ModelLoad( const char *FileName )
 			{
 				const aiFace* face = &mesh->mFaces[f];
 
-				assert(face->mNumIndices == 3);
+				//assert(face->mNumIndices == 3);
 
 				index[f * 3 + 0] = face->mIndices[0];
 				index[f * 3 + 1] = face->mIndices[1];

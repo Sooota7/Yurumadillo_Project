@@ -2,6 +2,9 @@
 #include	"keyboard.h"
 #include	"collision.h"
 #include	"mouse.h"
+#include	"billboard.h"
+#include	"billboardManager.h"
+
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
@@ -31,7 +34,7 @@ void BOMBSOURCE::BombSource_Safe()
 void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 1.0f;
+	m_Position.y += 1.5f;
 
 	
 
@@ -159,6 +162,7 @@ void BOMBSOURCE::BombSource_Cool()
 		m_State = BOMB_STATE::BOMB_ITEM;
 		m_Count = 0;
 		m_Position = m_FirstPosition;
+		m_Touch = false;
 	}
 }
 

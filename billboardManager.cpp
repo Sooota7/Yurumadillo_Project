@@ -73,7 +73,7 @@ void BillboardManager::Finalize()
 	m_Count = 0;
 }
 
-void BillboardManager::Draw()
+void BillboardManager::Draw(FIELD_NO fn)
 {
 	for (int i = 0; i < m_Count; i++)
 	{// “o˜^‚µ‚½ƒrƒ‹ƒ{[ƒh•ª

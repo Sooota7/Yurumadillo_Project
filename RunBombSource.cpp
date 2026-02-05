@@ -7,6 +7,8 @@ void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
 	m_Position = pos;
+	m_Rotation = XMFLOAT3(0, 0, 0);
+	m_Velocity = XMFLOAT3(0, 0, 0);
 	m_State = state;
 	m_Count = 0;
 	m_Touch = false;
@@ -76,6 +78,35 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 	m_Position.x += m_Velocity.x;
 	m_Position.y = m_Velocity.y;
 	m_Position.z += m_Velocity.z;
+
+	
+	if (m_Velocity.x * m_Velocity.x + m_Velocity.y * m_Velocity.y > 0.0001f)
+	{
+		m_Rotation.y = atan2(m_Velocity.x, m_Velocity.z);
+	}
+
+	//float rotY = 0;
+
+	//if (m_Velocity.z > 0)
+	//{
+	//	rotY = 0;
+	//}
+	//else 
+	//{
+	//	rotY = 180;
+	//}
+
+	////ifで0チェック後ｚとｘで角度取る
+	//if (m_Velocity.x > 0)
+	//{
+	//	rotY += (90/m_Velocity.x);
+	//}
+	//else
+	//{
+	//	rotY += (90/m_Velocity.x);
+	//}
+
+	//m_Rotation.y = XMConvertToRadians(rotY);
 
 	//落下判定
 	if (m_Position.y < -10.0f)

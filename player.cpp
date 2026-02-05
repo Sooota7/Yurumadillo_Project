@@ -30,27 +30,27 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		switch (i)
 		{
 		case PARTS_HEAD:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\head.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\head.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_BODY:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\body.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\body.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_ARM_RIGHT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\hand.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\hand.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f/ downSize, 1.0f/ downSize, 1.0f/ downSize));
 			break;
 		case PARTS_ARM_LEFT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\handL.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\handL.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_LEG_RIGHT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\leg.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\leg.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		case PARTS_LEG_LEFT:
-			m_Model[i].PartsInitialize(g_pDevice, g_pContext, "asset\\model\\legL.fbx");
+			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\legL.fbx");
 			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
 			break;
 		default:
@@ -220,7 +220,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		}
 	}
 
-	{
+	/*{
 		XMFLOAT3 pos = m_Position;
 		pos.y += 1.0f;
 		XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
@@ -231,7 +231,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 
 		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::TEST);
 		billboardManager->Register(bb);
-	}
+	}*/
 
 }
 
