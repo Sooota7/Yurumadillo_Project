@@ -18,24 +18,24 @@ using namespace DirectX;
 #include	"enemySpawner.h"
 #include	"bomb.h"
 #include	"weapon.h"
-
+#include	"BossObj.h"
 #include    "player.h"
 
 #define COE		(0.5f)
 #define COE_JUMP		(2.0f)
-#define GROUND_SLOP (0.05f) // “®‚­ƒMƒ~ƒbƒN‚Ì—V‚Ñ•i•K—v‚É‰‚¶‚Ä’²®j
+#define GROUND_SLOP (0.05f) // å‹•ãã‚®ãƒŸãƒƒã‚¯ã®éŠã³å¹…ï¼ˆå¿…è¦ã«å¿œã˜ã¦èª¿æ•´ï¼‰
 
 
-#define GATE_PANEL_HALF_W (0.45f)  // •Ğ‘¤ƒpƒlƒ‹‚ÌX”¼•iŒú‚İj: ƒ‚ƒfƒ‹‚É‡‚í‚¹‚Ä
-#define GATE_PANEL_HALF_H (0.50f)  // ƒpƒlƒ‹‚ÌY”¼Œa
-#define GATE_PANEL_HALF_D (0.50f)  // ƒpƒlƒ‹‚ÌZ”¼Œai‰œs
+#define GATE_PANEL_HALF_W (0.45f)  // ç‰‡å´ãƒ‘ãƒãƒ«ã®XåŠå¹…ï¼ˆï¼åšã¿ï¼‰: ãƒ¢ãƒ‡ãƒ«ã«åˆã‚ã›ã¦
+#define GATE_PANEL_HALF_H (0.50f)  // ãƒ‘ãƒãƒ«ã®YåŠå¾„
+#define GATE_PANEL_HALF_D (0.50f)  // ãƒ‘ãƒãƒ«ã®ZåŠå¾„ï¼ˆå¥¥è¡Œ
 
 
 enum COLLISION_HIT
 {
-	HIT_NONE = 0,	// “–‚½‚Á‚Ä‚¢‚È‚¢
-	HIT_GROUND,		// ’n–Ê‚É“–‚½‚Á‚½
-	HIT_WALL_0,		// •Ç‚É-Z‚©‚ç“–‚½‚Á‚½
+	HIT_NONE = 0,	// å½“ãŸã£ã¦ã„ãªã„
+	HIT_GROUND,		// åœ°é¢ã«å½“ãŸã£ãŸ
+	HIT_WALL_0,		// å£ã«-Zã‹ã‚‰å½“ãŸã£ãŸ
 	HIT_WALL_1,		// +X
 	HIT_WALL_2,		// +Z
 	HIT_WALL_3,		// -X
@@ -55,6 +55,7 @@ public:
 	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);
 	float	PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon);
+	float	BossObjPlayerCollision(BOSSOBJ* pBossObj, PLAYER* pPlayer);
 	float	PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
 	float	PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);
 	float	PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick);

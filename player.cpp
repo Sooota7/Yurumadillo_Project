@@ -161,7 +161,7 @@ void	PLAYER::Player_Update()
 		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
 	}
 
-	if (m_Hp < 0.0f)
+	if (m_Hp <= 0.0f)
 	{
 		m_State = PLAYER_STATE::PLAYER_STATE_DEATH;
 	}
@@ -358,14 +358,14 @@ void PLAYER::Player_Move()
         m_Velocity.z = 0.0f;
     }
 
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER)  && JumpCount /*&&BalloonFlag==true*/)
-	{
-		BalloomUp = true;
-		m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
-	}
-    
-
-
+	//if (Keyboard_IsKeyDownTrigger(KK_ENTER) && JumpCount /*&&BalloonFlag==true*/)
+	//{
+	//	BalloomUp = true;
+	//	m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+	//}
+    // ジャンプ
+    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
+        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 
 	// --- 進行方向に体の向きを合わせる ---
 	if (len > 0.0f)
