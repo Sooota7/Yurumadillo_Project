@@ -398,7 +398,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 					break;
 				case 8:
 					if (no == FIELD_NO::NO_2)
+					{
 						y = 3.0f;
+					}
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q + y, i), FIELD_BREAK);
 
 					y = 0.0f;

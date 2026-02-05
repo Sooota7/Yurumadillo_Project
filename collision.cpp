@@ -1144,7 +1144,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 								BombPos.y < mapPos.y - BOX_RADIUS)
 							{//BOXの-X面にぶつかったので座標の補正
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y *= -COE; //移動ベクトルの反転
+								BombVel.y = 0.0f; //移動ベクトルの停止
 								//hit = 
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
