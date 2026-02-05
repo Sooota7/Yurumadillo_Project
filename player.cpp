@@ -7,6 +7,7 @@
 #include	"collision.h"
 
 #include	"billboard.h"
+#include	"inputx.h"
 
 //ボールオブジェクト
 
@@ -14,6 +15,8 @@ ID3D11Device* g_pDevice;
 ID3D11DeviceContext* g_pContext;
 
 static ID3D11ShaderResourceView* g_Texture = NULL;
+
+static bool inputP = InputKeyKonCheck();
 
 
 float g_StopTime = 0.0f;	// ボールが制止するまでの時間
@@ -77,7 +80,11 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	BalloomNow = false;
 	g_StopTime = 0.0f;
 
+	//爆弾所持チェック
 	BombHave = false;
+
+	//爆弾変身フラグ
+	TransBombFlag = false;
 
 	//テクスチャ画像読み込み
 	TexMetadata		metadata;
@@ -237,23 +244,50 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 
 void	PLAYER::Player_Idle()
 {
-	//動いていない時の待機モーションを入れてもいいかも
-	if (Keyboard_IsKeyDown(KK_W) || //いずれかの移動キーを押したら移動状態に
-		Keyboard_IsKeyDown(KK_A) || 
-		Keyboard_IsKeyDown(KK_S) ||
-		Keyboard_IsKeyDown(KK_D)  )
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+	if (input) {
+		//動いていない時の待機モーションを入れてもいいかも
+		if (Keyboard_IsKeyDown(KK_W) || //いずれかの移動キーを押したら移動状態に
+			Keyboard_IsKeyDown(KK_A) ||
+			Keyboard_IsKeyDown(KK_S) ||
+			Keyboard_IsKeyDown(KK_D))
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
+
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount == true)
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		}
+
+		//停止中も重力はかかる
+		m_Velocity.y -= PLAYER_GRAVITY;
 	}
+	else {//コントローラー
+		//動いていない時の待機モーションを入れてもいいかも
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || //いずれかの移動キーを押したら移動状態に
+			IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) ||
+			IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) ||
+			IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
 
-	if (Keyboard_IsKeyDownTrigger(KK_SPACE)&& JumpCount == true)
-	{
-		m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		if ((GetThumbLeftX(0) <= -0.5f) || //いずれかの移動キーを押したら移動状態に
+			(GetThumbLeftX(0) >= 0.5f)  ||
+			(GetThumbLeftY(0) <= -0.5f) ||
+			(GetThumbLeftY(0) >= 0.5f))
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
+		}
+
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_A) && JumpCount == true)
+		{
+			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		}
+
+		//停止中も重力はかかる
+		m_Velocity.y -= PLAYER_GRAVITY;
 	}
-
-	//停止中も重力はかかる
-	m_Velocity.y -= PLAYER_GRAVITY; 
-
 
 }
 
@@ -272,15 +306,49 @@ void PLAYER::Player_Move()
 
     XMFLOAT3 move = XMFLOAT3(0, 0, 0);
 
-    // WASDで移動
-    if (Keyboard_IsKeyDown(KK_W)) // 前
-        move.x -= forward.x, move.z -= forward.z;
-    if (Keyboard_IsKeyDown(KK_S)) // 後
-        move.x += forward.x, move.z += forward.z;
-    if (Keyboard_IsKeyDown(KK_D)) // 右
-        move.x -= right.x, move.z -= right.z;
-    if (Keyboard_IsKeyDown(KK_A)) // 左
-        move.x += right.x, move.z += right.z;
+	if (input) {
+		// WASDで移動
+		if (Keyboard_IsKeyDown(KK_W)) // 前
+			move.x -= forward.x, move.z -= forward.z;
+		if (Keyboard_IsKeyDown(KK_S)) // 後
+			move.x += forward.x, move.z += forward.z;
+		if (Keyboard_IsKeyDown(KK_D)) // 右
+			move.x -= right.x, move.z -= right.z;
+		if (Keyboard_IsKeyDown(KK_A)) // 左
+			move.x += right.x, move.z += right.z;
+
+		//junp
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount) {
+			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		}
+
+		//bombTrans
+		if (Keyboard_IsKeyDownTrigger(KK_V) && !BombHave) {
+			TransBombFlag = true;
+		}
+
+	}
+	else {
+		//コントローラー
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP)    || GetThumbLeftY(0) >= 0.5f) // 前
+			move.x -= forward.x, move.z -= forward.z;
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN)  || GetThumbLeftY(0) <= -0.5f) // 後
+			move.x += forward.x, move.z += forward.z;
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
+			move.x -= right.x, move.z -= right.z;
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT)  || GetThumbLeftX(0) <= -0.5f) // 左
+			move.x += right.x, move.z += right.z;
+
+		//junp
+		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount)
+			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+
+		//bombTrans
+		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B) && !BombHave) {
+			TransBombFlag = true;
+		}
+
+	}
 
     // 正規化
     float len = sqrtf(move.x * move.x + move.z * move.z);
@@ -300,14 +368,14 @@ void PLAYER::Player_Move()
         m_Velocity.z = 0.0f;
     }
 
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && JumpCount /*&&BalloonFlag==true*/)
+	if (Keyboard_IsKeyDownTrigger(KK_ENTER)  && JumpCount /*&&BalloonFlag==true*/)
 	{
 		BalloomUp = true;
 		m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
 	}
-    // ジャンプ
-    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
-        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+    
+
+
 
 	// --- 進行方向に体の向きを合わせる ---
 	if (len > 0.0f)

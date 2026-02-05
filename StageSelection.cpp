@@ -4,6 +4,7 @@
 #include	"Manager.h"
 #include	"sprite.h"
 #include	"keyboard.h"
+#include	"inputx.h"
 
 #include	"Stageselection.h"
 
@@ -66,23 +67,27 @@ void STAGESELECTION::StageSelection_Update()
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
 	//何ステージまでクリアしたかで選択可能なステージが変化
-	if (Keyboard_IsKeyDownTrigger(KK_D1) && (m_Fade->GetFadeState() == FADE_NONE)) //いつでも選択可能
+	if ((Keyboard_IsKeyDownTrigger(KK_D1)|| IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE)) //いつでも選択可能
 	{
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GAME);
 
 	}
-	else if (Keyboard_IsKeyDownTrigger(KK_D2) && (m_Fade->GetFadeState() == FADE_NONE)&&claercount>=1) //1ステージクリアしたら解放 ギミックステージ
+	else if ((Keyboard_IsKeyDownTrigger(KK_D2)|| IsButtonTriggered(0, XINPUT_GAMEPAD_B)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE)&&claercount>=1) //1ステージクリアしたら解放 ギミックステージ
 	{
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GIMMICK);
 	}
-	else if (Keyboard_IsKeyDownTrigger(KK_D3) && (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 2) //2ステージクリアしたら解放　エネミーステージ
+	else if ((Keyboard_IsKeyDownTrigger(KK_D3)|| IsButtonTriggered(0, XINPUT_GAMEPAD_X)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 2) //2ステージクリアしたら解放　エネミーステージ
 	{
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_ENEMYLUSH);
 	}
-	else if (Keyboard_IsKeyDownTrigger(KK_D4) && (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 3) //3ステージクリアしたら解放　ボスステージ
+	else if ((Keyboard_IsKeyDownTrigger(KK_D4)|| IsButtonTriggered(0, XINPUT_GAMEPAD_Y)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 3) //3ステージクリアしたら解放　ボスステージ
 	{
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_BOSS);
