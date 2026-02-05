@@ -140,6 +140,8 @@
     <ClCompile Include="bombSource.cpp" />
     <ClCompile Include="bombUI.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossMonster.cpp" />
+    <ClCompile Include="BossObj.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
@@ -176,6 +178,8 @@
     <ClCompile Include="StageSelection.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
+    <ClCompile Include="Tutorial2.cpp" />
+    <ClCompile Include="Tutorial3.cpp" />
     <ClCompile Include="weapon.cpp" />
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
@@ -189,6 +193,8 @@
     <ClInclude Include="bombSource.h" />
     <ClInclude Include="bombUI.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossMonster.h" />
+    <ClInclude Include="BossObj.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_ostream.h" />
@@ -226,6 +232,8 @@
     <ClInclude Include="StageSelection.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
+    <ClInclude Include="Tutorial2.h" />
+    <ClInclude Include="Tutorial3.h" />
     <ClInclude Include="weapon.h" />
     <ClInclude Include="weaponSource.h" />
   </ItemGroup>

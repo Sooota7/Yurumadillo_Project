@@ -6,12 +6,13 @@
 #include	"direct3d.h"
 #include	"player.h"
 using namespace DirectX;
+#include "BossMonster.h"
 
 #define		BOMB_RADIUS		(0.5f)
 #define		BOMB_SPEED_MAX		(1.0f)
 #define		BOMB_GRAVITY		(1.0f/60.0f)
-#define		BOMB_THROW_POWER		(0.2f)
-
+#define		BOMB_THROW_POWER	(0.2f)
+#define		BOMB_DAMAGE_BOSS	(50.0f)//対ボスダメージ
 enum BOMB_STATE
 {
 	BOMB_NONE,
@@ -45,9 +46,12 @@ private:
 	BOMB_STATE	m_State;		//現在の状態
 	float		m_LimitCount;	//
 	bool		m_Touch;
-	
+	bool 		m_Exploded=false;
+
 	BOMB_TYPE	m_Type;
 	
+	BOSSMONSTER* m_pBossMonster = nullptr;
+
 public:
 
 	void		BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state);
@@ -57,6 +61,7 @@ public:
 	void		BombSource_Safe();
 	void		BombSource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	void		BombSource_Active_Throw();
+	void		BombSource_Active_Throw_Boss();
 	void		BombSource_Cool();
 	void		BombSource_Explosion();
 
@@ -77,6 +82,8 @@ public:
 
 	void		BombSource_SetTouch(bool check) { m_Touch = check; };
 	bool		BombSource_GetTouch() { return m_Touch; };
+
+	void BombSource_SetBoss(BOSSMONSTER* boss) { m_pBossMonster = boss; }
 
 	BOMBSOURCE* BombSource_GetBombSource() { return this; };
 };

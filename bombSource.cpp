@@ -151,6 +151,65 @@ void BOMBSOURCE::BombSource_Active_Throw()
 
 }
 
+void BOMBSOURCE::BombSource_Active_Throw_Boss()
+{
+	m_Position.x += m_Velocity.x*2;
+	m_Position.y += m_Velocity.y;
+	m_Position.z += m_Velocity.z*2;
+
+	//—Ž‰º”»’è
+	if (m_Position.y < -10.0f)
+	{
+		m_State = BOMB_STATE::BOMB_COOL;
+		return;
+	}
+
+	m_Velocity.x *= 0.98f;//‘¬“x‚ð“K“–‚ÉŒ¸Š‚³‚¹‚é
+	m_Velocity.y *= 0.98f;//’Ç‰Á‚·‚é
+	m_Velocity.z *= 0.98f;
+
+	//ÃŽ~ƒ`ƒFƒbƒN
+	float	len =
+		(
+			m_Velocity.x * m_Velocity.x +
+			m_Velocity.y * m_Velocity.y +
+			m_Velocity.z * m_Velocity.z
+			);
+
+	if (len <= 0.0002f)//ÃŽ~‚Æ‚Ý‚È‚·‘¬“x
+	{
+		m_StopTime++;
+		if (m_StopTime > (60.0f * 2))//‚Q•bŠÔ‘±‚¢‚Ä‚¢‚é
+		{
+			m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			m_StopTime = 0.0f;
+		}
+	}
+
+	m_Count += 1.0f / 60.0f;
+	if (m_Count > 5.0f)
+	{
+		m_State = BOMB_STATE::BOMB_EXPLOSION;
+		m_Count = 0;
+	}
+
+	if (m_Position.z >= 20.0f && m_pBossMonster != nullptr)
+	{
+		m_State = BOMB_STATE::BOMB_EXPLOSION;
+		m_Count = 0;
+		m_Position.x = 7.0f;
+		m_Position.y = 2.0f;
+
+		float BossHP = m_pBossMonster->GetBossmonsterHp();
+		BossHP -= BOMB_DAMAGE_BOSS;
+		m_pBossMonster->SetBossmonsterHp(BossHP);
+	}
+
+
+	m_Velocity.y -= BOMB_GRAVITY;
+
+}
+
 void BOMBSOURCE::BombSource_Cool()
 {
 	m_Count += 1.0f / 60.0f;
@@ -164,11 +223,17 @@ void BOMBSOURCE::BombSource_Cool()
 
 void BOMBSOURCE::BombSource_Explosion()
 {
+	if (!m_Exploded)
+	{
+		m_Count = 0;
+		m_Exploded = true;
+	}
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;
+		m_Exploded = false;
 	}
 }
 

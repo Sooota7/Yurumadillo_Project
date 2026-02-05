@@ -1635,3 +1635,37 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 
 	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ðŽ¦‚·
 }
+
+//////“–‚½‚è”»’è•ª‚©‚ç‚ñ//////
+float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
+{
+	bool hit = false;
+
+	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
+	float playerRadius = PLAYER_RADIUS;
+
+	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
+	{
+		if (!bossObjs[i].IsActive()) continue;
+
+		XMFLOAT3 bossPos = bossObjs[i].GetBossObjPosition();
+		float bossRadius = BOSSOBJ_RADIUS;
+
+		float dx = playerPos.x - bossPos.x;
+		float dy = playerPos.y - bossPos.y;
+		float dz = playerPos.z - bossPos.z;
+
+		float distSq = dx * dx + dy * dy + dz * dz;
+		float r = playerRadius + bossRadius;
+
+		if (distSq <= r * r)
+		{
+			hit = true;
+
+			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - BOSSOBJ_DAMAGE);
+			bossObjs[i].SetActive(false);
+		}
+	}
+
+	return hit ? 1.0f : 0.0f;
+}

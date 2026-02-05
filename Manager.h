@@ -58,6 +58,7 @@ public:
 	void	Manager_Draw();
 
 	void	SetScene(SCENE scene);
+	SCENE	GetScene() const { return m_Scene; };
 
 	void IncrementClearCount() { ++m_ClearCount; };
 	

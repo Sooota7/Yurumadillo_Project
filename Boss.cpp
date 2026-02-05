@@ -1,4 +1,3 @@
-
 //Boss.cpp
 
 #include	"Manager.h"
@@ -21,7 +20,7 @@
 #include "billboard.h"
 
 #include	"direct3d.h"//<<<<<<<<<<<<<<<<<<<
-
+#include	"BossMonster.h"
 LIGHTOBJECT		Light4;//<<<<<<ライト管理オブジェクト
 
 
@@ -30,7 +29,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_2;
+	m_NowField = FIELD_NO::NO_6;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -40,7 +39,10 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BossMonster.Bossmonster_Initialize(pDevice, pContext);
 
+	// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
+	m_BossMonster.SetEnemySpawner(&m_EnemyNormal);
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
@@ -48,6 +50,7 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
 
+	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Manager = manager;
 
 	
@@ -89,7 +92,7 @@ void BOSS::Boss_Finalize()
 	Camera_Finalize();	//カメラ終了処理
 
 	m_BillboardManager.Finalize();
-
+	m_BossMonster.Bossmonster_Finalize();
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
 
@@ -101,24 +104,10 @@ void BOSS::Boss_Update()
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
 
-	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	m_bomb.Bomb_Update_Boss(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
+	m_BossMonster.Bossmonster_Update();
 
-	
-
-	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
-	{
-		if (m_NowField == FIELD_NO::NO_1)
-		{
-			Boss_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			Boss_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_NowField = FIELD_NO::NO_1;
-		}
-	}
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
@@ -134,6 +123,8 @@ void BOSS::Boss_Update()
 	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
+	collision.BossObjPlayerCollision(m_BossMonster.GetBossObjs(), &m_Player);
+
 
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
@@ -143,22 +134,22 @@ void BOSS::Boss_Update()
 		m_Manager->SetScene(SCENE_PAUSE);
 	}
 
+	if(m_BossMonster.GetBossmonsterState()==BOSSMONSTER_STATE::BOSSMONSTER_STATE_END)
+	{
+		if (m_Manager->GetClearCount() == 3)
+		{
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
+	}
+
 	//Block_Update();
 	//Effect_Update();
 	//Score_Update();
 	//Polygon3D_Update();
 	
-	//倒すべき敵の数と今まで倒した敵の数を比べる
-	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
-	{
-		if (m_Manager->GetClearCount() == 3) 
-		{
-			m_Manager->IncrementClearCount();
-		};
-		
-		m_Manager->SetScene(SCENE_RESULT);
-		
-	}
+	
 }
 
 void BOSS::Boss_Draw()
@@ -174,7 +165,7 @@ void BOSS::Boss_Draw()
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw();
 	m_Weapon.Weapon_Draw();
-
+	m_BossMonster.Bossmonster_Draw();
 	//2D描画
 	Light4.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
@@ -199,6 +190,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
+	m_BossMonster.Bossmonster_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -207,7 +199,9 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
+	m_BossMonster.Bossmonster_Initialize(pDevice, pContext);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
+	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
 }

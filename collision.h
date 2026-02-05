@@ -17,7 +17,7 @@ using namespace DirectX;
 #include	"enemySpawner.h"
 #include	"bomb.h"
 #include	"weapon.h"
-
+#include	"BossObj.h"
 #include    "player.h"
 
 #define COE		(0.5f)
@@ -47,5 +47,5 @@ public:
 	float	EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy);
 	float	WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField);
 	float	PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon);
-
+	float	BossObjPlayerCollision(BOSSOBJ* pBossObj, PLAYER* pPlayer);
 };

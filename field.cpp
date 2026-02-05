@@ -142,6 +142,31 @@ int GetMap5(int x, int y, int z)
 
 
 }
+
+int GetMap6(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return boss_pos_row[y][x];
+
+		break;
+	case(1):
+		return boss_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return boss_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckMap(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -162,6 +187,9 @@ int CheckMap(int x, int y, int z,FIELD_NO no)
 		break;
 	case NO_5:
 		return GetMap5(x, y, z);
+		break;
+	case NO_6:
+		return GetMap6(x, y, z);
 		break;
 	default:
 		break;

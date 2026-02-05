@@ -1,10 +1,8 @@
-
 //Boss.h
 #pragma once
 
 #include "direct3d.h"
 #include "player.h"
-#include "Ball.h"
 #include "collision.h"
 #include "camera.h"
 #include "enemySpawner.h"
@@ -12,6 +10,9 @@
 #include "weapon.h"
 #include "Dictionary.h"
 #include "billboardManager.h"
+#include "BossMonster.h" // í«â¡: BOSSMONSTERå^ÇÃêÈåæÇ™ïKóv
+#include "BossObj.h"
+
 class MANAGER;
 
 class BOSS
@@ -25,12 +26,12 @@ private:
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
 
+	BOSSMONSTER m_BossMonster;
 	COLLISION collision;
 
 	FIELD_NO m_NowField;
 
 	BillboardManager m_BillboardManager;
-
 public:
 	void Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Boss_Finalize();

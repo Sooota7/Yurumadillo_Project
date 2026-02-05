@@ -42,10 +42,12 @@ public:
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(void);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	void	Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSOURCE* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
-	
+	void Bomb_SetBoss(BOSSMONSTER* boss);
+
 };
 
 #endif // !_BOMB_H_
