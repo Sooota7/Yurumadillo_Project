@@ -69,6 +69,8 @@ private:
 	PLAYER_ANIM m_anim[PLAYER_STATE_MAX];
 
 	bool BombHave;
+
+	bool TransBombFlag;
 	 bool JumpCount;
 	 float m_Hp;
 	 bool BalloonFlag;
@@ -133,6 +135,9 @@ public:
 
 	void SetPlayerBombHave(bool have) { BombHave = have; };
 	bool GetPlayerBombave() { return BombHave; };
+
+	void SetPlayerTransBombFlag(bool have) { TransBombFlag = have; };
+	bool GetPlayerTransBombFlag() { return TransBombFlag; };
 
 	PLAYER_STATE GetPlayerState() { return m_State; };
 

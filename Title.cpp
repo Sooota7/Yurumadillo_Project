@@ -35,7 +35,7 @@ void TITLE::Title_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
-	LoadFromWICFile(L"asset\\texture\\Game_Start.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\Press_B.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_TextureTag);
 	assert(g_TextureTag);//読み込み失敗時にダイアログを表示
 

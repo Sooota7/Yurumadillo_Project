@@ -178,25 +178,25 @@ static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 		XMFLOAT3(-0.5f,0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点１　RIGHT-TOP
 		XMFLOAT3(0.5f,0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点２　LEFT-BOTTOM
 		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.65f)				//テクスチャ座標
 	},
 	{//頂点3　RIGHT-BOTTOM
 		XMFLOAT3(0.5f,-0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.65f)				//テクスチャ座標
 	},
 
 	//+X面
@@ -204,25 +204,25 @@ static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 		XMFLOAT3(0.5f,0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点5　RIGHT-TOP
 		XMFLOAT3(0.5f,0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点6　LEFT-BOTTOM
 		XMFLOAT3(0.5f,-0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.65f)				//テクスチャ座標
 	},
 	{//頂点7　RIGHT-BOTTOM
 		XMFLOAT3(0.5f,-0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.65f)				//テクスチャ座標
 	},
 
 	//+Z
@@ -231,25 +231,25 @@ static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 		XMFLOAT3(0.5f, 0.5f, 0.5f),//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//色
-		XMFLOAT2(0.0f,0.0f)//テクスチャ座標
+		XMFLOAT2(0.0f,0.35f)//テクスチャ座標
 	},
 	{//頂点9　LEFT-TOP
 		XMFLOAT3(-0.5f,0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点10　LEFT-BOTTOM
 		XMFLOAT3(0.5f,-0.5f,0.5f),	//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.65f)				//テクスチャ座標
 	},
 	{//頂点11　RIGHT-TOP
 		XMFLOAT3(-0.5f,-0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.65f)				//テクスチャ座標
 	},
 	//-X
 
@@ -257,25 +257,25 @@ static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 		XMFLOAT3(-0.5f,0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点13　LEFT-BOTTOM
 		XMFLOAT3(-0.5f,0.5f,-0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,0.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.35f)				//テクスチャ座標
 	},
 	{//頂点14　RIGHT-TOP
 		XMFLOAT3(-0.5f,-0.5f,0.5f),		//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(0.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(0.0f,0.65f)				//テクスチャ座標
 	},
 	{//頂点15　RIGHT-TOP
 		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//座標
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//色
-		XMFLOAT2(1.0f,1.0f)				//テクスチャ座標
+		XMFLOAT2(1.0f,0.65f)				//テクスチャ座標
 	},
 
 	//+Y
@@ -296,26 +296,26 @@ static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 		XMFLOAT3(-0.5f, 0.5f, -0.5f),
 		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,0.25f)
+		XMFLOAT2(0.0f,0.35f)
 	},
 	{//頂点19 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, 0.5f, -0.5f),
 		XMFLOAT3(0.0f,1.0f,0.0f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.25f)
+		XMFLOAT2(1.0f,0.35f)
 	},
 	//-Y面
 	{//頂点20 LEFT-TOP
 		XMFLOAT3(-0.5f, -0.5f, -0.5f),
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(0.0f,0.75f)
+		XMFLOAT2(0.0f,0.65f)
 	},
 	{//頂点21 RIGHT-TOP
 		XMFLOAT3(0.5f, -0.5f, -0.5f),
 		XMFLOAT3(0.5f,0.5f,0.5f),		//法線
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
-		XMFLOAT2(1.0f,0.75f)
+		XMFLOAT2(1.0f,0.65f)
 	},
 	{//頂点22 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, -0.5f, 0.5f),
@@ -353,15 +353,40 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	// テクスチャ読み込み
+
 	{
 		TexMetadata metadata;
 		ScratchImage image;
-		LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
+
+		// テクスチャ読み込み
+		//　マップごとにステージ切り替え
+		switch (no)
+		{
+		case NO_NONE:
+			break;
+		case NO_1:
+			LoadFromWICFile(L"Asset\\Texture\\Gimmik_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_2:
+			LoadFromWICFile(L"Asset\\Texture\\Field_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_3:
+			LoadFromWICFile(L"Asset\\Texture\\Gimmik_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_4:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_5:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		default:
+			break;
+		}
 		CreateShaderResourceView(pDevice, image.GetImages(),
 			image.GetImageCount(), metadata, &g_Texture);
 		assert(g_Texture);
 	}
+
 	{
 		TexMetadata metadata;
 		ScratchImage image;

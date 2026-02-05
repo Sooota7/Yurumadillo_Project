@@ -45,21 +45,27 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 		g_BgmID = LoadAudio("asset\\Audio\\Menu_Test.wav"); load = true;//サウンドロード
 		break;
 	case SCENE_TUTORIAL:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_TUTORIAL2:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_TUTORIAL3:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_GAME:
 		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード
 		break;
 	case SCENE_PAUSE:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_RESULT:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_STAGESELECTION:
 		break;
 	case SCENE_ENDING:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	case SCENE_GIMMICK:
 		g_BgmID = LoadAudio("asset\\Audio\\Gimmick_Stage_Test.wav"); load = true;//サウンドロード
@@ -68,6 +74,7 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 		g_BgmID = LoadAudio("asset\\Audio\\Lush_Stage_Test.wav"); load = true;//サウンドロード
 		break;
 	case SCENE_BOSS:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
 		break;
 	default:
 		break;

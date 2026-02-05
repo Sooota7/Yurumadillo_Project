@@ -22,6 +22,15 @@ using namespace DirectX;
 #define		BOMB_NUM_MAX	(100)
 #define		BOMB_TYPE_MAX	(2)
 
+#define		BOMB_TRAIL_MAX	(10)
+
+class BOMBTRAIL
+{
+public:
+	XMFLOAT3	m_Position;		//îöíeÇÃç¿ïW
+	XMFLOAT3	m_Rotation;		//îöíeÇÃç¿ïW
+	XMFLOAT3	m_Scaling;		//îöíeÇÃç¿ïW
+};
 
 class BOMB
 {
@@ -43,6 +52,8 @@ private:
 	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_NorBombModel;
 
+	ID3D11ShaderResourceView* m_Texture = NULL;
+
 public:
 
 	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,FIELD_NO no);
@@ -52,6 +63,8 @@ public:
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSOURCE* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
+
+	void	Bomb_Trail_Draw();
 	
 };
 

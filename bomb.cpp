@@ -398,7 +398,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
 			m_Bbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
@@ -406,7 +406,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			//ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			{
 				XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
 				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
@@ -438,6 +438,8 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		}
 	}
+
+	//ボムの抜け殻（クールタイム中の描画）
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 
@@ -575,6 +577,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
+			m_Rbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
@@ -677,6 +680,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			break;
 		case BOMB_ACTIVE_HAVE:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
+			m_Fbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
@@ -812,6 +816,12 @@ RUNBOMBSOURCE* BOMB::Bomb_GetRunBomb()
 FLOWTBOMBSOURCE* BOMB::Bomb_GetFlowtBomb()
 {
 	return m_FlowtBomb->Flowtbombsource_GetFlowtbombsource();
+}
+
+void BOMB::Bomb_Trail_Draw()
+{
+
+
 }
 
 
