@@ -6,12 +6,17 @@
 #include	"inputx.h"
 #include    "mouse.h"
 //#include	"Ball.h"
+//#include	"billboard.h"
 
 #include "player.h"
 //グローバル変数
 static	CAMERA	CameraObject;
 
 XMFLOAT3		g_BallPosOld;
+
+static ID3D11Device* g_pDevice = nullptr;
+static ID3D11DeviceContext* g_pContext = nullptr;
+
 
 // 調整可
 static float rangeCamera = 4.5f;   // カメラとプレイヤーの距離
@@ -36,6 +41,11 @@ void	Camera_Initialize(XMFLOAT3 BallPos)
 
 	g_BallPosOld = BallPos;
 
+
+	g_pDevice = Direct3D_GetDevice();
+	g_pContext = Direct3D_GetDeviceContext();
+
+	
 }
 
 void	Camera_Finalize()
@@ -187,6 +197,22 @@ void	Camera_Draw()
 		vUp
 	);
 
+	//SetDepthTest(TRUE);
+	//SetBlendState(BLENDSTATE_ALFA);
+	////テクスチャのセット
+	//g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+	//XMFLOAT3 pos = CameraObject.Position;
+	//pos.z += 1.0f;
+	//XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
+	//XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//int bno = 1;
+	//int wc = 1;
+	//int hc = 1;
+
+	//Billboard bb(pos, size, col, bno, wc, hc);
+	//bb.Billboard_Draw();
+
+	
 	return;
 
 }

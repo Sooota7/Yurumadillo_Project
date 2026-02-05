@@ -29,9 +29,9 @@ class CAMERA
 		float		FarClip;		//‰“–ÊƒNƒŠƒbƒv‹——£
 };
 
-void	Camera_Initialize(XMFLOAT3 BallPos);
+void	Camera_Initialize(XMFLOAT3 Pos);
 void	Camera_Finalize();
-void	Camera_Update(XMFLOAT3 BallPos);
+void	Camera_Update(XMFLOAT3 Pos);
 void	Camera_Draw();
 
 void	SetCameraFov(float);

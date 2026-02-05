@@ -105,7 +105,7 @@ void	MANAGER::Manager_Initialize()
 
 	//本来の形
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
-	SetScene(SCENE_BOSS);	//最初に動かすシーンに切り替える
+	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
 
 	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
 	PlayAudio(g_BgmID, true);		//再生開始（ループあり）
