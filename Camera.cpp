@@ -3,8 +3,10 @@
 
 #include	"Camera.h"
 #include	"keyboard.h"
+#include	"inputx.h"
 #include    "mouse.h"
 //#include	"Ball.h"
+//#include	"billboard.h"
 
 #include "player.h"
 //グローバル変数
@@ -12,11 +14,17 @@ static	CAMERA	CameraObject;
 
 XMFLOAT3		g_BallPosOld;
 
+static ID3D11Device* g_pDevice = nullptr;
+static ID3D11DeviceContext* g_pContext = nullptr;
+
+
 // 調整可
 static float rangeCamera = 4.5f;   // カメラとプレイヤーの距離
 static float cameraHeight = 0.5f;      // カメラの高さ
 static float cameraYoko = 180.0f;      // 横調整
 static float cameraTate = 20.0f;     // 縦調整
+
+static bool inputC = InputKeyKonCheck();
 
 void	Camera_Initialize(XMFLOAT3 BallPos)
 {
@@ -33,6 +41,11 @@ void	Camera_Initialize(XMFLOAT3 BallPos)
 
 	g_BallPosOld = BallPos;
 
+
+	g_pDevice = Direct3D_GetDevice();
+	g_pContext = Direct3D_GetDeviceContext();
+
+	
 }
 
 void	Camera_Finalize()
@@ -41,52 +54,77 @@ void	Camera_Finalize()
 }
 void Camera_Update(XMFLOAT3 BallPos)
 {
-	// ================================
-	// マウス入力の取得
-	// ================================
-	Mouse_State ms;
-	Mouse_GetState(&ms);
+	if (inputC) {
+		// ================================
+		// マウス入力の取得
+		// ================================
+		Mouse_State ms;
+		Mouse_GetState(&ms);
 
-	// 相対モード時だけカメラ回転
-	if (ms.positionMode == MOUSE_POSITION_MODE_RELATIVE)
-	{
-		float sensitivity = CAMERA_SENSITIVITY;
+		// 相対モード時だけカメラ回転
+		if (ms.positionMode == MOUSE_POSITION_MODE_RELATIVE)
+		{
+			float sensitivity = CAMERA_SENSITIVITY;
 
-		cameraYoko += ms.x * sensitivity; // 左右
-		cameraTate += ms.y * sensitivity; // 上下
+			cameraYoko += ms.x * sensitivity; // 左右
+			cameraTate += ms.y * sensitivity; // 上下
 
-		// 上下移動限界
-		if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX;
-		if (cameraTate < CAMERA_DOWN_MAX)  cameraTate = CAMERA_DOWN_MAX;
+			// 上下移動限界
+			if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX;
+			if (cameraTate < CAMERA_DOWN_MAX)  cameraTate = CAMERA_DOWN_MAX;
 
-		// 左右移動限界
-		if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
-		if (cameraYoko < 0.0f)    cameraYoko += CAMERA_SIDE_MAX;
+			// 左右移動限界
+			if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
+			if (cameraYoko < 0.0f)    cameraYoko += CAMERA_SIDE_MAX;
+		}
+
+		//左右回転調整 
+		if (Keyboard_IsKeyDown(KK_LEFT))
+		{
+			cameraYoko += 2.0f;
+			if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
+		}
+		if (Keyboard_IsKeyDown(KK_RIGHT))
+		{
+			cameraYoko -= 2.0f;
+			if (cameraYoko < 0.0f) cameraYoko += CAMERA_SIDE_MAX;
+		}
+		//ピッチ調整 
+		if (Keyboard_IsKeyDown(KK_UP))
+		{
+			cameraTate += 2.0f;
+			if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX; // 上限 
+		}
+		if (Keyboard_IsKeyDown(KK_DOWN))
+		{
+			cameraTate -= 2.0f;
+			if (cameraTate < CAMERA_DOWN_MAX) cameraTate = CAMERA_DOWN_MAX; // 下限 
+		}
 	}
-
-	//左右回転調整 
-	 if (Keyboard_IsKeyDown(KK_LEFT)) 
-	 {
-		 cameraYoko += 2.0f; 
-		 if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
-	 } 
-	 if (Keyboard_IsKeyDown(KK_RIGHT)) 
-	 { 
-		 cameraYoko -= 2.0f; 
-		 if (cameraYoko < 0.0f) cameraYoko += CAMERA_SIDE_MAX;
-	 } 
-	 //ピッチ調整 
-	 if (Keyboard_IsKeyDown(KK_UP)) 
-	 {
-		 cameraTate += 2.0f; 
-		 if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX; // 上限 
-	 } 
-	 if (Keyboard_IsKeyDown(KK_DOWN)) 
-	 { 
-		 cameraTate -= 2.0f; 
-		 if (cameraTate < CAMERA_DOWN_MAX) cameraTate = CAMERA_DOWN_MAX; // 下限 
-	 }
-
+	else {
+		//左右回転調整 
+		if ((GetThumbRightX(0) >= 0.5f))
+		{
+			cameraYoko += 2.0f;
+			if (cameraYoko >= CAMERA_SIDE_MAX) cameraYoko -= CAMERA_SIDE_MAX;
+		}
+		if ((GetThumbRightX(0) <= -0.5f))
+		{
+			cameraYoko -= 2.0f;
+			if (cameraYoko < 0.0f) cameraYoko += CAMERA_SIDE_MAX;
+		}
+		//ピッチ調整 
+		if ((GetThumbRightY(0) <= -0.5f))
+		{
+			cameraTate += 2.0f;
+			if (cameraTate > CAMERA_UP_MAX) cameraTate = CAMERA_UP_MAX; // 上限 
+		}
+		if ((GetThumbRightY(0) >= 0.5f))
+		{
+			cameraTate -= 2.0f;
+			if (cameraTate < CAMERA_DOWN_MAX) cameraTate = CAMERA_DOWN_MAX; // 下限 
+		}
+	}
 
 	// ================================
 	// 注視点（プレイヤー）
@@ -159,6 +197,22 @@ void	Camera_Draw()
 		vUp
 	);
 
+	//SetDepthTest(TRUE);
+	//SetBlendState(BLENDSTATE_ALFA);
+	////テクスチャのセット
+	//g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+	//XMFLOAT3 pos = CameraObject.Position;
+	//pos.z += 1.0f;
+	//XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
+	//XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	//int bno = 1;
+	//int wc = 1;
+	//int hc = 1;
+
+	//Billboard bb(pos, size, col, bno, wc, hc);
+	//bb.Billboard_Draw();
+
+	
 	return;
 
 }

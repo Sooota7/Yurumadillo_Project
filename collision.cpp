@@ -7,21 +7,21 @@
 
 float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//PLAYER*		Player = GetPlayer();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//PLAYER*		Player = GetPlayer();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	bool PlayerJump = pPlayer->GetPlayerJump();
 
-	MAP*	Map = pField->GetFieldMap();	// ƒ}ƒbƒv
+	MAP*	Map = pField->GetFieldMap();	// ãƒãƒƒãƒ—
 	int			i = 0;
 
 	
 
-	// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+	// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 	while (Map[i].MapData_GetNo() != FIELD_MAX)
 	{
-		float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+		float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 		
 		XMFLOAT3 mapPos = Map[i].MapData_GetPosition();
 
@@ -29,11 +29,11 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 		{
 
 		default:
-			BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+			BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 			break;
 		}
 
-		// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+		// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 		if (mapPos.y - BOX_RADIUS < PlayerPos.y &&
 			PlayerPos.y < BoxTop - 0.1f)
 		{
@@ -42,9 +42,9 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 			{
 				if (mapPos.x - BOX_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
 					PlayerPos.x < mapPos.x - BOX_RADIUS)
-				{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.x += (mapPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-					PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_3;
 
 					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
@@ -54,7 +54,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 				}
 				else if (mapPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
 					PlayerPos.x > mapPos.x + BOX_RADIUS)
-				{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.x += (mapPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
@@ -70,9 +70,9 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 			{
 				if (mapPos.z - BOX_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
 					PlayerPos.z < mapPos.z - BOX_RADIUS)
-				{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.z += (mapPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-					PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_0;
 
 					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
@@ -82,7 +82,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 				}
 				else if (mapPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
 					PlayerPos.z > mapPos.z + BOX_RADIUS)
-				{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.z += (mapPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
@@ -94,7 +94,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 				}
 			}
 		}
-		//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+		//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 		else
 		{
 			if (mapPos.z - BOX_RADIUS < PlayerPos.z &&
@@ -105,9 +105,9 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 				{
 					if (mapPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
 						PlayerPos.y < mapPos.y - BOX_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.y += (mapPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-						PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						//hit = 
 						if (Map[i].MapData_GetNo() == FIELD_OBT_1)
 						{
@@ -116,10 +116,10 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					}
 					else if (BoxTop > PlayerPos.y - PLAYER_RADIUS &&
 						PlayerPos.y > BoxTop)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 						if (Map[i].MapData_GetNo() == FIELD_JUMP)
-						{// ƒWƒƒƒ“ƒv‘ä‚È‚ç”½”­ŒW”‚ğ‘å‚«‚­‚·‚é
+						{// ã‚¸ãƒ£ãƒ³ãƒ—å°ãªã‚‰åç™ºä¿‚æ•°ã‚’å¤§ããã™ã‚‹
 							PlayerVel.y *= -COE_JUMP;
 						}
 						else
@@ -150,13 +150,13 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 	}
 
 
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
 
 float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//BALL*		Ball = GetBall();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//BALL*		Ball = GetBall();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
@@ -165,13 +165,13 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 		{
 			XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
 			XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
-			MAP* Map = pField->GetFieldMap();	// ƒ}ƒbƒv
+			MAP* Map = pField->GetFieldMap();	// ãƒãƒƒãƒ—
 			int			l = 0;
 
-			// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+			// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
-				float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+				float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
 
@@ -179,11 +179,11 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 				{
 
 				default:
-					BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+					BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 					break;
 				}
 
-				// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+				// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 				if (mapPos.y - BOX_RADIUS < EnemyPos.y &&
 					EnemyPos.y < BoxTop - 0.1f)
 				{
@@ -192,14 +192,14 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 					{
 						if (mapPos.x - BOX_RADIUS < EnemyPos.x + BALL_RADIUS &&
 							EnemyPos.x < mapPos.x - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							EnemyPos.x += (mapPos.x - BOX_RADIUS) - (EnemyPos.x + BALL_RADIUS);
-							EnemyVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							EnemyVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > EnemyPos.x - BALL_RADIUS &&
 							EnemyPos.x > mapPos.x + BOX_RADIUS)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							EnemyPos.x += (mapPos.x + BOX_RADIUS) - (EnemyPos.x - BALL_RADIUS);
 							EnemyVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_1;
@@ -210,21 +210,21 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 					{
 						if (mapPos.z - BOX_RADIUS < EnemyPos.z + BALL_RADIUS &&
 							EnemyPos.z < mapPos.z - BOX_RADIUS)
-						{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							EnemyPos.z += (mapPos.z - BOX_RADIUS) - (EnemyPos.z + BALL_RADIUS);
-							EnemyVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							EnemyVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_0;
 						}
 						else if (mapPos.z + BOX_RADIUS > EnemyPos.z - BALL_RADIUS &&
 							EnemyPos.z > mapPos.z + BOX_RADIUS)
-						{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 							EnemyPos.z += (mapPos.z + BOX_RADIUS) - (EnemyPos.z - BALL_RADIUS);
 							EnemyVel.z *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_2;
 						}
 					}
 				}
-				//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+				//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 				else
 				{
 					if (mapPos.z - BOX_RADIUS < EnemyPos.z &&
@@ -235,14 +235,14 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 						{
 							if (mapPos.y - BOX_RADIUS < EnemyPos.y + BALL_RADIUS &&
 								EnemyPos.y < mapPos.y - BOX_RADIUS)
-							{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+							{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 								EnemyPos.y += (mapPos.y - BOX_RADIUS) - (EnemyPos.y + BALL_RADIUS);
-								EnemyVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+								EnemyVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 								//hit = 
 							}
 							else if (BoxTop > EnemyPos.y - BALL_RADIUS &&
 								EnemyPos.y > BoxTop)
-							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+							{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 								EnemyPos.y += (BoxTop)-(EnemyPos.y - BALL_RADIUS);
 								EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
 								hit = COLLISION_HIT::HIT_GROUND;
@@ -265,8 +265,8 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 
 float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//BALL*		Ball = GetBall();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//BALL*		Ball = GetBall();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
@@ -278,11 +278,11 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 		{
 			XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
 			XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
-			float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+			float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 			BoxTop = EnemyPos.y + BOX_RADIUS;
 
-			// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 			if (EnemyPos.y - BOX_RADIUS < PlayerPos.y &&
 				PlayerPos.y < BoxTop - 0.1f)
 			{
@@ -291,14 +291,14 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 				{
 					if (EnemyPos.x - BOX_RADIUS < PlayerPos.x + BALL_RADIUS &&
 						PlayerPos.x < EnemyPos.x - BOX_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.x += (EnemyPos.x - BOX_RADIUS) - (PlayerPos.x + BALL_RADIUS);
-						PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_3;
 					}
 					else if (EnemyPos.x + BOX_RADIUS > PlayerPos.x - BALL_RADIUS &&
 						PlayerPos.x > EnemyPos.x + BOX_RADIUS)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.x += (EnemyPos.x + BOX_RADIUS) - (PlayerPos.x - BALL_RADIUS);
 						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
@@ -309,21 +309,21 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 				{
 					if (EnemyPos.z - BOX_RADIUS < PlayerPos.z + BALL_RADIUS &&
 						PlayerPos.z < EnemyPos.z - BOX_RADIUS)
-					{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.z += (EnemyPos.z - BOX_RADIUS) - (PlayerPos.z + BALL_RADIUS);
-						PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_0;
 					}
 					else if (EnemyPos.z + BOX_RADIUS > PlayerPos.z - BALL_RADIUS &&
 						PlayerPos.z > EnemyPos.z + BOX_RADIUS)
-					{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.z += (EnemyPos.z + BOX_RADIUS) - (PlayerPos.z - BALL_RADIUS);
 						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
 					}
 				}
 			}
-			//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 			else
 			{
 				if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
@@ -334,14 +334,14 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 					{
 						if (EnemyPos.y - BOX_RADIUS < PlayerPos.y + BALL_RADIUS &&
 							PlayerPos.y < EnemyPos.y - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							PlayerPos.y += (EnemyPos.y - BOX_RADIUS) - (PlayerPos.y + BALL_RADIUS);
-							EnemyVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							EnemyVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							//hit = 
 						}
 						else if (BoxTop > PlayerPos.y - BALL_RADIUS &&
 							PlayerPos.y > BoxTop)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							PlayerPos.y += (BoxTop)-(PlayerPos.y - BALL_RADIUS);
 							EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
 							hit = COLLISION_HIT::HIT_GROUND;
@@ -359,18 +359,18 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 		}
 	}
 
-	// •‚‚¢‚Ä‚é“G
+	// æµ®ã„ã¦ã‚‹æ•µ
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 		{
 			XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
 			XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
-			float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+			float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 			BoxTop = EnemyPos.y + BOX_RADIUS;
 
-			// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 			if (EnemyPos.y - BOX_RADIUS < PlayerPos.y &&
 				PlayerPos.y < BoxTop - 0.1f)
 			{
@@ -379,14 +379,14 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 				{
 					if (EnemyPos.x - BOX_RADIUS < PlayerPos.x + BALL_RADIUS &&
 						PlayerPos.x < EnemyPos.x - BOX_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.x += (EnemyPos.x - BOX_RADIUS) - (PlayerPos.x + BALL_RADIUS);
-						PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_3;
 					}
 					else if (EnemyPos.x + BOX_RADIUS > PlayerPos.x - BALL_RADIUS &&
 						PlayerPos.x > EnemyPos.x + BOX_RADIUS)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.x += (EnemyPos.x + BOX_RADIUS) - (PlayerPos.x - BALL_RADIUS);
 						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
@@ -397,21 +397,21 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 				{
 					if (EnemyPos.z - BOX_RADIUS < PlayerPos.z + BALL_RADIUS &&
 						PlayerPos.z < EnemyPos.z - BOX_RADIUS)
-					{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.z += (EnemyPos.z - BOX_RADIUS) - (PlayerPos.z + BALL_RADIUS);
-						PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_0;
 					}
 					else if (EnemyPos.z + BOX_RADIUS > PlayerPos.z - BALL_RADIUS &&
 						PlayerPos.z > EnemyPos.z + BOX_RADIUS)
-					{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.z += (EnemyPos.z + BOX_RADIUS) - (PlayerPos.z - BALL_RADIUS);
 						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
 					}
 				}
 			}
-			//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 			else
 			{
 				if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
@@ -422,14 +422,14 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 					{
 						if (EnemyPos.y - BOX_RADIUS < PlayerPos.y + BALL_RADIUS &&
 							PlayerPos.y < EnemyPos.y - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							PlayerPos.y += (EnemyPos.y - BOX_RADIUS) - (PlayerPos.y + BALL_RADIUS);
-							EnemyVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							EnemyVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							//hit = 
 						}
 						else if (BoxTop > PlayerPos.y - BALL_RADIUS &&
 							PlayerPos.y > BoxTop)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							PlayerPos.y += (BoxTop)-(PlayerPos.y - BALL_RADIUS);
 							EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
 							hit = COLLISION_HIT::HIT_GROUND;
@@ -450,46 +450,51 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 
 float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 {
-	float		hit = false;				// ƒqƒbƒg‚µ‚½•ûŒü
+	float		hit = false;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
 	
-	//PLAYER*		Player = GetPlayer();		// ƒ{[ƒ‹‚Ìî•ñ
+	//PLAYER*		Player = GetPlayer();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	bool PlayerJump = pPlayer->GetPlayerJump();
 
-	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ƒ}ƒbƒv
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ƒ}ƒbƒv
-	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ƒ}ƒbƒv
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ãƒãƒƒãƒ—
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ãƒãƒƒãƒ—
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ãƒãƒƒãƒ—
 	//int			i = 0;
 	bool bombHave = false;
 
-	// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
-	//Have”»’è
+	// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
+	//Haveåˆ¤å®š
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{//ƒ{ƒ€
+	{//ãƒœãƒ 
 		if (Bomb[i].BombSource_GetState()==BOMB_STATE::BOMB_ACTIVE_HAVE)
 		{
 			bombHave = true;
+			pPlayer->SetPlayerTransBombFlag(false);
+			break;
 		}
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{//ƒ‰ƒ“ƒ{ƒ€
+	{//ãƒ©ãƒ³ãƒœãƒ 
 		if (RunBomb[i].Runbombsource_GetState()==BOMB_STATE::BOMB_ACTIVE_HAVE)
 		{
 			bombHave = true;
+			pPlayer->SetPlayerTransBombFlag(false);
+			break;
 		}
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{//•‚‚«ƒ{ƒ€
+	{//æµ®ããƒœãƒ 
 		if (FlowtBomb[i].Flowtbombsource_GetState()==BOMB_STATE::BOMB_ACTIVE_HAVE)
 		{
 			bombHave = true;
+			pPlayer->SetPlayerTransBombFlag(false);
+			break;
 		}
 	}
 
 	if (bombHave)
 	{
-		
 	}
 	else
 	{
@@ -505,7 +510,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			}*/
 
 			bool	touch = false;
-			float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+			float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 			XMFLOAT3 bombPos;
 
@@ -518,11 +523,11 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			{
 
 			default:
-				BoxTop = bombPos.y + BOMB_RADIUS;	// •’Ê‚ÌBOX
+				BoxTop = bombPos.y + BOMB_RADIUS;	// æ™®é€šã®BOX
 				break;
 			}
 
-			// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 			if (bombPos.y - BOMB_RADIUS <= PlayerPos.y &&
 				PlayerPos.y <= BoxTop - 0.1f)
 			{
@@ -531,15 +536,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.x - BOMB_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
 						PlayerPos.x <= bombPos.x - BOMB_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.x += (bombPos.x - BOMB_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.x += (bombPos.x + BOMB_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
@@ -551,15 +556,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.z - BOMB_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
 						PlayerPos.z <= bombPos.z - BOMB_RADIUS)
-					{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.z += (bombPos.z - BOMB_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
-					{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.z += (bombPos.z + BOMB_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
@@ -567,7 +572,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					}
 				}
 			}
-			//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 			else
 			{
 				if (bombPos.z - BOMB_RADIUS <= PlayerPos.z &&
@@ -578,14 +583,14 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					{
 						if (bombPos.y - BOMB_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							PlayerPos.y += (bombPos.y - BOMB_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							//hit = 
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
 							PlayerPos.y >= BoxTop)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 							PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
 							hit = COLLISION_HIT::HIT_GROUND;
@@ -598,7 +603,16 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				}
 			}
 
-			Bomb[i].BombSource_SetTouch(touch);
+			if (!pPlayer->GetPlayerTransBombFlag() || !touch)
+			{
+				touch = false;
+			}
+
+			if (pPlayer->GetPlayerTransBombFlag())
+			{
+				Bomb[i].BombSource_SetTouch(touch);
+			}
+
 			pPlayer->SetPlayerJump(PlayerJump);
 			pPlayer->SetPlayerPosition(PlayerPos);
 			pPlayer->SetPlayerVelocity(PlayerVel);
@@ -617,7 +631,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			}*/
 
 			bool	touch = false;
-			float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+			float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 			XMFLOAT3 bombPos;
 
@@ -630,11 +644,11 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			{
 
 			default:
-				BoxTop = bombPos.y + BOMB_RADIUS;	// •’Ê‚ÌBOX
+				BoxTop = bombPos.y + BOMB_RADIUS;	// æ™®é€šã®BOX
 				break;
 			}
 
-			// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 			if (bombPos.y - BOMB_RADIUS <= PlayerPos.y &&
 				PlayerPos.y <= BoxTop - 0.1f)
 			{
@@ -643,15 +657,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.x - BOMB_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
 						PlayerPos.x <= bombPos.x - BOMB_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.x += (bombPos.x - BOMB_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.x += (bombPos.x + BOMB_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
@@ -663,15 +677,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.z - BOMB_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
 						PlayerPos.z <= bombPos.z - BOMB_RADIUS)
-					{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.z += (bombPos.z - BOMB_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
-					{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.z += (bombPos.z + BOMB_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
@@ -679,7 +693,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					}
 				}
 			}
-			//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 			else
 			{
 				if (bombPos.z - BOMB_RADIUS <= PlayerPos.z &&
@@ -690,14 +704,14 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					{
 						if (bombPos.y - BOMB_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							PlayerPos.y += (bombPos.y - BOMB_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							//hit = 
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
 							PlayerPos.y >= BoxTop)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 							PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
 							hit = COLLISION_HIT::HIT_GROUND;
@@ -710,7 +724,16 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				}
 			}
 
-			RunBomb[i].Runbombsource_SetTouch(touch);
+			if (!pPlayer->GetPlayerTransBombFlag() || !touch)
+			{
+				touch = (false);
+			}
+
+			if (pPlayer->GetPlayerTransBombFlag())
+			{
+				RunBomb[i].Runbombsource_SetTouch(touch);
+			}
+
 			pPlayer->SetPlayerJump(PlayerJump);
 			pPlayer->SetPlayerPosition(PlayerPos);
 			pPlayer->SetPlayerVelocity(PlayerVel);
@@ -729,7 +752,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			}*/
 
 			bool	touch = false;
-			float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+			float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 			XMFLOAT3 bombPos;
 
@@ -742,11 +765,11 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			{
 
 			default:
-				BoxTop = bombPos.y + BOMB_RADIUS;	// •’Ê‚ÌBOX
+				BoxTop = bombPos.y + BOMB_RADIUS;	// æ™®é€šã®BOX
 				break;
 			}
 
-			// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 			if (bombPos.y - BOMB_RADIUS <= PlayerPos.y &&
 				PlayerPos.y <= BoxTop - 0.1f)
 			{
@@ -755,15 +778,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.x - BOMB_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
 						PlayerPos.x <= bombPos.x - BOMB_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.x += (bombPos.x - BOMB_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.x += (bombPos.x + BOMB_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
@@ -775,15 +798,15 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				{
 					if (bombPos.z - BOMB_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
 						PlayerPos.z <= bombPos.z - BOMB_RADIUS)
-					{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.z += (bombPos.z - BOMB_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
-					{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.z += (bombPos.z + BOMB_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
@@ -791,7 +814,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					}
 				}
 			}
-			//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 			else
 			{
 				if (bombPos.z - BOMB_RADIUS <= PlayerPos.z &&
@@ -802,14 +825,14 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					{
 						if (bombPos.y - BOMB_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							PlayerPos.y += (bombPos.y - BOMB_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							//hit = 
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
 							PlayerPos.y >= BoxTop)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 							PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
 							hit = COLLISION_HIT::HIT_GROUND;
@@ -822,7 +845,16 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				}
 			}
 
-			FlowtBomb[i].Flowtbombsource_SetTouch(touch);
+			if (!pPlayer->GetPlayerTransBombFlag() || !touch)
+			{
+				touch = (false);
+			}
+
+			if (pPlayer->GetPlayerTransBombFlag())
+			{
+				FlowtBomb[i].Flowtbombsource_SetTouch(touch);
+			}
+
 			pPlayer->SetPlayerJump(PlayerJump);
 			pPlayer->SetPlayerPosition(PlayerPos);
 			pPlayer->SetPlayerVelocity(PlayerVel);
@@ -832,20 +864,20 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 	}
 
 	pPlayer->SetPlayerBombHave(bombHave);
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
 
 float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//PLAYER*		Player = GetPlayer();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//PLAYER*		Player = GetPlayer();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	
 	RUNBOMBSOURCE* pRunBombSource = pBomb->Bomb_GetRunBomb();
 	
 	FLOWTBOMBSOURCE* pFlowtBombSource = pBomb->Bomb_GetFlowtBomb();
 	
-	MAP* Map = pField->GetFieldMap();	// ƒ}ƒbƒv
+	MAP* Map = pField->GetFieldMap();	// ãƒãƒƒãƒ—
 	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -857,10 +889,10 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-			// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+			// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
-				float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+				float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
 
@@ -868,11 +900,11 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				{
 
 				default:
-					BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+					BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 					break;
 				}
 
-				// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+				// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 				if (mapPos.y - BOX_RADIUS < BombPos.y &&
 					BombPos.y < BoxTop - 0.1f)
 				{
@@ -881,14 +913,14 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.x - BOX_RADIUS < BombPos.x + PLAYER_RADIUS &&
 							BombPos.x < mapPos.x - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.x += (mapPos.x - BOX_RADIUS) - (BombPos.x + PLAYER_RADIUS);
-							BombVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > BombPos.x - PLAYER_RADIUS &&
 							BombPos.x > mapPos.x + BOX_RADIUS)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.x += (mapPos.x + BOX_RADIUS) - (BombPos.x - PLAYER_RADIUS);
 							BombVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_1;
@@ -899,21 +931,21 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.z - BOX_RADIUS < BombPos.z + PLAYER_RADIUS &&
 							BombPos.z < mapPos.z - BOX_RADIUS)
-						{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.z += (mapPos.z - BOX_RADIUS) - (BombPos.z + PLAYER_RADIUS);
-							BombVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_0;
 						}
 						else if (mapPos.z + BOX_RADIUS > BombPos.z - PLAYER_RADIUS &&
 							BombPos.z > mapPos.z + BOX_RADIUS)
-						{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.z += (mapPos.z + BOX_RADIUS) - (BombPos.z - PLAYER_RADIUS);
 							BombVel.z *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_2;
 						}
 					}
 				}
-				//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+				//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 				else
 				{
 					if (mapPos.z - BOX_RADIUS < BombPos.z &&
@@ -924,18 +956,18 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 						{
 							if (mapPos.y - BOX_RADIUS < BombPos.y + PLAYER_RADIUS &&
 								BombPos.y < mapPos.y - BOX_RADIUS)
-							{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+							{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+								BombVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 								//hit = 
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
 								BombPos.y > BoxTop)
-							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+							{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
 								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
 
-								//‚Æ‚è‚ ‚¦‚¸‚ÌƒXƒgƒbƒv
+								//ã¨ã‚Šã‚ãˆãšã®ã‚¹ãƒˆãƒƒãƒ—
 								BombVel.x = 0.0f;
 								BombVel.z = 0.0f;
 
@@ -966,10 +998,10 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			XMFLOAT3 BombPos = pRunBombSource[i].Runbombsource_GetPosition();
 			XMFLOAT3 BombVel = pRunBombSource[i].Runbombsource_GetVelocity();
 
-			// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+			// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
-				float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+				float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
 
@@ -977,11 +1009,11 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				{
 
 				default:
-					BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+					BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 					break;
 				}
 
-				// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+				// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 				if (mapPos.y - BOX_RADIUS < BombPos.y &&
 					BombPos.y < BoxTop - 0.1f)
 				{
@@ -990,14 +1022,14 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.x - BOX_RADIUS < BombPos.x + PLAYER_RADIUS &&
 							BombPos.x < mapPos.x - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.x += (mapPos.x - BOX_RADIUS) - (BombPos.x + PLAYER_RADIUS);
-							BombVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > BombPos.x - PLAYER_RADIUS &&
 							BombPos.x > mapPos.x + BOX_RADIUS)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.x += (mapPos.x + BOX_RADIUS) - (BombPos.x - PLAYER_RADIUS);
 							BombVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_1;
@@ -1008,21 +1040,21 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.z - BOX_RADIUS < BombPos.z + PLAYER_RADIUS &&
 							BombPos.z < mapPos.z - BOX_RADIUS)
-						{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.z += (mapPos.z - BOX_RADIUS) - (BombPos.z + PLAYER_RADIUS);
-							BombVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_0;
 						}
 						else if (mapPos.z + BOX_RADIUS > BombPos.z - PLAYER_RADIUS &&
 							BombPos.z > mapPos.z + BOX_RADIUS)
-						{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.z += (mapPos.z + BOX_RADIUS) - (BombPos.z - PLAYER_RADIUS);
 							BombVel.z *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_2;
 						}
 					}
 				}
-				//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+				//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 				else
 				{
 					if (mapPos.z - BOX_RADIUS < BombPos.z &&
@@ -1033,20 +1065,16 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 						{
 							if (mapPos.y - BOX_RADIUS < BombPos.y + PLAYER_RADIUS &&
 								BombPos.y < mapPos.y - BOX_RADIUS)
-							{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+							{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+								BombVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 								//hit = 
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
 								BombPos.y > BoxTop)
-							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+							{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
 								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
-
-								//‚Æ‚è‚ ‚¦‚¸‚ÌƒXƒgƒbƒv
-								BombVel.x = 0.0f;
-								BombVel.z = 0.0f;
 
 
 								hit = COLLISION_HIT::HIT_GROUND;
@@ -1075,10 +1103,10 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			XMFLOAT3 BombPos = pFlowtBombSource[i].Flowtbombsource_GetPosition();
 			XMFLOAT3 BombVel = pFlowtBombSource[i].Flowtbombsource_GetVelocity();
 
-			// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+			// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
-				float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+				float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
 
@@ -1086,11 +1114,11 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				{
 
 				default:
-					BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+					BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 					break;
 				}
 
-				// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+				// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 				if (mapPos.y - BOX_RADIUS < BombPos.y &&
 					BombPos.y < BoxTop - 0.1f)
 				{
@@ -1099,14 +1127,14 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.x - BOX_RADIUS < BombPos.x + PLAYER_RADIUS &&
 							BombPos.x < mapPos.x - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.x += (mapPos.x - BOX_RADIUS) - (BombPos.x + PLAYER_RADIUS);
-							BombVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > BombPos.x - PLAYER_RADIUS &&
 							BombPos.x > mapPos.x + BOX_RADIUS)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.x += (mapPos.x + BOX_RADIUS) - (BombPos.x - PLAYER_RADIUS);
 							BombVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_1;
@@ -1117,21 +1145,21 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					{
 						if (mapPos.z - BOX_RADIUS < BombPos.z + PLAYER_RADIUS &&
 							BombPos.z < mapPos.z - BOX_RADIUS)
-						{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							BombPos.z += (mapPos.z - BOX_RADIUS) - (BombPos.z + PLAYER_RADIUS);
-							BombVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							BombVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_0;
 						}
 						else if (mapPos.z + BOX_RADIUS > BombPos.z - PLAYER_RADIUS &&
 							BombPos.z > mapPos.z + BOX_RADIUS)
-						{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 							BombPos.z += (mapPos.z + BOX_RADIUS) - (BombPos.z - PLAYER_RADIUS);
 							BombVel.z *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_2;
 						}
 					}
 				}
-				//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+				//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 				else
 				{
 					if (mapPos.z - BOX_RADIUS < BombPos.z &&
@@ -1142,18 +1170,18 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 						{
 							if (mapPos.y - BOX_RADIUS < BombPos.y + PLAYER_RADIUS &&
 								BombPos.y < mapPos.y - BOX_RADIUS)
-							{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+							{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y = 0.0f; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì’â~
+								BombVel.y = 0.0f; //ï¿½Ú“ï¿½ï¿½xï¿½Nï¿½gï¿½ï¿½ï¿½Ì’ï¿½~
 								//hit = 
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
 								BombPos.y > BoxTop)
-							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+							{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
 								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
 
-								//‚Æ‚è‚ ‚¦‚¸‚ÌƒXƒgƒbƒv
+								//ã¨ã‚Šã‚ãˆãšã®ã‚¹ãƒˆãƒƒãƒ—
 								BombVel.x = 0.0f;
 								BombVel.z = 0.0f;
 
@@ -1175,13 +1203,13 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	}
 
 
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
 
 float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//BALL*		Ball = GetBall();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	//BALL*		Ball = GetBall();		// ï¿½{ï¿½[ï¿½ï¿½ï¿½Ìï¿½ï¿½
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	RUNBOMBSOURCE* pRunBomb = pBomb->Bomb_GetRunBomb();
@@ -1191,7 +1219,7 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//ƒXƒ[‚Ì‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//ï¿½Xï¿½ï¿½ï¿½[ï¿½Ì‚Æ‚ï¿½ï¿½Ì‚İ“ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			int			l = 0;
@@ -1204,15 +1232,15 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			{
 
 				if (Map[l].MapData_GetNo() == FIELD_BREAK)
-				{//‰ó‚ê‚é°‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ï¿½ï¿½ï¿½é°ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½Æ‚ï¿½
 
 					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXï¿½ï¿½+Yï¿½Ê‚Ìï¿½ï¿½W
 
 					BoxTop = MapPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// ï¿½Ç‚Æ‚ï¿½ï¿½Ä‚Ì”ï¿½ï¿½èˆï¿½ï¿½
 					if (BombPos.x + 1 > MapPos.x &&
 						BombPos.x - 1 < MapPos.x)
 					{
@@ -1222,12 +1250,12 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 							if (BombPos.z + 1 > MapPos.z &&
 								BombPos.z - 1 < MapPos.z)
 							{
-								test = true;//“–‚½‚Á‚½
+								test = true;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
 					}
 
-					//ƒ{ƒ€‚ÌƒXƒe[ƒg‚ğ”š”­‚É•ÏX
+					//ï¿½{ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ğ”š”ï¿½ï¿½É•ÏX
 					if (test)
 					{
 						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
@@ -1243,7 +1271,7 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//ƒXƒ[‚Ì‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//ï¿½Xï¿½ï¿½ï¿½[ï¿½Ì‚Æ‚ï¿½ï¿½Ì‚İ“ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (pRunBomb[i].Runbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			int			l = 0;
@@ -1256,15 +1284,15 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			{
 
 				if (Map[l].MapData_GetNo() == FIELD_BREAK)
-				{//‰ó‚ê‚é°‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ï¿½ï¿½ï¿½é°ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½Æ‚ï¿½
 
 					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXï¿½ï¿½+Yï¿½Ê‚Ìï¿½ï¿½W
 
 					BoxTop = MapPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// ï¿½Ç‚Æ‚ï¿½ï¿½Ä‚Ì”ï¿½ï¿½èˆï¿½ï¿½
 					if (BombPos.x + 1 > MapPos.x &&
 						BombPos.x - 1 < MapPos.x)
 					{
@@ -1274,12 +1302,12 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 							if (BombPos.z + 1 > MapPos.z &&
 								BombPos.z - 1 < MapPos.z)
 							{
-								test = true;//“–‚½‚Á‚½
+								test = true;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
 					}
 
-					//ƒ{ƒ€‚ÌƒXƒe[ƒg‚ğ”š”­‚É•ÏX
+					//ï¿½{ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ğ”š”ï¿½ï¿½É•ÏX
 					if (test)
 					{
 						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
@@ -1295,7 +1323,7 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//ƒXƒ[‚Ì‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//ï¿½Xï¿½ï¿½ï¿½[ï¿½Ì‚Æ‚ï¿½ï¿½Ì‚İ“ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (pFlowtBomb[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			int			l = 0;
@@ -1308,15 +1336,15 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			{
 
 				if (Map[l].MapData_GetNo() == FIELD_BREAK)
-				{//‰ó‚ê‚é°‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ï¿½ï¿½ï¿½é°ï¿½ï¿½ï¿½ï¿½ï¿½İ‚ï¿½ï¿½ï¿½Æ‚ï¿½
 
 					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXï¿½ï¿½+Yï¿½Ê‚Ìï¿½ï¿½W
 
 					BoxTop = MapPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// ï¿½Ç‚Æ‚ï¿½ï¿½Ä‚Ì”ï¿½ï¿½èˆï¿½ï¿½
 					if (BombPos.x + 1 > MapPos.x &&
 						BombPos.x - 1 < MapPos.x)
 					{
@@ -1326,12 +1354,12 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 							if (BombPos.z + 1 > MapPos.z &&
 								BombPos.z - 1 < MapPos.z)
 							{
-								test = true;//“–‚½‚Á‚½
+								test = true;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 							}
 						}
 					}
 
-					//ƒ{ƒ€‚ÌƒXƒe[ƒg‚ğ”š”­‚É•ÏX
+					//ï¿½{ï¿½ï¿½ï¿½ÌƒXï¿½eï¿½[ï¿½gï¿½ğ”š”ï¿½ï¿½É•ÏX
 					if (test)
 					{
 						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
@@ -1348,11 +1376,11 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	return hit;
 }
 
-//ƒ{ƒ€‚ÆƒGƒlƒ~[‚Ì“–‚½‚è”»’è‚Ì•s‹ï‡‘½‚¢‚Ì‚ÅC³‚·‚é
+//ï¿½{ï¿½ï¿½ï¿½ÆƒGï¿½lï¿½~ï¿½[ï¿½Ì“ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½Ì•sï¿½ï‡ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ÅCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//BALL*		Ball = GetBall();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//BALL*		Ball = GetBall();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
@@ -1361,7 +1389,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//”š”­‚µ‚½‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//çˆ†ç™ºã—ãŸã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			int			l = 0;
@@ -1374,17 +1402,17 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			{
 				
 				if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
-				{//ƒGƒlƒ~[‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
 
 					XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
 					XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
 
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 					BoxTop = EnemyPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 					if (BombPos.x + 1 > EnemyPos.x &&
 						BombPos.x - 1 < EnemyPos.x)
 					{
@@ -1394,12 +1422,12 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 							if (BombPos.z + 1 > EnemyPos.z &&
 								BombPos.z - 1 < EnemyPos.z)
 							{
-								test = true;//€–Sƒtƒ‰ƒO
+								test = true;//æ­»äº¡ãƒ•ãƒ©ã‚°
 							}
 						}
 					}
 
-					//ƒXƒe[ƒg‚ğ€–S‚ÉˆÚ“®
+					//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ­»äº¡ã«ç§»å‹•
 					if (test)
 					{
 						enemy[i].SetEnemyNormalState(ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DEAD);
@@ -1410,10 +1438,10 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 		}
 	}
 
-	// •‚‚¢‚Ä‚é“G
+	// æµ®ã„ã¦ã‚‹æ•µ
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//”š”­‚µ‚½‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//çˆ†ç™ºã—ãŸã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
 		{
 			int			l = 0;
@@ -1426,17 +1454,17 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			{
 
 				if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
-				{//ƒGƒlƒ~[‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
 
 					XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
 					XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
 
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 					BoxTop = EnemyPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 					if (BombPos.x + 1 > EnemyPos.x &&
 						BombPos.x - 1 < EnemyPos.x)
 					{
@@ -1446,16 +1474,110 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 							if (BombPos.z + 1 > EnemyPos.z &&
 								BombPos.z - 1 < EnemyPos.z)
 							{
-								test = true;//€–Sƒtƒ‰ƒO
+								test = true;//æ­»äº¡ãƒ•ãƒ©ã‚°
 							}
 						}
 					}
 
-					//ƒXƒe[ƒg‚ğ€–S‚ÉˆÚ“®
+					//ã‚¹ãƒ†ãƒ¼ãƒˆã‚’æ­»äº¡ã«ç§»å‹•
 					if (test)
 					{
 						enemyB[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
 					}
+
+				}
+			}
+		}
+
+		//ããã°ã
+		//çˆ†ç™ºã—ãŸã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			for (int i = 0; i < Enemy_Spawner_MAX; i++)
+			{
+				
+				if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
+
+					XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
+					XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
+
+
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
+
+					BoxTop = EnemyPos.y + BOX_RADIUS;
+
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
+					if (BombPos.x + 1 > EnemyPos.x &&
+						BombPos.x - 1 < EnemyPos.x)
+					{
+						if (BombPos.y + 1 > EnemyPos.y &&
+							BombPos.y - 1 < EnemyPos.y)
+						{
+							if (BombPos.z + 1 > EnemyPos.z &&
+								BombPos.z - 1 < EnemyPos.z)
+							{
+								pBombSource[i].BombSource_SetCount(0.0f);
+								pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+							}
+						}
+					}
+
+					
+
+				}
+			}
+		}
+	}
+
+	// æµ®ã„ã¦ã‚‹æ•µ
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//çˆ†ç™ºã—ãŸã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			for (int i = 0; i < Enemy_Spawner_MAX; i++)
+			{
+
+				if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
+
+					XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
+					XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+
+
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
+
+					BoxTop = EnemyPos.y + BOX_RADIUS;
+
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
+					if (BombPos.x + 1 > EnemyPos.x &&
+						BombPos.x - 1 < EnemyPos.x)
+					{
+						if (BombPos.y + 1 > EnemyPos.y &&
+							BombPos.y - 1 < EnemyPos.y)
+						{
+							if (BombPos.z + 1 > EnemyPos.z &&
+								BombPos.z - 1 < EnemyPos.z)
+							{
+								pBombSource[i].BombSource_SetCount(0.0f);
+								pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+							}
+						}
+					}
+
 
 				}
 			}
@@ -1467,12 +1589,12 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 
 ////////////////////////////////////////////////////////////////////////////////////
-// —vC³
+// è¦ä¿®æ­£
 ////////////////////////////////////////////////////////////////////////////////////
 float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//BALL*		Ball = GetBall();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//BALL*		Ball = GetBall();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
@@ -1481,7 +1603,7 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//ƒXƒ[‚Ì‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//ã‚¹ãƒ­ãƒ¼ã®ã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
 		{
 			int			l = 0;
@@ -1494,17 +1616,17 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			{
 
 				if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
-				{//ƒGƒlƒ~[‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
 
 					XMFLOAT3 EnemyPos = enemy[i].GetEnemyPosition();
 					XMFLOAT3 EnemyVel = enemy[i].GetEnemyVelocity();
 
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 					BoxTop = EnemyPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 					if (BombPos.x + 1 > EnemyPos.x &&
 						BombPos.x - 1 < EnemyPos.x)
 					{
@@ -1514,12 +1636,12 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 							if (BombPos.z + 1 > EnemyPos.z &&
 								BombPos.z - 1 < EnemyPos.z)
 							{
-								test = true;//“–‚½‚Á‚½
+								test = true;//å½“ãŸã£ãŸ
 							}
 						}
 					}
 
-					//ƒ{ƒ€‚ÌƒXƒe[ƒg‚ğ”š”­‚É•ÏX
+					//ãƒœãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’çˆ†ç™ºã«å¤‰æ›´
 					if (test)
 					{
 						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
@@ -1533,10 +1655,10 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 	}
 
 
-	// •‚‚¢‚Ä‚é“G
+	// æµ®ã„ã¦ã‚‹æ•µ
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		//ƒXƒ[‚Ì‚Æ‚«‚Ì‚İ“–‚½‚è”»’è‚ğæ‚é
+		//ã‚¹ãƒ­ãƒ¼ã®ã¨ãã®ã¿å½“ãŸã‚Šåˆ¤å®šã‚’å–ã‚‹
 		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
 		{
 			int			l = 0;
@@ -1549,17 +1671,17 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 			{
 
 				if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
-				{//ƒGƒlƒ~[‚ª‘¶İ‚·‚é‚Æ‚«
+				{//ã‚¨ãƒãƒŸãƒ¼ãŒå­˜åœ¨ã™ã‚‹ã¨ã
 
 					XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
 					XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
 
 
-					float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+					float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 					BoxTop = EnemyPos.y + BOX_RADIUS;
 
-					// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+					// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 					if (BombPos.x + 1 > EnemyPos.x &&
 						BombPos.x - 1 < EnemyPos.x)
 					{
@@ -1569,12 +1691,12 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 							if (BombPos.z + 1 > EnemyPos.z &&
 								BombPos.z - 1 < EnemyPos.z)
 							{
-								test = true;//“–‚½‚Á‚½
+								test = true;//å½“ãŸã£ãŸ
 							}
 						}
 					}
 
-					//ƒ{ƒ€‚ÌƒXƒe[ƒg‚ğ”š”­‚É•ÏX
+					//ãƒœãƒ ã®ã‚¹ãƒ†ãƒ¼ãƒˆã‚’çˆ†ç™ºã«å¤‰æ›´
 					if (test)
 					{
 						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
@@ -1592,11 +1714,11 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	//PLAYER*		Player = GetPlayer();		// ƒ{[ƒ‹‚Ìî•ñ
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	//PLAYER*		Player = GetPlayer();		// ãƒœãƒ¼ãƒ«ã®æƒ…å ±
 	WEAPONSOURCE* pWeaponSource = pWeapon->Weapon_GetWeapon();
 
-	MAP* Map = pField->GetFieldMap();	// ƒ}ƒbƒv
+	MAP* Map = pField->GetFieldMap();	// ãƒãƒƒãƒ—
 
 	for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
@@ -1607,10 +1729,10 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 			XMFLOAT3 WeaponPos = pWeaponSource[i].WeaponSource_GetPosition();
 			XMFLOAT3 WeaponVel = pWeaponSource[i].WeaponSource_GetVelocity();
 
-			// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+			// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
-				float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+				float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
 
@@ -1618,11 +1740,11 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 				{
 
 				default:
-					BoxTop = mapPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+					BoxTop = mapPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 					break;
 				}
 
-				// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+				// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 				if (mapPos.y - BOX_RADIUS < WeaponPos.y &&
 					WeaponPos.y < BoxTop - 0.1f)
 				{
@@ -1631,14 +1753,14 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 					{
 						if (mapPos.x - BOX_RADIUS < WeaponPos.x + PLAYER_RADIUS &&
 							WeaponPos.x < mapPos.x - BOX_RADIUS)
-						{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							WeaponPos.x += (mapPos.x - BOX_RADIUS) - (WeaponPos.x + PLAYER_RADIUS);
-							WeaponVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							WeaponVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > WeaponPos.x - PLAYER_RADIUS &&
 							WeaponPos.x > mapPos.x + BOX_RADIUS)
-						{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 							WeaponPos.x += (mapPos.x + BOX_RADIUS) - (WeaponPos.x - PLAYER_RADIUS);
 							WeaponVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_1;
@@ -1649,21 +1771,21 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 					{
 						if (mapPos.z - BOX_RADIUS < WeaponPos.z + PLAYER_RADIUS &&
 							WeaponPos.z < mapPos.z - BOX_RADIUS)
-						{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+						{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 							WeaponPos.z += (mapPos.z - BOX_RADIUS) - (WeaponPos.z + PLAYER_RADIUS);
-							WeaponVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+							WeaponVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 							hit = COLLISION_HIT::HIT_WALL_0;
 						}
 						else if (mapPos.z + BOX_RADIUS > WeaponPos.z - PLAYER_RADIUS &&
 							WeaponPos.z > mapPos.z + BOX_RADIUS)
-						{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+						{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 							WeaponPos.z += (mapPos.z + BOX_RADIUS) - (WeaponPos.z - PLAYER_RADIUS);
 							WeaponVel.z *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_2;
 						}
 					}
 				}
-				//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+				//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 				else
 				{
 					if (mapPos.z - BOX_RADIUS < WeaponPos.z &&
@@ -1674,18 +1796,18 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 						{
 							if (mapPos.y - BOX_RADIUS < WeaponPos.y + PLAYER_RADIUS &&
 								WeaponPos.y < mapPos.y - BOX_RADIUS)
-							{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+							{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 								WeaponPos.y += (mapPos.y - BOX_RADIUS) - (WeaponPos.y + PLAYER_RADIUS);
-								WeaponVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+								WeaponVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 								//hit = 
 							}
 							else if (BoxTop > WeaponPos.y - PLAYER_RADIUS &&
 								WeaponPos.y > BoxTop)
-							{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+							{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 								WeaponPos.y += (BoxTop)-(WeaponPos.y - PLAYER_RADIUS);
 								WeaponVel.y = 0;//WeaponVel.y * (-COE * 1.0f);
 
-								//‚Æ‚è‚ ‚¦‚¸‚ÌƒXƒgƒbƒv
+								//ã¨ã‚Šã‚ãˆãšã®ã‚¹ãƒˆãƒƒãƒ—
 								WeaponVel.x = 0.0f;
 								WeaponVel.z = 0.0f;
 
@@ -1707,24 +1829,24 @@ float COLLISION::WeaponFieldCollision(WEAPON* pWeapon, MAPDATA* pField)
 	}
 
 
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
 
 
 float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 {
-	float		hit = false;				// ƒqƒbƒg‚µ‚½•ûŒü
+	float		hit = false;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
 
 
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	bool PlayerJump = pPlayer->GetPlayerJump();
 
-	WEAPONSOURCE* Weapon = pWeapon->Weapon_GetWeapon();	// ƒ}ƒbƒv
+	WEAPONSOURCE* Weapon = pWeapon->Weapon_GetWeapon();	// ãƒãƒƒãƒ—
 	//int			i = 0;
 
 
-	// ‘S‚Ä‚ÌƒuƒƒbƒN‚ğƒ`ƒFƒbƒN
+	// å…¨ã¦ã®ãƒ–ãƒ­ãƒƒã‚¯ã‚’ãƒã‚§ãƒƒã‚¯
 	for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
 		/*switch (Weapon[i].WeaponSource_GetState())
@@ -1737,7 +1859,7 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 		}*/
 
 		bool	touch = false;
-		float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+		float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 		XMFLOAT3 weaponPos = Weapon[i].WeaponSource_GetPosition();
 
@@ -1746,110 +1868,113 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 		{
 
 		default:
-			BoxTop = weaponPos.y + WEAPON_RADIUS;	// •’Ê‚ÌBOX
+			BoxTop = weaponPos.y + WEAPON_RADIUS;	// æ™®é€šã®BOX
 			break;
 		}
 
-		// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
-		if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y &&
-			PlayerPos.y <= BoxTop - 0.1f)
+		if (Weapon[i].WeaponSource_GetState() != WEAPON_NONE)
 		{
-			if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
-				PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+			// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
+			if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y &&
+				PlayerPos.y <= BoxTop - 0.1f)
 			{
-				if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
-					PlayerPos.x <= weaponPos.x - WEAPON_RADIUS)
-				{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
-					PlayerPos.x += (weaponPos.x - WEAPON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-					PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
-					hit = COLLISION_HIT::HIT_WALL_3;
-					touch = true;
+				if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
+					PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+				{
+					if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
+						PlayerPos.x <= weaponPos.x - WEAPON_RADIUS)
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
+						PlayerPos.x += (weaponPos.x - WEAPON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
+						PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
+						hit = COLLISION_HIT::HIT_WALL_3;
+						touch = true;
+					}
+					else if (weaponPos.x + WEAPON_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
+						PlayerPos.x >= weaponPos.x + WEAPON_RADIUS)
+					{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
+						PlayerPos.x += (weaponPos.x + WEAPON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
+						PlayerVel.x *= -COE;
+						hit = COLLISION_HIT::HIT_WALL_1;
+						touch = true;
+					}
 				}
-				else if (weaponPos.x + WEAPON_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
-					PlayerPos.x >= weaponPos.x + WEAPON_RADIUS)
-				{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
-					PlayerPos.x += (weaponPos.x + WEAPON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
-					PlayerVel.x *= -COE;
-					hit = COLLISION_HIT::HIT_WALL_1;
-					touch = true;
-				}
-			}
-			else if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
-				PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
-			{
-				if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
-					PlayerPos.z <= weaponPos.z - WEAPON_RADIUS)
-				{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
-					PlayerPos.z += (weaponPos.z - WEAPON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-					PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
-					hit = COLLISION_HIT::HIT_WALL_0;
-					touch = true;
-				}
-				else if (weaponPos.z + WEAPON_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
-					PlayerPos.z >= weaponPos.z + WEAPON_RADIUS)
-				{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
-					PlayerPos.z += (weaponPos.z + WEAPON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
-					PlayerVel.z *= -COE;
-					hit = COLLISION_HIT::HIT_WALL_2;
-					touch = true;
-				}
-			}
-		}
-		//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
-		else
-		{
-			if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
-				PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
-			{
-				if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
+				else if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
 					PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
 				{
-					if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
-						PlayerPos.y <= weaponPos.y - WEAPON_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
-						PlayerPos.y += (weaponPos.y - WEAPON_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-						PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
-						//hit = 
+					if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
+						PlayerPos.z <= weaponPos.z - WEAPON_RADIUS)
+					{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
+						PlayerPos.z += (weaponPos.z - WEAPON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
+						PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
+						hit = COLLISION_HIT::HIT_WALL_0;
+						touch = true;
 					}
-					else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
-						PlayerPos.y >= BoxTop)
-					{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
-						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
-						PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
-						hit = COLLISION_HIT::HIT_GROUND;
-						if (PlayerJump == false)
-						{
-							PlayerJump = true;
+					else if (weaponPos.z + WEAPON_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
+						PlayerPos.z >= weaponPos.z + WEAPON_RADIUS)
+					{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
+						PlayerPos.z += (weaponPos.z + WEAPON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
+						PlayerVel.z *= -COE;
+						hit = COLLISION_HIT::HIT_WALL_2;
+						touch = true;
+					}
+				}
+			}
+			//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
+			else
+			{
+				if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
+					PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+				{
+					if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
+						PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
+					{
+						if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
+							PlayerPos.y <= weaponPos.y - WEAPON_RADIUS)
+						{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
+							PlayerPos.y += (weaponPos.y - WEAPON_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
+							PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
+							//hit = 
+						}
+						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
+							PlayerPos.y >= BoxTop)
+						{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
+							PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
+							PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
+							hit = COLLISION_HIT::HIT_GROUND;
+							if (PlayerJump == false)
+							{
+								PlayerJump = true;
+							}
 						}
 					}
 				}
 			}
+
+			pPlayer->SetPlayerJump(PlayerJump);
+			pPlayer->SetPlayerPosition(PlayerPos);
+			pPlayer->SetPlayerVelocity(PlayerVel);
+
+			// ãƒ†ã‚¹ãƒˆ
+			if (hit && !Weapon[i].WeaponSource_GetIsDamage()
+				&& !Weapon[i].WeaponSource_GetState() == WEAPON_NONE)
+			{
+				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 20);
+				Weapon[i].WeaponSource_SetIsDamage(true);
+			}
+
 		}
-
-		pPlayer->SetPlayerJump(PlayerJump);
-		pPlayer->SetPlayerPosition(PlayerPos);
-		pPlayer->SetPlayerVelocity(PlayerVel);
-
-		// ƒeƒXƒg
-		if (hit && !Weapon[i].WeaponSource_GetIsDamage() 
-			&& !Weapon[i].WeaponSource_GetState()== WEAPON_NONE )
-		{
-			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 20);
-			Weapon[i].WeaponSource_SetIsDamage(true);
-		}
-
 	}
 
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
 
 
 float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 {
-	float		hit = 0.0f;				// ƒqƒbƒg‚µ‚½•ûŒü
-	bool grounded_any = false;			// ‰½‚©‚ÉÚ’n‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
+	float		hit = 0.0f;				// ãƒ’ãƒƒãƒˆã—ãŸæ–¹å‘
+	bool grounded_any = false;			// ä½•ã‹ã«æ¥åœ°ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
 
-	pGimmick->Channels_Reset(); // ƒ`ƒƒƒ“ƒlƒ‹‚ÌƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+	pGimmick->Channels_Reset(); // ãƒãƒ£ãƒ³ãƒãƒ«ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’ãƒªã‚»ãƒƒãƒˆ
 
 	XMFLOAT3 PlayerPos = pPlayer->GetPlayerPosition();
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
@@ -1859,21 +1984,21 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 	GIMMICK_FIELD* Fields = pGimmick->GetFields();
 	GIMMICK_GATE* Gates = pGimmick->GetGates();
 
-	// ƒ{ƒ^ƒ“
+	// ãƒœã‚¿ãƒ³
 	for (int i = 0;i < pGimmick->GetButtonCount();i++)
 	{
-		bool on_this = false; // © ‚±‚Ìƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä¡ƒtƒŒ[ƒ€Ú’n‚µ‚½‚©
+		bool on_this = false; // â† ã“ã®ãƒœã‚¿ãƒ³ã«å¯¾ã—ã¦ä»Šãƒ•ãƒ¬ãƒ¼ãƒ æ¥åœ°ã—ãŸã‹
 
-		float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+		float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 		XMFLOAT3 buttonsPos = Buttons[i].GimmickButton_GetPosition();
 
 		
-			BoxTop = buttonsPos.y + 0.2f;	// •’Ê‚ÌBOX
+			BoxTop = buttonsPos.y + 0.2f;	// æ™®é€šã®BOX
 
 		
 
-		// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+		// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 		if (buttonsPos.y - BOX_RADIUS < PlayerPos.y &&
 			PlayerPos.y < BoxTop - 0.1f)
 		{
@@ -1882,14 +2007,14 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 			{
 				if (buttonsPos.x - BOX_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
 					PlayerPos.x < buttonsPos.x - BOX_RADIUS)
-				{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.x += (buttonsPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-					PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_3;
 				}
 				else if (buttonsPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
 					PlayerPos.x > buttonsPos.x + BOX_RADIUS)
-				{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.x += (buttonsPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
@@ -1900,21 +2025,21 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 			{
 				if (buttonsPos.z - BOX_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
 					PlayerPos.z < buttonsPos.z - BOX_RADIUS)
-				{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.z += (buttonsPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-					PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_0;
 				}
 				else if (buttonsPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
 					PlayerPos.z > buttonsPos.z + BOX_RADIUS)
-				{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.z += (buttonsPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
 				}
 			}
 		}
-		//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+		//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 		else
 		{
 			if (buttonsPos.z - BOX_RADIUS < PlayerPos.z &&
@@ -1925,13 +2050,13 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 				{
 					if (buttonsPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
 						PlayerPos.y < buttonsPos.y - BOX_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.y += (buttonsPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-						PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					}
 					else if (BoxTop > PlayerPos.y - PLAYER_RADIUS &&
 						PlayerPos.y > BoxTop)
-					{//BOX‚Ì+Y–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Yé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 						PlayerVel.y = 0;
 						hit = COLLISION_HIT::HIT_GROUND;
@@ -1957,7 +2082,7 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 		}
 		else
 		{
-			// ¡ƒtƒŒ[ƒ€‚±‚Ìƒ{ƒ^ƒ“‚ÉÚ’n‚µ‚Ä‚¢‚È‚¢‚È‚ç OFF
+			// ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ã“ã®ãƒœã‚¿ãƒ³ã«æ¥åœ°ã—ã¦ã„ãªã„ãªã‚‰ OFF
 			if (Buttons[i].GimmickButton_GetTouch())
 			{
 				Buttons[i].GimmickButton_SetTouch(false);
@@ -1971,20 +2096,22 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 
 	}
 
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
+
 	for (int i = 0; i < pGimmick->GetFieldCount(); i++)
 	{
-		bool on_this = false; // © ‚±‚Ìƒ{ƒ^ƒ“‚É‘Î‚µ‚Ä¡ƒtƒŒ[ƒ€Ú’n‚µ‚½‚©
+		bool on_this = false; // â† ã“ã®ãƒœã‚¿ãƒ³ã«å¯¾ã—ã¦ä»Šãƒ•ãƒ¬ãƒ¼ãƒ æ¥åœ°ã—ãŸã‹
 
-		float BoxTop;	// BOX‚Ì+Y–Ê‚ÌÀ•W
+		float BoxTop;	// BOXã®+Yé¢ã®åº§æ¨™
 
 		XMFLOAT3 fieldsPos = Fields[i].GimmickField_GetPosition();
 
 
-		BoxTop = fieldsPos.y + BOX_RADIUS;	// •’Ê‚ÌBOX
+		BoxTop = fieldsPos.y + BOX_RADIUS;	// æ™®é€šã®BOX
 
 
 
-		// •Ç‚Æ‚µ‚Ä‚Ì”»’èˆ—
+		// å£ã¨ã—ã¦ã®åˆ¤å®šå‡¦ç†
 		if (fieldsPos.y - BOX_RADIUS < PlayerPos.y &&
 			PlayerPos.y < BoxTop - 0.1f)
 		{
@@ -1993,14 +2120,14 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 			{
 				if (fieldsPos.x - BOX_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
 					PlayerPos.x < fieldsPos.x - BOX_RADIUS)
-				{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.x += (fieldsPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-					PlayerVel.x *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.x *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_3;
 				}
 				else if (fieldsPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
 					PlayerPos.x > fieldsPos.x + BOX_RADIUS)
-				{//BOX‚Ì+X–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Xé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.x += (fieldsPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
@@ -2011,21 +2138,21 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 			{
 				if (fieldsPos.z - BOX_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
 					PlayerPos.z < fieldsPos.z - BOX_RADIUS)
-				{//BOX‚Ì-Z–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+				{//BOXã®-Zé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 					PlayerPos.z += (fieldsPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-					PlayerVel.z *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+					PlayerVel.z *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					hit = COLLISION_HIT::HIT_WALL_0;
 				}
 				else if (fieldsPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
 					PlayerPos.z > fieldsPos.z + BOX_RADIUS)
-				{//BOX‚Ì+Z–Ê‚É‚Ô‚Â‚©‚Á‚½
+				{//BOXã®+Zé¢ã«ã¶ã¤ã‹ã£ãŸ
 					PlayerPos.z += (fieldsPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
 				}
 			}
 		}
-		//’n–Ê‚Æ‚µ‚Ä”»’èˆ—
+		//åœ°é¢ã¨ã—ã¦åˆ¤å®šå‡¦ç†
 		else
 		{
 			if (fieldsPos.z - BOX_RADIUS < PlayerPos.z &&
@@ -2036,13 +2163,13 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 				{
 					if (fieldsPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
 						PlayerPos.y < fieldsPos.y - BOX_RADIUS)
-					{//BOX‚Ì-X–Ê‚É‚Ô‚Â‚©‚Á‚½‚Ì‚ÅÀ•W‚Ì•â³
+					{//BOXã®-Xé¢ã«ã¶ã¤ã‹ã£ãŸã®ã§åº§æ¨™ã®è£œæ­£
 						PlayerPos.y += (fieldsPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-						PlayerVel.y *= -COE; //ˆÚ“®ƒxƒNƒgƒ‹‚Ì”½“]
+						PlayerVel.y *= -COE; //ç§»å‹•ãƒ™ã‚¯ãƒˆãƒ«ã®åè»¢
 					}
 					else if (BoxTop > PlayerPos.y - PLAYER_RADIUS &&
 						PlayerPos.y > BoxTop)
-					{//BOX‚Ì+Y–Ê‚É‚Ô‚Â‚©‚Á‚½
+					{//BOXã®+Yé¢ã«ã¶ã¤ã‹ã£ãŸ
 						PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
 						PlayerVel.y = 0;
 						hit = COLLISION_HIT::HIT_GROUND;
@@ -2065,16 +2192,52 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 	}
 
 
-	if (grounded_any) { hit = COLLISION_HIT::HIT_GROUND; } // © ÅI‚Ü‚Æ‚ß
-	return hit;  // ‚Ô‚Â‚©‚Á‚½‚©‚Ç‚¤‚©‚ğ¦‚·
+	if (grounded_any) { hit = COLLISION_HIT::HIT_GROUND; } // â† æœ€çµ‚ã¾ã¨ã‚
+	return hit;  // ã¶ã¤ã‹ã£ãŸã‹ã©ã†ã‹ã‚’ç¤ºã™
 }
+
+//////å½“ãŸã‚Šåˆ¤å®šåˆ†ã‹ã‚‰ã‚“//////
+float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
+{
+	bool hit = false;
+
+	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
+	float playerRadius = PLAYER_RADIUS;
+
+	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
+	{
+		if (!bossObjs[i].IsActive()) continue;
+
+		XMFLOAT3 bossPos = bossObjs[i].GetBossObjPosition();
+		float bossRadius = BOSSOBJ_RADIUS;
+
+		float dx = playerPos.x - bossPos.x;
+		float dy = playerPos.y - bossPos.y;
+		float dz = playerPos.z - bossPos.z;
+
+		float distSq = dx * dx + dy * dy + dz * dz;
+		float r = playerRadius + bossRadius;
+
+		if (distSq <= r * r)
+		{
+			hit = true;
+
+			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - BOSSOBJ_DAMAGE);
+			bossObjs[i].SetActive(false);
+		}
+	}
+
+	return hit ? 1.0f : 0.0f;
+}
+	
+
 
 float COLLISION::PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 {
 
 	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
 
-	// ‰Ÿ‰º’†ƒ{ƒ^ƒ“‚ÌY’Ç]i•K—v‚É‰‚¶‚ÄX/Z‚Í’Ç]‚µ‚È‚¢j
+	// æŠ¼ä¸‹ä¸­ãƒœã‚¿ãƒ³ã®Yè¿½å¾“ï¼ˆå¿…è¦ã«å¿œã˜ã¦X/Zã¯è¿½å¾“ã—ãªã„ï¼‰
 	GIMMICK_BUTTON* buttons = pGimmick->GetButtons();
 
 	for (int i = 0; i < pGimmick->GetButtonCount(); i++)
@@ -2084,7 +2247,7 @@ float COLLISION::PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimm
 		{
 			XMFLOAT3 bpos = buttons[i].GimmickButton_GetPosition();
 
-			bool overlapXZ = false; // XZ•½–Ê‚Åd‚È‚Á‚Ä‚¢‚é‚©
+			bool overlapXZ = false; // XZå¹³é¢ã§é‡ãªã£ã¦ã„ã‚‹ã‹
 			if (bpos.z - BOX_RADIUS < playerPos.z)
 			{
 				if (playerPos.z < bpos.z + BOX_RADIUS)
@@ -2101,13 +2264,13 @@ float COLLISION::PlayerMovingFieldCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimm
 			if (overlapXZ)
 			{
 				XMFLOAT3 bvel = buttons[i].GimmickButton_GetVelocity();
-				playerPos.y += bvel.y; // ’¾‚İ^–ß‚è•ª‚ğ’Ç]
+				playerPos.y += bvel.y; // æ²ˆã¿ï¼æˆ»ã‚Šåˆ†ã‚’è¿½å¾“
 			}
 		}
 	}
 
 
-	// ‰Â“®ƒtƒB[ƒ‹ƒh‚Ö‚Ì’Ç]iX/Y/Z ‚·‚×‚Ä’Ç]‚·‚éj
+	// å¯å‹•ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¸ã®è¿½å¾“ï¼ˆX/Y/Z ã™ã¹ã¦è¿½å¾“ã™ã‚‹ï¼‰
 	GIMMICK_FIELD* fields = pGimmick->GetFields();
 	int fldCount = pGimmick->GetFieldCount();
 	for (int i = 0; i < fldCount; i++)
@@ -2158,32 +2321,32 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 
 	for (int i = 0; i < gateCount; i++)
 	{
-		// Gate ‚Ìó‘Ôæ“¾
+		// Gate ã®çŠ¶æ…‹å–å¾—
 		XMFLOAT3 gpos = gates[i].GimmickGate_GetPosition();
 		float open = gates[i].GimmickGate_GetOpen();
 
-		// Š®‘SŠJ‚Ì‚Æ‚«‚Í“–‚½‚è‚È‚µ
+		// å®Œå…¨é–‹ã®ã¨ãã¯å½“ãŸã‚Šãªã—
 		if (open >= 1.0f)
 		{
 			continue;
 		}
 
 
-		// —¼ŠJ‚«F¶‰Eƒpƒlƒ‹‚Ì’†SX‚Í }offset ‚ÉƒXƒ‰ƒCƒh
+		// ä¸¡é–‹ãï¼šå·¦å³ãƒ‘ãƒãƒ«ã®ä¸­å¿ƒXã¯ Â±offset ã«ã‚¹ãƒ©ã‚¤ãƒ‰
 		float offset = GATE_MAX_OPEN_OFFSET * open;
 
-		// ƒpƒlƒ‹‚ÌƒRƒŠƒWƒ‡ƒ“i¶‰E‚Ì2–‡j
+		// ãƒ‘ãƒãƒ«ã®ã‚³ãƒªã‚¸ãƒ§ãƒ³ï¼ˆå·¦å³ã®2æšï¼‰
 		XMFLOAT3 panelCenterL = XMFLOAT3(gpos.x - offset - GATE_PANEL_HALF_W, gpos.y, gpos.z);
 		XMFLOAT3 panelCenterR = XMFLOAT3(gpos.x + offset + GATE_PANEL_HALF_W, gpos.y, gpos.z);
 
 
-		// --- ¶ƒpƒlƒ‹ ---
+		// --- å·¦ãƒ‘ãƒãƒ« ---
 		{
-			// •Çi‘¤–Êj”»’èiY‘Ñ‚Ì’†j
+			// å£ï¼ˆå´é¢ï¼‰åˆ¤å®šï¼ˆYå¸¯ã®ä¸­ï¼‰
 			float top = panelCenterL.y + GATE_PANEL_HALF_H;
 			float bottom = panelCenterL.y - GATE_PANEL_HALF_H;
 
-			bool yInside = false;// Y²“à
+			bool yInside = false;// Yè»¸å†…
 			if (bottom < playerPos.y)
 			{
 				if (playerPos.y < top - 0.1f)
@@ -2193,7 +2356,7 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 			}
 			if (yInside)
 			{
-				// Z²d‚È‚è
+				// Zè»¸é‡ãªã‚Š
 				bool zOverlap = false;
 				if (panelCenterL.z - GATE_PANEL_HALF_D < playerPos.z)
 				{
@@ -2204,8 +2367,8 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 				}
 				if (zOverlap)
 				{
-					// X•ûŒü‚Ì‰Ÿ‚µ–ß‚µ
-					// ¶ƒpƒlƒ‹‚Ì+X–Ê^-X–Ê
+					// Xæ–¹å‘ã®æŠ¼ã—æˆ»ã—
+					// å·¦ãƒ‘ãƒãƒ«ã®+Xé¢ï¼-Xé¢
 					if (panelCenterL.x - GATE_PANEL_HALF_W < playerPos.x + PLAYER_RADIUS)
 					{
 						if (playerPos.x < panelCenterL.x - GATE_PANEL_HALF_W)
@@ -2227,7 +2390,7 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 				}
 				else
 				{
-					// X‘Ñ‚Ì’†‚È‚ç Z•ûŒü‰Ÿ‚µ–ß‚µi‘OŒãj
+					// Xå¸¯ã®ä¸­ãªã‚‰ Zæ–¹å‘æŠ¼ã—æˆ»ã—ï¼ˆå‰å¾Œï¼‰
 					bool xOverlap = false;
 					if (panelCenterL.x - GATE_PANEL_HALF_W < playerPos.x)
 					{
@@ -2238,7 +2401,7 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 					}
 					if (xOverlap)
 					{
-						// -Z–Ê
+						// -Zé¢
 						if (panelCenterL.z - GATE_PANEL_HALF_D < playerPos.z + PLAYER_RADIUS)
 						{
 							if (playerPos.z < panelCenterL.z - GATE_PANEL_HALF_D)
@@ -2248,7 +2411,7 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 								hit = COLLISION_HIT::HIT_WALL_0;
 							}
 						}
-						// +Z–Ê
+						// +Zé¢
 						if (panelCenterL.z + GATE_PANEL_HALF_D > playerPos.z - PLAYER_RADIUS)
 						{
 							if (playerPos.z > panelCenterL.z + GATE_PANEL_HALF_D)
@@ -2264,7 +2427,7 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 
 		}
 
-		// --- ‰Eƒpƒlƒ‹i¶‚Æ“¯—lj ---
+		// --- å³ãƒ‘ãƒãƒ«ï¼ˆå·¦ã¨åŒæ§˜ï¼‰ ---
 		{
 			float top = panelCenterR.y + GATE_PANEL_HALF_H;
 			float bottom = panelCenterR.y - GATE_PANEL_HALF_H;
@@ -2362,7 +2525,7 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 	GIMMICK_FIELD* Fields = pGimmick->GetFields();
 	int fldCount = pGimmick->GetFieldCount();
 
-	// ---------------- •àsŒniENEMY_NORMALj ----------------
+	// ---------------- æ­©è¡Œç³»ï¼ˆENEMY_NORMALï¼‰ ----------------
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
@@ -2370,19 +2533,19 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 			XMFLOAT3 ePos = enemy[i].GetEnemyPosition();
 			XMFLOAT3 eVel = enemy[i].GetEnemyVelocity();
 
-			// ---- Buttonsi‰Ÿ‰º”»’èFã–Êj----
+			// ---- Buttonsï¼ˆæŠ¼ä¸‹åˆ¤å®šï¼šä¸Šé¢ï¼‰----
 			for (int b = 0; b < btnCount; b++)
 			{
 				float BoxTop;
 				XMFLOAT3 bPos = Buttons[b].GimmickButton_GetPosition();
 				BoxTop = bPos.y + 0.2f;
 
-				// XZ “à‘¤H
+				// XZ å†…å´ï¼Ÿ
 				if (bPos.z - BOX_RADIUS < ePos.z && ePos.z < bPos.z + BOX_RADIUS)
 				{
 					if (bPos.x - BOX_RADIUS < ePos.x && ePos.x < bPos.x + BOX_RADIUS)
 					{
-						// ã–ÊÚ’n
+						// ä¸Šé¢æ¥åœ°
 						if (BoxTop > ePos.y - BALL_RADIUS && ePos.y > BoxTop)
 						{
 							ePos.y += (BoxTop)-(ePos.y - BALL_RADIUS);
@@ -2398,17 +2561,17 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 				}
 			}
 
-			// ---- FieldsiAABB ‰Ÿ‚µ–ß‚µF‘¤–ÊE‘OŒãEã–Êj----
+			// ---- Fieldsï¼ˆAABB æŠ¼ã—æˆ»ã—ï¼šå´é¢ãƒ»å‰å¾Œãƒ»ä¸Šé¢ï¼‰----
 			for (int f = 0; f < fldCount; f++)
 			{
 				float BoxTop;
 				XMFLOAT3 fieldsPos = Fields[f].GimmickField_GetPosition();
 				BoxTop = fieldsPos.y + BOX_RADIUS;
 
-				// ‘¤–Ê‘ÑiY ’†j
+				// å´é¢å¸¯ï¼ˆY ä¸­ï¼‰
 				if (fieldsPos.y - BOX_RADIUS < ePos.y && ePos.y < BoxTop - 0.1f)
 				{
-					// }X
+					// Â±X
 					if (fieldsPos.z - BOX_RADIUS < ePos.z && ePos.z < fieldsPos.z + BOX_RADIUS)
 					{
 						if (fieldsPos.x - BOX_RADIUS < ePos.x + BALL_RADIUS && ePos.x < fieldsPos.x - BOX_RADIUS)
@@ -2425,7 +2588,7 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 						}
 					}
 
-					// }Z
+					// Â±Z
 					if (fieldsPos.x - BOX_RADIUS < ePos.x && ePos.x < fieldsPos.x + BOX_RADIUS)
 					{
 						if (fieldsPos.z - BOX_RADIUS < ePos.z + BALL_RADIUS && ePos.z < fieldsPos.z - BOX_RADIUS)
@@ -2442,7 +2605,7 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 						}
 					}
 				}
-				// ã–Êi+Yj
+				// ä¸Šé¢ï¼ˆ+Yï¼‰
 				else
 				{
 					if (fieldsPos.z - BOX_RADIUS < ePos.z && ePos.z < fieldsPos.z + BOX_RADIUS)
@@ -2471,8 +2634,8 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 		}
 	}
 
-	// ---------------- •‚—VŒniENEMY_BUTTERFLYj ----------------
-	// •‚—V‘Ì‚Íu‰Ÿ‰º‚Ì‚İvˆµ‚¢i‰Â“®–Ê‚Ì‰Ÿ‚µ–ß‚µ‚Í•s—v‚È‚çÈ—ªj
+	// ---------------- æµ®éŠç³»ï¼ˆENEMY_BUTTERFLYï¼‰ ----------------
+	// æµ®éŠä½“ã¯ã€ŒæŠ¼ä¸‹ã®ã¿ã€æ‰±ã„ï¼ˆå¯å‹•é¢ã®æŠ¼ã—æˆ»ã—ã¯ä¸è¦ãªã‚‰çœç•¥ï¼‰
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
@@ -2480,7 +2643,7 @@ float COLLISION::EnemyGimmickCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* pGimm
 			XMFLOAT3 ePos = enemyB[i].GetEnemyPosition();
 			XMFLOAT3 eVel = enemyB[i].GetEnemyVelocity();
 
-			// ButtonsFXZ“à{Y‘ÑŒğ·‚Å‰Ÿ‰ºˆµ‚¢
+			// Buttonsï¼šXZå†…ï¼‹Yå¸¯äº¤å·®ã§æŠ¼ä¸‹æ‰±ã„
 			for (int b = 0; b < btnCount; b++)
 			{
 				float BoxTop;
@@ -2516,14 +2679,14 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
 	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
 
-	// ---------------- •àsŒniENEMY_NORMALj ----------------
+	// ---------------- æ­©è¡Œç³»ï¼ˆENEMY_NORMALï¼‰ ----------------
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 		{
 			XMFLOAT3 epos = enemy[i].GetEnemyPosition();
 
-			// ‰Ÿ‰º’†ƒ{ƒ^ƒ“‚ÌY’Ç]iXZd‚È‚è‚É vel.y ‚ğæ‚¹‚éj
+			// æŠ¼ä¸‹ä¸­ãƒœã‚¿ãƒ³ã®Yè¿½å¾“ï¼ˆXZé‡ãªã‚Šæ™‚ã« vel.y ã‚’ä¹—ã›ã‚‹ï¼‰
 			GIMMICK_BUTTON* buttons = pGimmick->GetButtons();
 			for (int b = 0; b < pGimmick->GetButtonCount(); b++)
 			{
@@ -2541,7 +2704,7 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 				}
 			}
 
-			// ‰Â“®ƒtƒB[ƒ‹ƒh’Ç]iXZd‚È‚è { “V–Ê‹ß–T‚È‚ç XYZ ‚·‚×‚Ä‚ğ‰ÁZj
+			// å¯å‹•ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰è¿½å¾“ï¼ˆXZé‡ãªã‚Š ï¼‹ å¤©é¢è¿‘å‚ãªã‚‰ XYZ ã™ã¹ã¦ã‚’åŠ ç®—ï¼‰
 			GIMMICK_FIELD* fields = pGimmick->GetFields();
 			int fcnt = pGimmick->GetFieldCount();
 			for (int f = 0; f < fcnt; f++)
@@ -2567,14 +2730,14 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 	}
 
 
-	// ---------------- •‚—VŒniENEMY_BUTTERFLYj ----------------
+	// ---------------- æµ®éŠç³»ï¼ˆENEMY_BUTTERFLYï¼‰ ----------------
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 		{
 			XMFLOAT3 epos = enemyB[i].GetEnemyPosition();
 
-			// ‰Ÿ‰º’†ƒ{ƒ^ƒ“‚ÌY’Ç]iXZd‚È‚èj
+			// æŠ¼ä¸‹ä¸­ãƒœã‚¿ãƒ³ã®Yè¿½å¾“ï¼ˆXZé‡ãªã‚Šï¼‰
 			GIMMICK_BUTTON* buttons = pGimmick->GetButtons();
 			for (int b = 0; b < pGimmick->GetButtonCount(); b++)
 			{
@@ -2592,7 +2755,7 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 				}
 			}
 
-			// ‰Â“®ƒtƒB[ƒ‹ƒh’Ç]iXZd‚È‚è{“V–Ê‹ß–Tj
+			// å¯å‹•ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰è¿½å¾“ï¼ˆXZé‡ãªã‚Šï¼‹å¤©é¢è¿‘å‚ï¼‰
 			GIMMICK_FIELD* fields = pGimmick->GetFields();
 			int fcnt = pGimmick->GetFieldCount();
 			for (int f = 0; f < fcnt; f++)
@@ -2624,18 +2787,18 @@ float COLLISION::EnemyMovingFieldCollision(ENEMYSPAWNER* pEnemy, GIMMICK_DATA* p
 float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 {
 
-	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ƒ}ƒbƒv
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ƒ}ƒbƒv
-	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ƒ}ƒbƒv
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ãƒãƒƒãƒ—
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ãƒãƒƒãƒ—
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ãƒãƒƒãƒ—
 
-	// --------- ‹¤’ÊFƒ{ƒ^ƒ“‚ÆƒtƒB[ƒ‹ƒh”z—ñ ---------
+	// --------- å…±é€šï¼šãƒœã‚¿ãƒ³ã¨ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰é…åˆ— ---------
 	GIMMICK_BUTTON* buttons = pGimmick->GetButtons();
 	int btnCount = pGimmick->GetButtonCount();
 	GIMMICK_FIELD* fields = pGimmick->GetFields();
 	int fldCount = pGimmick->GetFieldCount();
 
 
-	// --------- ’Êíƒ{ƒ€ ---------
+	// --------- é€šå¸¸ãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int bt = Bomb[i].BombSource_GetState();
@@ -2645,7 +2808,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 		{
 			XMFLOAT3 pos = Bomb[i].BombSource_GetPosition();
 
-			// ƒ{ƒ^ƒ“Y’Ç]i‰Ÿ‰º’†‚©‚ÂXZd‚È‚èj
+			// ãƒœã‚¿ãƒ³Yè¿½å¾“ï¼ˆæŠ¼ä¸‹ä¸­ã‹ã¤XZé‡ãªã‚Šï¼‰
 			for (int b = 0; b < btnCount; b++)
 			{
 				if (buttons[b].GimmickButton_GetTouch())
@@ -2662,7 +2825,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 				}
 			}
 
-			// ‰Â“®ƒtƒB[ƒ‹ƒh’Ç]iXZd‚È‚è{“V–Ê‹ß–Tj
+			// å¯å‹•ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰è¿½å¾“ï¼ˆXZé‡ãªã‚Šï¼‹å¤©é¢è¿‘å‚ï¼‰
 			for (int f = 0; f < fldCount; f++)
 			{
 				XMFLOAT3 fpos = fields[f].GimmickField_GetPosition();
@@ -2684,7 +2847,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			Bomb[i].BombSource_SetPosition(pos);
 		}
 	}
-	// --------- ‘–‚éƒ{ƒ€ ---------
+	// --------- èµ°ã‚‹ãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int st = RunBomb[i].Runbombsource_GetState();
@@ -2731,7 +2894,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			RunBomb[i].Runbombsource_SetPosition(pos);
 		}
 	}
-	// --------- •‚—Vƒ{ƒ€ ---------
+	// --------- æµ®éŠãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int st = FlowtBomb[i].Flowtbombsource_GetState();
@@ -2788,16 +2951,16 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 {
 	float hit = 0.0f;
 
-	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ƒ}ƒbƒv
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ƒ}ƒbƒv
-	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ƒ}ƒbƒv
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ãƒãƒƒãƒ—
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ãƒãƒƒãƒ—
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ãƒãƒƒãƒ—
 
 	GIMMICK_BUTTON* Buttons = pGimmick->GetButtons();
 	int btnCount = pGimmick->GetButtonCount();
 	GIMMICK_FIELD* Fields = pGimmick->GetFields();
 	int fldCount = pGimmick->GetFieldCount();
 
-	// --------- ’Êíƒ{ƒ€ ---------
+	// --------- é€šå¸¸ãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int st = Bomb[i].BombSource_GetState();
@@ -2808,7 +2971,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			XMFLOAT3 pos = Bomb[i].BombSource_GetPosition();
 			XMFLOAT3 vel = Bomb[i].BombSource_GetVelocity();
 
-			// --- ButtonsF‰Ÿ‰ºiã–Êj ---
+			// --- Buttonsï¼šæŠ¼ä¸‹ï¼ˆä¸Šé¢ï¼‰ ---
 			for (int b = 0; b < btnCount; b++)
 			{
 				float BoxTop;
@@ -2816,12 +2979,12 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 				BoxTop = bpos.y + 0.2f;
 
 
-				// XZ “à‘¤H
+				// XZ å†…å´ï¼Ÿ
 				if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
 				{
 					if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
 					{
-						// ’…’niŒğ·j”»’è
+						// ç€åœ°ï¼ˆäº¤å·®ï¼‰åˆ¤å®š
 						bool landing = false;
 						if (BoxTop > pos.y - BOMB_RADIUS)
 						{
@@ -2831,9 +2994,9 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 							}
 						}
 
-						// Ã~i’ê–Ê‚ªã–Ê‚É}ƒXƒ[ƒv‚Åˆê’vj”»’è
+						// é™æ­¢ï¼ˆåº•é¢ãŒä¸Šé¢ã«Â±ã‚¹ãƒ­ãƒ¼ãƒ—ã§ä¸€è‡´ï¼‰åˆ¤å®š
 						bool resting = false;
-						float diff = (pos.y - BOMB_RADIUS) - BoxTop; // ’ê–Ê - ã–Ê
+						float diff = (pos.y - BOMB_RADIUS) - BoxTop; // åº•é¢ - ä¸Šé¢
 						if (diff < GROUND_SLOP)
 						{
 							if (diff > -GROUND_SLOP)
@@ -2844,13 +3007,13 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 
 						if (landing || resting)
 						{
-							// ‰Ÿ‚µ–ß‚µ‚ÆŠŠ‚è~‚ßi’…’n^Ã~‚Æ‚à‚ÉˆÀ’è‚³‚¹‚éj
+							// æŠ¼ã—æˆ»ã—ã¨æ»‘ã‚Šæ­¢ã‚ï¼ˆç€åœ°æ™‚ï¼é™æ­¢æ™‚ã¨ã‚‚ã«å®‰å®šã•ã›ã‚‹ï¼‰
 							pos.y = BoxTop + BOMB_RADIUS;
 							vel.y = 0.0f;
 							vel.x = 0.0f;
 							vel.z = 0.0f;
 
-							// ‰Ÿ‰º
+							// æŠ¼ä¸‹
 							Buttons[b].GimmickButton_SetTouch(true);
 							int ch = Buttons[b].GimmickButton_GetChannel();
 							pGimmick->Channels_AddCount(ch);
@@ -2863,17 +3026,17 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			}
 
 
-			// --- FieldsFAABB ‰Ÿ‚µ–ß‚µ ---
+			// --- Fieldsï¼šAABB æŠ¼ã—æˆ»ã— ---
 			for (int f = 0; f < fldCount; f++)
 			{
 				float BoxTop;
 				XMFLOAT3 fieldsPos = Fields[f].GimmickField_GetPosition();
 				BoxTop = fieldsPos.y + BOX_RADIUS;
 
-				// ‘¤–Ê‘Ñ
+				// å´é¢å¸¯
 				if (fieldsPos.y - BOX_RADIUS < pos.y && pos.y < BoxTop - 0.1f)
 				{
-					// }X
+					// Â±X
 					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
 					{
 						if (fieldsPos.x - BOX_RADIUS < pos.x + BOMB_RADIUS && pos.x < fieldsPos.x - BOX_RADIUS)
@@ -2889,7 +3052,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 							hit = COLLISION_HIT::HIT_WALL_1;
 						}
 					}
-					// }Z
+					// Â±Z
 					if (fieldsPos.x - BOX_RADIUS < pos.x && pos.x < fieldsPos.x + BOX_RADIUS)
 					{
 						if (fieldsPos.z - BOX_RADIUS < pos.z + BOMB_RADIUS && pos.z < fieldsPos.z - BOX_RADIUS)
@@ -2906,7 +3069,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 						}
 					}
 				}
-				// ã–Ê
+				// ä¸Šé¢
 				else
 				{
 					if (fieldsPos.z - BOX_RADIUS < pos.z && pos.z < fieldsPos.z + BOX_RADIUS)
@@ -2935,7 +3098,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 		}
 	}
 
-	// --------- ‘–‚éƒ{ƒ€ ---------
+	// --------- èµ°ã‚‹ãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int st = RunBomb[i].Runbombsource_GetState();
@@ -3034,7 +3197,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 		}
 	}
 
-	// --------- •‚—Vƒ{ƒ€ ---------
+	// --------- æµ®éŠãƒœãƒ  ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int st = FlowtBomb[i].Flowtbombsource_GetState();
@@ -3045,7 +3208,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			XMFLOAT3 pos = FlowtBomb[i].Flowtbombsource_GetPosition();
 			XMFLOAT3 vel = FlowtBomb[i].Flowtbombsource_GetVelocity();
 
-			// ButtonsFXZ+Y‘Ñ‚Å‰Ÿ‰ºˆµ‚¢i•‚—V‚Å‚àON‚É‚Å‚«‚éd—lj
+			// Buttonsï¼šXZ+Yå¸¯ã§æŠ¼ä¸‹æ‰±ã„ï¼ˆæµ®éŠã§ã‚‚ONã«ã§ãã‚‹ä»•æ§˜ï¼‰
 			for (int b = 0; b < btnCount; b++)
 			{
 				float BoxTop;
@@ -3064,7 +3227,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 				}
 			}
 
-			// •‚—Vƒ{ƒ€F•K—v‚È‚çField‰Ÿ‚µ–ß‚µ‚à’Ç‰Á‰Â”\iŒ»ó‚ÍÈ—ª or ã–Ê‚Ì‚İj
+			// æµ®éŠãƒœãƒ ï¼šå¿…è¦ãªã‚‰FieldæŠ¼ã—æˆ»ã—ã‚‚è¿½åŠ å¯èƒ½ï¼ˆç¾çŠ¶ã¯çœç•¥ or ä¸Šé¢ã®ã¿ï¼‰
 			FlowtBomb[i].Flowtbombsource_SetPosition(pos);
 			FlowtBomb[i].Flowtbombsource_SetVelocity(vel);
 		}
@@ -3079,9 +3242,9 @@ float COLLISION::BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 
 	float hit = 0.0f;
 
-	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ƒ}ƒbƒv
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ƒ}ƒbƒv
-	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ƒ}ƒbƒv
+	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// ãƒãƒƒãƒ—
+	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// ãƒãƒƒãƒ—
+	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// ãƒãƒƒãƒ—
 
 	GIMMICK_GATE* gates = pGimmick->GetGates();
 	int gateCount = pGimmick->GetGateCount();

@@ -21,6 +21,78 @@
 #include "EnemyLush.h"
 #include "Boss.h"
 
+void	MANAGER::Manager_BGM_Initialize(SCENE scene)
+{
+	if (scene != SCENE_STAGESELECTION)
+	{//サウンドのリセット
+		Manager_BGM_Finalize();
+	}
+
+	//ロードチェック
+	bool load = false;
+
+	switch (scene)
+	{
+	case SCENE_NONE:
+		break;
+	case SCENE_TITLE:
+		g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav"); load = true;
+		break;
+	case SCENE_PROLOGUE:
+		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); load = true;//サウンドロード
+		break;
+	case SCENE_MENU:
+		g_BgmID = LoadAudio("asset\\Audio\\Menu_Test.wav"); load = true;//サウンドロード
+		break;
+	case SCENE_TUTORIAL:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_TUTORIAL2:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_TUTORIAL3:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_GAME:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード
+		break;
+	case SCENE_PAUSE:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_RESULT:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_STAGESELECTION:
+		break;
+	case SCENE_ENDING:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	case SCENE_GIMMICK:
+		g_BgmID = LoadAudio("asset\\Audio\\Gimmick_Stage_Test.wav"); load = true;//サウンドロード
+		break;
+	case SCENE_ENEMYLUSH:
+		g_BgmID = LoadAudio("asset\\Audio\\Lush_Stage_Test.wav"); load = true;//サウンドロード
+		break;
+	case SCENE_BOSS:
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		break;
+	default:
+		break;
+	}
+
+	if (load)
+	{
+		PlayAudio(g_BgmID, true);		//再生開始（ループあり）
+	}
+
+}
+
+void	MANAGER::Manager_BGM_Finalize()
+{
+	UnloadAudio(g_BgmID);//サウンドの解放
+}
+
+
 void	MANAGER::Manager_Initialize()
 { 
 	//Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
@@ -34,6 +106,9 @@ void	MANAGER::Manager_Initialize()
 	//本来の形
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
+
+	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
+	PlayAudio(g_BgmID, true);		//再生開始（ループあり）
 
 }
 
@@ -103,6 +178,7 @@ void	MANAGER::Manager_Update()
 
 	if (m_Fade.GetFadeState() == FADE_OUT && m_Fade.Fade_GetColorW() > 1.0f)
 	{
+		Manager_BGM_Initialize(m_Fade.Fade_GetScene());
 		SetScene(m_Fade.Fade_GetScene());
 	}
 
@@ -236,8 +312,11 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		break;
 	}
 
+
 	m_Scene = scene;	//指定のシーンへ切り替える
 
+
+	
 	//次のシーンを初期化する
 	switch (m_Scene)	//現在シーンの初期化関数を呼び出す
 	{
@@ -345,5 +424,6 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		default:
 			break;
 	}
+
 
 }

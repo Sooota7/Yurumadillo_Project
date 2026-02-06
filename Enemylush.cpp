@@ -177,16 +177,15 @@ void ENEMYLUSH::Enemylush_Draw()
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw();
+	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light5.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+	
+	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
-
-	m_BillboardManager.Draw();
-
 	//Block_Draw();
 	//Effect_Draw();
 	//Score_Draw();

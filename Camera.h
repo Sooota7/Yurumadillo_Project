@@ -9,7 +9,7 @@ using namespace DirectX;
 
 #define CAMERA_SENSITIVITY (0.5f) //カメラ感度
 #define CAMERA_UP_MAX (80.0f)
-#define CAMERA_DOWN_MAX (5.0f)
+#define CAMERA_DOWN_MAX (0.0f)
 #define CAMERA_SIDE_MAX (360.0f)
 
 
@@ -29,9 +29,9 @@ class CAMERA
 		float		FarClip;		//遠面クリップ距離
 };
 
-void	Camera_Initialize(XMFLOAT3 BallPos);
+void	Camera_Initialize(XMFLOAT3 Pos);
 void	Camera_Finalize();
-void	Camera_Update(XMFLOAT3 BallPos);
+void	Camera_Update(XMFLOAT3 Pos);
 void	Camera_Draw();
 
 void	SetCameraFov(float);

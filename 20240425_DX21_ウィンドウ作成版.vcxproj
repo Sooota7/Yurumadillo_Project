@@ -142,6 +142,8 @@
     <ClCompile Include="bombSource.cpp" />
     <ClCompile Include="bombUI.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossMonster.cpp" />
+    <ClCompile Include="BossObj.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
@@ -161,6 +163,7 @@
     <ClCompile Include="gimmickData.cpp" />
     <ClCompile Include="gimmickField.cpp" />
     <ClCompile Include="gimmickGate.cpp" />
+    <ClCompile Include="inputx.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
@@ -199,6 +202,8 @@
     <ClInclude Include="bombSource.h" />
     <ClInclude Include="bombUI.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossMonster.h" />
+    <ClInclude Include="BossObj.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_ostream.h" />
@@ -220,6 +225,7 @@
     <ClInclude Include="gimmickData.h" />
     <ClInclude Include="gimmickField.h" />
     <ClInclude Include="gimmickGate.h" />
+    <ClInclude Include="inputx.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />
