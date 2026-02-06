@@ -471,6 +471,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 		{
 			bombHave = true;
 			pPlayer->SetPlayerTransBombFlag(false);
+			pPlayer->SetPlayerBalloon(false);
 			break;
 		}
 	}
@@ -480,6 +481,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 		{
 			bombHave = true;
 			pPlayer->SetPlayerTransBombFlag(false);
+			pPlayer->SetPlayerBalloon(false);
 			break;
 		}
 	}
@@ -489,6 +491,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 		{
 			bombHave = true;
 			pPlayer->SetPlayerTransBombFlag(false);
+			pPlayer->SetPlayerBalloon(true);
 			break;
 		}
 	}
