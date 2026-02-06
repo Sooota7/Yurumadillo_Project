@@ -428,6 +428,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 
 	int a = 0;
+	float y = 0.0f;
 
 	for (int q = 0; q < 3; q++)
 	{
@@ -450,6 +451,11 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 				case 5:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_1);;
+					break;
+				case 8:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q + y, i), FIELD_BREAK);
+
+					y = 0.0f;
 					break;
 				case 9:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_JUMP);
@@ -504,6 +510,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 		case FIELD_OBT_1://障害物0
 			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+			break;
+		case FIELD_BREAK:
+			CreateBox();
 			break;
 		case FIELD_JUMP:
 			CreateBox();
@@ -617,6 +626,12 @@ void  MAPDATA::Field_Draw(void)
 		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_1)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+		}
+		else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
+		{
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
 		else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
 		{
