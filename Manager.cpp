@@ -105,7 +105,7 @@ void	MANAGER::Manager_Initialize()
 
 	//本来の形
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
-	SetScene(SCENE_BOSS);	//最初に動かすシーンに切り替える
+	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
 
 	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
 	PlayAudio(g_BgmID, true);		//再生開始（ループあり）
@@ -263,13 +263,25 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		m_StageSelection.StageSelection_Finalize();
 		break;
 	case SCENE_TUTORIAL:
-		m_Tutorial.Tutorial_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial.Tutorial_Finalize();
+			m_TutorialInitialized = false;
+		}
 		break;
 	case SCENE_TUTORIAL2:
-		m_Tutorial2.Tutorial2_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial2.Tutorial2_Finalize();
+			m_TutorialInitialized2 = false;
+		}
 		break;
 	case SCENE_TUTORIAL3:
-		m_Tutorial3.Tutorial3_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial3.Tutorial3_Finalize();
+			m_TutorialInitialized3 = false;
+		}
 		break;
 	case SCENE_GAME:
 		if (scene != SCENE_PAUSE)
