@@ -1172,7 +1172,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 								BombPos.y < mapPos.y - BOX_RADIUS)
 							{//BOXの-X面にぶつかったので座標の補正
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y *= -COE; //移動ベクトルの反転
+								BombVel.y = 0.0f; //�ړ��x�N�g���̒�~
 								//hit = 
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
@@ -1206,7 +1206,177 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	return hit;  // ぶつかったかどうかを示す
 }
 
-//ボムとエネミーの当たり判定の不具合多いので修正する
+float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
+{
+	float		hit = 0.0f;				// �q�b�g��������
+	//BALL*		Ball = GetBall();		// �{�[���̏��
+
+	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
+	RUNBOMBSOURCE* pRunBomb = pBomb->Bomb_GetRunBomb();
+	FLOWTBOMBSOURCE* pFlowtBomb = pBomb->Bomb_GetFlowtBomb();
+
+	MAP* Map = pField->GetFieldMap();
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//�X���[�̂Ƃ��̂ݓ����蔻������
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//���鏰�����݂���Ƃ�
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOX��+Y�ʂ̍��W
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// �ǂƂ��Ă̔��菈��
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//��������
+							}
+						}
+					}
+
+					//�{���̃X�e�[�g�𔚔��ɕύX
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//�X���[�̂Ƃ��̂ݓ����蔻������
+		if (pRunBomb[i].Runbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pRunBomb[i].Runbombsource_GetPosition();
+			XMFLOAT3 BombVel = pRunBomb[i].Runbombsource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//���鏰�����݂���Ƃ�
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOX��+Y�ʂ̍��W
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// �ǂƂ��Ă̔��菈��
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//��������
+							}
+						}
+					}
+
+					//�{���̃X�e�[�g�𔚔��ɕύX
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		//�X���[�̂Ƃ��̂ݓ����蔻������
+		if (pFlowtBomb[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pFlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT3 BombVel = pFlowtBomb[i].Flowtbombsource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//���鏰�����݂���Ƃ�
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOX��+Y�ʂ̍��W
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// �ǂƂ��Ă̔��菈��
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//��������
+							}
+						}
+					}
+
+					//�{���̃X�e�[�g�𔚔��ɕύX
+					if (test)
+					{
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	return hit;
+}
+
+//�{���ƃG�l�~�[�̓����蔻��̕s������̂ŏC������
 float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 {
 	float		hit = 0.0f;				// ヒットした方向
