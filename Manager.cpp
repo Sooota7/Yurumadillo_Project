@@ -263,13 +263,25 @@ void	MANAGER::SetScene(SCENE scene) //ÉVÅ[ÉìÇêÿÇËë÷Ç¶ÇÈ
 		m_StageSelection.StageSelection_Finalize();
 		break;
 	case SCENE_TUTORIAL:
-		m_Tutorial.Tutorial_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial.Tutorial_Finalize();
+			m_TutorialInitialized = false;
+		}
 		break;
 	case SCENE_TUTORIAL2:
-		m_Tutorial2.Tutorial2_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial2.Tutorial2_Finalize();
+			m_TutorialInitialized2 = false;
+		}
 		break;
 	case SCENE_TUTORIAL3:
-		m_Tutorial3.Tutorial3_Finalize();
+		if (scene != SCENE_PAUSE)
+		{
+			m_Tutorial3.Tutorial3_Finalize();
+			m_TutorialInitialized3 = false;
+		}
 		break;
 	case SCENE_GAME:
 		if (scene != SCENE_PAUSE)
