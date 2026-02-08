@@ -18,13 +18,27 @@ void PlayerUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
 	m_HpDigit = 0;
 
 	//テクスチャ画像読み込み
-	TexMetadata		metadata;
-	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\Heart.png",
-		WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
-	CreateShaderResourceView(pDevice, image.GetImages(),
-		image.GetImageCount(), metadata, &m_Texture);
-	assert(m_Texture);//読み込み失敗時にダイアログを表示
+	// ハート（体力あり）
+	{
+		TexMetadata		metadata;
+		ScratchImage	image;
+		LoadFromWICFile(L"asset\\texture\\ui\\heart.png",
+			WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+		CreateShaderResourceView(pDevice, image.GetImages(),
+			image.GetImageCount(), metadata, &m_Texture[0]);
+		assert(m_Texture[0]);//読み込み失敗時にダイアログを表示
+	}
+
+	// ハート（体力無し）
+	{
+		TexMetadata		metadata;
+		ScratchImage	image;
+		LoadFromWICFile(L"asset\\texture\\ui\\frame.png",
+			WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+		CreateShaderResourceView(pDevice, image.GetImages(),
+			image.GetImageCount(), metadata, &m_Texture[1]);
+		assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+	}
 }
 
 void PlayerUI::Finalize()
@@ -32,6 +46,11 @@ void PlayerUI::Finalize()
 	m_pDevice = nullptr;
 	m_pContext = nullptr;
 	m_pPlayer = nullptr;
+
+	for (int i = 0; i < P_UI_MAX; i++)
+	{
+		SAFE_RELEASE(m_Texture[i]);
+	}
 }
 
 void PlayerUI::Update()
@@ -57,16 +76,17 @@ void PlayerUI::Update_HpDigit()
 
 void PlayerUI::Draw_HpDigit()
 {
-	XMFLOAT3	position = XMFLOAT3(100.0f, 100.0f, 0.0f);
+	/*XMFLOAT3	position = XMFLOAT3(100.0f, 100.0f, 0.0f);
 	XMFLOAT2	size = XMFLOAT2(50.0f, 80.0f);
-	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//テクスチャのセット
-	m_pContext->PSSetShaderResources(0, 1, &m_Texture);
+	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);*/
 
 	//画面サイズ取得
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
+
+	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.8f, 0.0f);
+	XMFLOAT2	size = XMFLOAT2(80.0f, 80.0f);
+	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
 	Shader_Begin();
@@ -81,7 +101,7 @@ void PlayerUI::Draw_HpDigit()
 		1.0f
 	);
 
-	for(int i = 0; i < m_HpDigit; i++)
+	for(int i = 0; i < HP_DIGIT_MAX; i++)
 	{
 		//平行移動 表示座標
 		XMMATRIX	Translation =
@@ -96,6 +116,17 @@ void PlayerUI::Draw_HpDigit()
 		XMMATRIX	mat = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 		mat = World * mat * Projection;
+
+		if (m_HpDigit > i)
+		{
+			//テクスチャのセット
+			m_pContext->PSSetShaderResources(0, 1, &m_Texture[0]);
+		}
+		else
+		{
+			//テクスチャのセット
+			m_pContext->PSSetShaderResources(0, 1, &m_Texture[1]);
+		}
 
 		//シェーダーへ行列をセット
 		Shader_SetMatrix(mat);

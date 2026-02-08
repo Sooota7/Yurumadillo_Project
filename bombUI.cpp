@@ -1,7 +1,7 @@
-// ====================================================================
+﻿// ====================================================================
 // 
-// PlyerUI.cpp             �����: ���X�t��
-// ���t: 12/18
+// PlyerUI.cpp             制作者: 杉森奏太
+// 日付: 12/18
 // 
 // ====================================================================
 
@@ -16,28 +16,76 @@ void BombUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BO
 
 	m_pBomb = pBomb;
 	
+	// UI画像
+	for(int i = 0; i < TEXTURE_MAX;i++)
 	{
-		//�e�N�X�`���摜�ǂݍ���
+		//テクスチャ画像読み込み
 		TexMetadata		metadata;
 		ScratchImage	image;
-		LoadFromWICFile(L"asset\\texture\\fade.bmp",
-			WIC_FLAGS_NONE, &metadata, image);//�e�N�X�`���͕ύX��
-		CreateShaderResourceView(pDevice, image.GetImages(),
-			image.GetImageCount(), metadata, &m_Texture[0]);
-		assert(m_Texture);//�ǂݍ��ݎ��s���Ƀ_�C�A���O��\��
+
+		switch (i)
+		{
+		case BOMBUI_HOLDER:
+			LoadFromWICFile(L"asset\\texture\\ui\\itemholder.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[i]);
+			assert(m_Texture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		case BOMBUI_ROPE:
+			LoadFromWICFile(L"asset\\texture\\ui\\rope.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[i]);
+			assert(m_Texture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		case BOMBUI_FIRE:
+			LoadFromWICFile(L"asset\\texture\\ui\\fire.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[i]);
+			assert(m_Texture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		default:
+			break;
+		}
 	}
 
-
+	// 爆弾の画像
+	for (int i = 0; i < BOMB_TEXTURE_MAX; i++)
 	{
-		//�e�N�X�`���摜�ǂݍ���
+		//テクスチャ画像読み込み
 		TexMetadata		metadata;
 		ScratchImage	image;
-		LoadFromWICFile(L"asset\\texture\\Spade.png",
-			WIC_FLAGS_NONE, &metadata, image);//�e�N�X�`���͕ύX��
-		CreateShaderResourceView(pDevice, image.GetImages(),
-			image.GetImageCount(), metadata, &m_Texture[1]);
-		assert(m_Texture);//�ǂݍ��ݎ��s���Ƀ_�C�A���O��\��
+
+		switch (i)
+		{
+		case BOMBUI_HOLDER:
+			LoadFromWICFile(L"asset\\texture\\ui\\bombN.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_BombTexture[i]);
+			assert(m_BombTexture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		case BOMBUI_ROPE:
+			LoadFromWICFile(L"asset\\texture\\ui\\bombwing.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_BombTexture[i]);
+			assert(m_BombTexture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		case BOMBUI_FIRE:
+			LoadFromWICFile(L"asset\\texture\\ui\\BombForward.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_BombTexture[i]);
+			assert(m_BombTexture[i]);//読み込み失敗時にダイアログを表示
+			break;
+		default:
+			break;
+		}
 	}
+
 }
 
 void BombUI::Finalize()
@@ -45,30 +93,42 @@ void BombUI::Finalize()
 	m_pDevice = nullptr;
 	m_pContext = nullptr;
 	m_pBomb = nullptr;
+
+	for (int i = 0; i < 3; i++)
+	{
+		SAFE_RELEASE(m_Texture[i]);
+		SAFE_RELEASE(m_BombTexture[i]);
+	}
 }
 
 void BombUI::Update()
 {
-	CheckBombState();
+	// 爆弾を持っているか確認する
+	m_Count = CheckBombState();
 }
 
 void BombUI::Draw()
 {
-	XMFLOAT3	position = XMFLOAT3(900.0f, 500.0f, 0.0f);
+	/*XMFLOAT3	position = XMFLOAT3(900.0f, 500.0f, 0.0f);
 	XMFLOAT2	size = XMFLOAT2(100.0f, 100.0f);
-	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);*/
 
-	//�e�N�X�`���̃Z�b�g
-	m_pContext->PSSetShaderResources(0, 1, &m_Texture[0]);
+	// UI背景描画 =========================
+	//テクスチャのセット
+	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_HOLDER]);
 
-	//��ʃT�C�Y�擾
+	//画面サイズ取得
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	//�V�F�[�_�[�̃Z�b�g
+	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.8, 0.0f);
+	XMFLOAT2	size = XMFLOAT2(150.0f, 150.0f);
+	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	//シェーダーのセット
 	Shader_Begin();
 
-	//�V�F�[�_�[�ɂQD�`��̐ݒ������
+	//シェーダーに２D描画の設定をする
 	XMMATRIX	Projection = XMMatrixOrthographicOffCenterLH(
 		0.0f,
 		SCREEN_WIDTH,
@@ -78,59 +138,119 @@ void BombUI::Draw()
 		1.0f
 	);
 
-	//���s�ړ� �\�����W
+	//平行移動 表示座標
 	XMMATRIX	Translation =
 		XMMatrixTranslation(position.x, position.y, 0.0f);
-	//��]
+	//回転
 	XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
-	//�g�嗦�i0�͂��߁j
+	//拡大率（0はだめ）
 	XMMATRIX	Scaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	//���[���h�s��
+	//ワールド行列
 	XMMATRIX	World = Scaling * Rotation * Translation;
-	//�X�N���[���p�s��쐬
+	//スクロール用行列作成
 	XMMATRIX	mat = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
 	mat = World * mat * Projection;
 
-	//�V�F�[�_�[�֍s����Z�b�g
+	//シェーダーへ行列をセット
 	Shader_SetMatrix(mat);
 
-	//�u�����h����
+	//ブレンド無し
 	SetBlendState(BLENDSTATE_ALFA);
 
-	//UI�w�i�`�� ================
+	// 描画
 	DrawSprite(size, color, 1, 1, 1);
 
-	if (m_BombType == 100)
+	// 導火線描画 ================
+	//テクスチャのセット
+	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_ROPE]);
+	size = XMFLOAT2(500.0f, 100.0f);
+
+
+	float ratio = 1.0f;
+	if (m_limit > 0.0f)
 	{
-		return;
+		ratio = 1.0f - (m_Count / m_limit);   // 1→0
+		if (ratio < 0.0f) ratio = 0.0f;
 	}
 
+	// 基本サイズ（導火線の最大長さ）
+	size = XMFLOAT2(500.0f * ratio, 100.0f);
 
-	// ���e�̃^�C�v���̃e�N�X�`����ݒ�
+	// 描画
+	DrawSpriteRopeRight(size, color, 1, 1, 1);
+
+	// UI爆弾描画 ================
+	if (m_BombType == 100)
+	{ // 爆弾を持っていない時
+		return;  // 終了
+	}
+
+	// 爆弾を持っている時
+	// 爆弾のタイプ毎のテクスチャを設定
 	SetBombTexture();
-	size = XMFLOAT2(50.0f, 50.0f);
+	size = XMFLOAT2(80.0f, 80.0f);
+	// 描画
 	DrawSprite(size, color, 1, 1, 1);
+
+	// 炎描画 ====================
+	if (m_Count > 0.0f)
+	{
+		m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_FIRE]);
+		size = XMFLOAT2(180.0f, 180.0f);
+		DrawSprite(size, color, 1, 1, 1);
+	}
 }
 
-void BombUI::CheckBombState()
+float BombUI::CheckBombState()
 {
 	BOMBSOURCE* bombs;
+	RUNBOMBSOURCE* runBombs;
+	FLOWTBOMBSOURCE* flowtBombs;
 
 	bombs = m_pBomb->Bomb_GetBomb();
-
+	runBombs = m_pBomb->Bomb_GetRunBomb();
+	flowtBombs = m_pBomb->Bomb_GetFlowtBomb();
+	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		if (bombs[i].BombSource_GetState() == BOMB_ACTIVE_HAVE)
 		{
 			m_BombType = 1;
+			m_limit = 5.0f; // (仮)
+			return bombs[i].BombSource_GetCount();
 			break;
 		}
-		else
-		{
-			m_BombType = 100;
-		}
+
 	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		if (flowtBombs[i].Flowtbombsource_GetState() == BOMB_ACTIVE_HAVE)
+		{
+			m_BombType = 2;
+			m_limit = 2.0f; // (仮)
+			return flowtBombs[i].Flowtbombsource_GetCount();
+			break;
+		}
+
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		if (runBombs[i].Runbombsource_GetState() == BOMB_ACTIVE_HAVE)
+		{
+			m_BombType = 3;
+			m_limit = 5.0f; // (仮)
+			return runBombs[i].Runbombsource_GetCount();
+			break;
+		}
+
+	}
+
+	// 何も持ってない
+	m_BombType = 100;
+	return 0.0f;
 }
 
 void BombUI::SetBombTexture()
@@ -138,8 +258,18 @@ void BombUI::SetBombTexture()
 	switch (m_BombType)
 	{
 	case 1:
-		//�e�N�X�`���̃Z�b�g
-		m_pContext->PSSetShaderResources(0, 1, &m_Texture[1]);
+		//テクスチャのセット(通常)
+		m_pContext->PSSetShaderResources(0, 1, &m_BombTexture[0]);
+		break;
+	case 2:
+		//テクスチャのセット(風船)
+		m_pContext->PSSetShaderResources(0, 1, &m_BombTexture[1]);
+		break;
+	case 3:
+		//テクスチャのセット(ネズミ)
+		m_pContext->PSSetShaderResources(0, 1, &m_BombTexture[2]);
+		break;
+	default:
 		break;
 	}
 }
