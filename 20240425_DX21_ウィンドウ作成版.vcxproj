@@ -183,6 +183,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="StageSelection.cpp" />
+    <ClCompile Include="targetUI.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Tutorial2.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="StageSelection.h" />
+    <ClInclude Include="targetUI.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Tutorial2.h" />
