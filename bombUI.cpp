@@ -122,7 +122,7 @@ void BombUI::Draw()
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
 	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.8, 0.0f);
-	XMFLOAT2	size = XMFLOAT2(150.0f, 150.0f);
+	XMFLOAT2	holderSize = XMFLOAT2(150.0f, 150.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
@@ -159,12 +159,11 @@ void BombUI::Draw()
 	SetBlendState(BLENDSTATE_ALFA);
 
 	// 描画
-	DrawSprite(size, color, 1, 1, 1);
+	DrawSprite(holderSize, color, 1, 1, 1);
 
 	// 導火線描画 ================
 	//テクスチャのセット
 	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_ROPE]);
-	size = XMFLOAT2(500.0f, 100.0f);
 
 
 	float ratio = 1.0f;
@@ -175,10 +174,10 @@ void BombUI::Draw()
 	}
 
 	// 基本サイズ（導火線の最大長さ）
-	size = XMFLOAT2(500.0f * ratio, 100.0f);
+	XMFLOAT2 ropeSize = XMFLOAT2(500.0f * ratio, 100.0f);
 
 	// 描画
-	DrawSpriteRopeRight(size, color, 1, 1, 1);
+	DrawSpriteRopeRight(ropeSize, color, 1, 1, 1);
 
 	// UI爆弾描画 ================
 	if (m_BombType == 100)
@@ -189,16 +188,28 @@ void BombUI::Draw()
 	// 爆弾を持っている時
 	// 爆弾のタイプ毎のテクスチャを設定
 	SetBombTexture();
-	size = XMFLOAT2(80.0f, 80.0f);
+	XMFLOAT2 bombSize = XMFLOAT2(80.0f, 80.0f);
 	// 描画
-	DrawSprite(size, color, 1, 1, 1);
+	DrawSprite(bombSize, color, 1, 1, 1);
 
 	// 炎描画 ====================
 	if (m_Count > 0.0f)
 	{
 		m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_FIRE]);
-		size = XMFLOAT2(180.0f, 180.0f);
-		DrawSprite(size, color, 1, 1, 1);
+		float frameX = position.x - ropeSize.x;
+		float frameY = position.y - (holderSize.y / 2 - 20.0f);
+
+		XMFLOAT2 frameSize = XMFLOAT2(180.0f, 180.0f);
+
+		XMMATRIX flameTranslation =
+			XMMatrixTranslation(frameX, frameY, 0.0f);
+
+		XMMATRIX flameWorld = Scaling * Rotation * flameTranslation;
+
+		XMMATRIX flameMat = flameWorld * Projection;
+		Shader_SetMatrix(flameMat);
+
+		DrawSprite(frameSize, color, 1, 1, 1);
 	}
 }
 
