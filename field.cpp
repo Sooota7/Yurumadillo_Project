@@ -430,7 +430,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	int a = 0;
 	float y = 0.0f;
 
-	for (int q = 0; q < 3; q++)
+	for (int q = 0; q < 5; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
 		{
