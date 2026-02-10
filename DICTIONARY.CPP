@@ -21,6 +21,12 @@ static int GetMap(int x, int y, int z)
 
 
 		break;
+	case(3):
+		return 0;
+		break;
+	case(4):
+		return 0;
+		break;
 	default:
 		break;
 	}
@@ -33,17 +39,24 @@ static int GetMap2(int x, int y, int z)
 	switch (z)
 	{
 	case(0):
-		return Field2_pos_row[y][x];
+		return Gimmick_pos_row[y][x];
 
 		break;
 	case(1):
-		return Field2_pos_nor[y][x];
+		return Gimmick_pos_nor[y][x];
 
 
 		break;
 	case(2):
-		return Field2_pos_high[y][x];
+		return Gimmick_pos_high[y][x];
 
+		break;
+	case(3):
+		return Gimmick_pos_high2[y][x];
+
+		break;
+	case(4):
+		return Gimmick_pos_high3[y][x];
 
 		break;
 	default:
@@ -71,6 +84,12 @@ static int GetMap3(int x, int y, int z)
 
 
 		break;
+	case(3):
+		return 0;
+		break;
+	case(4):
+		return 0;
+		break;
 	default:
 		break;
 	}
@@ -95,6 +114,12 @@ static int GetMap4(int x, int y, int z)
 		return tutorial_balloon_pos_high[y][x];
 
 
+		break;
+	case(3):
+		return 0;
+		break;
+	case(4):
+		return 0;
 		break;
 	default:
 		break;
@@ -121,6 +146,12 @@ static int GetMap5(int x, int y, int z)
 
 
 		break;
+	case(3):
+		return 0;
+		break;
+	case(4):
+		return 0;
+		break;
 	default:
 		break;
 	}
@@ -145,6 +176,12 @@ int GetMap6(int x, int y, int z)
 		return boss_pos_high[y][x];
 
 
+		break;
+	case(3):
+		return 0;
+		break;
+	case(4):
+		return 0;
 		break;
 	default:
 		break;

@@ -122,7 +122,7 @@ void GIMMICK::Gimmick_Update()
 
 
 
-	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
+	/*if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
 		if (m_NowField == FIELD_NO::NO_1)
 		{
@@ -134,7 +134,7 @@ void GIMMICK::Gimmick_Update()
 			Gimmick_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
 			m_NowField = FIELD_NO::NO_1;
 		}
-	}
+	}*/
 
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
