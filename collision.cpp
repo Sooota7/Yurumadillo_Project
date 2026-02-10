@@ -458,7 +458,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 	bool PlayerJump = pPlayer->GetPlayerJump();
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	RUNBOMBSPAWNER* RunBombSpawner = pBomb->Bomb_GetRunBomb();// マップ
 	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
 	//int			i = 0;
 	bool bombHave = false;
@@ -477,7 +477,9 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{//ランボム
-		if (RunBomb[i].Runbombsource_GetState()==BOMB_STATE::BOMB_ACTIVE_HAVE)
+		RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		if (RunBomb->Runbombsource_GetState()==RUNBOMB_STATE::RUNBOMB_ACTIVE_HAVE)
 		{
 			bombHave = true;
 			pPlayer->SetPlayerTransBombFlag(false);
@@ -637,9 +639,10 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			float BoxTop;	// BOXの+Y面の座標
 
 			XMFLOAT3 bombPos;
+			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
 
 
-			bombPos = RunBomb[i].Runbombsource_GetPosition();
+			bombPos = RunBomb->Runbombsource_GetPosition();
 
 
 
@@ -722,6 +725,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 							{
 								PlayerJump = true;
 							}
+							RunBomb->Runbombsource_SetState(RUNBOMB_ITEM);
 						}
 					}
 				}
@@ -734,7 +738,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			if (pPlayer->GetPlayerTransBombFlag())
 			{
-				RunBomb[i].Runbombsource_SetTouch(touch);
+				RunBomb->Runbombsource_SetTouch(touch);
 			}
 
 			pPlayer->SetPlayerJump(PlayerJump);
@@ -875,18 +879,18 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	float		hit = 0.0f;				// ヒットした方向
 	//PLAYER*		Player = GetPlayer();		// ボールの情報
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
-	
-	RUNBOMBSOURCE* pRunBombSource = pBomb->Bomb_GetRunBomb();
-	
+
+	RUNBOMBSPAWNER* pRunBombSpawner = pBomb->Bomb_GetRunBomb();
+
 	FLOWTBOMBSOURCE* pFlowtBombSource = pBomb->Bomb_GetFlowtBomb();
-	
+
 	MAP* Map = pField->GetFieldMap();	// マップ
-	
+
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int			l = 0;
-		
-		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ITEM||
+
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ITEM ||
 			pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
 		{
 			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
@@ -986,20 +990,143 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				pBombSource[i].BombSource_SetVelocity(BombVel);
 			}
 
-			
-			
+
+
 		}
 	}
-	
+
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int			l = 0;
-		
-		if (pRunBombSource[i].Runbombsource_GetState() == BOMB_STATE::BOMB_ITEM||
-			pRunBombSource[i].Runbombsource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		RUNBOMBSOURCE* pRunBombSource = pRunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+		bool Colision = false;
+
+		XMFLOAT3 BombVel = pRunBombSource->Runbombsource_GetVelocity();
+
+		if (pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY)
 		{
-			XMFLOAT3 BombPos = pRunBombSource[i].Runbombsource_GetPosition();
-			XMFLOAT3 BombVel = pRunBombSource[i].Runbombsource_GetVelocity();
+			XMFLOAT3 Rotation = pRunBombSource->Runbombsource_GetRotation();
+
+			float yaw = Rotation.y;
+
+			float pVecX = sinf(yaw);
+			float pVecZ = cosf(yaw);
+
+			// 正規化
+			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+			if (len > 0.0f) {
+				pVecX /= len;
+				pVecZ /= len;
+			}
+
+			float speed = BOMB_SPEED_MAX * 0.05f;
+
+			BombVel.x = (pVecX)*speed;
+			BombVel.y = 0;//BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+			BombVel.z = (pVecZ)*speed;
+
+
+			/////////////////////////////////////////////////////////////////////////
+
+			XMFLOAT3 BombPos = pRunBombSource->Runbombsource_GetPosition();
+
+			// 全てのブロックをチェック
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+				float BoxTop;	// BOXの+Y面の座標
+
+				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
+
+				switch (Map[l].MapData_GetNo())
+				{
+
+				default:
+					BoxTop = mapPos.y + BOX_RADIUS;	// 普通のBOX
+					break;
+				}
+
+				// 壁としての判定処理
+				if (mapPos.y - BOX_RADIUS < BombPos.y &&
+					BombPos.y < BoxTop - 0.1f)
+				{
+					if (mapPos.z - BOX_RADIUS < BombPos.z &&
+						BombPos.z < mapPos.z + BOX_RADIUS)
+					{
+						if (mapPos.x - BOX_RADIUS < BombPos.x + PLAYER_RADIUS &&
+							BombPos.x < mapPos.x - BOX_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							BombPos.x += (mapPos.x - BOX_RADIUS) - (BombPos.x + PLAYER_RADIUS) - 0.1f;
+							BombVel.x = 0.0f;
+							hit = COLLISION_HIT::HIT_WALL_3;
+						}
+						else if (mapPos.x + BOX_RADIUS > BombPos.x - PLAYER_RADIUS &&
+							BombPos.x > mapPos.x + BOX_RADIUS)
+						{//BOXの+X面にぶつかった
+							BombPos.x += (mapPos.x + BOX_RADIUS) - (BombPos.x - PLAYER_RADIUS) + 0.1f;
+							BombVel.x = 0.0f;
+							hit = COLLISION_HIT::HIT_WALL_1;
+						}
+					}
+					else if (mapPos.x - BOX_RADIUS < BombPos.x &&
+						BombPos.x < mapPos.x + BOX_RADIUS)
+					{
+						if (mapPos.z - BOX_RADIUS < BombPos.z + PLAYER_RADIUS &&
+							BombPos.z < mapPos.z - BOX_RADIUS)
+						{//BOXの-Z面にぶつかったので座標の補正
+							BombPos.z += (mapPos.z - BOX_RADIUS) - (BombPos.z + PLAYER_RADIUS) - 0.1f;
+							BombVel.z = 0.0f; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_0;
+						}
+						else if (mapPos.z + BOX_RADIUS > BombPos.z - PLAYER_RADIUS &&
+							BombPos.z > mapPos.z + BOX_RADIUS)
+						{//BOXの+Z面にぶつかった
+							BombPos.z += (mapPos.z + BOX_RADIUS) - (BombPos.z - PLAYER_RADIUS) + 0.1f;
+							BombVel.z = 0.0f;
+							hit = COLLISION_HIT::HIT_WALL_2;
+						}
+					}
+				}
+				//地面として判定処理
+				else
+				{
+					if (mapPos.z - BOX_RADIUS < BombPos.z &&
+						BombPos.z < mapPos.z + BOX_RADIUS)
+					{
+						if (mapPos.x - BOX_RADIUS < BombPos.x &&
+							BombPos.x < mapPos.x + BOX_RADIUS)
+						{
+							if (mapPos.y - BOX_RADIUS < BombPos.y + PLAYER_RADIUS &&
+								BombPos.y < mapPos.y - BOX_RADIUS)
+							{//BOXの-X面にぶつかったので座標の補正
+								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
+								BombVel.y = 0.0f; //移動ベクトルの反転
+								Colision = true;
+							}
+							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
+								BombPos.y > BoxTop)
+							{//BOXの+X面にぶつかった
+								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
+								BombVel.y = 0.0;//BombVel.y * (-COE * 1.0f);
+
+								Colision = true;
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+						}
+					}
+				}
+
+				l++;
+				pRunBombSource->Runbombsource_SetFieldCollision(Colision);
+				pRunBombSource->Runbombsource_SetPosition(BombPos);
+				pRunBombSource->Runbombsource_SetVelocity(BombVel);
+
+			}
+		}
+
+		if (pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ITEM ||
+			pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 BombPos = pRunBombSource->Runbombsource_GetPosition();
 
 			// 全てのブロックをチェック
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
@@ -1027,7 +1154,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 							BombPos.x < mapPos.x - BOX_RADIUS)
 						{//BOXの-X面にぶつかったので座標の補正
 							BombPos.x += (mapPos.x - BOX_RADIUS) - (BombPos.x + PLAYER_RADIUS);
-							BombVel.x *= -COE; //移動ベクトルの反転
+							BombVel.x *= -COE;
 							hit = COLLISION_HIT::HIT_WALL_3;
 						}
 						else if (mapPos.x + BOX_RADIUS > BombPos.x - PLAYER_RADIUS &&
@@ -1070,16 +1197,16 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 								BombPos.y < mapPos.y - BOX_RADIUS)
 							{//BOXの-X面にぶつかったので座標の補正
 								BombPos.y += (mapPos.y - BOX_RADIUS) - (BombPos.y + PLAYER_RADIUS);
-								BombVel.y *= -COE; //移動ベクトルの反転
-								//hit = 
+								BombVel.y = 0.0f; //移動ベクトルの反転
+								Colision = true;
 							}
 							else if (BoxTop > BombPos.y - PLAYER_RADIUS &&
 								BombPos.y > BoxTop)
 							{//BOXの+X面にぶつかった
 								BombPos.y += (BoxTop)-(BombPos.y - PLAYER_RADIUS);
-								BombVel.y = 0;//BombVel.y * (-COE * 1.0f);
+								BombVel.y = 0.0;//BombVel.y * (-COE * 1.0f);
 
-
+								Colision = true;
 								hit = COLLISION_HIT::HIT_GROUND;
 							}
 						}
@@ -1087,20 +1214,20 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				}
 
 				l++;
-				pRunBombSource[i].Runbombsource_SetPosition(BombPos);
-				pRunBombSource[i].Runbombsource_SetVelocity(BombVel);
+				pRunBombSource->Runbombsource_SetPosition(BombPos);
+				pRunBombSource->Runbombsource_SetVelocity(BombVel);
 			}
 
-			
-			
+
+
 		}
 	}
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		int			l = 0;
-		
-		if (pFlowtBombSource[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_ITEM||
+
+		if (pFlowtBombSource[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_ITEM ||
 			pFlowtBombSource[i].Flowtbombsource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
 		{
 			XMFLOAT3 BombPos = pFlowtBombSource[i].Flowtbombsource_GetPosition();
@@ -1200,8 +1327,8 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				pFlowtBombSource[i].Flowtbombsource_SetVelocity(BombVel);
 			}
 
-			
-			
+
+
 		}
 	}
 
@@ -1209,13 +1336,14 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 	return hit;  // ぶつかったかどうかを示す
 }
 
+
 float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 {
 	float		hit = 0.0f;				// �q�b�g��������
 	//BALL*		Ball = GetBall();		// �{�[���̏��
 
 	BOMBSOURCE* pBombSource = pBomb->Bomb_GetBomb();
-	RUNBOMBSOURCE* pRunBomb = pBomb->Bomb_GetRunBomb();
+	RUNBOMBSPAWNER* pRunBombSpawner = pBomb->Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* pFlowtBomb = pBomb->Bomb_GetFlowtBomb();
 
 	MAP* Map = pField->GetFieldMap();
@@ -1274,14 +1402,16 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
+		RUNBOMBSOURCE* pRunBomb = pRunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
 		//�X���[�̂Ƃ��̂ݓ����蔻������
-		if (pRunBomb[i].Runbombsource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+		if (pRunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_EXPLOSION)
 		{
 			int			l = 0;
 			bool test = false;
 
-			XMFLOAT3 BombPos = pRunBomb[i].Runbombsource_GetPosition();
-			XMFLOAT3 BombVel = pRunBomb[i].Runbombsource_GetVelocity();
+			XMFLOAT3 BombPos = pRunBomb->Runbombsource_GetPosition();
+			XMFLOAT3 BombVel = pRunBomb->Runbombsource_GetVelocity();
 
 			while (Map[l].MapData_GetNo() != FIELD_MAX)
 			{
@@ -1425,7 +1555,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 							if (BombPos.z + 1 > EnemyPos.z &&
 								BombPos.z - 1 < EnemyPos.z)
 							{
-								test = true;//死亡フラグ
+							test = true;//死亡フラグ
 							}
 						}
 					}
@@ -2791,7 +2921,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 {
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	RUNBOMBSPAWNER* RunBombSpawner = pBomb->Bomb_GetRunBomb();// マップ
 	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
 
 	// --------- 共通：ボタンとフィールド配列 ---------
@@ -2853,12 +2983,14 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 	// --------- 走るボム ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		int st = RunBomb[i].Runbombsource_GetState();
-		if (st == BOMB_STATE::BOMB_ITEM ||
-			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
-			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		int st = RunBomb->Runbombsource_GetState();
+		if (st == RUNBOMB_STATE::RUNBOMB_ITEM ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_HAVE ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
 		{
-			XMFLOAT3 pos = RunBomb[i].Runbombsource_GetPosition();
+			XMFLOAT3 pos = RunBomb->Runbombsource_GetPosition();
 
 			for (int b = 0; b < btnCount; b++)
 			{
@@ -2894,7 +3026,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 				}
 			}
 
-			RunBomb[i].Runbombsource_SetPosition(pos);
+			RunBomb->Runbombsource_SetPosition(pos);
 		}
 	}
 	// --------- 浮遊ボム ---------
@@ -2955,7 +3087,7 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 	float hit = 0.0f;
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	RUNBOMBSPAWNER* RunBombSpawner = pBomb->Bomb_GetRunBomb();// マップ
 	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
 
 	GIMMICK_BUTTON* Buttons = pGimmick->GetButtons();
@@ -3104,13 +3236,15 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 	// --------- 走るボム ---------
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		int st = RunBomb[i].Runbombsource_GetState();
-		if (st == BOMB_STATE::BOMB_ITEM ||
-			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
-			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		int st = RunBomb->Runbombsource_GetState();
+		if (st == RUNBOMB_STATE::RUNBOMB_ITEM ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_HAVE ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
 		{
-			XMFLOAT3 pos = RunBomb[i].Runbombsource_GetPosition();
-			XMFLOAT3 vel = RunBomb[i].Runbombsource_GetVelocity();
+			XMFLOAT3 pos = RunBomb->Runbombsource_GetPosition();
+			XMFLOAT3 vel = RunBomb->Runbombsource_GetVelocity();
 
 			// Buttons
 			for (int b = 0; b < btnCount; b++)
@@ -3195,8 +3329,8 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 				}
 			}
 
-			RunBomb[i].Runbombsource_SetPosition(pos);
-			RunBomb[i].Runbombsource_SetVelocity(vel);
+			RunBomb->Runbombsource_SetPosition(pos);
+			RunBomb->Runbombsource_SetVelocity(vel);
 		}
 	}
 
@@ -3246,7 +3380,7 @@ float COLLISION::BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 	float hit = 0.0f;
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
-	RUNBOMBSOURCE* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	RUNBOMBSPAWNER* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
 	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
 
 	GIMMICK_GATE* gates = pGimmick->GetGates();

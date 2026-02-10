@@ -6,23 +6,34 @@
 enum MAP_CHIP
 {
 	MAP_CHIP_NONE = 0,
-	MAP_CHIP_BLOCK,
-	MAP_CHIP_TREE,
-	MAP_CHIP_BOMB,
+	MAP_FIELD,
+	MAP_BOMB,
+	MAP_BOMB_RUN,
+	MAP_BOMB_FLOWT,
+	MAP_ENEMY,
+	MAP_ENEMY_RUN,
+	MAP_ENEMY_FLOWT,
+
 
 
 };
 
 enum FIELD_NO
 {
-	NO_NONE,
-	NO_1,
-	NO_2,
-	NO_3,
-	NO_4,
-	NO_5,
-	NO_6,
+	NO_NONE,	//Noting EnemyLush Need add No.
+	NO_1,		//Demo after nonmal Maybe
+	NO_2,		//Gimmik Maybe
+	NO_3,		//BombNormal
+	NO_4,		//BombBallon
+	NO_5,		//BombRun
+	NO_6,		//Boss
 };
+
+
+
+
+int CheckMap(int x, int y, int z, FIELD_NO no);
+
 
 // アルファベット一文字だと他の定義と被りエラーになる可能性あり
 /*enum GIMMICK_BUTTON_TYPE
@@ -67,8 +78,9 @@ enum GIMMICK_GATE_TYPE
 	D,
 };*/
 
-const int FIELD_WIDTH_X{ 15 };
-const int FIELD_WIDTH_Z{ 20 };
+const int FIELD_HEIGHT_Y{ 5 };
+const int FIELD_WIDTH_X{ 20 };
+const int FIELD_WIDTH_Z{ 30 };
 
 const int Field_pos_row[FIELD_WIDTH_Z][FIELD_WIDTH_X]
 =

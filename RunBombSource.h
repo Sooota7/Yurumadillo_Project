@@ -5,9 +5,20 @@
 #include	<DirectXMath.h>
 #include	"direct3d.h"
 #include	"player.h"
-#include	"bombSource.h"
 using namespace DirectX;
 
+enum RUNBOMB_STATE
+{
+	RUNBOMB_NONE,
+	RUNBOMB_ENEMY,
+	RUNBOMB_ITEM,
+	RUNBOMB_ACTIVE_HAVE,
+	RUNBOMB_ACTIVE_THROW,
+	RUNBOMB_EXPLOSION,
+	RUNBOMB_COOL,
+	RUNBOMB_MAX
+
+};
 
 class RUNBOMBSOURCE
 {
@@ -18,15 +29,17 @@ class RUNBOMBSOURCE
 	XMFLOAT3	m_Acceleration;	//落下速度
 	float		m_Count;		//爆発までのカウント
 	float		m_StopTime;		//静止するまでの時間
-	BOMB_STATE	m_State;		//現在の状態
+	RUNBOMB_STATE	m_State;		//現在の状態
 	float		m_LimitCount;	//
 	bool		m_Touch;
 
-	BOMB_TYPE	m_Type;
+	bool		m_fieldColision;
+
+	//BOMB_TYPE	m_Type;
 
 public:
 
-	void		Runbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state);
+	void		Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state);
 	void		Runbombsource_Finalize(void);
 
 
@@ -35,8 +48,9 @@ public:
 	void		Runbombsource_Active_Throw();
 	void		Runbombsource_Cool();
 	void		Runbombsource_Explosion();
+	void		Runbombsource_Enemy(XMFLOAT3 pPlayerPos);
 
-	void		Runbombsource_Active_Type();
+	//void		Runbombsource_Active_Type();
 
 
 	//セッター及びゲッター
@@ -49,13 +63,17 @@ public:
 	void		Runbombsource_SetVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
 	XMFLOAT3	Runbombsource_GetVelocity() { return m_Velocity; };
 
-	void		Runbombsource_SetState(BOMB_STATE state) { m_State = state; };
-	BOMB_STATE	Runbombsource_GetState() { return m_State; };
+	void		Runbombsource_SetState(RUNBOMB_STATE state) { m_State = state; };
+	RUNBOMB_STATE	Runbombsource_GetState() { return m_State; };
 
 	float		Runbombsource_GetCount() { return m_Count; };
 
 	void		Runbombsource_SetTouch(bool check) { m_Touch = check; };
 	bool		Runbombsource_GetTouch() { return m_Touch; };
+
+	void		Runbombsource_SetFieldCollision(bool touch) { m_fieldColision = touch; };
+	bool		Runbombsource_GetFieldCollision() { return m_fieldColision; };
+
 
 	RUNBOMBSOURCE* Runbombsource_GetRunbombsource() { return this; };
 };

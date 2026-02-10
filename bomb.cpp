@@ -18,185 +18,185 @@ static ID3D11ShaderResourceView* g_Texture;
 
 
 
-int GetBomb(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return Field_pos_row[y][x];
-
-		break;
-	case(1):
-		return Field_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return Field_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-int GetBomb2(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return Field2_pos_row[y][x];
-
-		break;
-	case(1):
-		return Field2_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return Field2_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetBomb3(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetBomb4(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_balloon_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_balloon_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_balloon_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetBomb5(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_mouse_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_mouse_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_mouse_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetBomb6(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return boss_pos_row[y][x];
-
-		break;
-	case(1):
-		return boss_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return boss_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-int CheckBomb(int x, int y, int z,FIELD_NO no)
-{
-	switch (no)
-	{
-	case NO_NONE:
-		break;
-	case NO_1:
-		return GetBomb(x, y, z);
-		break;
-	case NO_2:
-		return GetBomb2(x, y, z);
-		break;
-	case NO_3:
-		return GetBomb3(x, y, z);
-		break;
-	case NO_4:
-		return GetBomb4(x, y, z);
-		break;
-	case NO_5:
-		return GetBomb5(x, y, z);
-		break;
-	case NO_6:
-		return GetBomb6(x, y, z);
-		break;
-
-	default:
-		break;
-	}
-
-
-}
+//int GetBomb(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return Field_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return Field_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return Field_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//int GetBomb2(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return Field2_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return Field2_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return Field2_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetBomb3(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetBomb4(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_balloon_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_balloon_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_balloon_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetBomb5(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_mouse_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_mouse_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_mouse_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetBomb6(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return boss_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return boss_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return boss_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//int CheckBomb(int x, int y, int z,FIELD_NO no)
+//{
+//	switch (no)
+//	{
+//	case NO_NONE:
+//		break;
+//	case NO_1:
+//		return GetBomb(x, y, z);
+//		break;
+//	case NO_2:
+//		return GetBomb2(x, y, z);
+//		break;
+//	case NO_3:
+//		return GetBomb3(x, y, z);
+//		break;
+//	case NO_4:
+//		return GetBomb4(x, y, z);
+//		break;
+//	case NO_5:
+//		return GetBomb5(x, y, z);
+//		break;
+//	case NO_6:
+//		return GetBomb6(x, y, z);
+//		break;
+//
+//	default:
+//		break;
+//	}
+//
+//
+//}
 
 void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
@@ -278,14 +278,14 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	int a = 0;
 	int b = 0;
 	int c = 0;
-	for (int q = 0; q < 3; q++)
+	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
 		{
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
 
-				switch (CheckBomb(l, i, q, no))
+				switch (CheckMap(l, i, q, no))
 				{
 				case 0:
 					break;
@@ -296,7 +296,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					a++;
 					break;
 				case 4:
-					m_RunBomb[b].Runbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
+					m_RunBomb[b].Initialize_RunBombSpawner(XMFLOAT3(l, q, i));
 					b++;
 					break;
 				case 7:
@@ -326,7 +326,7 @@ void BOMB::Bomb_Finalize(void)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		m_RunBomb[i].Runbombsource_Finalize();
+		m_RunBomb[i].Finalize_RunBombSpawner();
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -547,9 +547,11 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
+		RUNBOMBSOURCE* runBomb = m_RunBomb[i].GetRunBombSource__RunBombSpawner();
 
-		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
-		XMFLOAT3 bombRot = m_RunBomb[i].Runbombsource_GetRotation();
+
+		XMFLOAT3 bombPos = runBomb->Runbombsource_GetPosition();
+		XMFLOAT3 bombRot = runBomb->Runbombsource_GetRotation();
 
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
@@ -596,28 +598,31 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		//描画リクエスト
-		switch (m_RunBomb[i].Runbombsource_GetState())
+		switch (runBomb->Runbombsource_GetState())
 		{
-		case BOMB_NONE:
+		case RUNBOMB_NONE:
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
-		case BOMB_ITEM:
+		case RUNBOMB_ENEMY:
 			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
 			break;
-		case BOMB_ACTIVE_HAVE:
+		case RUNBOMB_ITEM:
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
+			break;
+		case RUNBOMB_ACTIVE_HAVE:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
 			m_Rbno[i] = 0;
 			break;
-		case BOMB_ACTIVE_THROW:
+		case RUNBOMB_ACTIVE_THROW:
 			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
 			break;
 
-		case BOMB_EXPLOSION:
+		case RUNBOMB_EXPLOSION:
 			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			{
-				XMFLOAT3 pos = m_RunBomb[i].Runbombsource_GetPosition();
+				XMFLOAT3 pos = runBomb->Runbombsource_GetPosition();
 				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
-				float cnt = m_RunBomb[i].Runbombsource_GetCount();
+				float cnt = runBomb->Runbombsource_GetCount();
 
 				int wc = 3;
 				int hc = 3;
@@ -640,7 +645,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 
 			break;
 
-		case BOMB_COOL:
+		case RUNBOMB_COOL:
 
 			break;
 		}
@@ -782,28 +787,7 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		switch (m_RunBomb[i].Runbombsource_GetState())
-		{
-		case BOMB_NONE:
-			break;
-		case BOMB_ITEM:
-			m_RunBomb[i].Runbombsource_Safe();
-			break;
-		case BOMB_ACTIVE_HAVE:
-			m_RunBomb[i].Runbombsource_Active_Have(pPlayerPos,pPlayerRot);
-			break;
-		case BOMB_ACTIVE_THROW:
-			m_RunBomb[i].Runbombsource_Active_Throw();
-			break;
-		case BOMB_EXPLOSION:
-			m_RunBomb[i].Runbombsource_Explosion();
-			break;
-		case BOMB_COOL:
-			m_RunBomb[i].Runbombsource_Cool();
-			break;
-		default:
-			break;
-		}
+		m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -861,28 +845,7 @@ void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		switch (m_RunBomb[i].Runbombsource_GetState())
-		{
-		case BOMB_NONE:
-			break;
-		case BOMB_ITEM:
-			m_RunBomb[i].Runbombsource_Safe();
-			break;
-		case BOMB_ACTIVE_HAVE:
-			m_RunBomb[i].Runbombsource_Active_Have(pPlayerPos,pPlayerRot);
-			break;
-		case BOMB_ACTIVE_THROW:
-			m_RunBomb[i].Runbombsource_Active_Throw();
-			break;
-		case BOMB_EXPLOSION:
-			m_RunBomb[i].Runbombsource_Explosion();
-			break;
-		case BOMB_COOL:
-			m_RunBomb[i].Runbombsource_Cool();
-			break;
-		default:
-			break;
-		}
+		m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -919,9 +882,9 @@ BOMBSOURCE* BOMB::Bomb_GetBomb()
 	return m_Bomb->BombSource_GetBombSource();
 }
 
-RUNBOMBSOURCE* BOMB::Bomb_GetRunBomb()
+RUNBOMBSPAWNER* BOMB::Bomb_GetRunBomb()
 {
-	return m_RunBomb->Runbombsource_GetRunbombsource();
+	return m_RunBomb->GetRunBombSpawner_RunBombSpawner();
 }
 
 FLOWTBOMBSOURCE* BOMB::Bomb_GetFlowtBomb()
