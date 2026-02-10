@@ -3,200 +3,200 @@
 #include "camera.h"
 #include "Dictionary.h"
 
-//ƒOƒ[ƒoƒ‹•Ï”
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
-//’¸“_ƒoƒbƒtƒ@
+//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_VertexBuffer = NULL;
-//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_IndexBuffer = NULL;
-//ƒeƒNƒXƒ`ƒƒ•Ï”
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ•°
 static ID3D11ShaderResourceView* g_Texture;
 static ID3D11ShaderResourceView* g_Texture_Jump;
 
 #define		BOX_NUM_VERTEX (24)
 
-//BOXì¬ŠÖ”
+//BOXä½œæˆé–¢æ•°
 void CreateBox();
 
-//BOX’¸“_ƒf[ƒ^
+//BOXé ‚ç‚¹ãƒ‡ãƒ¼ã‚¿
 static	Vertex3D Box_vdata[BOX_NUM_VERTEX] =
 {
 	//-Z
-	{//’¸“_‚O@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹ï¼ã€€LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_‚P@RIGHT-TOP
-		XMFLOAT3(0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹ï¼‘ã€€RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_‚Q@LEFT-BOTTOM
-		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹ï¼’ã€€LEFT-BOTTOM
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_3@RIGHT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹3ã€€RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
 
-	//+X–Ê
-	{//’¸“_4@LEFT-TOP
-		XMFLOAT3(0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	//+Xé¢
+	{//é ‚ç‚¹4ã€€LEFT-TOP
+		XMFLOAT3(0.5f,0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_5@RIGHT-TOP
-		XMFLOAT3(0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹5ã€€RIGHT-TOP
+		XMFLOAT3(0.5f,0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_6@LEFT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹6ã€€LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_7@RIGHT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹7ã€€RIGHT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
 
 	//+Z
 
-	{//’¸“_8@RIGHT-TOP
-		XMFLOAT3(0.5f, 0.5f, 0.5f),//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//F
-		XMFLOAT2(0.0f,0.35f)//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹8ã€€RIGHT-TOP
+		XMFLOAT3(0.5f, 0.5f, 0.5f),//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),//è‰²
+		XMFLOAT2(0.0f,0.35f)//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_9@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹9ã€€LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_10@LEFT-BOTTOM
-		XMFLOAT3(0.5f,-0.5f,0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹10ã€€LEFT-BOTTOM
+		XMFLOAT3(0.5f,-0.5f,0.5f),	//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_11@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹11ã€€RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
 	//-X
 
-	{//’¸“_12@LEFT-TOP
-		XMFLOAT3(-0.5f,0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹12ã€€LEFT-TOP
+		XMFLOAT3(-0.5f,0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_13@LEFT-BOTTOM
-		XMFLOAT3(-0.5f,0.5f,-0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.35f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹13ã€€LEFT-BOTTOM
+		XMFLOAT3(-0.5f,0.5f,-0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.35f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_14@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,0.5f),		//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(0.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹14ã€€RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,0.5f),		//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(0.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
-	{//’¸“_15@RIGHT-TOP
-		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//À•W
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
-		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//F
-		XMFLOAT2(1.0f,0.65f)				//ƒeƒNƒXƒ`ƒƒÀ•W
+	{//é ‚ç‚¹15ã€€RIGHT-TOP
+		XMFLOAT3(-0.5f,-0.5f,-0.5f),	//åº§æ¨™
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
+		XMFLOAT4(1.0f,1.0f,1.0f,1.0f),	//è‰²
+		XMFLOAT2(1.0f,0.65f)				//ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
 	},
 
 	//+Y
 
-	{//’¸“_16 LEFT-TOP
+	{//é ‚ç‚¹16 LEFT-TOP
 		XMFLOAT3(-0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.0f)
 	},
-	{//’¸“_17 RIGHT-TOP
+	{//é ‚ç‚¹17 RIGHT-TOP
 		XMFLOAT3(0.5f, 0.5f, 0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.0f)
 	},
-	{//’¸“_18 LEFT-BOTTOM
+	{//é ‚ç‚¹18 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.35f)
 	},
-	{//’¸“_19 RIGHT-BOTTOM
+	{//é ‚ç‚¹19 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, 0.5f, -0.5f),
-		XMFLOAT3(0.0f,1.0f,0.0f),		//–@ü
+		XMFLOAT3(0.0f,1.0f,0.0f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.35f)
 	},
-	//-Y–Ê
-	{//’¸“_20 LEFT-TOP
+	//-Yé¢
+	{//é ‚ç‚¹20 LEFT-TOP
 		XMFLOAT3(-0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,0.65f)
 	},
-	{//’¸“_21 RIGHT-TOP
+	{//é ‚ç‚¹21 RIGHT-TOP
 		XMFLOAT3(0.5f, -0.5f, -0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,0.65f)
 	},
-	{//’¸“_22 LEFT-BOTTOM
+	{//é ‚ç‚¹22 LEFT-BOTTOM
 		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(0.0f,1.0f)
 	},
-	{//’¸“_23 RIGHT-BOTTOM
+	{//é ‚ç‚¹23 RIGHT-BOTTOM
 		XMFLOAT3(0.5f, -0.5f, 0.5f),
-		XMFLOAT3(0.5f,0.5f,0.5f),		//–@ü
+		XMFLOAT3(0.5f,0.5f,0.5f),		//æ³•ç·š
 		XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f),
 		XMFLOAT2(1.0f,1.0f)
 	},
 	
-	//Œã‚Å‘‚¦‚Ü‚·
+	//å¾Œã§å¢—ãˆã¾ã™
 	
 };
 
-//ƒCƒ“ƒfƒbƒNƒX”z—ñ
+//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é…åˆ—
 static UINT Box_idxdata[6 * 6] =
 {
-	 0, 1, 2, 2, 1, 3,	//-Z–Ê
-	 4, 5, 6, 6, 5, 7,	//+X–Ê
-	 8, 9,10,10, 9,11,	//+Z–Ê
-	12,13,14,14,13,15,	//-X–Ê
-	16,17,18,18,17,19,	//+Y–Ê
-	20,21,22,22,21,23,	//-Y–Ê
+	 0, 1, 2, 2, 1, 3,	//-Zé¢
+	 4, 5, 6, 6, 5, 7,	//+Xé¢
+	 8, 9,10,10, 9,11,	//+Zé¢
+	12,13,14,14,13,15,	//-Xé¢
+	16,17,18,18,17,19,	//+Yé¢
+	20,21,22,22,21,23,	//-Yé¢
 };
 
 void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
-	//Test = ModelLoad("asset\\model\\test.fbx");//ƒfƒoƒbƒO
+	//Test = ModelLoad("asset\\model\\test.fbx");//ãƒ‡ãƒãƒƒã‚°
 
 
 	g_pDevice = pDevice;
@@ -207,8 +207,8 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		TexMetadata metadata;
 		ScratchImage image;
 
-		// ƒeƒNƒXƒ`ƒƒ“Ç‚Ýž‚Ý
-		//@ƒ}ƒbƒv‚²‚Æ‚ÉƒXƒe[ƒWØ‚è‘Ö‚¦
+		// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
+		//ã€€ãƒžãƒƒãƒ—ã”ã¨ã«ã‚¹ãƒ†ãƒ¼ã‚¸åˆ‡ã‚Šæ›¿ãˆ
 		switch (no)
 		{
 		case NO_NONE:
@@ -316,7 +316,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//	}
 	//}
 
-	//ƒuƒƒbƒN‚Ìì¬
+	//ãƒ–ãƒ­ãƒƒã‚¯ã®ä½œæˆ
 	for (int i = 0; i < FIELD_MAX; i++)
 	{
 		switch (i)
@@ -325,12 +325,12 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			CreateBox();
 			break;
 
-		case FIELD_OBT_0://áŠQ•¨0
-			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//ƒfƒoƒbƒO
+		case FIELD_OBT_0://éšœå®³ç‰©0
+			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//ãƒ‡ãƒãƒƒã‚°
 			break;
 
-		case FIELD_OBT_1://áŠQ•¨0
-			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//ƒfƒoƒbƒO
+		case FIELD_OBT_1://éšœå®³ç‰©0
+			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//ãƒ‡ãƒãƒƒã‚°
 			break;
 		case FIELD_BREAK:
 			CreateBox();
@@ -368,18 +368,18 @@ void  MAPDATA::Field_Finalize(void)
 
 void  MAPDATA::Field_Draw(void)
 {
-	//ƒVƒF[ƒ_[‚ð•`‰æƒpƒCƒvƒ‰ƒCƒ“‚ÖÝ’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’æç”»ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã¸è¨­å®š
 	Shader_Begin();
 
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñì¬
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ä½œæˆ
 	XMMATRIX	Projection = GetProjectionMatrix();
-	//ƒrƒ…[s—ñì¬
+	//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ä½œæˆ
 	XMMATRIX	View = GetViewMatrix();
-	//æ‚ÉVP•ÏŠ·s—ñ‚ðì‚Á‚Ä‚¨‚­
+	//å…ˆã«VPå¤‰æ›è¡Œåˆ—ã‚’ä½œã£ã¦ãŠã
 	XMMATRIX	VP = View * Projection;
 
-	//MAP‚Ì•\Ž¦
+	//MAPã®è¡¨ç¤º
 	int i = 0;
 
 
@@ -390,14 +390,14 @@ void  MAPDATA::Field_Draw(void)
 	{
 		XMFLOAT3 mapPos = m_Map[i].MapData_GetPosition();
 
-		//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+		//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
 			1.0f,
 			1.0f
 		);
-		//•½sˆÚ“®s—ñ‚Ìì¬
+		//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			mapPos.x,
@@ -405,7 +405,7 @@ void  MAPDATA::Field_Draw(void)
 			mapPos.z
 		);
 		
-		//‰ñ“]s—ñ‚Ìì¬
+		//å›žè»¢è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -414,28 +414,28 @@ void  MAPDATA::Field_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ÅI“I‚È•ÏŠ·s—ñ‚ðì¬
+		//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectX‚Ös—ñ‚ðƒZƒbƒg
+		//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 		Shader_SetMatrix(WVP);
 
-		//ƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//’¸“_ƒoƒbƒtƒ@‚ðƒZƒbƒg
-		UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+		UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ðƒZƒbƒg
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚ÌŽí—Þ‚ðƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\Ž¦
+		//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡žã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æžšã¨ã—ã¦è¡¨ç¤º
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//•`‰æƒŠƒNƒGƒXƒg
+		//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
 		if (m_Map[i].MapData_GetNo() == FIELD_BOX)
 		{
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
@@ -450,13 +450,13 @@ void  MAPDATA::Field_Draw(void)
 		}
 		else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
 		{
-			//ƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
 		else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
 		{
-			//ƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
@@ -481,48 +481,48 @@ void  MAPDATA::Field_Update(void)
 }
 
 
-//BOXƒf[ƒ^‚ðì¬‚·‚é
+//BOXãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã™ã‚‹
 void CreateBox()
 {
 	{
-		//’¸“_ƒoƒbƒtƒ@ì¬
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));//0‚ÅƒNƒŠƒA
+		ZeroMemory(&bd, sizeof(bd));//0ã§ã‚¯ãƒªã‚¢
 		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.ByteWidth = sizeof(Vertex3D) * BOX_NUM_VERTEX; //Ši”[‚Å‚«‚é’¸“_”*’¸“_ƒTƒCƒY
+		bd.ByteWidth = sizeof(Vertex3D) * BOX_NUM_VERTEX; //æ ¼ç´ã§ãã‚‹é ‚ç‚¹æ•°*é ‚ç‚¹ã‚µã‚¤ã‚º
 		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		g_pDevice->CreateBuffer(&bd, NULL, &g_VertexBuffer);
 
 
-		//’¸“_ƒf[ƒ^‚ð’¸“_ƒoƒbƒtƒ@‚ÖƒRƒs[‚·‚é
+		//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã‚’é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã¸ã‚³ãƒ”ãƒ¼ã™ã‚‹
 		D3D11_MAPPED_SUBRESOURCE msr;
 		g_pContext->Map(g_VertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		Vertex3D* vertex = (Vertex3D*)msr.pData;
-		//’¸“_ƒf[ƒ^‚ðƒRƒs[‚·‚é
+		//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼ã™ã‚‹
 		CopyMemory(&vertex[0], &Box_vdata[0], sizeof(Vertex3D) * BOX_NUM_VERTEX);
-		//ƒRƒs[Š®—¹
+		//ã‚³ãƒ”ãƒ¼å®Œäº†
 		g_pContext->Unmap(g_VertexBuffer, 0);
 
 	}
 
-	//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@ì¬
+	//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 	{
-		//’¸“_ƒoƒbƒtƒ@ì¬
+		//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ä½œæˆ
 		D3D11_BUFFER_DESC bd;
-		ZeroMemory(&bd, sizeof(bd));//0‚ÅƒNƒŠƒA
+		ZeroMemory(&bd, sizeof(bd));//0ã§ã‚¯ãƒªã‚¢
 		bd.Usage = D3D11_USAGE_DYNAMIC;
-		bd.ByteWidth = sizeof(UINT) * 6 * 6; //Ši”[‚Å‚«‚é’¸“_”*’¸“_ƒTƒCƒY
+		bd.ByteWidth = sizeof(UINT) * 6 * 6; //æ ¼ç´ã§ãã‚‹é ‚ç‚¹æ•°*é ‚ç‚¹ã‚µã‚¤ã‚º
 		bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		g_pDevice->CreateBuffer(&bd, NULL, &g_IndexBuffer);
 
-		//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚Ö‘‚«ž‚Ý
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã¸æ›¸ãè¾¼ã¿
 		D3D11_MAPPED_SUBRESOURCE msr;
 		g_pContext->Map(g_IndexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
 		UINT* index = (UINT*)msr.pData;
 
-		//ƒCƒ“ƒfƒbƒNƒXƒf[ƒ^‚ðƒoƒbƒtƒ@‚ÖƒRƒs[
+		//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒ‡ãƒ¼ã‚¿ã‚’ãƒãƒƒãƒ•ã‚¡ã¸ã‚³ãƒ”ãƒ¼
 		CopyMemory(&index[0], &Box_idxdata[0], sizeof(UINT) * 6 * 6);
 		g_pContext->Unmap(g_IndexBuffer, 0);
 
@@ -532,6 +532,6 @@ void CreateBox()
 
 MAP* MAPDATA::GetFieldMap()
 {
-	//return Map‚Æ‚à‘‚¯‚é‚ª”z—ñ‚Æ•ª‚©‚è‚¸‚ç‚¢‚©‚à
+	//return Mapã¨ã‚‚æ›¸ã‘ã‚‹ãŒé…åˆ—ã¨åˆ†ã‹ã‚Šãšã‚‰ã„ã‹ã‚‚
 	return m_Map->GetFieldMap();
 }
