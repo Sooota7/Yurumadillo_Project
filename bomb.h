@@ -12,7 +12,7 @@ using namespace DirectX;
 
 #include	"model.h"
 #include	"bombSource.h"
-#include	"RunBombSource.h"
+#include	"RunBombSpawner.h"
 #include	"FlowtBombSource.h"
 #include	"Dictionary.h"
 #include "player.h"
@@ -42,7 +42,7 @@ private:
 
 	BOMBSOURCE		m_Bomb[BOMB_NUM_MAX];
 	int				m_Bbno[BOMB_NUM_MAX];
-	RUNBOMBSOURCE	m_RunBomb[BOMB_NUM_MAX];
+	RUNBOMBSPAWNER	m_RunBomb[BOMB_NUM_MAX];
 	int				m_Rbno[BOMB_NUM_MAX];
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
 	int				m_Fbno[BOMB_NUM_MAX];
@@ -62,7 +62,7 @@ public:
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	void	Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	BOMBSOURCE* Bomb_GetBomb();
-	RUNBOMBSOURCE* Bomb_GetRunBomb();
+	RUNBOMBSPAWNER* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
 	void Bomb_SetBoss(BOSSMONSTER* boss);
 
