@@ -31,7 +31,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_2;
+	m_NowField = FIELD_NO::NO_4;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -138,6 +138,7 @@ void GAME::Game_Update()
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
+	collision.EXPLOSIONFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
 	//collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);

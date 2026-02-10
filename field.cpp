@@ -143,6 +143,31 @@ int GetMap5(int x, int y, int z)
 
 
 }
+
+int GetMap6(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return boss_pos_row[y][x];
+
+		break;
+	case(1):
+		return boss_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return boss_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckMap(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -163,6 +188,9 @@ int CheckMap(int x, int y, int z,FIELD_NO no)
 		break;
 	case NO_5:
 		return GetMap5(x, y, z);
+		break;
+	case NO_6:
+		return GetMap6(x, y, z);
 		break;
 	default:
 		break;
@@ -379,6 +407,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		case NO_5:
 			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
 			break;
+		case NO_6:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
 		default:
 			break;
 		}
@@ -397,6 +428,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 
 	int a = 0;
+	float y = 0.0f;
 
 	for (int q = 0; q < 3; q++)
 	{
@@ -419,6 +451,11 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 				case 5:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_1);;
+					break;
+				case 8:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q + y, i), FIELD_BREAK);
+
+					y = 0.0f;
 					break;
 				case 9:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_JUMP);
@@ -473,6 +510,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 		case FIELD_OBT_1://障害物0
 			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+			break;
+		case FIELD_BREAK:
+			CreateBox();
 			break;
 		case FIELD_JUMP:
 			CreateBox();
@@ -586,6 +626,12 @@ void  MAPDATA::Field_Draw(void)
 		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_1)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+		}
+		else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
+		{
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
 		}
 		else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
 		{

@@ -22,7 +22,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Finalize(void)
 void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
 {
 	m_Position.y -= BOMB_GRAVITY;
-	if (Keyboard_IsKeyDownTrigger(KK_V) && m_Touch)
+	if (m_Touch)
 	{
 		m_State = BOMB_STATE::BOMB_ACTIVE_HAVE;
 		m_Touch = false;
@@ -38,7 +38,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 
 
 
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 5.0f)
+	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
@@ -46,60 +46,60 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 
 
 
 
-	if (inputB) {
-		if (Mouse_IsLeftDownTrigger())
-		{
-			// プレイヤーの向き
-			float yaw = pPlayerRot.y;
+	//if (inputB) {
+	//	if (Mouse_IsLeftDownTrigger())
+	//	{
+	//		// プレイヤーの向き
+	//		float yaw = pPlayerRot.y;
 
-			// プレイヤーの正面方向ベクトル
-			float pVecX = sinf(yaw);
-			float pVecZ = cosf(yaw);
+	//		// プレイヤーの正面方向ベクトル
+	//		float pVecX = sinf(yaw);
+	//		float pVecZ = cosf(yaw);
 
-			// 正規化
-			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
-			if (len > 0.0f) {
-				pVecX /= len;
-				pVecZ /= len;
-			}
+	//		// 正規化
+	//		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+	//		if (len > 0.0f) {
+	//			pVecX /= len;
+	//			pVecZ /= len;
+	//		}
 
-			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+	//		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
-			// 投げる速度
-			m_Velocity.x = pVecX * speed;
-			m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
-			m_Velocity.z = pVecZ * speed;
+	//		// 投げる速度
+	//		m_Velocity.x = pVecX * speed;
+	//		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+	//		m_Velocity.z = pVecZ * speed;
 
-			m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
-		}
-	}
-	else {
-		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
-		{
-			// プレイヤーの向き
-			float yaw = pPlayerRot.y;
+	//		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+	//	}
+	//}
+	//else {
+	//	if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
+	//	{
+	//		// プレイヤーの向き
+	//		float yaw = pPlayerRot.y;
 
-			// プレイヤーの正面方向ベクトル
-			float pVecX = sinf(yaw);
-			float pVecZ = cosf(yaw);
+	//		// プレイヤーの正面方向ベクトル
+	//		float pVecX = sinf(yaw);
+	//		float pVecZ = cosf(yaw);
 
-			// 正規化
-			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
-			if (len > 0.0f) {
-				pVecX /= len;
-				pVecZ /= len;
-			}
+	//		// 正規化
+	//		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+	//		if (len > 0.0f) {
+	//			pVecX /= len;
+	//			pVecZ /= len;
+	//		}
 
-			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+	//		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
-			// 投げる速度
-			m_Velocity.x = pVecX * speed;
-			m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
-			m_Velocity.z = pVecZ * speed;
+	//		// 投げる速度
+	//		m_Velocity.x = pVecX * speed;
+	//		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+	//		m_Velocity.z = pVecZ * speed;
 
-			m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
-		}
-	}
+	//		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+	//	}
+	//}
 
 
 

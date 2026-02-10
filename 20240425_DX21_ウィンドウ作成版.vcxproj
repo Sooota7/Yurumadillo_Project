@@ -142,6 +142,8 @@
     <ClCompile Include="bombSource.cpp" />
     <ClCompile Include="bombUI.cpp" />
     <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossMonster.cpp" />
+    <ClCompile Include="BossObj.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
@@ -200,6 +202,8 @@
     <ClInclude Include="bombSource.h" />
     <ClInclude Include="bombUI.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossMonster.h" />
+    <ClInclude Include="BossObj.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debug_ostream.h" />

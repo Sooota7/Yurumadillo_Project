@@ -171,7 +171,7 @@ void	PLAYER::Player_Update()
 		m_State = PLAYER_STATE::PLAYER_STATE_RESPAWN;
 	}
 
-	if (m_Hp < 0.0f)
+	if (m_Hp <= 0.0f)
 	{
 		m_State = PLAYER_STATE::PLAYER_STATE_DEATH;
 	}
@@ -339,9 +339,16 @@ void PLAYER::Player_Move()
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT)  || GetThumbLeftX(0) <= -0.5f) // 左
 			move.x += right.x, move.z += right.z;
 
+		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
+		{
+			BalloomUp = true;
+			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+		}
+
 		//junp
-		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount)
+		else if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount) {
 			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+		}
 
 		//bombTrans
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B) && !BombHave) {
@@ -368,14 +375,14 @@ void PLAYER::Player_Move()
         m_Velocity.z = 0.0f;
     }
 
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER)  && JumpCount /*&&BalloonFlag==true*/)
-	{
-		BalloomUp = true;
-		m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
-	}
-    
-
-
+	//if (Keyboard_IsKeyDownTrigger(KK_ENTER) && JumpCount /*&&BalloonFlag==true*/)
+	//{
+	//	BalloomUp = true;
+	//	m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+	//}
+    // ジャンプ
+    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
+        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 
 	// --- 進行方向に体の向きを合わせる ---
 	if (len > 0.0f)
@@ -449,6 +456,7 @@ PLAYER* PLAYER::GetPlayer()
 void PLAYER::Player_Balloon()
 {
 
+	JumpCount = false;
 		if (BalloomUp == true)
 		{
 			m_Velocity.y = PLAYER_BALLOON_SPEED; //上昇
@@ -458,8 +466,9 @@ void PLAYER::Player_Balloon()
 			m_Velocity.y = PLAYER_BALLOON_FALLSPEED;
 		}
 
-   		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && m_State == PLAYER_STATE::PLAYER_STATE_BALLOON)
+   		if (!BombHave && m_State == PLAYER_STATE::PLAYER_STATE_BALLOON)
 		{
+			BalloomUp = false;
 			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
 		}
 

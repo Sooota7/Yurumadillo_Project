@@ -17,7 +17,7 @@ using namespace DirectX;
 #include	"Dictionary.h"
 #include "player.h"
 #include     "billboardManager.h"
-// ƒ}ƒNƒ’è‹`
+// ãƒã‚¯ãƒ­å®šç¾©
 
 #define		BOMB_NUM_MAX	(100)
 #define		BOMB_TYPE_MAX	(2)
@@ -27,16 +27,16 @@ using namespace DirectX;
 class BOMBTRAIL
 {
 public:
-	XMFLOAT3	m_Position;		//”š’e‚ÌÀ•W
-	XMFLOAT3	m_Rotation;		//”š’e‚ÌÀ•W
-	XMFLOAT3	m_Scaling;		//”š’e‚ÌÀ•W
+	XMFLOAT3	m_Position;		//çˆ†å¼¾ã®åº§æ¨™
+	XMFLOAT3	m_Rotation;		//çˆ†å¼¾ã®åº§æ¨™
+	XMFLOAT3	m_Scaling;		//çˆ†å¼¾ã®åº§æ¨™
 };
 
 class BOMB
 {
 private:
 
-	//5•bŒã”š”­
+	//5ç§’å¾Œçˆ†ç™º
 	const int limitTime{ 5 };
 
 
@@ -47,7 +47,7 @@ private:
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
 	int				m_Fbno[BOMB_NUM_MAX];
 
-	MODEL*			m_Model[BOMB_MAX] = { NULL };//ƒfƒoƒbƒO
+	MODEL*			m_Model[BOMB_MAX] = { NULL };//ãƒ‡ãƒãƒƒã‚°
 	MODEL* m_BombModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_NorBombModel;
@@ -60,9 +60,12 @@ public:
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(BillboardManager* billboardManager);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	void	Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSOURCE* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
+	void Bomb_SetBoss(BOSSMONSTER* boss);
+
 
 	void	Bomb_Trail_Draw();
 	

@@ -4,7 +4,7 @@
 #include "camera.h"
 #include "Dictionary.h"
 #include "player.h"
-
+#include "BossMonster.h"
 
 //グローバル変数
 static ID3D11Device* g_pDevice = NULL;
@@ -141,6 +141,31 @@ int GetBomb5(int x, int y, int z)
 
 
 }
+
+int GetBomb6(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return boss_pos_row[y][x];
+
+		break;
+	case(1):
+		return boss_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return boss_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckBomb(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -161,6 +186,9 @@ int CheckBomb(int x, int y, int z,FIELD_NO no)
 		break;
 	case NO_5:
 		return GetBomb5(x, y, z);
+		break;
+	case NO_6:
+		return GetBomb6(x, y, z);
 		break;
 
 	default:
@@ -240,6 +268,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	}
 
 	
+
 	/*for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f), BOMB_STATE::BOMB_SAFE);
@@ -803,6 +832,88 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 }
 
+void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
+{
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_Bomb[i].BombSource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_Bomb[i].BombSource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_Bomb[i].BombSource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_Bomb[i].BombSource_Active_Throw_Boss();
+			break;
+		case BOMB_EXPLOSION:
+			m_Bomb[i].BombSource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_Bomb[i].BombSource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_RunBomb[i].Runbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_RunBomb[i].Runbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_RunBomb[i].Runbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_RunBomb[i].Runbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_RunBomb[i].Runbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_RunBomb[i].Runbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_FlowtBomb[i].Flowtbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_FlowtBomb[i].Flowtbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_FlowtBomb[i].Flowtbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_FlowtBomb[i].Flowtbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
+
+
 BOMBSOURCE* BOMB::Bomb_GetBomb()
 {
 	return m_Bomb->BombSource_GetBombSource();
@@ -818,6 +929,13 @@ FLOWTBOMBSOURCE* BOMB::Bomb_GetFlowtBomb()
 	return m_FlowtBomb->Flowtbombsource_GetFlowtbombsource();
 }
 
+void BOMB::Bomb_SetBoss(BOSSMONSTER* boss)
+{
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bomb[i].BombSource_SetBoss(boss);
+	}
+}
 void BOMB::Bomb_Trail_Draw()
 {
 
