@@ -117,7 +117,7 @@ void BombUI::Draw()
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.8f, 0.0f);
+	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.9f, SCREEN_HEIGHT * 0.9f, 0.0f);
 	XMFLOAT2	holderSize = XMFLOAT2(200.0f, 200.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
