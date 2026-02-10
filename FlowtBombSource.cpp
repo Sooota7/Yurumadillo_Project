@@ -2,6 +2,9 @@
 #include	"keyboard.h"
 #include	"collision.h"
 #include	"mouse.h"
+#include	"inputx.h"
+
+static bool inputB = InputKeyKonCheck();
 
 void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
@@ -19,7 +22,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Finalize(void)
 void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
 {
 	m_Position.y -= BOMB_GRAVITY;
-	if (Keyboard_IsKeyDownTrigger(KK_V) && m_Touch)
+	if (m_Touch)
 	{
 		m_State = BOMB_STATE::BOMB_ACTIVE_HAVE;
 		m_Touch = false;
@@ -30,43 +33,74 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
 void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 1.0f;
+	m_Position.y += 1.5f;
 
 
 
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 5.0f)
+	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
 	}
 
 
-	if (Mouse_IsLeftDownTrigger())
-	{
-		// プレイヤーの向き
-		float yaw = pPlayerRot.y;
 
-		// プレイヤーの正面方向ベクトル
-		float pVecX = sinf(yaw);
-		float pVecZ = cosf(yaw);
+	//if (inputB) {
+	//	if (Mouse_IsLeftDownTrigger())
+	//	{
+	//		// プレイヤーの向き
+	//		float yaw = pPlayerRot.y;
 
-		// 正規化
-		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
-		if (len > 0.0f) {
-			pVecX /= len;
-			pVecZ /= len;
-		}
+	//		// プレイヤーの正面方向ベクトル
+	//		float pVecX = sinf(yaw);
+	//		float pVecZ = cosf(yaw);
 
-		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+	//		// 正規化
+	//		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+	//		if (len > 0.0f) {
+	//			pVecX /= len;
+	//			pVecZ /= len;
+	//		}
 
-		// 投げる速度
-		m_Velocity.x = pVecX * speed;
-		m_Velocity.y = 0.05f;//BOMB_THROW_POWER;  // 上方向成分（好みで調整）
-		m_Velocity.z = pVecZ * speed;
+	//		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
-		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
-	}
+	//		// 投げる速度
+	//		m_Velocity.x = pVecX * speed;
+	//		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+	//		m_Velocity.z = pVecZ * speed;
+
+	//		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+	//	}
+	//}
+	//else {
+	//	if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
+	//	{
+	//		// プレイヤーの向き
+	//		float yaw = pPlayerRot.y;
+
+	//		// プレイヤーの正面方向ベクトル
+	//		float pVecX = sinf(yaw);
+	//		float pVecZ = cosf(yaw);
+
+	//		// 正規化
+	//		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+	//		if (len > 0.0f) {
+	//			pVecX /= len;
+	//			pVecZ /= len;
+	//		}
+
+	//		float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+
+	//		// 投げる速度
+	//		m_Velocity.x = pVecX * speed;
+	//		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+	//		m_Velocity.z = pVecZ * speed;
+
+	//		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+	//	}
+	//}
+
 
 
 }

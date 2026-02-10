@@ -22,6 +22,8 @@
 
 #include "mouse.h"
 
+#include "inputx.h"
+
 ///////////////////////////////////////////
 #define		SCREEN_WIDTH	(1920)
 #define		SCREEN_HEIGHT	(1080)
@@ -54,6 +56,8 @@ LRESULT	CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 int APIENTRY WinMain(HINSTANCE hInstance,
 	HINSTANCE hPrevInstance, LPSTR lpCmd, int nCmdShow)
 {
+
+	
 
 	//乱数の初期化
 	srand(timeGetTime());
@@ -107,9 +111,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	//ウィンドウ内部の更新要求
 	UpdateWindow(hWnd);
 
-	MANAGER manager;
+	static MANAGER manager;
 
 	Direct3D_Initialize(hWnd);
+
+	
+
 	Keyboard_Initialize();
 	Shader_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext()); // シェーダの初期化
 	InitializeSprite();//スプライトの初期化
@@ -119,6 +126,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	Mouse_Initialize(hWnd);
 	Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE); // マウスルック開始
 
+	InitInput(hInstance, hWnd);	// コントローラー初期化
 
 	manager.Manager_Initialize();
 
@@ -165,6 +173,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 #endif
 
 				//更新処理
+				UpdateInput();		// コントローラー更新
 				manager.Manager_Update();
 
 				//描画処理
@@ -181,6 +190,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	manager.Manager_Finalize();
 
+	UninitInput();		// コントローラー終了処理
 
 	UninitAudio();		//サウンドの終了
 

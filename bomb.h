@@ -16,35 +16,58 @@ using namespace DirectX;
 #include	"FlowtBombSource.h"
 #include	"Dictionary.h"
 #include "player.h"
-// �}�N����`
+#include     "billboardManager.h"
+// マクロ定義
 
 #define		BOMB_NUM_MAX	(100)
 #define		BOMB_TYPE_MAX	(2)
 
+#define		BOMB_TRAIL_MAX	(10)
+
+class BOMBTRAIL
+{
+public:
+	XMFLOAT3	m_Position;		//爆弾の座標
+	XMFLOAT3	m_Rotation;		//爆弾の座標
+	XMFLOAT3	m_Scaling;		//爆弾の座標
+};
 
 class BOMB
 {
 private:
 
-	//5�b�㔚��
+	//5秒後爆発
 	const int limitTime{ 5 };
 
 
 	BOMBSOURCE		m_Bomb[BOMB_NUM_MAX];
+	int				m_Bbno[BOMB_NUM_MAX];
 	RUNBOMBSOURCE	m_RunBomb[BOMB_NUM_MAX];
+	int				m_Rbno[BOMB_NUM_MAX];
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
+	int				m_Fbno[BOMB_NUM_MAX];
 
-	MODEL*			m_Model[BOMB_MAX] = { NULL };//�f�o�b�O
+	MODEL*			m_Model[BOMB_MAX] = { NULL };//デバッグ
+	MODEL* m_BombModel[BOMB_TYPE::TYPE_MAX];
+	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
+	MODEL* m_NorBombModel;
+
+	ID3D11ShaderResourceView* m_Texture = NULL;
 
 public:
 
 	void	Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,FIELD_NO no);
 	void	Bomb_Finalize(void);
-	void	Bomb_Draw(void);
+	void	Bomb_Draw(BillboardManager* billboardManager);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	void	Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSOURCE* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
+	void Bomb_SetBoss(BOSSMONSTER* boss);
+
+
+	void	Bomb_Trail_Draw();
 	
 };
 

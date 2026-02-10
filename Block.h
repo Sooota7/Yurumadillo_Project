@@ -24,6 +24,8 @@ enum FIELD
 
 	FIELD_OBT_1, // ÉSÅ[Éã
 
+	FIELD_BREAK, // âÛÇÍÇÈè∞
+
 	FIELD_JUMP, // íµÇÀÇÈè∞
 
 	FIELD_MAX
@@ -47,5 +49,6 @@ public:
 	MAP* GetFieldMap();
 	FIELD MapData_GetNo() { return no; };
 	XMFLOAT3 MapData_GetPosition() { return position; };
+	void MapData_SetPosition(XMFLOAT3 pos) { position = pos; };
 };
 

@@ -138,8 +138,9 @@ void GAME::Game_Update()
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
 	collision.PlayerBombCollision(&m_Player, &m_bomb);
 	collision.BombFieldCollision(&m_bomb, &m_Map);
+	collision.EXPLOSIONFieldCollision(&m_bomb, &m_Map);
 	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+	//collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 
@@ -182,15 +183,16 @@ void GAME::Game_Draw()
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw();
+	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
 
 	//2D描画
 	Light.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(FALSE);
 
-	m_BillboardManager.Draw();
+
+	m_BillboardManager.Draw(m_NowField);
+	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
 

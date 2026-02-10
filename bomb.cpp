@@ -4,16 +4,16 @@
 #include "camera.h"
 #include "Dictionary.h"
 #include "player.h"
+#include "BossMonster.h"
 
-
-//ÉOÉçÅ[ÉoÉãïœêî
+//„Ç∞„É≠„Éº„Éê„É´Â§âÊï∞
 static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
-//í∏ì_ÉoÉbÉtÉ@
+//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°
 static ID3D11Buffer* g_VertexBuffer = NULL;
-//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@
+//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°
 static ID3D11Buffer* g_IndexBuffer = NULL;
-//ÉeÉNÉXÉ`ÉÉïœêî
+//„ÉÜ„ÇØ„Çπ„ÉÅ„É£Â§âÊï∞
 static ID3D11ShaderResourceView* g_Texture;
 
 
@@ -141,6 +141,31 @@ int GetBomb5(int x, int y, int z)
 
 
 }
+
+int GetBomb6(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return boss_pos_row[y][x];
+
+		break;
+	case(1):
+		return boss_pos_nor[y][x];
+
+
+		break;
+	case(2):
+		return boss_pos_high[y][x];
+
+
+		break;
+	default:
+		break;
+	}
+
+
+}
 int CheckBomb(int x, int y, int z,FIELD_NO no)
 {
 	switch (no)
@@ -162,6 +187,9 @@ int CheckBomb(int x, int y, int z,FIELD_NO no)
 	case NO_5:
 		return GetBomb5(x, y, z);
 		break;
+	case NO_6:
+		return GetBomb6(x, y, z);
+		break;
 
 	default:
 		break;
@@ -175,6 +203,48 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	m_NorBombModel = ModelLoad("asset\\model\\AliceObjCool.fbx");
+
+	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
+	{
+		switch (i)
+		{
+		case TYPE_NORMAL:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceBomb.fbx");
+			break;
+		case TYPE_FLOW:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+			break;
+		case TYPE_RUN:
+			m_BombModel[i] = ModelLoad("asset\\model\\AliceRunBomb.fbx");
+			break;
+		case TYPE_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
+	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
+	{
+		switch (i)
+		{
+		case TYPE_NORMAL:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceObj.fbx");
+			break;
+		case TYPE_FLOW:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+			break;
+		case TYPE_RUN:
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceRunObj.fbx");
+			break;
+		case TYPE_MAX:
+			break;
+		default:
+			break;
+		}
+	}
+
 	for (int i = 0; i < BOMB_STATE::BOMB_MAX; i++)
 	{
 		switch (i)
@@ -185,7 +255,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 			m_Model[i] = ModelLoad("asset\\model\\ball.fbx");
 			break;
 		case BOMB_ACTIVE_HAVE:
-			m_Model[i] = ModelLoad("asset\\model\\test_bomb.fbx");
+			m_Model[i] = ModelLoad("asset\\model\\test_Bomb.fbx");
 			break;
 		case BOMB_EXPLOSION:
 			m_Model[i] = ModelLoad("asset\\model\\test_explosion.fbx");
@@ -198,6 +268,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	}
 
 	
+
 	/*for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bomb[i].BombSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f), BOMB_STATE::BOMB_SAFE);
@@ -239,6 +310,12 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		}
 	}
 	
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bbno[i] = 0;
+		m_Rbno[i] = 0;
+		m_Fbno[i] = 0;
+	}
 }
 
 void BOMB::Bomb_Finalize(void)
@@ -271,31 +348,30 @@ void BOMB::Bomb_Finalize(void)
 	SAFE_RELEASE(g_Texture);
 }
 
-void BOMB::Bomb_Draw(void)
+void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 {
 
-	//ÉVÉFÅ[É_Å[Çï`âÊÉpÉCÉvÉâÉCÉìÇ÷ê›íË
+	//„Ç∑„Çß„Éº„ÉÄ„Éº„ÇíÊèèÁîª„Éë„Ç§„Éó„É©„Ç§„É≥„Å∏Ë®≠ÂÆö
 	Shader_Begin();
 
 
-	//ÉvÉçÉWÉFÉNÉVÉáÉìçsóÒçÏê¨
+	//„Éó„É≠„Ç∏„Çß„ÇØ„Ç∑„Éß„É≥Ë°åÂàó‰ΩúÊàê
 	XMMATRIX	Projection = GetProjectionMatrix();
-	//ÉrÉÖÅ[çsóÒçÏê¨
+	//„Éì„É•„ÉºË°åÂàó‰ΩúÊàê
 	XMMATRIX	View = GetViewMatrix();
-	//êÊÇ…VPïœä∑çsóÒÇçÏÇ¡ÇƒÇ®Ç≠
+	//ÂÖà„Å´VPÂ§âÊèõË°åÂàó„Çí‰Ωú„Å£„Å¶„Åä„Åè
 	XMMATRIX	VP = View * Projection;
 
-	
+
 	static float rot = 0.0f;
 	rot -= 0.5f;
-
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 
 		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetPosition();
 
-		//ÉXÉPÅ[ÉäÉìÉOçsóÒÇÃçÏê¨
+		//„Çπ„Ç±„Éº„É™„É≥„Ç∞Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -303,7 +379,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//ïΩçsà⁄ìÆçsóÒÇÃçÏê¨
+		//Âπ≥Ë°åÁßªÂãïË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -311,7 +387,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//âÒì]çsóÒÇÃçÏê¨
+		//ÂõûËª¢Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -320,60 +396,85 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ÉèÅ[ÉãÉhçsóÒÇÃçÏê¨
+		//„ÉØ„Éº„É´„ÉâË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ç≈èIìIÇ»ïœä∑çsóÒÇçÏê¨
+		//ÊúÄÁµÇÁöÑ„Å™Â§âÊèõË°åÂàó„Çí‰ΩúÊàê
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXÇ÷çsóÒÇÉZÉbÉg
+		//DirectX„Å∏Ë°åÂàó„Çí„Çª„ÉÉ„Éà
 		Shader_SetMatrix(WVP);
 
-		//ÉeÉNÉXÉ`ÉÉÇÉZÉbÉg
+		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£„Çí„Çª„ÉÉ„Éà
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//í∏ì_ÉoÉbÉtÉ@ÇÉZÉbÉg
-		UINT	stride = sizeof(Vertex3D);	//í∏ì_ÇPå¬ÇÃÉfÅ[É^ÉTÉCÉY
+		//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
+		UINT	stride = sizeof(Vertex3D);	//È†ÇÁÇπÔºëÂÄã„ÅÆ„Éá„Éº„Çø„Çµ„Ç§„Ç∫
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@ÇÉZÉbÉg
+		//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//ï`âÊÇ∑ÇÈÉ|ÉäÉSÉìÇÃéÌóﬁÇÉZÉbÉg 3í∏ì_Ç≈É|ÉäÉSÉìÇPñáÇ∆ÇµÇƒï\é¶
+		//ÊèèÁîª„Åô„Çã„Éù„É™„Ç¥„É≥„ÅÆÁ®ÆÈ°û„Çí„Çª„ÉÉ„Éà 3È†ÇÁÇπ„Åß„Éù„É™„Ç¥„É≥ÔºëÊûö„Å®„Åó„Å¶Ë°®Á§∫
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//ï`âÊÉäÉNÉGÉXÉg
+		//ÊèèÁîª„É™„ÇØ„Ç®„Çπ„Éà
 		switch (m_Bomb[i].BombSource_GetState())
 		{
 		case BOMB_NONE:
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
+			m_Bbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_NORMAL]);
 			break;
 
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ÉeÉXÉgÇÕÉcÉäÅ[
+			//ModelDraw(m_Model[BOMB_EXPLOSION]);//„ÉÜ„Çπ„Éà„ÅØ„ÉÑ„É™„Éº
+			{
+				XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_Bomb[i].BombSource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Bbno[i] + 1))
+				{
+					m_Bbno[i]++;
+				}
+				
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Bbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Bbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+				
+
+			}
+
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
-
-
 	}
+
+	//„Éú„É†„ÅÆÊäú„ÅëÊÆªÔºà„ÇØ„Éº„É´„Çø„Ç§„É†‰∏≠„ÅÆÊèèÁîªÔºâ
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 
-		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
+		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetFirstPosition();
 
-		//ÉXÉPÅ[ÉäÉìÉOçsóÒÇÃçÏê¨
+		//„Çπ„Ç±„Éº„É™„É≥„Ç∞Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -381,7 +482,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//ïΩçsà⁄ìÆçsóÒÇÃçÏê¨
+		//Âπ≥Ë°åÁßªÂãïË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -389,7 +490,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//âÒì]çsóÒÇÃçÏê¨
+		//ÂõûËª¢Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -398,49 +499,149 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ÉèÅ[ÉãÉhçsóÒÇÃçÏê¨
+		//„ÉØ„Éº„É´„ÉâË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ç≈èIìIÇ»ïœä∑çsóÒÇçÏê¨
+		//ÊúÄÁµÇÁöÑ„Å™Â§âÊèõË°åÂàó„Çí‰ΩúÊàê
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXÇ÷çsóÒÇÉZÉbÉg
+		//DirectX„Å∏Ë°åÂàó„Çí„Çª„ÉÉ„Éà
 		Shader_SetMatrix(WVP);
 
-		//ÉeÉNÉXÉ`ÉÉÇÉZÉbÉg
+		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£„Çí„Çª„ÉÉ„Éà
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//í∏ì_ÉoÉbÉtÉ@ÇÉZÉbÉg
-		UINT	stride = sizeof(Vertex3D);	//í∏ì_ÇPå¬ÇÃÉfÅ[É^ÉTÉCÉY
+		//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
+		UINT	stride = sizeof(Vertex3D);	//È†ÇÁÇπÔºëÂÄã„ÅÆ„Éá„Éº„Çø„Çµ„Ç§„Ç∫
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@ÇÉZÉbÉg
+		//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//ï`âÊÇ∑ÇÈÉ|ÉäÉSÉìÇÃéÌóﬁÇÉZÉbÉg 3í∏ì_Ç≈É|ÉäÉSÉìÇPñáÇ∆ÇµÇƒï\é¶
+		//ÊèèÁîª„Åô„Çã„Éù„É™„Ç¥„É≥„ÅÆÁ®ÆÈ°û„Çí„Çª„ÉÉ„Éà 3È†ÇÁÇπ„Åß„Éù„É™„Ç¥„É≥ÔºëÊûö„Å®„Åó„Å¶Ë°®Á§∫
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//ï`âÊÉäÉNÉGÉXÉg
+		//ÊèèÁîª„É™„ÇØ„Ç®„Çπ„Éà
+		switch (m_Bomb[i].BombSource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			break;
+		case BOMB_ACTIVE_HAVE:
+			ModelDraw(m_NorBombModel);
+			break;
+		case BOMB_ACTIVE_THROW:
+			ModelDraw(m_NorBombModel);
+			break;
+
+		case BOMB_EXPLOSION:
+			ModelDraw(m_NorBombModel);
+			break;
+
+		case BOMB_COOL:
+			ModelDraw(m_NorBombModel);
+			break;
+		}
+
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+
+		XMFLOAT3 bombPos = m_RunBomb[i].Runbombsource_GetPosition();
+		XMFLOAT3 bombRot = m_RunBomb[i].Runbombsource_GetRotation();
+
+		//„Çπ„Ç±„Éº„É™„É≥„Ç∞Ë°åÂàó„ÅÆ‰ΩúÊàê
+		XMMATRIX	ScalingMatrix = XMMatrixScaling
+		(
+			1.0f,
+			1.0f,
+			1.0f
+		);
+
+		//Âπ≥Ë°åÁßªÂãïË°åÂàó„ÅÆ‰ΩúÊàê
+		XMMATRIX	TranslationMatrix = XMMatrixTranslation
+		(
+			bombPos.x,
+			bombPos.y,
+			bombPos.z
+		);
+
+		//ÂõûËª¢Ë°åÂàó„ÅÆ‰ΩúÊàê
+		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		(
+			bombRot.x,
+			bombRot.y,
+			bombRot.z
+		);
+		//„ÉØ„Éº„É´„ÉâË°åÂàó„ÅÆ‰ΩúÊàê
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		//ÊúÄÁµÇÁöÑ„Å™Â§âÊèõË°åÂàó„Çí‰ΩúÊàê
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
+		//DirectX„Å∏Ë°åÂàó„Çí„Çª„ÉÉ„Éà
+		Shader_SetMatrix(WVP);
+
+		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£„Çí„Çª„ÉÉ„Éà
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+		//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
+		UINT	stride = sizeof(Vertex3D);	//È†ÇÁÇπÔºëÂÄã„ÅÆ„Éá„Éº„Çø„Çµ„Ç§„Ç∫
+		UINT	offset = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+		//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
+		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//ÊèèÁîª„Åô„Çã„Éù„É™„Ç¥„É≥„ÅÆÁ®ÆÈ°û„Çí„Çª„ÉÉ„Éà 3È†ÇÁÇπ„Åß„Éù„É™„Ç¥„É≥ÔºëÊûö„Å®„Åó„Å¶Ë°®Á§∫
+		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		//ÊèèÁîª„É™„ÇØ„Ç®„Çπ„Éà
 		switch (m_RunBomb[i].Runbombsource_GetState())
 		{
 		case BOMB_NONE:
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
+			m_Rbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ÉeÉXÉgÇÕÉcÉäÅ[
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//„ÉÜ„Çπ„Éà„ÅØ„ÉÑ„É™„Éº
+			{
+				XMFLOAT3 pos = m_RunBomb[i].Runbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_RunBomb[i].Runbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Rbno[i] + 1))
+				{
+					m_Rbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Rbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Rbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
+
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
 
@@ -451,7 +652,7 @@ void BOMB::Bomb_Draw(void)
 
 		XMFLOAT3 bombPos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
 
-		//ÉXÉPÅ[ÉäÉìÉOçsóÒÇÃçÏê¨
+		//„Çπ„Ç±„Éº„É™„É≥„Ç∞Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
 			1.0f,
@@ -459,7 +660,7 @@ void BOMB::Bomb_Draw(void)
 			1.0f
 		);
 
-		//ïΩçsà⁄ìÆçsóÒÇÃçÏê¨
+		//Âπ≥Ë°åÁßªÂãïË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
 			bombPos.x,
@@ -467,7 +668,7 @@ void BOMB::Bomb_Draw(void)
 			bombPos.z
 		);
 
-		//âÒì]çsóÒÇÃçÏê¨
+		//ÂõûËª¢Ë°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
 			XMConvertToRadians(0.0f),
@@ -476,55 +677,81 @@ void BOMB::Bomb_Draw(void)
 			XMConvertToRadians(0.0f),
 			XMConvertToRadians(0.0f)
 		);
-		//ÉèÅ[ÉãÉhçsóÒÇÃçÏê¨
+		//„ÉØ„Éº„É´„ÉâË°åÂàó„ÅÆ‰ΩúÊàê
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//ç≈èIìIÇ»ïœä∑çsóÒÇçÏê¨
+		//ÊúÄÁµÇÁöÑ„Å™Â§âÊèõË°åÂàó„Çí‰ΩúÊàê
 		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXÇ÷çsóÒÇÉZÉbÉg
+		//DirectX„Å∏Ë°åÂàó„Çí„Çª„ÉÉ„Éà
 		Shader_SetMatrix(WVP);
 
-		//ÉeÉNÉXÉ`ÉÉÇÉZÉbÉg
+		//„ÉÜ„ÇØ„Çπ„ÉÅ„É£„Çí„Çª„ÉÉ„Éà
 		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//í∏ì_ÉoÉbÉtÉ@ÇÉZÉbÉg
-		UINT	stride = sizeof(Vertex3D);	//í∏ì_ÇPå¬ÇÃÉfÅ[É^ÉTÉCÉY
+		//È†ÇÁÇπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
+		UINT	stride = sizeof(Vertex3D);	//È†ÇÁÇπÔºëÂÄã„ÅÆ„Éá„Éº„Çø„Çµ„Ç§„Ç∫
 		UINT	offset = 0;
 		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//ÉCÉìÉfÉbÉNÉXÉoÉbÉtÉ@ÇÉZÉbÉg
+		//„Ç§„É≥„Éá„ÉÉ„ÇØ„Çπ„Éê„ÉÉ„Éï„Ç°„Çí„Çª„ÉÉ„Éà
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//ï`âÊÇ∑ÇÈÉ|ÉäÉSÉìÇÃéÌóﬁÇÉZÉbÉg 3í∏ì_Ç≈É|ÉäÉSÉìÇPñáÇ∆ÇµÇƒï\é¶
+		//ÊèèÁîª„Åô„Çã„Éù„É™„Ç¥„É≥„ÅÆÁ®ÆÈ°û„Çí„Çª„ÉÉ„Éà 3È†ÇÁÇπ„Åß„Éù„É™„Ç¥„É≥ÔºëÊûö„Å®„Åó„Å¶Ë°®Á§∫
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//ï`âÊÉäÉNÉGÉXÉg
+		//ÊèèÁîª„É™„ÇØ„Ç®„Çπ„Éà
 		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
 		{
 		case BOMB_NONE:
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_Model[BOMB_ITEM]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
+			m_Fbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_Model[BOMB_ACTIVE_HAVE]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
-		
+
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//ÉeÉXÉgÇÕÉcÉäÅ[
+			ModelDraw(m_Model[BOMB_EXPLOSION]);//„ÉÜ„Çπ„Éà„ÅØ„ÉÑ„É™„Éº
+			{
+				XMFLOAT3 pos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
+				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				float cnt = m_FlowtBomb[i].Flowtbombsource_GetCount();
+
+				int wc = 3;
+				int hc = 3;
+
+				if (cnt > (1.0f / (wc * hc)) * (m_Fbno[i] + 1))
+				{
+					m_Fbno[i]++;
+				}
+
+				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+				if (m_Fbno[i] < wc * hc)
+				{
+					Billboard* bb = new Billboard(pos, size, col, m_Fbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+					billboardManager->Register(bb);
+				}
+
+
+			}
 			break;
 
 		case BOMB_COOL:
-			
+
 			break;
 		}
 
 
 	}
 }
+	
+
 
 void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
@@ -605,6 +832,88 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 }
 
+void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
+{
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_Bomb[i].BombSource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_Bomb[i].BombSource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_Bomb[i].BombSource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_Bomb[i].BombSource_Active_Throw_Boss();
+			break;
+		case BOMB_EXPLOSION:
+			m_Bomb[i].BombSource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_Bomb[i].BombSource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_RunBomb[i].Runbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_RunBomb[i].Runbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_RunBomb[i].Runbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_RunBomb[i].Runbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_RunBomb[i].Runbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_RunBomb[i].Runbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
+		{
+		case BOMB_NONE:
+			break;
+		case BOMB_ITEM:
+			m_FlowtBomb[i].Flowtbombsource_Safe();
+			break;
+		case BOMB_ACTIVE_HAVE:
+			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			break;
+		case BOMB_ACTIVE_THROW:
+			m_FlowtBomb[i].Flowtbombsource_Active_Throw();
+			break;
+		case BOMB_EXPLOSION:
+			m_FlowtBomb[i].Flowtbombsource_Explosion();
+			break;
+		case BOMB_COOL:
+			m_FlowtBomb[i].Flowtbombsource_Cool();
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
+
+
 BOMBSOURCE* BOMB::Bomb_GetBomb()
 {
 	return m_Bomb->BombSource_GetBombSource();
@@ -618,6 +927,19 @@ RUNBOMBSOURCE* BOMB::Bomb_GetRunBomb()
 FLOWTBOMBSOURCE* BOMB::Bomb_GetFlowtBomb()
 {
 	return m_FlowtBomb->Flowtbombsource_GetFlowtbombsource();
+}
+
+void BOMB::Bomb_SetBoss(BOSSMONSTER* boss)
+{
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		m_Bomb[i].BombSource_SetBoss(boss);
+	}
+}
+void BOMB::Bomb_Trail_Draw()
+{
+
+
 }
 
 

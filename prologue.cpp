@@ -6,6 +6,7 @@
 #include	"keyboard.h"
 
 #include	"Prologue.h"
+#include	"inputx.h"
 
 #include "fade.h"
 #include "shader.h"
@@ -46,6 +47,9 @@ void PROLOGUE::Prologue_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	Prologue_TextureCount = 0;
 
+	g_SeID = LoadAudio("asset\\Audio\\Intro_Click_Test.wav");
+
+
 }
 void PROLOGUE::Prologue_Finalize()
 {
@@ -54,21 +58,29 @@ void PROLOGUE::Prologue_Finalize()
 	{
 		SAFE_RELEASE(g_Texture[i]);
 	}
+
+
 	
+	UnloadAudio(g_SeID);//サウンドの解放
 
 }
 void PROLOGUE::Prologue_Update()
 { 
 	//キー入力で次の画像へ
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && Prologue_TextureCount < MAX_PROLOGUE_TEXTURE)
+	if ((Keyboard_IsKeyDownTrigger(KK_ENTER)||IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
+		&& Prologue_TextureCount < MAX_PROLOGUE_TEXTURE)
 	{
+		PlayAudio(g_SeID, false);		//再生開始（ループあり）
 		Prologue_TextureCount++;
 	}
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE)&&Prologue_TextureCount==MAX_PROLOGUE_TEXTURE)
+	if ((Keyboard_IsKeyDownTrigger(KK_ENTER)|| IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
+		&& (m_Fade->GetFadeState() == FADE_NONE)&&Prologue_TextureCount==MAX_PROLOGUE_TEXTURE)
 	{
+		PlayAudio(g_SeID, false);		//再生開始（ループあり）
+
 		//フェードアウトさせてシーンを切り替える
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
 		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_MENU);

@@ -1,7 +1,13 @@
 #include "bombSource.h"
 #include	"keyboard.h"
 #include	"collision.h"
+#include	"inputx.h"
 #include	"mouse.h"
+#include	"billboard.h"
+#include	"billboardManager.h"
+
+static bool inputB = InputKeyKonCheck();
+
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
@@ -20,7 +26,7 @@ void BOMBSOURCE::BombSource_Finalize(void)
 void BOMBSOURCE::BombSource_Safe()
 {
 	m_Position.y -= BOMB_GRAVITY;
-	if (Keyboard_IsKeyDownTrigger(KK_V)&&m_Touch)
+	if (m_Touch)
 	{
 		m_State = BOMB_STATE::BOMB_ACTIVE_HAVE;
 		m_Touch = false;
@@ -31,7 +37,7 @@ void BOMBSOURCE::BombSource_Safe()
 void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 1.0f;
+	m_Position.y += 1.5f;
 
 	
 
@@ -69,32 +75,60 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 	//	m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 	//}
 	
-	if (Mouse_IsLeftDownTrigger())
-	{
-		// プレイヤーの向き
-		float yaw = pPlayerRot.y;
+	if (inputB) {
+		if (Mouse_IsLeftDownTrigger())
+		{
+			// プレイヤーの向き
+			float yaw = pPlayerRot.y;
 
-		// プレイヤーの正面方向ベクトル
-		float pVecX = sinf(yaw);
-		float pVecZ = cosf(yaw);
+			// プレイヤーの正面方向ベクトル
+			float pVecX = sinf(yaw);
+			float pVecZ = cosf(yaw);
 
-		// 正規化
-		float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
-		if (len > 0.0f) {
-			pVecX /= len;
-			pVecZ /= len;
+			// 正規化
+			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+			if (len > 0.0f) {
+				pVecX /= len;
+				pVecZ /= len;
+			}
+
+			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+
+			// 投げる速度
+			m_Velocity.x = pVecX * speed;
+			m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+			m_Velocity.z = pVecZ * speed;
+
+			m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 		}
-
-		float speed = BOMB_SPEED_MAX*BOMB_THROW_POWER;
-
-		// 投げる速度
-		m_Velocity.x = pVecX * speed;
-		m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
-		m_Velocity.z = pVecZ * speed;
-
-		m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 	}
+	else {
+		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
+		{
+			// プレイヤーの向き
+			float yaw = pPlayerRot.y;
 
+			// プレイヤーの正面方向ベクトル
+			float pVecX = sinf(yaw);
+			float pVecZ = cosf(yaw);
+
+			// 正規化
+			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
+			if (len > 0.0f) {
+				pVecX /= len;
+				pVecZ /= len;
+			}
+
+			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
+
+			// 投げる速度
+			m_Velocity.x = pVecX * speed;
+			m_Velocity.y = BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+			m_Velocity.z = pVecZ * speed;
+
+			m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
+		}
+	}
 
 }
 
@@ -151,6 +185,65 @@ void BOMBSOURCE::BombSource_Active_Throw()
 
 }
 
+void BOMBSOURCE::BombSource_Active_Throw_Boss()
+{
+	m_Position.x += m_Velocity.x*2;
+	m_Position.y += m_Velocity.y;
+	m_Position.z += m_Velocity.z*2;
+
+	//落下判定
+	if (m_Position.y < -10.0f)
+	{
+		m_State = BOMB_STATE::BOMB_COOL;
+		return;
+	}
+
+	m_Velocity.x *= 0.98f;//速度を適当に減衰させる
+	m_Velocity.y *= 0.98f;//追加する
+	m_Velocity.z *= 0.98f;
+
+	//静止チェック
+	float	len =
+		(
+			m_Velocity.x * m_Velocity.x +
+			m_Velocity.y * m_Velocity.y +
+			m_Velocity.z * m_Velocity.z
+			);
+
+	if (len <= 0.0002f)//静止とみなす速度
+	{
+		m_StopTime++;
+		if (m_StopTime > (60.0f * 2))//２秒間続いている
+		{
+			m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			m_StopTime = 0.0f;
+		}
+	}
+
+	m_Count += 1.0f / 60.0f;
+	if (m_Count > 5.0f)
+	{
+		m_State = BOMB_STATE::BOMB_EXPLOSION;
+		m_Count = 0;
+	}
+
+	if (m_Position.z >= 20.0f && m_pBossMonster != nullptr)
+	{
+		m_State = BOMB_STATE::BOMB_EXPLOSION;
+		m_Count = 0;
+		m_Position.x = 7.0f;
+		m_Position.y = 2.0f;
+
+		float BossHP = m_pBossMonster->GetBossmonsterHp();
+		BossHP -= BOMB_DAMAGE_BOSS;
+		m_pBossMonster->SetBossmonsterHp(BossHP);
+	}
+
+
+	m_Velocity.y -= BOMB_GRAVITY;
+
+}
+
 void BOMBSOURCE::BombSource_Cool()
 {
 	m_Count += 1.0f / 60.0f;
@@ -159,16 +252,23 @@ void BOMBSOURCE::BombSource_Cool()
 		m_State = BOMB_STATE::BOMB_ITEM;
 		m_Count = 0;
 		m_Position = m_FirstPosition;
+		m_Touch = false;
 	}
 }
 
 void BOMBSOURCE::BombSource_Explosion()
 {
+	if (!m_Exploded)
+	{
+		m_Count = 0;
+		m_Exploded = true;
+	}
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;
+		m_Exploded = false;
 	}
 }
 

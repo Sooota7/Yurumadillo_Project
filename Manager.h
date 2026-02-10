@@ -51,6 +51,8 @@ private:
 
 	int m_ClearCount = 0;
 
+	int	g_BgmID{ NULL };
+
 public:
 	void	Manager_Initialize();
 	void	Manager_Finalize();
@@ -58,9 +60,13 @@ public:
 	void	Manager_Draw();
 
 	void	SetScene(SCENE scene);
+	SCENE	GetScene() const { return m_Scene; };
 
 	void IncrementClearCount() { ++m_ClearCount; };
 	
 	int  GetClearCount() const { return m_ClearCount; };
 	
+	void Manager_BGM_Initialize(SCENE scene);
+
+	void Manager_BGM_Finalize();
 };
