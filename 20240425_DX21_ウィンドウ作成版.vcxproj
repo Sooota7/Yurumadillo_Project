@@ -147,6 +147,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
+    <ClCompile Include="Dictionary.cpp" />
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Ending.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="prologue.cpp" />
     <ClCompile Include="Result.cpp" />
     <ClCompile Include="RunBombSource.cpp" />
+    <ClCompile Include="RunBombSpawner.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -240,6 +242,7 @@
     <ClInclude Include="prologue.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="RunBombSource.h" />
+    <ClInclude Include="RunBombSpawner.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
