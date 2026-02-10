@@ -113,16 +113,12 @@ void BombUI::Draw()
 	XMFLOAT2	size = XMFLOAT2(100.0f, 100.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);*/
 
-	// UI背景描画 =========================
-	//テクスチャのセット
-	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_HOLDER]);
-
 	//画面サイズ取得
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.9f, SCREEN_HEIGHT * 0.8, 0.0f);
-	XMFLOAT2	holderSize = XMFLOAT2(150.0f, 150.0f);
+	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.8f, 0.0f);
+	XMFLOAT2	holderSize = XMFLOAT2(200.0f, 200.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
@@ -158,9 +154,7 @@ void BombUI::Draw()
 	//ブレンド無し
 	SetBlendState(BLENDSTATE_ALFA);
 
-	// 描画
-	DrawSprite(holderSize, color, 1, 1, 1);
-
+	
 	// 導火線描画 ================
 	//テクスチャのセット
 	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_ROPE]);
@@ -179,6 +173,29 @@ void BombUI::Draw()
 	// 描画
 	DrawSpriteRopeRight(ropeSize, color, 1, 1, 1);
 
+	// UI背景描画 =========================
+	//テクスチャのセット
+	m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_HOLDER]);
+
+	//平行移動 表示座標
+	XMMATRIX	holderTranslation =
+		XMMatrixTranslation(position.x, position.y - 20.f, 0.0f);
+	//回転
+	XMMATRIX	holderRotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
+	//拡大率（0はだめ）
+	XMMATRIX	holderScaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	//ワールド行列
+	XMMATRIX	holderWorld = holderScaling * holderRotation * holderTranslation;
+	//スクロール用行列作成
+	XMMATRIX	holderMat = holderWorld * Projection;
+
+	//シェーダーへ行列をセット
+	Shader_SetMatrix(holderMat);
+
+	// 描画
+	DrawSprite(holderSize, color, 1, 1, 1);
+
+
 	// UI爆弾描画 ================
 	if (m_BombType == 100)
 	{ // 爆弾を持っていない時
@@ -188,7 +205,7 @@ void BombUI::Draw()
 	// 爆弾を持っている時
 	// 爆弾のタイプ毎のテクスチャを設定
 	SetBombTexture();
-	XMFLOAT2 bombSize = XMFLOAT2(80.0f, 80.0f);
+	XMFLOAT2 bombSize = XMFLOAT2(120.0f, 120.0f);
 	// 描画
 	DrawSprite(bombSize, color, 1, 1, 1);
 

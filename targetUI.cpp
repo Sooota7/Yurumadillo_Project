@@ -20,7 +20,7 @@ void TargetUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	m_Position = XMFLOAT2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.12f);
+	m_Position = XMFLOAT2(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.12f);
 	m_Velocity = XMFLOAT2(0.0f, 0.0f);
 	m_Scaling = XMFLOAT2(1.0f,1.0f);
 	m_Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

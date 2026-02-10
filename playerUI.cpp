@@ -22,7 +22,7 @@ void PlayerUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
 	{
 		TexMetadata		metadata;
 		ScratchImage	image;
-		LoadFromWICFile(L"asset\\texture\\ui\\heart.png",
+		LoadFromWICFile(L"asset\\texture\\ui\\itemholder3.png",
 			WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
 		CreateShaderResourceView(pDevice, image.GetImages(),
 			image.GetImageCount(), metadata, &m_Texture[0]);
@@ -84,8 +84,8 @@ void PlayerUI::Draw_HpDigit()
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.8f, 0.0f);
-	XMFLOAT2	size = XMFLOAT2(80.0f, 80.0f);
+	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.92f, 0.0f);
+	XMFLOAT2	size = XMFLOAT2(100.0f, 80.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
