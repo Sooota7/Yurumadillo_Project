@@ -18,14 +18,17 @@ class TargetUI
 {
 private:
 	static constexpr int T_UI_MAX = 2;
+	static constexpr float T_UI_SPEED = 180.0f;
 
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pContext = nullptr;
 
-	XMFLOAT2 m_Position;
-	XMFLOAT2 m_Velocity;
-	XMFLOAT2 m_Scaling;
-	XMFLOAT4 m_Color;
+	XMFLOAT2 m_FirstPosition;		// 初期位置
+	XMFLOAT2 m_Position;			// 現在の位置
+	XMFLOAT2 m_DisplayPosition;		// 表示位置
+	XMFLOAT2 m_Velocity;			// 移動速度
+	XMFLOAT2 m_Scaling;				// 拡大率
+	XMFLOAT4 m_Color;				// カラー
 
 	float m_Count = 0.0f;
 	bool m_IsView = true;

@@ -20,8 +20,10 @@ void TargetUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
-	m_Position = XMFLOAT2(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.12f);
-	m_Velocity = XMFLOAT2(0.0f, 0.0f);
+	m_FirstPosition = XMFLOAT2(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * -0.12f);
+	m_Position = m_FirstPosition;
+	m_DisplayPosition = XMFLOAT2(SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.12f);
+	m_Velocity = XMFLOAT2(0.0f, (1 / 60.0f) * T_UI_SPEED);
 	m_Scaling = XMFLOAT2(1.0f,1.0f);
 	m_Color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -53,6 +55,31 @@ void TargetUI::Finalize()
 
 void TargetUI::Update()
 {
+	if (m_IsView)
+	{
+		if (m_Position.y < m_DisplayPosition.y)
+		{
+			m_Position.x += m_Velocity.x;
+			m_Position.y += m_Velocity.y;
+		}
+		else
+		{
+			m_Position = m_DisplayPosition;
+		}
+	}
+	else
+	{
+		if (m_Position.y > m_FirstPosition.y)
+		{
+			m_Position.x -= m_Velocity.x;
+			m_Position.y -= m_Velocity.y;
+		}
+		else
+		{
+			m_Position = m_FirstPosition;
+		}
+	}
+
 	if (Keyboard_IsKeyDownTrigger(KK_F))
 	{
 		m_IsView = 1 - m_IsView;
@@ -61,7 +88,7 @@ void TargetUI::Update()
 
 void TargetUI::Draw()
 {
-	if (!m_IsView) return;
+	/*if (!m_IsView) return;*/
 	
 	//‰æ–ÊƒTƒCƒYŽæ“¾
 	const float SCREEN_WIDTH = (float)Direct3D_GetBackBufferWidth();

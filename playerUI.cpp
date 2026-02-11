@@ -117,6 +117,8 @@ void PlayerUI::Draw_HpDigit()
 
 		mat = World * mat * Projection;
 
+		float value = 0.0f;
+
 		if (m_HpDigit > i)
 		{
 			//テクスチャのセット
@@ -126,6 +128,7 @@ void PlayerUI::Draw_HpDigit()
 		{
 			//テクスチャのセット
 			m_pContext->PSSetShaderResources(0, 1, &m_Texture[1]);
+			value = 18.0f;
 		}
 
 		//シェーダーへ行列をセット
@@ -135,7 +138,7 @@ void PlayerUI::Draw_HpDigit()
 		SetBlendState(BLENDSTATE_ALFA);
 
 		//スプライト描画
-		DrawSprite(size, color, 1, 1, 1);
+		DrawSprite(XMFLOAT2(size.x + value, size.y), color, 1, 1, 1);
 
 		position.x += size.x;//表示座標を１桁分ずらす
 	}
