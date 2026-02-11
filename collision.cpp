@@ -1022,7 +1022,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 			float speed = BOMB_SPEED_MAX * 0.05f;
 
 			BombVel.x = (pVecX)*speed;
-			BombVel.y = 0;//BOMB_THROW_POWER;  // 上方向成分（好みで調整）
+			//BombVel.y = 0;//BOMB_THROW_POWER;  // 上方向成分（好みで調整）
 			BombVel.z = (pVecZ)*speed;
 
 

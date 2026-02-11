@@ -22,7 +22,7 @@ class MAPDATA
 {
 private:
 //	BOMB* m_Bomb;
-	MAP		m_Map[(FIELD_WIDTH_X * FIELD_WIDTH_Z) * 3 + 1];
+	MAP		m_Map[(FIELD_WIDTH_X * FIELD_WIDTH_Z) * FIELD_HEIGHT_Y + 1];
 	MODEL* Model[FIELD_MAX] = { NULL };//デバッグ
 	//その他必要な物は追加する
 

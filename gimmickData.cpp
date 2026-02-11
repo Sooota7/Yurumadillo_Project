@@ -17,157 +17,157 @@ static ID3D11ShaderResourceView* g_Texture;
 
 //BOX作成関数
 void CreateGimmickBox();
-
-int GetGimmick(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return Field_pos_row[y][x];
-
-		break;
-	case(1):
-		return Field_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return Field_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetGimmick2(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return Field2_pos_row[y][x];
-
-		break;
-	case(1):
-		return Field2_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return Field2_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetGimmick3(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetGimmick4(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_balloon_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_balloon_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_balloon_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int GetGimmick5(int x, int y, int z)
-{
-	switch (z)
-	{
-	case(0):
-		return tutorial_mouse_pos_row[y][x];
-
-		break;
-	case(1):
-		return tutorial_mouse_pos_nor[y][x];
-
-
-		break;
-	case(2):
-		return tutorial_mouse_pos_high[y][x];
-
-
-		break;
-	default:
-		break;
-	}
-
-
-}
-
-int CheckGimmick(int x, int y, int z, FIELD_NO no)
-{
-	switch (no)
-	{
-	case NO_NONE:
-		break;
-	case NO_1:
-		return GetGimmick(x, y, z);
-		break;
-	case NO_2:
-		return GetGimmick2(x, y, z);
-		break;
-	case NO_3:
-		return GetGimmick3(x, y, z);
-		break;
-	case NO_4:
-		return GetGimmick4(x, y, z);
-		break;
-	case NO_5:
-		return GetGimmick4(x, y, z);
-		break;
-	default:
-		break;
-	}
-}
+//
+//int GetGimmick(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return Field_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return Field_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return Field_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetGimmick2(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return Field2_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return Field2_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return Field2_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetGimmick3(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetGimmick4(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_balloon_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_balloon_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_balloon_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int GetGimmick5(int x, int y, int z)
+//{
+//	switch (z)
+//	{
+//	case(0):
+//		return tutorial_mouse_pos_row[y][x];
+//
+//		break;
+//	case(1):
+//		return tutorial_mouse_pos_nor[y][x];
+//
+//
+//		break;
+//	case(2):
+//		return tutorial_mouse_pos_high[y][x];
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//
+//}
+//
+//int CheckGimmick(int x, int y, int z, FIELD_NO no)
+//{
+//	switch (no)
+//	{
+//	case NO_NONE:
+//		break;
+//	case NO_1:
+//		return GetGimmick(x, y, z);
+//		break;
+//	case NO_2:
+//		return GetGimmick2(x, y, z);
+//		break;
+//	case NO_3:
+//		return GetGimmick3(x, y, z);
+//		break;
+//	case NO_4:
+//		return GetGimmick4(x, y, z);
+//		break;
+//	case NO_5:
+//		return GetGimmick4(x, y, z);
+//		break;
+//	default:
+//		break;
+//	}
+//}
 
 //BOX頂点データ
 static	Vertex3D Gimmick_vdata[GIMMICK_NUM_VERTEX] =
@@ -387,13 +387,13 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 
 	Channels_Reset();
 
-	for (int q = 0; q < 3; q++)
+	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
 		{
 			for (int l = 0; l < FIELD_WIDTH_X; l++)
 			{
-				int chip =  CheckGimmick(l, i, q, no);
+				int chip =  CheckMap(l, i, q, no);
 				if (chip < 10) { continue; }
 
 				// ギミックの種類
@@ -424,14 +424,14 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 						int fieldCh = ch;
 
 						bool find = false;
-						for (int q = 0; q < 3; q++)
+						for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 						{
 							for (int i = 0; i < FIELD_WIDTH_Z; i++)
 							{
 								for (int l = 0; l < FIELD_WIDTH_X; l++)
 								{
 
-									int targetChip = CheckGimmick(l, i, q, no);
+									int targetChip = CheckMap(l, i, q, no);
 
 
 									int tNum = targetChip / 10;   // 4
