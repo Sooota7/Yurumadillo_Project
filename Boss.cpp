@@ -41,6 +41,10 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
+
 	m_BossMonster.Bossmonster_Initialize(pDevice, pContext);
 
 	// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
@@ -95,6 +99,10 @@ void BOSS::Boss_Finalize()
 	Camera_Finalize();	//カメラ終了処理
 
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
+
 	m_BossMonster.Bossmonster_Finalize();
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
@@ -112,6 +120,9 @@ void BOSS::Boss_Update()
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 	m_BossMonster.Bossmonster_Update();
 
+	m_PlayerUI.Update();
+	m_BombUI.Update();
+	m_TargetUI.Update();
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
@@ -177,6 +188,9 @@ void BOSS::Boss_Draw()
 
 	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
+	m_PlayerUI.Draw();
+	m_BombUI.Draw();
+	m_TargetUI.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -196,6 +210,9 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 	m_BossMonster.Bossmonster_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
@@ -211,5 +228,8 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 }
 

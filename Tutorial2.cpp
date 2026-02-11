@@ -49,6 +49,9 @@ void TUTORIAL2::Tutorial2_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Manager = manager;
 
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
@@ -88,6 +91,9 @@ void TUTORIAL2::Tutorial2_Finalize()
 	//Score_Finalize();
 	//Polygon3D_Finalize();
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 
 	Camera_Finalize();	//カメラ終了処理
 
@@ -106,6 +112,9 @@ void TUTORIAL2::Tutorial2_Update()
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
+	m_PlayerUI.Update();
+	m_BombUI.Update();
+	m_TargetUI.Update();
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
@@ -171,6 +180,9 @@ void TUTORIAL2::Tutorial2_Draw()
 
 	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
+	m_PlayerUI.Draw();
+	m_BombUI.Draw();
+	m_TargetUI.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -190,6 +202,9 @@ void TUTORIAL2::Tutorial2_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -202,5 +217,8 @@ void TUTORIAL2::Tutorial2_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 }
 
