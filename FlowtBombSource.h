@@ -48,6 +48,7 @@ public:
 	void		Flowtbombsource_SetState(BOMB_STATE state) { m_State = state; };
 	BOMB_STATE	Flowtbombsource_GetState() { return m_State; };
 
+	void		Flowtbombsource_SetCount(float count) { m_Count = count; };
 	float		Flowtbombsource_GetCount() { return m_Count; };
 
 	void		Flowtbombsource_SetTouch(bool check) { m_Touch = check; };
