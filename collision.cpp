@@ -2632,7 +2632,7 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 
 	}
 
-	return hit;  // ぶつかったかどうかを示す
+	//return hit;  // ぶつかったかどうかを示す
 
 	for (int i = 0; i < pGimmick->GetFieldCount(); i++)
 	{

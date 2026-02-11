@@ -233,11 +233,12 @@ void BombUI::Draw()
 float BombUI::CheckBombState()
 {
 	BOMBSOURCE* bombs;
+	RUNBOMBSPAWNER* RunBombSpawner = m_pBomb->Bomb_GetRunBomb();
 	RUNBOMBSOURCE* runBombs;
 	FLOWTBOMBSOURCE* flowtBombs;
 
 	bombs = m_pBomb->Bomb_GetBomb();
-	runBombs = m_pBomb->Bomb_GetRunBomb();
+	runBombs = RunBombSpawner->GetRunBombSource__RunBombSpawner();
 	flowtBombs = m_pBomb->Bomb_GetFlowtBomb();
 	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
