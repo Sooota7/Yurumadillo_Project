@@ -66,6 +66,7 @@ public:
 	void		Runbombsource_SetState(RUNBOMB_STATE state) { m_State = state; };
 	RUNBOMB_STATE	Runbombsource_GetState() { return m_State; };
 
+	void		Runbombsource_SetCount(float count) { m_Count = count; };
 	float		Runbombsource_GetCount() { return m_Count; };
 
 	void		Runbombsource_SetTouch(bool check) { m_Touch = check; };
