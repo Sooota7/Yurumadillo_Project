@@ -44,6 +44,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BillboardManager.Initialize(pDevice, pContext);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
 	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
@@ -95,6 +96,7 @@ void GAME::Game_Finalize()
 	m_BillboardManager.Finalize();
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
@@ -113,6 +115,7 @@ void GAME::Game_Update()
 
 	m_PlayerUI.Update();
 	m_BombUI.Update();
+	m_TargetUI.Update();
 
 	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
@@ -195,6 +198,7 @@ void GAME::Game_Draw()
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
+	m_TargetUI.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -216,6 +220,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BillboardManager.Finalize();
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -230,5 +235,6 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BillboardManager.Initialize(pDevice, pContext);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 }
 
