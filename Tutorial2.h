@@ -13,6 +13,9 @@
 #include "Dictionary.h"
 #include "billboardManager.h"
 #include "background.h"
+#include "playerUI.h"
+#include "bombUI.h"
+#include "targetUI.h"
 
 class MANAGER;
 
@@ -33,6 +36,9 @@ private:
 
 	BillboardManager m_BillboardManager;
 	BACKGROUND m_Background;
+	PlayerUI m_PlayerUI;
+	BombUI m_BombUI;
+	TargetUI m_TargetUI;
 public:
 	void Tutorial2_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Tutorial2_Finalize();
