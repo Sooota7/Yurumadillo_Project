@@ -31,11 +31,13 @@ private:
 	ID3D11ShaderResourceView* m_pSRV[BILLBOARD_TEXTURE::MAX];
 
 public:
-	void Initialize(ID3D11Device* m_pDevice, ID3D11DeviceContext* m_pContext);
+	void Initialize(ID3D11Device* m_pDevice, ID3D11DeviceContext* m_pContext, FIELD_NO fn);
 	void Finalize();
-	void Draw(FIELD_NO fn);
+	void Draw();
 	void Update();
 
 	void Register(Billboard* pBillboard);
+
+	void Initialize_BombEffect(TexMetadata* tm, ScratchImage* si, FIELD_NO fn);
 };
 
