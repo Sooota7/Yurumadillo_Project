@@ -238,7 +238,7 @@ float BombUI::CheckBombState()
 	FLOWTBOMBSOURCE* flowtBombs;
 
 	bombs = m_pBomb->Bomb_GetBomb();
-	runBombs = RunBombSpawner->GetRunBombSource__RunBombSpawner();
+
 	flowtBombs = m_pBomb->Bomb_GetFlowtBomb();
 	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -267,11 +267,13 @@ float BombUI::CheckBombState()
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		if (runBombs[i].Runbombsource_GetState() == BOMB_ACTIVE_HAVE)
+		runBombs = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		if (runBombs->Runbombsource_GetState() == RUNBOMB_ACTIVE_HAVE)
 		{
 			m_BombType = 3;
 			m_limit = 5.0f; // (仮)
-			return runBombs[i].Runbombsource_GetCount();
+			return runBombs->Runbombsource_GetCount();
 			break;
 		}
 
