@@ -352,10 +352,37 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	{
 		TexMetadata metadata;
 		ScratchImage image;
-		// フォルダ/ファイル名は field.cpp と統一
-		LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
-		CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
-		assert(g_Texture); // 必要なら追加
+
+		// テクスチャ読み込み
+		//　マップごとにステージ切り替え
+		switch (no)
+		{
+		case NO_NONE:
+			break;
+		case NO_1:
+			LoadFromWICFile(L"Asset\\Texture\\Gimmik_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_2:
+			LoadFromWICFile(L"Asset\\Texture\\Field_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_3:
+			LoadFromWICFile(L"Asset\\Texture\\Gimmik_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_4:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_5:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		case NO_6:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
+		default:
+			break;
+		}
+		CreateShaderResourceView(pDevice, image.GetImages(),
+			image.GetImageCount(), metadata, &g_Texture);
+		assert(g_Texture);
 	}
 
 	for (int i = 0; i < GIMMICK_STATE::GIMMICK_STATE_MAX; i++)
