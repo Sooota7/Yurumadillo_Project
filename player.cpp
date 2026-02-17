@@ -63,7 +63,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		
 	}
 
-	m_Position = XMFLOAT3(7.0f, 8.0f, 0.0f);
+	m_Position = XMFLOAT3(PLAYER_START_POS_X,PLAYER_START_POS_Y, PLAYER_START_POS_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -151,10 +151,6 @@ void	PLAYER::Player_Update()
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 	
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER))
-	{
-		m_Hp-=20.0f;
-	}
 
 	if (m_Position.y < PLAYER_RESPAWN)
 	{
@@ -430,11 +426,12 @@ void   PLAYER::Player_Jump()
 
 void    PLAYER::Player_Respawn()
 {
-	m_Position = XMFLOAT3(0.0f, 2.0f, 0.0f);
+	m_Position = XMFLOAT3(PLAYER_START_POS_X, PLAYER_START_POS_Y, PLAYER_START_POS_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
 
+	m_Hp--;
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
 	

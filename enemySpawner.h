@@ -47,8 +47,11 @@ public:
 	void	EnemySpawner_SetKillNum(int killnum);
 	int		EnemySpawner_GetKillNum();
 
+	bool EnemySpawner_SpawnButterfly(const XMFLOAT3& pos);
+	bool EnemySpawner_SpawnNormal(const XMFLOAT3& pos);
 };
 
 #endif // !_enemySpawner_H_
+
 
 

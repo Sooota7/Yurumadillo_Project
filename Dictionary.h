@@ -915,6 +915,7 @@ enum SCENE
 	SCENE_GAME,			  //ゲームシーン
 	SCENE_PAUSE,		  //ポーズシーン
 	SCENE_RESULT,		  //リザルトルシーン
+	SCENE_GAMEOVER,		  //ゲームオーバーシーン
 	SCENE_STAGESELECTION, //ステージセレクション
 	SCENE_ENDING,         //エンディングシーン
 	SCENE_GIMMICK,        //ギミックシーン

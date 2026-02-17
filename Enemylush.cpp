@@ -134,7 +134,7 @@ void ENEMYLUSH::Enemylush_Update()
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
-		m_Manager->SetScene(SCENE_PAUSE);
+		m_Manager->SetScene(SCENE_GAMEOVER);
 	}
 
 	collision.PlayerFieldCollision(&m_Player, &m_Map);
@@ -171,6 +171,17 @@ void ENEMYLUSH::Enemylush_Update()
 		m_Manager->SetScene(SCENE_RESULT);
 		
 	}
+
+	if (Keyboard_IsKeyDownTrigger(KK_C))
+	{
+		if (m_Manager->GetClearCount() == 2)
+		{
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
+	}
+
 }
 
 void ENEMYLUSH::Enemylush_Draw()

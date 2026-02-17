@@ -126,7 +126,8 @@ void BOSS::Boss_Update()
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
-		m_Manager->SetScene(SCENE_PAUSE);
+		m_Manager->SetScene(SCENE_GAMEOVER);
+		return;
 	}
 
 	collision.PlayerFieldCollision(&m_Player, &m_Map);

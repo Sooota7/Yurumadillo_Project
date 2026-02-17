@@ -19,6 +19,10 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
+	// メンバ変数を明示的に初期化（重要）
+	MaxNum = 0;
+	NowKillNum = 0;
+
 	// テクスチャ読み込み
 	TexMetadata metadata;
 	ScratchImage image;
@@ -100,10 +104,8 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		}
 	}
 
-	int MaxNum = 0;
-
-	int NowKillNum = 0;
-
+	// --- 重要 ---
+	// (この関数の末尾に) ローカルで `int MaxNum = 0;` や `int NowKillNum = 0;` を追加しないでください。
 }
 
 void ENEMYSPAWNER::EnemySpawner_Finalize(void)
@@ -380,4 +382,40 @@ void ENEMYSPAWNER::EnemySpawner_SetKillNum(int killnum)
 int ENEMYSPAWNER::EnemySpawner_GetKillNum()
 {
 	return NowKillNum;
+}
+
+bool ENEMYSPAWNER::EnemySpawner_SpawnButterfly(const XMFLOAT3& pos)
+{
+	for (int i = 0; i < Enemy_Spawner_MAX; ++i)
+	{
+		if (m_EnemyButterfly[i].GetEnemyButterflyType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			// 位置とタイプを設定して再利用（状態を初期化）
+			m_EnemyButterfly[i].SetEnemyPosition(pos);
+			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_BUTTERFLY);
+			m_EnemyButterfly[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_EnemyButterfly[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_MOVE);
+			m_EnemyButterfly[i].SetEnemyHp(100); // 必要なHPに合わせる
+			// 必要ならフレームカウンタ等もリセット（private メンバがあるならメソッドを追加して扱う）
+			return true;
+		}
+	}
+	return false; // 空きなし
+}
+
+bool ENEMYSPAWNER::EnemySpawner_SpawnNormal(const XMFLOAT3& pos)
+{
+	for (int i = 0; i < Enemy_Spawner_MAX; ++i)
+	{
+		if (m_Enemy[i].GetEnemyNormalType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			m_Enemy[i].SetEnemyPosition(pos);
+			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE::ENEMY_TYPE_NORMAL);
+			m_Enemy[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_Enemy[i].SetEnemyHp(100); // 必要なら調整
+			// 状態リセット用メソッドがあれば呼ぶ
+			return true;
+		}
+	}
+	return false;
 }
