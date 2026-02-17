@@ -23,6 +23,10 @@ void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	{
 		m_Weapon[i].WeaponSource_Initialize(XMFLOAT3(0.0f, 0.0f, 0.0f), WEAPON_NONE);
 	}
+	for (int i = 0; i < WEAPON_NUM_MAX; i++)
+	{
+		m_EG_Weapon[i].Weapon_EG_Initialize(XMFLOAT3(0.0f, 0.0f, 0.0f), EG_WEAPON_NONE);
+	}
 
 	for (int i = 0; i < WEAPON_STATE::WEAPON_MAX; i++)
 	{
@@ -61,6 +65,7 @@ void WEAPON::Weapon_Finalize(void)
 	for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
 		m_Weapon[i].WeaponSource_Finalize();
+		m_EG_Weapon[i].Weapon_EG_Finalize();
 	}
 
 	for (int i = 0; i < WEAPON_STATE::WEAPON_MAX; i++)
@@ -172,17 +177,100 @@ void WEAPON::Weapon_Draw(void)
 		}
 
 	}
+	for (int i = 0; i < WEAPON_NUM_MAX; i++)
+	{
+
+		XMFLOAT3 weaponPos = m_EG_Weapon[i].Weapon_EG_GetPosition();
+
+		//スケーリング行列の作成
+		XMMATRIX	ScalingMatrix = XMMatrixScaling
+		(
+			1.0f,
+			1.0f,
+			1.0f
+		);
+
+		//平行移動行列の作成
+		XMMATRIX	TranslationMatrix = XMMatrixTranslation
+		(
+			weaponPos.x,
+			weaponPos.y,
+			weaponPos.z
+		);
+
+		//回転行列の作成
+		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+		(
+			XMConvertToRadians(0.0f),
+			//XMConvertToRadians(rot),
+			//XMConvertToRadians(rot),
+			XMConvertToRadians(0.0f),
+			XMConvertToRadians(0.0f)
+		);
+		//ワールド行列の作成
+		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+		//最終的な変換行列を作成
+		XMMATRIX WVP = World * VP;//(VP = View*Projection)
+		//DirectXへ行列をセット
+		Shader_SetMatrix(WVP);
+
+		//テクスチャをセット
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+		//頂点バッファをセット
+		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+		UINT	offset = 0;
+		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+		//インデックスバッファをセット
+		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+		//描画リクエスト
+		switch (m_EG_Weapon[i].Weapon_EG_GetState())
+		{
+		case EG_WEAPON_NONE:
+			g_pContext->DrawIndexed(6 * 6, 0, 0);
+			break;
+		case EG_WEAPON_MOVE:
+			ModelDraw(m_Model[WEAPON_MOVE]);
+			break;
+		case EG_WEAPON_DIRECTION:
+			ModelDraw(m_Model[WEAPON_DIRECTION]);
+			break;
+		case EG_WEAPON_POWER:
+			ModelDraw(m_Model[WEAPON_POWER]);
+			break;
+		case EG_WEAPON_GROUND:
+			ModelDraw(m_Model[WEAPON_GROUND]);
+			break;
+		case EG_WEAPON_MAX:
+			break;
+		default:
+			break;
+		}
+
+	}
 }
 
 void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 {
 	ENEMY_BUTTERFLY* eb = enemySpawner->EnemySpawner_GetEnemyButterfly();
+	ENEMY_GROUND* eg = enemySpawner->EnemySpawner_GetEnemyGround();
+
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		if (eb[i].GetEnemyButterflyState() == ENEMY_BUTTERFLY_STATE_ATTACK)
 		{
 			SetWeapon(eb[i].GetEnemyPosition());
+		}
+		if (eg[i].GetEnemyGroundState() == ENEMY_GROUND_STATE_CREATE_WEAPON)
+		{
+			SetWeaponEG(eg[i].GetEnemyPosition());
 		}
 	}
 
@@ -209,6 +297,28 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		default:
 			break;
 		}
+
+		switch (m_EG_Weapon[i].Weapon_EG_GetState())
+		{
+		case EG_WEAPON_NONE:
+			break;
+		case EG_WEAPON_MOVE:
+			m_EG_Weapon[i].Weapon_EG_Move();
+			break;
+		case EG_WEAPON_DIRECTION:
+			m_EG_Weapon[i].Weapon_EG_Direction(playerPos);
+			break;
+		case EG_WEAPON_POWER:
+			m_EG_Weapon[i].Weapon_EG_Power();
+			break;
+		case EG_WEAPON_GROUND:
+			m_EG_Weapon[i].Weapon_EG_Ground();
+			break;
+		case EG_WEAPON_MAX:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -224,6 +334,18 @@ void WEAPON::SetWeapon(XMFLOAT3 pos)
 		if (m_Weapon[i].WeaponSource_GetState() == WEAPON_NONE)
 		{
 			m_Weapon[i].WeaponSource_Initialize(pos, WEAPON_STATE::WEAPON_DIRECTION);
+			break;
+		}
+	}
+}
+
+void WEAPON::SetWeaponEG(XMFLOAT3 pos)
+{
+	for (int i = 0; i < WEAPON_NUM_MAX; i++)
+	{
+		if (m_EG_Weapon[i].Weapon_EG_GetState() == EG_WEAPON_NONE)
+		{
+			m_EG_Weapon[i].Weapon_EG_Initialize(pos, EG_WEAPON_STATE::EG_WEAPON_DIRECTION);
 			break;
 		}
 	}

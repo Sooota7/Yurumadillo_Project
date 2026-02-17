@@ -134,6 +134,12 @@ void ENEMY_GROUND::Update(XMFLOAT3 chasePos)
 	case ENEMY_GROUND_STATE_ATTACK:
 		Enemy_Ground_Attack(chasePos);
 		break;
+	case ENEMY_GROUND_STATE_CREATE_WEAPON:
+		Enemy_Ground_CreateWeapon();
+		break;
+	case ENEMY_GROUND_STATE_COOL:
+		Enemy_Ground_Cool();
+		break;
 	case ENEMY_GROUND_STATE_DEAD:
 		Enemy_Ground_Dead();
 		break;
@@ -210,7 +216,7 @@ void ENEMY_GROUND::Enemy_Ground_SetDirection()
 
 	//SetEnemyGroundState(ENEMY_GROUND_STATE_MOVE);
 	m_Velocity.y -= ENEMY_GRAVITY;
-	if (m_Velocity.y < -0.2)
+	if (m_Velocity.y < -0.1)
 	{
 		m_Velocity.y = -0.2;
 	}
@@ -222,12 +228,32 @@ void ENEMY_GROUND::Enemy_Ground_Attack(XMFLOAT3 chasePos)
 {
 	m_AttackCool += 1.0f / 60.0;
 
+
+
+
+
+	if (m_AttackCool > 2.0f)
+	{
+		SetEnemyGroundState(ENEMY_GROUND_STATE_CREATE_WEAPON);
+		m_AttackCool = 0.0f;
+	}
+
+}
+
+void ENEMY_GROUND::Enemy_Ground_CreateWeapon()
+{
+	SetEnemyGroundState(ENEMY_GROUND_STATE_COOL);
+}
+
+void ENEMY_GROUND::Enemy_Ground_Cool()
+{
+	m_AttackCool += 1.0f / 60.0;
+
 	if (m_AttackCool > 2.0f)
 	{
 		SetEnemyGroundState(ENEMY_GROUND_STATE_MOVE);
 		m_AttackCool = 0.0f;
 	}
-
 }
 
 void ENEMY_GROUND::Enemy_Ground_Dead()

@@ -10,6 +10,7 @@ using namespace DirectX;
 
 #include	"model.h"
 #include	"weaponSource.h"
+#include	"WeaponEnemyGround.h"
 #include	"Dictionary.h"
 #include	"player.h"
 #include	"enemySpawner.h"
@@ -24,6 +25,7 @@ class WEAPON
 private:
 
 	WEAPONSOURCE	m_Weapon[WEAPON_NUM_MAX];
+	WEAPONENEMYGROUND m_EG_Weapon[WEAPON_NUM_MAX];
 	MODEL* m_Model[WEAPON_MAX] = { NULL };//デバッグ
 
 public:
@@ -35,5 +37,5 @@ public:
 	WEAPONSOURCE* Weapon_GetWeapon();
 
 	void	SetWeapon(XMFLOAT3 pos);
-
+	void	SetWeaponEG(XMFLOAT3 pos);
 };
