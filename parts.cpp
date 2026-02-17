@@ -16,7 +16,7 @@ void PARTS::PartsSet(XMFLOAT3 position, XMFLOAT3 rotation)
 	
 }
 
-void PARTS::PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const char* model)
+void PARTS::PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 
 	g_pDevice = pDevice;
@@ -39,7 +39,6 @@ void PARTS::PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext
 	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	m_Loop = false;
-	m_Model = ModelLoad(model);
 
 	//for (int i = 0; i < FRAME_MAX; i++)
 	//{
@@ -50,14 +49,13 @@ void PARTS::PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext
 
 void PARTS::PartsFinalize()
 {
-	ModelRelease(m_Model);
 }
 
 void PARTS::PartsUpdate()
 {
 }
 
-void PARTS::PartsDraw()
+void PARTS::PartsDraw(MODEL* model)
 {
 
 	//ƒ[ƒ‹ƒhs—ñì¬
@@ -84,7 +82,7 @@ void PARTS::PartsDraw()
 	Shader_SetWorldMatrix(world);
 	Shader_SetMatrix(wvp);
 
-	ModelDraw(m_Model);
+	ModelDraw(model);
 
 }
 
