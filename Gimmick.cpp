@@ -109,6 +109,7 @@ void GIMMICK::Gimmick_Update()
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
+	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Map.Field_Update();
 	m_Background.Background_Update();
 
@@ -123,7 +124,8 @@ void GIMMICK::Gimmick_Update()
 	m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	collision.PlayerGateCollision(&m_Player, &m_GimmickData);
 
-	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	collision.BombGateCollision(&m_bomb, &m_GimmickData);
+
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
 	m_PlayerUI.Update();

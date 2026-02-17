@@ -3298,7 +3298,8 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 		int st = RunBomb->Runbombsource_GetState();
 		if (st == RUNBOMB_STATE::RUNBOMB_ITEM ||
 			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_HAVE ||
-			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW ||
+			st == RUNBOMB_STATE::RUNBOMB_ENEMY)
 		{
 			XMFLOAT3 pos = RunBomb->Runbombsource_GetPosition();
 
@@ -3690,11 +3691,337 @@ float COLLISION::BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 	float hit = 0.0f;
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
-	RUNBOMBSPAWNER* RunBomb = pBomb->Bomb_GetRunBomb();// マップ
+	RUNBOMBSPAWNER* RunBombs = pBomb->Bomb_GetRunBomb();// マップ
 	FLOWTBOMBSOURCE* FlowtBomb = pBomb->Bomb_GetFlowtBomb();// マップ
 
 	GIMMICK_GATE* gates = pGimmick->GetGates();
 	int gateCount = pGimmick->GetGateCount();
+
+	// AABB 半径（ハーフサイズ）
+	const float hx = GATE_PANEL_HALF_W; // X半幅（＝厚み方向）
+	const float hy = GATE_PANEL_HALF_H; // Y半幅（高さ）
+	const float hz = GATE_PANEL_HALF_D; // Z半幅（奥行）  ※描画は 1x1x1
+
+	// 通常 =====================================================================
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = Bomb[i].BombSource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = Bomb[i].BombSource_GetPosition();
+			XMFLOAT3 vel = Bomb[i].BombSource_GetVelocity();
+			
+			for (int i = 0; i < gateCount; ++i)
+			{
+				// ゲート基準と開度
+				XMFLOAT3 base = gates[i].GimmickGate_GetPosition();
+				float open = gates[i].GimmickGate_GetOpen();
+				float offset = GATE_MAX_OPEN_OFFSET * open;
+
+				// 描画と同じ「中心：base.x ± offset」
+				XMFLOAT3 centers[2] = {
+					XMFLOAT3(base.x - offset, base.y, base.z), // Left panel center
+					XMFLOAT3(base.x + offset, base.y, base.z), // Right panel center
+				};
+
+				// 2枚のパネルに対して個別に AABB 押し戻し
+				for (int p = 0; p < 2; ++p)
+				{
+					const XMFLOAT3 center = centers[p];
+
+					// ---------- 側面帯（YがAABBの中）なら X/Z 押し戻し ----------
+					if ((center.y - hy) < pos.y && pos.y < (center.y + hy - 0.1f))
+					{
+						// Z帯の中 → X面で押し戻し
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							// -X面
+							if ((center.x - hx) < pos.x + PLAYER_RADIUS && pos.x < (center.x - hx))
+							{
+								pos.x += (center.x - hx) - (pos.x + PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_3;
+							}
+							// +X面
+							else if ((center.x + hx) > pos.x - PLAYER_RADIUS && pos.x > (center.x + hx))
+							{
+								pos.x += (center.x + hx) - (pos.x - PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_1;
+							}
+						}
+						// X帯の中 → Z面で押し戻し
+						else if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+						{
+							// -Z面
+							if ((center.z - hz) < pos.z + PLAYER_RADIUS && pos.z < (center.z - hz))
+							{
+								pos.z += (center.z - hz) - (pos.z + PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_0;
+							}
+							// +Z面
+							else if ((center.z + hz) > pos.z - PLAYER_RADIUS && pos.z > (center.z + hz))
+							{
+								pos.z += (center.z + hz) - (pos.z - PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_2;
+							}
+						}
+					}
+					// ---------- 上下面（Yが外）なら Y 方向で押し戻し ----------
+					else
+					{
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+							{
+								// -Y面（下面）
+								if ((center.y - hy) < pos.y + PLAYER_RADIUS && pos.y < (center.y - hy))
+								{
+									pos.y += (center.y - hy) - (pos.y + PLAYER_RADIUS);
+									vel.y *= -COE;
+									// 地面扱いにするなら HIT_GROUND
+									hit = COLLISION_HIT::HIT_GROUND;
+								}
+								// +Y面（上面）
+								else if ((center.y + hy) > pos.y - PLAYER_RADIUS && pos.y > (center.y + hy))
+								{
+									pos.y += (center.y + hy) - (pos.y - PLAYER_RADIUS);
+									// 上面は停止させる（反射ではなく0も可）
+									vel.y = 0.0f;
+									hit = COLLISION_HIT::HIT_GROUND;
+									// 着地フラグは PlayerFieldCollision と同等の取り扱いにするなら必要
+									// （必要なら以下を有効化）
+									// if (!pPlayer->GetPlayerJump()) { pPlayer->SetPlayerJump(true); }
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Bomb[i].BombSource_SetPosition(pos);
+			Bomb[i].BombSource_SetVelocity(vel);
+		}
+	}
+	
+	// 走る ==================================================================
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		RUNBOMBSOURCE* RunBomb = RunBombs[i].GetRunBombSource__RunBombSpawner();
+
+		int st = RunBomb->Runbombsource_GetState();
+		if (st == RUNBOMB_STATE::RUNBOMB_ITEM ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_HAVE ||
+			st == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = RunBomb->Runbombsource_GetPosition();
+			XMFLOAT3 vel = RunBomb->Runbombsource_GetVelocity();
+			
+			for (int i = 0; i < gateCount; ++i)
+			{
+				// ゲート基準と開度
+				XMFLOAT3 base = gates[i].GimmickGate_GetPosition();
+				float open = gates[i].GimmickGate_GetOpen();
+				float offset = GATE_MAX_OPEN_OFFSET * open;
+
+				// 描画と同じ「中心：base.x ± offset」
+				XMFLOAT3 centers[2] = {
+					XMFLOAT3(base.x - offset, base.y, base.z), // Left panel center
+					XMFLOAT3(base.x + offset, base.y, base.z), // Right panel center
+				};
+
+				// 2枚のパネルに対して個別に AABB 押し戻し
+				for (int p = 0; p < 2; ++p)
+				{
+					const XMFLOAT3 center = centers[p];
+
+					// ---------- 側面帯（YがAABBの中）なら X/Z 押し戻し ----------
+					if ((center.y - hy) < pos.y && pos.y < (center.y + hy - 0.1f))
+					{
+						// Z帯の中 → X面で押し戻し
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							// -X面
+							if ((center.x - hx) < pos.x + PLAYER_RADIUS && pos.x < (center.x - hx))
+							{
+								pos.x += (center.x - hx) - (pos.x + PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_3;
+							}
+							// +X面
+							else if ((center.x + hx) > pos.x - PLAYER_RADIUS && pos.x > (center.x + hx))
+							{
+								pos.x += (center.x + hx) - (pos.x - PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_1;
+							}
+						}
+						// X帯の中 → Z面で押し戻し
+						else if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+						{
+							// -Z面
+							if ((center.z - hz) < pos.z + PLAYER_RADIUS && pos.z < (center.z - hz))
+							{
+								pos.z += (center.z - hz) - (pos.z + PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_0;
+							}
+							// +Z面
+							else if ((center.z + hz) > pos.z - PLAYER_RADIUS && pos.z > (center.z + hz))
+							{
+								pos.z += (center.z + hz) - (pos.z - PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_2;
+							}
+						}
+					}
+					// ---------- 上下面（Yが外）なら Y 方向で押し戻し ----------
+					else
+					{
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+							{
+								// -Y面（下面）
+								if ((center.y - hy) < pos.y + PLAYER_RADIUS && pos.y < (center.y - hy))
+								{
+									pos.y += (center.y - hy) - (pos.y + PLAYER_RADIUS);
+									vel.y *= -COE;
+									// 地面扱いにするなら HIT_GROUND
+									hit = COLLISION_HIT::HIT_GROUND;
+								}
+								// +Y面（上面）
+								else if ((center.y + hy) > pos.y - PLAYER_RADIUS && pos.y > (center.y + hy))
+								{
+									pos.y += (center.y + hy) - (pos.y - PLAYER_RADIUS);
+									// 上面は停止させる（反射ではなく0も可）
+									vel.y = 0.0f;
+									hit = COLLISION_HIT::HIT_GROUND;
+									// 着地フラグは PlayerFieldCollision と同等の取り扱いにするなら必要
+									// （必要なら以下を有効化）
+									// if (!pPlayer->GetPlayerJump()) { pPlayer->SetPlayerJump(true); }
+								}
+							}
+						}
+					}
+				}
+			}
+
+			RunBomb->Runbombsource_SetPosition(pos);
+			RunBomb->Runbombsource_SetVelocity(vel);
+		}
+	}
+
+	// 浮遊
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		int st = FlowtBomb[i].Flowtbombsource_GetState();
+		if (st == BOMB_STATE::BOMB_ITEM ||
+			st == BOMB_STATE::BOMB_ACTIVE_HAVE ||
+			st == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			XMFLOAT3 pos = FlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT3 vel = FlowtBomb[i].Flowtbombsource_GetVelocity();
+
+			for (int i = 0; i < gateCount; ++i)
+			{
+				// ゲート基準と開度
+				XMFLOAT3 base = gates[i].GimmickGate_GetPosition();
+				float open = gates[i].GimmickGate_GetOpen();
+				float offset = GATE_MAX_OPEN_OFFSET * open;
+
+				// 描画と同じ「中心：base.x ± offset」
+				XMFLOAT3 centers[2] = {
+					XMFLOAT3(base.x - offset, base.y, base.z), // Left panel center
+					XMFLOAT3(base.x + offset, base.y, base.z), // Right panel center
+				};
+
+				// 2枚のパネルに対して個別に AABB 押し戻し
+				for (int p = 0; p < 2; ++p)
+				{
+					const XMFLOAT3 center = centers[p];
+
+					// ---------- 側面帯（YがAABBの中）なら X/Z 押し戻し ----------
+					if ((center.y - hy) < pos.y && pos.y < (center.y + hy - 0.1f))
+					{
+						// Z帯の中 → X面で押し戻し
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							// -X面
+							if ((center.x - hx) < pos.x + PLAYER_RADIUS && pos.x < (center.x - hx))
+							{
+								pos.x += (center.x - hx) - (pos.x + PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_3;
+							}
+							// +X面
+							else if ((center.x + hx) > pos.x - PLAYER_RADIUS && pos.x > (center.x + hx))
+							{
+								pos.x += (center.x + hx) - (pos.x - PLAYER_RADIUS);
+								vel.x *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_1;
+							}
+						}
+						// X帯の中 → Z面で押し戻し
+						else if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+						{
+							// -Z面
+							if ((center.z - hz) < pos.z + PLAYER_RADIUS && pos.z < (center.z - hz))
+							{
+								pos.z += (center.z - hz) - (pos.z + PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_0;
+							}
+							// +Z面
+							else if ((center.z + hz) > pos.z - PLAYER_RADIUS && pos.z > (center.z + hz))
+							{
+								pos.z += (center.z + hz) - (pos.z - PLAYER_RADIUS);
+								vel.z *= -COE;
+								hit = COLLISION_HIT::HIT_WALL_2;
+							}
+						}
+					}
+					// ---------- 上下面（Yが外）なら Y 方向で押し戻し ----------
+					else
+					{
+						if ((center.z - hz) < pos.z && pos.z < (center.z + hz))
+						{
+							if ((center.x - hx) < pos.x && pos.x < (center.x + hx))
+							{
+								// -Y面（下面）
+								if ((center.y - hy) < pos.y + PLAYER_RADIUS && pos.y < (center.y - hy))
+								{
+									pos.y += (center.y - hy) - (pos.y + PLAYER_RADIUS);
+									vel.y *= -COE;
+									// 地面扱いにするなら HIT_GROUND
+									hit = COLLISION_HIT::HIT_GROUND;
+								}
+								// +Y面（上面）
+								else if ((center.y + hy) > pos.y - PLAYER_RADIUS && pos.y > (center.y + hy))
+								{
+									pos.y += (center.y + hy) - (pos.y - PLAYER_RADIUS);
+									// 上面は停止させる（反射ではなく0も可）
+									vel.y = 0.0f;
+									hit = COLLISION_HIT::HIT_GROUND;
+									// 着地フラグは PlayerFieldCollision と同等の取り扱いにするなら必要
+									// （必要なら以下を有効化）
+									// if (!pPlayer->GetPlayerJump()) { pPlayer->SetPlayerJump(true); }
+								}
+							}
+						}
+					}
+				}
+			}
+
+			FlowtBomb[i].Flowtbombsource_SetPosition(pos);
+			FlowtBomb[i].Flowtbombsource_SetVelocity(vel);
+		}
+
+	}
 
 	return hit;
 }
