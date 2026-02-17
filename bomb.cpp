@@ -462,6 +462,32 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 
 			break;
 
+		case BOMB_EXPLOSION_BOSS:
+			//ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+		{
+			XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
+			XMFLOAT2 size = XMFLOAT2(30.2f, 30.2f);
+			float cnt = m_Bomb[i].BombSource_GetCount();
+
+			int wc = 3;
+			int hc = 3;
+
+			if (cnt > (1.0f / (wc * hc)) * (m_Bbno[i] + 1))
+			{
+				m_Bbno[i]++;
+			}
+
+			XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+			if (m_Bbno[i] < wc * hc)
+			{
+				Billboard* bb = new Billboard(pos, size, col, m_Bbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+				billboardManager->Register(bb);
+			}
+		}
+
+		break;
+
 		case BOMB_COOL:
 
 			break;
@@ -835,6 +861,9 @@ void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 			break;
 		case BOMB_EXPLOSION:
 			m_Bomb[i].BombSource_Explosion();
+			break;
+		case BOMB_EXPLOSION_BOSS:
+			m_Bomb[i].BombSource_Explosion_Boss();
 			break;
 		case BOMB_COOL:
 			m_Bomb[i].BombSource_Cool();
