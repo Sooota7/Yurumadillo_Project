@@ -6,7 +6,7 @@
 
 static bool inputB = InputKeyKonCheck();
 
-void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state)
+void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state,RUNBOMB_TYPE type)
 {
 	m_FirstPosition = pos;
 	m_Position = pos;
@@ -15,6 +15,7 @@ void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state)
 	m_State = state;
 	m_Count = 0;
 	m_Touch = false;
+	m_Type = type;
 
 	m_fieldColision = false;
 }
@@ -52,14 +53,14 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 	if (inputB) {
 		if (Mouse_IsLeftDownTrigger())
 		{
-			// ƒvƒŒƒCƒ„[‚ÌŒü‚«
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã
 			float yaw = pPlayerRot.y;
 
-			// ƒvƒŒƒCƒ„[‚Ì³–Ê•ûŒüƒxƒNƒgƒ‹
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£é¢æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 			float pVecX = sinf(yaw);
 			float pVecZ = cosf(yaw);
 
-			// ³‹K‰»
+			// æ­£è¦åŒ–
 			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
 			if (len > 0.0f) {
 				pVecX /= len;
@@ -68,9 +69,9 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 
 			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
-			// “Š‚°‚é‘¬“x
+			// æŠ•ã’ã‚‹é€Ÿåº¦
 			m_Velocity.x = pVecX * speed;
-			m_Velocity.y = BOMB_THROW_POWER;  // ã•ûŒü¬•ªiD‚İ‚Å’²®j
+			m_Velocity.y = BOMB_THROW_POWER;  // ä¸Šæ–¹å‘æˆåˆ†ï¼ˆå¥½ã¿ã§èª¿æ•´ï¼‰
 			m_Velocity.z = pVecZ * speed;
 
 			m_State = RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW;
@@ -79,14 +80,14 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 	else {
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
 		{
-			// ƒvƒŒƒCƒ„[‚ÌŒü‚«
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã
 			float yaw = pPlayerRot.y;
 
-			// ƒvƒŒƒCƒ„[‚Ì³–Ê•ûŒüƒxƒNƒgƒ‹
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ­£é¢æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
 			float pVecX = sinf(yaw);
 			float pVecZ = cosf(yaw);
 
-			// ³‹K‰»
+			// æ­£è¦åŒ–
 			float len = sqrtf(pVecX * pVecX + pVecZ * pVecZ);
 			if (len > 0.0f) {
 				pVecX /= len;
@@ -95,9 +96,9 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 
 			float speed = BOMB_SPEED_MAX * BOMB_THROW_POWER;
 
-			// “Š‚°‚é‘¬“x
+			// æŠ•ã’ã‚‹é€Ÿåº¦
 			m_Velocity.x = pVecX * speed;
-			m_Velocity.y = 0.1f;  // ã•ûŒü¬•ªiD‚İ‚Å’²®j
+			m_Velocity.y = 0.1f;  // ä¸Šæ–¹å‘æˆåˆ†ï¼ˆå¥½ã¿ã§èª¿æ•´ï¼‰
 			m_Velocity.z = pVecZ * speed;
 
 			m_State = RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW;
@@ -119,18 +120,18 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 		m_Rotation.y = atan2(m_Velocity.x, m_Velocity.z);
 	}
 
-	//—‰º”»’è
+	//è½ä¸‹åˆ¤å®š
 	if (m_Position.y < -8.0f)
 	{
 		m_State = RUNBOMB_STATE::RUNBOMB_COOL;
 		return;
 	}
 
-	m_Velocity.x *= 0.99f;//‘¬“x‚ğ“K“–‚ÉŒ¸Š‚³‚¹‚é
-	m_Velocity.y *= 0.98f;//’Ç‰Á‚·‚é
+	m_Velocity.x *= 0.99f;//é€Ÿåº¦ã‚’é©å½“ã«æ¸›è¡°ã•ã›ã‚‹
+	m_Velocity.y *= 0.98f;//è¿½åŠ ã™ã‚‹
 	m_Velocity.z *= 0.99f;
 
-	//Ã~ƒ`ƒFƒbƒN
+	//é™æ­¢ãƒã‚§ãƒƒã‚¯
 	float	len =
 		(
 			m_Velocity.x * m_Velocity.x +
@@ -138,17 +139,17 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 			m_Velocity.z * m_Velocity.z
 			);
 
-	if (len <= 0.0002f)//Ã~‚Æ‚İ‚È‚·‘¬“x
+	if (len <= 0.0002f)//é™æ­¢ã¨ã¿ãªã™é€Ÿåº¦
 	{
 		m_StopTime++;
-		if (m_StopTime > (60.0f * 2))//‚Q•bŠÔ‘±‚¢‚Ä‚¢‚é
+		if (m_StopTime > (60.0f * 2))//ï¼’ç§’é–“ç¶šã„ã¦ã„ã‚‹
 		{
 			m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 			m_StopTime = 0.0f;
 		}
 	}
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	//float hit = BallField_Collision();
 
 	m_Count += 1.0f / 60.0f;
@@ -189,77 +190,139 @@ void RUNBOMBSOURCE::Runbombsource_Explosion()
 void RUNBOMBSOURCE::Runbombsource_Enemy(XMFLOAT3 pPlayerPos)
 {
 
-
-
-	// “G‚ÌŒü‚«‚ğƒvƒŒƒCƒ„[‚ÉŒü‚¯‚é
-	XMFLOAT3 direction;
-
-	direction.x = pPlayerPos.x - m_Position.x;
-	direction.y = 0.0f;
-	direction.z = pPlayerPos.z - m_Position.z;
-
-	// ‹——£
-	float length = sqrtf((direction.x * direction.x) +
-		(direction.z * direction.z));
-
-	if (length != 0.0f)
-	{// ³‹K‰»
-		direction.x /= length;
-		direction.z /= length;
-
-		float yaw = atan2(direction.x, direction.z);
-
-
-		// [-ƒÎ, ƒÎ] ‚É³‹K‰»
-		if (yaw > XM_PI) yaw -= XM_2PI;
-		if (yaw < -XM_PI) yaw += XM_2PI;
-
-
-		m_Rotation.y = yaw;
-	}
-
-	
-
+	if (m_Type == RUNBOMB_TYPE_FREE)
 	{
+		// æ•µã®å‘ãã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å‘ã‘ã‚‹
+		XMFLOAT3 direction;
+
+		direction.x = pPlayerPos.x - m_Position.x;
+		direction.y = 0.0f;
+		direction.z = pPlayerPos.z - m_Position.z;
+
+		// è·é›¢
+		float length = sqrtf((direction.x * direction.x) +
+			(direction.z * direction.z));
+
+		if (length != 0.0f)
+		{// æ­£è¦åŒ–
+			direction.x /= length;
+			direction.z /= length;
+
+			float yaw = atan2(direction.x, direction.z);
 
 
+			// [-Ï€, Ï€] ã«æ­£è¦åŒ–
+			if (yaw > XM_PI) yaw -= XM_2PI;
+			if (yaw < -XM_PI) yaw += XM_2PI;
+
+
+			m_Rotation.y = yaw;
+		}
+
+		{
+			m_Position.x += m_Velocity.x;
+			m_Position.y += m_Velocity.y;
+			m_Position.z += m_Velocity.z;
+
+
+			//è½ä¸‹åˆ¤å®š
+			if (m_Position.y < -15.0f)
+			{
+				m_State = RUNBOMB_STATE::RUNBOMB_COOL;
+				return;
+			}
+
+			m_Velocity.x *= 0.99f;//é€Ÿåº¦ã‚’é©å½“ã«æ¸›è¡°ã•ã›ã‚‹
+			//m_Velocity.y *= 0.98f;//è¿½åŠ ã™ã‚‹
+			m_Velocity.z *= 0.99f;
+
+			//é™æ­¢ãƒã‚§ãƒƒã‚¯
+			float	len =
+				(
+					m_Velocity.x * m_Velocity.x +
+					m_Velocity.y * m_Velocity.y +
+					m_Velocity.z * m_Velocity.z
+					);
+
+			if (len <= 0.0002f)//é™æ­¢ã¨ã¿ãªã™é€Ÿåº¦
+			{
+				m_StopTime++;
+				if (m_StopTime > (60.0f * 2))//ï¼’ç§’é–“ç¶šã„ã¦ã„ã‚‹
+				{
+					m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					m_StopTime = 0.0f;
+				}
+			}
+
+
+			m_Velocity.y -= BOMB_GRAVITY;
+
+		}
+	}
+	else
+	{
+		m_Velocity.x = 0;
+		m_Velocity.y = 0;
+		m_Velocity.z = 0;
+
+		m_Velocity.y -= BOMB_GRAVITY;
+
+		switch (m_Type)
+		{
+		case RUNBOMB_TYPE_UP:
+			m_Velocity.z = 0.1f;
+			break;
+		case RUNBOMB_TYPE_DOWN:
+			m_Velocity.z = -0.1f;
+			break;
+		case RUNBOMB_TYPE_RIGHT:
+			m_Velocity.x = 0.1f;
+			break;
+		case RUNBOMB_TYPE_LEFT:
+			m_Velocity.x = -0.1f;
+			break;
+		default:
+			break;
+		}
+
+		XMFLOAT3 move = m_Velocity;
+
+		// æ­£è¦åŒ–
+		float len = sqrtf(move.x * move.x + move.z * move.z);
+		if (len > 0.0f)
+		{
+			move.x /= len;
+			move.z /= len;
+
+			// ç§»å‹•
+			m_Velocity.x = move.x * PLAYER_SPEEDMAX;
+			m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+		}
+		else
+		{
+			// åœæ­¢
+			m_Velocity.x = 0.0f;
+			m_Velocity.z = 0.0f;
+		}
+
+		// --- é€²è¡Œæ–¹å‘ã«ä½“ã®å‘ãã‚’åˆã‚ã›ã‚‹ ---
+		if (len > 0.0f)
+		{
+			float angle = atan2f(m_Velocity.x, m_Velocity.z); // â† Yè»¸å›è»¢
+			m_Rotation.y = angle;
+		}
+		
 		m_Position.x += m_Velocity.x;
 		m_Position.y += m_Velocity.y;
 		m_Position.z += m_Velocity.z;
 
-
-			//—‰º”»’è
-		if (m_Position.y < -15.0f)
+		//è½ä¸‹åˆ¤å®š
+		if (m_Position.y < -2.0f)
 		{
 			m_State = RUNBOMB_STATE::RUNBOMB_COOL;
 			return;
 		}
 
-		m_Velocity.x *= 0.99f;//‘¬“x‚ğ“K“–‚ÉŒ¸Š‚³‚¹‚é
-		//m_Velocity.y *= 0.98f;//’Ç‰Á‚·‚é
-		m_Velocity.z *= 0.99f;
-
-		//Ã~ƒ`ƒFƒbƒN
-		float	len =
-			(
-				m_Velocity.x * m_Velocity.x +
-				m_Velocity.y * m_Velocity.y +
-				m_Velocity.z * m_Velocity.z
-				);
-
-		if (len <= 0.0002f)//Ã~‚Æ‚İ‚È‚·‘¬“x
-		{
-			m_StopTime++;
-			if (m_StopTime > (60.0f * 2))//‚Q•bŠÔ‘±‚¢‚Ä‚¢‚é
-			{
-				m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-				m_StopTime = 0.0f;
-			}
-		}
-
-		
-		m_Velocity.y -= BOMB_GRAVITY;
-		
 	}
 }
 

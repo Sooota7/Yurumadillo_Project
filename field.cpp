@@ -264,18 +264,15 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 					break;
 				case 1:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l,q,i),FIELD_BOX);
-
 					break;
 				case 2:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_0);;
 					break;
-
 				case 5:
-					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_OBT_1);;
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_GOAL);;
 					break;
 				case 8:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q + y, i), FIELD_BREAK);
-
 					y = 0.0f;
 					break;
 				case 9:
@@ -289,33 +286,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		}
 	}
 	m_Map[a].MapData_Initialize( XMFLOAT3(2.0,-1.0f,5.0f),FIELD_MAX );
-	//for (int i = 0; i < BOX_POS_Y; i++)
-	//{
-	//	for (int l = 0; l < BOX_POS_X; l++)
-	//	{
-	//		if (i == (BOX_POS_Y - 1) && l == (BOX_POS_X - 1))
-	//		{
-	//			Map[a] = { XMFLOAT3(2.0,-1.0f,5.0f),FIELD_MAX };
-	//		}
-	//		else
-	//		{
-	//			switch ((int)Box_pos[1][l][i])
-	//			{
-	//			case 0:
-	//				break;
-	//			case 1:
-	//				Map[a] = { XMFLOAT3(l,0,i),FIELD_BOX };
-
-	//				break;
-	//			case 2:
-	//				Map[a] = { XMFLOAT3(l,1,i),FIELD_OBT_0 };
-	//				break;
-	//			}
-	//		}
-	//		a++;
-	//	}
-	//}
-
+	
 	//ブロックの作成
 	for (int i = 0; i < FIELD_MAX; i++)
 	{
@@ -329,8 +300,8 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
 			break;
 
-		case FIELD_OBT_1://障害物0
-			Model[FIELD_OBT_1] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+		case FIELD_GOAL://障害物0
+			Model[FIELD_GOAL] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
 			break;
 		case FIELD_BREAK:
 			CreateBox();
@@ -444,7 +415,7 @@ void  MAPDATA::Field_Draw(void)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
 		}
-		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_1)
+		else if(m_Map[i].MapData_GetNo() == FIELD_GOAL)
 		{
 			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
 		}
@@ -471,7 +442,7 @@ void  MAPDATA::Field_Update(void)
 
 	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
-		if (m_Map[i].MapData_GetNo() == FIELD_OBT_1)
+		if (m_Map[i].MapData_GetNo() == FIELD_GOAL)
 		{
 			m_Map[i].MapData_Update();
 		}
