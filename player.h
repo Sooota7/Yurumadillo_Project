@@ -11,7 +11,7 @@ using namespace DirectX;
 
 #include	"billboardManager.h"
 
-#define PLAYER_SPEEDMAX (0.05f)      //
+#define PLAYER_SPEEDMAX (0.1f)      //
 #define PLAYER_RADIUS (0.2f)
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
@@ -68,8 +68,9 @@ private:
 	XMFLOAT3	m_Acceleration;	// 加速
 
 	PLAYER_STATE	m_State;		//ステート
-	PARTS m_Model[PARTS_MAX];		//モデル
+	PARTS m_Parts[PARTS_MAX];					//モデル(必要な数)
 	PLAYER_ANIM m_anim[PLAYER_STATE_MAX];
+	MODEL* m_ModelData[PARTS_MAX];
 
 	bool BombHave;
 

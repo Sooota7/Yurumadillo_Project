@@ -31,7 +31,7 @@ void BACKGROUND::Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContex
 
 	g_Background.Speed = BACKGROUND_ROTATION_SPEED;
 
-	g_Background.Model = ModelLoad("asset\\model\\Sky.fbx");
+	g_Background.Model = ModelLoad("asset\\model\\sky_castle03.fbx");
 }
 
 void BACKGROUND::Background_Finalize(void)
@@ -85,7 +85,7 @@ void BACKGROUND::Background_Update(void)
 	g_Background.Position = GetCameraPosition();
 
 	// “K“–‚É‰ñ“]‚³‚¹‚é
-	g_Background.Rotation.y += g_Background.Speed;
+	//g_Background.Rotation.y += g_Background.Speed;
 }
 
 BACKGROUND* BACKGROUND::GetBackground()

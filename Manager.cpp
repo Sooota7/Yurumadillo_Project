@@ -181,7 +181,7 @@ void	MANAGER::Manager_Update()
 
 	if (m_Fade.GetFadeState() == FADE_OUT && m_Fade.Fade_GetColorW() > 1.0f)
 	{
-		Manager_BGM_Initialize(m_Fade.Fade_GetScene());
+		//Manager_BGM_Initialize(m_Fade.Fade_GetScene());
 		SetScene(m_Fade.Fade_GetScene());
 	}
 

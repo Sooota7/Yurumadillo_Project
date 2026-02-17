@@ -152,6 +152,7 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Ending.cpp" />
     <ClCompile Include="EnemyButterfly.cpp" />
+    <ClCompile Include="EnemyGround.cpp" />
     <ClCompile Include="Enemylush.cpp" />
     <ClCompile Include="EnemyNormal.cpp" />
     <ClCompile Include="enemySpawner.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="Ending.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyButterfly.h" />
+    <ClInclude Include="EnemyGround.h" />
     <ClInclude Include="Enemylush.h" />
     <ClInclude Include="EnemyNormal.h" />
     <ClInclude Include="enemySpawner.h" />
@@ -256,6 +258,7 @@
     <ClInclude Include="Tutorial2.h" />
     <ClInclude Include="Tutorial3.h" />
     <ClInclude Include="weapon.h" />
+    <ClInclude Include="WeaponEnemyGround.h" />
     <ClInclude Include="weaponSource.h" />
   </ItemGroup>
   <ItemGroup>

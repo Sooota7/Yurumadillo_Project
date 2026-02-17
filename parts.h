@@ -57,7 +57,8 @@ private:
 
 	bool	 m_Loop;
 
-	
+	MODEL*	m_Model;		//ƒ‚ƒfƒ‹
+
 public:
 
 	//FRAME m_Frame[FRAME_MAX];
@@ -81,13 +82,12 @@ public:
 
 public:
 	void	PartsSet(XMFLOAT3 position,XMFLOAT3 rotation);
-	void	PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,const char* model);
+	void	PartsInitialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	PartsFinalize();
 	void	PartsUpdate();
-	void	PartsDraw();
+	void	PartsDraw(MODEL* model);
 	
-	MODEL*	m_Model;		//ƒ‚ƒfƒ‹
-
+	
 	void SetPartsPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3 GetPartsPosition() { return m_Position; };
 

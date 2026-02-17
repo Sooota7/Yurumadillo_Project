@@ -8,7 +8,7 @@
 #include "billboardManager.h"
 #include "billboard.h"
 
-void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO fn)
 {
 	m_pDevice = pDevice;
 	m_pContext = pContext;
@@ -33,8 +33,8 @@ void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 			assert(m_pSRV[i]);
 			break;
 		case BILLBOARD_TEXTURE::EXPLOSION:
-			// テクスチャ読み込み（テスト）
-			LoadFromWICFile(L"Asset\\Texture\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, &metadata, image);
+			// テクスチャ読み込み（ステージに合わせてエフェクト画像を切り替える）
+			Initialize_BombEffect(&metadata, &image, fn);
 			CreateShaderResourceView(pDevice, image.GetImages(),
 				image.GetImageCount(), metadata, &m_pSRV[i]);
 			assert(m_pSRV[i]);
@@ -73,7 +73,7 @@ void BillboardManager::Finalize()
 	m_Count = 0;
 }
 
-void BillboardManager::Draw(FIELD_NO fn)
+void BillboardManager::Draw()
 {
 	for (int i = 0; i < m_Count; i++)
 	{// 登録したビルボード分
@@ -119,4 +119,31 @@ void BillboardManager::Register(Billboard* pBillboard)
     m_pBillboard[m_Count] = pBillboard;
 
     m_Count += 1;
+}
+
+void BillboardManager::Initialize_BombEffect(TexMetadata* tm, ScratchImage* si, FIELD_NO fn)
+{
+	switch (fn)
+	{
+	case FIELD_NO::NO_1:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Forest.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	case FIELD_NO::NO_2:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Teatime.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	case FIELD_NO::NO_3:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	case FIELD_NO::NO_4:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	case FIELD_NO::NO_5:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	case FIELD_NO::NO_6:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		break;
+	default:
+		break;
+	}
 }
