@@ -41,7 +41,7 @@ void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
@@ -109,6 +109,7 @@ void GIMMICK::Gimmick_Update()
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
+	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Map.Field_Update();
 	m_Background.Background_Update();
 
@@ -123,32 +124,21 @@ void GIMMICK::Gimmick_Update()
 	m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	collision.PlayerGateCollision(&m_Player, &m_GimmickData);
 
-	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	collision.BombGateCollision(&m_bomb, &m_GimmickData);
+
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
 	m_PlayerUI.Update();
 	m_BombUI.Update();
 	m_TargetUI.Update();
 
-	/*if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
-	{
-		if (m_NowField == FIELD_NO::NO_1)
-		{
-			Gimmick_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			Gimmick_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_NowField = FIELD_NO::NO_1;
-		}
-	}*/
-
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
-		m_Manager->SetScene(SCENE_PAUSE);
+		m_Manager->SetScene(SCENE_GAMEOVER);
+		return; // ← ここで即座に抜ける：Finalize 後のアクセスを防止
 	}
 
+	// 以下はプレイヤー等のメンバにアクセスするコード
 	collision.PlayerFieldCollision(&m_Player, &m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
@@ -183,6 +173,16 @@ void GIMMICK::Gimmick_Update()
 		m_Manager->SetScene(SCENE_RESULT);
 
 	}
+
+	if (Keyboard_IsKeyDownTrigger(KK_C))
+	{
+		if (m_Manager->GetClearCount() == 1)
+		{
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
+	}
 }
 
 void GIMMICK::Gimmick_Draw()
@@ -205,7 +205,7 @@ void GIMMICK::Gimmick_Draw()
 	Light3.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
 	
-	m_BillboardManager.Draw(m_NowField);
+	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
@@ -244,7 +244,7 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, no);
 	m_bomb.Bomb_Initialize(pDevice, pContext, no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);

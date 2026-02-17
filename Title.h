@@ -5,6 +5,7 @@
 #include "direct3d.h"
 #include "fade.h"
 #include "Audio.h"
+#include "Manager.h"
 
 class TITLE
 {

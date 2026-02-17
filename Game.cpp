@@ -1,4 +1,3 @@
-
 //Game.cpp
 
 #include	"Manager.h"
@@ -31,7 +30,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_2;
+	m_NowField = FIELD_NO::NO_1;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -41,7 +40,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
@@ -117,25 +116,18 @@ void GAME::Game_Update()
 	m_BombUI.Update();
 	m_TargetUI.Update();
 
-	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
+	/*if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
-		if (m_NowField == FIELD_NO::NO_1)
-		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_NowField = FIELD_NO::NO_1;
-		}
-	}
+		...
+	}*/
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
-		m_Manager->SetScene(SCENE_PAUSE);
+		m_Manager->SetScene(SCENE_GAMEOVER);
+		return; // ← ここで即座に抜ける：Finalize 後のアクセスを防止
 	}
 
+	// 以下はプレイヤー等のメンバにアクセスするコード
 	collision.PlayerFieldCollision(&m_Player, &m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
@@ -171,6 +163,16 @@ void GAME::Game_Update()
 		m_Manager->SetScene(SCENE_RESULT);
 		
 	}
+
+	if (Keyboard_IsKeyDownTrigger(KK_C))
+	{
+		if (m_Manager->GetClearCount() == 0)
+		{
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
+	}
 }
 
 void GAME::Game_Draw()
@@ -194,7 +196,7 @@ void GAME::Game_Draw()
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 
 
-	m_BillboardManager.Draw(m_NowField);
+	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
@@ -232,7 +234,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);

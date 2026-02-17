@@ -27,7 +27,7 @@ using namespace DirectX;
 
 
 #define GATE_PANEL_HALF_W (0.45f)  // 片側パネルのX半幅（＝厚み）: モデルに合わせて
-#define GATE_PANEL_HALF_H (0.50f)  // パネルのY半径
+#define GATE_PANEL_HALF_H (1.50f)  // パネルのY半径
 #define GATE_PANEL_HALF_D (0.50f)  // パネルのZ半径（奥行
 
 

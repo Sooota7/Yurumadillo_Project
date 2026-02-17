@@ -160,6 +160,7 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="FlowtBombSource.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Gimmick.cpp" />
     <ClCompile Include="gimmickButton.cpp" />
     <ClCompile Include="gimmickData.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="FlowtBombSource.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="Gimmick.h" />
     <ClInclude Include="gimmickButton.h" />
     <ClInclude Include="gimmickData.h" />
