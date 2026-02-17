@@ -42,6 +42,9 @@ void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -93,6 +96,9 @@ void GIMMICK::Gimmick_Finalize()
 	Camera_Finalize();	//カメラ終了処理
 
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 
 	UnloadAudio(g_BgmID);//サウンドの解放
 }
@@ -120,7 +126,9 @@ void GIMMICK::Gimmick_Update()
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
-
+	m_PlayerUI.Update();
+	m_BombUI.Update();
+	m_TargetUI.Update();
 
 	/*if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
@@ -199,6 +207,9 @@ void GIMMICK::Gimmick_Draw()
 	
 	m_BillboardManager.Draw(m_NowField);
 	SetDepthTest(FALSE);
+	m_PlayerUI.Draw();
+	m_BombUI.Draw();
+	m_TargetUI.Draw();
 
 	//Block_Draw();
 	//Effect_Draw();
@@ -218,6 +229,9 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -231,5 +245,8 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_bomb.Bomb_Initialize(pDevice, pContext, no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 	m_BillboardManager.Initialize(pDevice, pContext);
+	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
+	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
+	m_TargetUI.Initialize(pDevice, pContext);
 }
 

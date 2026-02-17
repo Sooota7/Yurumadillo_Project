@@ -24,11 +24,11 @@
 void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 {
 	if (scene != SCENE_STAGESELECTION)
-	{//ƒTƒEƒ“ƒh‚ÌƒŠƒZƒbƒg
+	{//ã‚µã‚¦ãƒ³ãƒ‰ã®ãƒªã‚»ãƒƒãƒˆ
 		Manager_BGM_Finalize();
 	}
 
-	//ƒ[ƒhƒ`ƒFƒbƒN
+	//ãƒ­ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
 	bool load = false;
 
 	switch (scene)
@@ -39,42 +39,42 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 		g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav"); load = true;
 		break;
 	case SCENE_PROLOGUE:
-		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh
+		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
 		break;
 	case SCENE_MENU:
-		g_BgmID = LoadAudio("asset\\Audio\\Menu_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh
+		g_BgmID = LoadAudio("asset\\Audio\\Menu_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
 		break;
 	case SCENE_TUTORIAL:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_TUTORIAL2:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_TUTORIAL3:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_GAME:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
 		break;
 	case SCENE_PAUSE:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_RESULT:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_STAGESELECTION:
 		break;
 	case SCENE_ENDING:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	case SCENE_GIMMICK:
-		g_BgmID = LoadAudio("asset\\Audio\\Gimmick_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh
+		g_BgmID = LoadAudio("asset\\Audio\\Gimmick_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
 		break;
 	case SCENE_ENEMYLUSH:
-		g_BgmID = LoadAudio("asset\\Audio\\Lush_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh
+		g_BgmID = LoadAudio("asset\\Audio\\Lush_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
 		break;
 	case SCENE_BOSS:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ƒTƒEƒ“ƒhƒ[ƒh---
+		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰---
 		break;
 	default:
 		break;
@@ -82,14 +82,14 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 
 	if (load)
 	{
-		PlayAudio(g_BgmID, true);		//Ä¶ŠJniƒ‹[ƒv‚ ‚èj
+		PlayAudio(g_BgmID, true);		//å†ç”Ÿé–‹å§‹ï¼ˆãƒ«ãƒ¼ãƒ—ã‚ã‚Šï¼‰
 	}
 
 }
 
 void	MANAGER::Manager_BGM_Finalize()
 {
-	UnloadAudio(g_BgmID);//ƒTƒEƒ“ƒh‚Ì‰ğ•ú
+	UnloadAudio(g_BgmID);//ã‚µã‚¦ãƒ³ãƒ‰ã®è§£æ”¾
 }
 
 
@@ -97,18 +97,18 @@ void	MANAGER::Manager_Initialize()
 { 
 	//Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 
-	////–{—ˆ‚Ítitle‚Ì‰Šú‰»‚ÅƒtƒF[ƒhƒCƒ“‚ğƒZƒbƒg‚·‚é
+	////æœ¬æ¥ã¯titleã®åˆæœŸåŒ–ã§ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 	//XMFLOAT4 color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	//SetFade(60.0f, color, FADE_STATE::FADE_IN, SCENE_GAME);
-	//SetScene(SCENE_GAME);	//Å‰‚É“®‚©‚·ƒV[ƒ“‚ÉØ‚è‘Ö‚¦‚é
+	//SetScene(SCENE_GAME);	//æœ€åˆã«å‹•ã‹ã™ã‚·ãƒ¼ãƒ³ã«åˆ‡ã‚Šæ›¿ãˆã‚‹
 
 
-	//–{—ˆ‚ÌŒ`
+	//æœ¬æ¥ã®å½¢
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
-	SetScene(SCENE_TITLE);	//Å‰‚É“®‚©‚·ƒV[ƒ“‚ÉØ‚è‘Ö‚¦‚é
+	SetScene(SCENE_TITLE);	//æœ€åˆã«å‹•ã‹ã™ã‚·ãƒ¼ãƒ³ã«åˆ‡ã‚Šæ›¿ãˆã‚‹
 
-	//g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//ƒTƒEƒ“ƒhƒ[ƒh
-	//PlayAudio(g_BgmID, true);		//Ä¶ŠJniƒ‹[ƒv‚ ‚èj
+	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//ã‚µã‚¦ãƒ³ãƒ‰ãƒ­ãƒ¼ãƒ‰
+	PlayAudio(g_BgmID, true);		//å†ç”Ÿé–‹å§‹ï¼ˆãƒ«ãƒ¼ãƒ—ã‚ã‚Šï¼‰
 
 }
 
@@ -123,7 +123,7 @@ void	MANAGER::Manager_Finalize()
 
 void	MANAGER::Manager_Update()
 {
-	switch (m_Scene)	//Œ»İƒV[ƒ“‚ÌƒAƒbƒvƒf[ƒgŠÖ”‚ğŒÄ‚Ño‚·
+	switch (m_Scene)	//ç¾åœ¨ã‚·ãƒ¼ãƒ³ã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆé–¢æ•°ã‚’å‘¼ã³å‡ºã™
 	{
 	case SCENE_NONE:
 		break;
@@ -189,7 +189,7 @@ void	MANAGER::Manager_Update()
 void	MANAGER::Manager_Draw()
 { 
 
-	switch (m_Scene)	//Œ»İƒV[ƒ“‚Ì•`‰æŠÖ”‚ğŒÄ‚Ño‚·
+	switch (m_Scene)	//ç¾åœ¨ã‚·ãƒ¼ãƒ³ã®æç”»é–¢æ•°ã‚’å‘¼ã³å‡ºã™
 	{
 		case SCENE_NONE:
 			break;
@@ -243,10 +243,10 @@ void	MANAGER::Manager_Draw()
 
 }
 
-void	MANAGER::SetScene(SCENE scene) //ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚é
+void	MANAGER::SetScene(SCENE scene) //ã‚·ãƒ¼ãƒ³ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹
 {
-	//Às’†‚ÌƒV[ƒ“‚ğI—¹‚³‚¹‚é
-	switch (m_Scene)	//Œ»İƒV[ƒ“‚ÌI—¹ŠÖ”‚ğŒÄ‚Ño‚·
+	//å®Ÿè¡Œä¸­ã®ã‚·ãƒ¼ãƒ³ã‚’çµ‚äº†ã•ã›ã‚‹
+	switch (m_Scene)	//ç¾åœ¨ã‚·ãƒ¼ãƒ³ã®çµ‚äº†é–¢æ•°ã‚’å‘¼ã³å‡ºã™
 	{
 	case SCENE_NONE:
 		break;
@@ -325,12 +325,12 @@ void	MANAGER::SetScene(SCENE scene) //ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚é
 	}
 
 
-	m_Scene = scene;	//w’è‚ÌƒV[ƒ“‚ÖØ‚è‘Ö‚¦‚é
+	m_Scene = scene;	//æŒ‡å®šã®ã‚·ãƒ¼ãƒ³ã¸åˆ‡ã‚Šæ›¿ãˆã‚‹
 
 
 	
-	//Ÿ‚ÌƒV[ƒ“‚ğ‰Šú‰»‚·‚é
-	switch (m_Scene)	//Œ»İƒV[ƒ“‚Ì‰Šú‰»ŠÖ”‚ğŒÄ‚Ño‚·
+	//æ¬¡ã®ã‚·ãƒ¼ãƒ³ã‚’åˆæœŸåŒ–ã™ã‚‹
+	switch (m_Scene)	//ç¾åœ¨ã‚·ãƒ¼ãƒ³ã®åˆæœŸåŒ–é–¢æ•°ã‚’å‘¼ã³å‡ºã™
 	{
 		case SCENE_NONE:
 			break;
