@@ -119,29 +119,6 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 		m_Rotation.y = atan2(m_Velocity.x, m_Velocity.z);
 	}
 
-	//float rotY = 0;
-
-	//if (m_Velocity.z > 0)
-	//{
-	//	rotY = 0;
-	//}
-	//else 
-	//{
-	//	rotY = 180;
-	//}
-
-	////ifで0チェック後ｚとｘで角度取る
-	//if (m_Velocity.x > 0)
-	//{
-	//	rotY += (90/m_Velocity.x);
-	//}
-	//else
-	//{
-	//	rotY += (90/m_Velocity.x);
-	//}
-
-	//m_Rotation.y = XMConvertToRadians(rotY);
-
 	//落下判定
 	if (m_Position.y < -8.0f)
 	{
@@ -211,6 +188,8 @@ void RUNBOMBSOURCE::Runbombsource_Explosion()
 
 void RUNBOMBSOURCE::Runbombsource_Enemy(XMFLOAT3 pPlayerPos)
 {
+
+
 
 	// 敵の向きをプレイヤーに向ける
 	XMFLOAT3 direction;
