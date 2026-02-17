@@ -34,28 +34,34 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		switch (i)
 		{
 		case PARTS_HEAD:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\head.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_ModelData[i] = ModelLoad("asset\\model\\head.fbx");
 			break;
 		case PARTS_BODY:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\body.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_ModelData[i] = ModelLoad( "asset\\model\\body.fbx");
 			break;
 		case PARTS_ARM_RIGHT:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\hand.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f/ downSize, 1.0f/ downSize, 1.0f/ downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f/ downSize, 1.0f/ downSize, 1.0f/ downSize));
+			m_ModelData[i] = ModelLoad("asset\\model\\hand.fbx");
 			break;
 		case PARTS_ARM_LEFT:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\handL.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_ModelData[i] = ModelLoad("asset\\model\\handL.fbx");
 			break;
 		case PARTS_LEG_RIGHT:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\leg.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_ModelData[i] = ModelLoad("asset\\model\\leg.fbx");
 			break;
 		case PARTS_LEG_LEFT:
-			m_Model[i].PartsInitialize(pDevice, pContext, "asset\\model\\legL.fbx");
-			m_Model[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_Parts[i].PartsInitialize(pDevice, pContext);
+			m_Parts[i].SetPartsScaling(XMFLOAT3(1.0f / downSize, 1.0f / downSize, 1.0f / downSize));
+			m_ModelData[i] = ModelLoad("asset\\model\\legL.fbx");
 			break;
 		default:
 			break;
@@ -111,7 +117,7 @@ void	PLAYER::Player_Finalize()
 {
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
-		m_Model[i].PartsFinalize();
+		m_Parts[i].PartsFinalize();
 	}
 }
 
@@ -203,16 +209,16 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		switch (m_State)
 		{
 		case PLAYER_STATE::PLAYER_STATE_IDLE:
-			m_Model[i].PartsDraw();
+			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		case PLAYER_STATE::PLAYER_STATE_MOVE:
-			m_Model[i].PartsDraw();
+			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		case PLAYER_STATE::PLAYER_STATE_BALLOON:
-			m_Model[i].PartsDraw();
+			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		case PLAYER_STATE::PLAYER_STATE_RESPAWN:
-			m_Model[i].PartsDraw();
+			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		}
 	}
@@ -482,30 +488,42 @@ void PLAYER::Player_Balloon()
 		XMFLOAT3 move = XMFLOAT3(0, 0, 0);
 
 		//コントローラー
-		if (Keyboard_IsKeyDown(KK_W) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || GetThumbLeftY(0) >= 0.5f))
+		if (Keyboard_IsKeyDown(KK_W) ||((IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || GetThumbLeftY(0) >= 0.5f)))
 		{
 			move.x -= forward.x, move.z -= forward.z;
 		}
 
-		if(Keyboard_IsKeyDown(KK_S) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) || GetThumbLeftY(0) <= -0.5f))
+		if(Keyboard_IsKeyDown(KK_S) ||((IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) || GetThumbLeftY(0) <= -0.5f)))
 		{
 			move.x += forward.x, move.z += forward.z;
 		}
 
-		if ((Keyboard_IsKeyDown(KK_D))||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f))
+		if ((Keyboard_IsKeyDown(KK_D))||((IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f)))
 		{
 			move.x -= right.x, move.z -= right.z;
 		}
 			
-		if(Keyboard_IsKeyDown(KK_A) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f))
+		if(Keyboard_IsKeyDown(KK_A) ||((IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f)))
 		{
 			move.x += right.x, move.z += right.z;
 		}
 
-	
+		float len = sqrtf(move.x * move.x + move.z * move.z);
+		if (len > 0.0f)
+		{
+			move.x /= len;
+			move.z /= len;
 
-		
-
+			// 移動
+			m_Velocity.x = move.x * PLAYER_SPEEDMAX;
+			m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+		}
+		else
+		{
+			// 停止
+			m_Velocity.x = 0.0f;
+			m_Velocity.z = 0.0f;
+		}
 
 }
 
@@ -518,8 +536,8 @@ void PLAYER::Player_SetParts()
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
 		XMFLOAT3 pos = m_Position;
-		XMFLOAT3 rot = m_Model[PARTS_BODY].GetPartsRotation();
-		XMFLOAT3 plasRot = m_Model[PARTS_BODY].GetPartsRotation();
+		XMFLOAT3 rot = m_Parts[PARTS_BODY].GetPartsRotation();
+		XMFLOAT3 plasRot = m_Parts[PARTS_BODY].GetPartsRotation();
 
 
 		if (JumpCount)
@@ -527,28 +545,28 @@ void PLAYER::Player_SetParts()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				pos = Player_AnimPos(m_State, PARTS_HEAD, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_HEAD, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_HEAD, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_BODY:
-				pos = Player_AnimPos(m_State, PARTS_BODY, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_BODY, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_BODY, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_BODY, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_ARM_RIGHT:
-				pos = Player_AnimPos(m_State, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_ARM_LEFT:
-				pos = Player_AnimPos(m_State, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_LEG_RIGHT:
-				pos = Player_AnimPos(m_State, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_LEG_RIGHT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_LEG_RIGHT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_LEG_LEFT:
-				pos = Player_AnimPos(m_State, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(m_State, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(m_State, PARTS_LEG_LEFT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(m_State, PARTS_LEG_LEFT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_MAX:
 				break;
@@ -562,28 +580,28 @@ void PLAYER::Player_SetParts()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_HEAD, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_BODY:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_BODY, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_BODY, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_BODY, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_BODY, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_ARM_RIGHT:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_ARM_LEFT:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_LEG_RIGHT:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_LEG_LEFT:
-				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_MAX:
 				break;
@@ -597,12 +615,12 @@ void PLAYER::Player_SetParts()
 			switch (i)
 			{
 			case PARTS_ARM_RIGHT:
-				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_RIGHT, &m_Parts[i], rot, (int)l);
 				break;
 			case PARTS_ARM_LEFT:
-				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
-				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+				pos = Player_AnimPos(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
+				plasRot = Player_AnimRot(PLAYER_STATE_BALLOON, PARTS_ARM_LEFT, &m_Parts[i], rot, (int)l);
 				break;
 			default:
 				break;
@@ -618,27 +636,27 @@ void PLAYER::Player_SetParts()
 		{
 		case PARTS_HEAD:
 			
-			m_Model[i].PartsSet(pos, m_Rotation);
+			m_Parts[i].PartsSet(pos, m_Rotation);
 			break;
 		case PARTS_BODY:
 			//pos = Player_LeftLeg2(&m_Model[i], rot);
-			m_Model[i].PartsSet(pos, m_Rotation);
+			m_Parts[i].PartsSet(pos, m_Rotation);
 			break;
 		case PARTS_ARM_RIGHT:
 			//pos = Player_LeftLeg2(&m_Model[i], rot);
-			m_Model[i].PartsSet(pos, rot);
+			m_Parts[i].PartsSet(pos, rot);
 			break;
 		case PARTS_ARM_LEFT:
 			//pos = Player_LeftLeg2(&m_Model[i], rot);
-			m_Model[i].PartsSet(pos, rot);
+			m_Parts[i].PartsSet(pos, rot);
 			break;
 		case PARTS_LEG_RIGHT:
 			//pos = Player_LeftLeg2(&m_Model[i], rot);
-			m_Model[i].PartsSet(pos, rot);
+			m_Parts[i].PartsSet(pos, rot);
 			break;
 		case PARTS_LEG_LEFT:
 			//pos = Player_LeftLeg2(&m_Model[i],rot);
-			m_Model[i].PartsSet(pos, rot);
+			m_Parts[i].PartsSet(pos, rot);
 			break;
 		
 		default:
@@ -775,36 +793,35 @@ void PLAYER::Player_SetAnimInis()
 {
 	XMFLOAT3 pos = XMFLOAT3(0.25f, 0.0f, 0.25f);
 
+	
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
-		for (int i = 0; i < PARTS_MAX; i++)
+		switch (i)
 		{
-			switch (i)
-			{
-			case PARTS_HEAD:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.65f, 0.0f));
-				break;
-			case PARTS_BODY:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
-				break;
-			case PARTS_ARM_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
-				break;
-			case PARTS_ARM_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
-				break;
-			case PARTS_LEG_RIGHT:
-				m_Model[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
-				break;
-			case PARTS_LEG_LEFT:
-				m_Model[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
-				break;
-			default:
-				break;
-			}
+		case PARTS_HEAD:
+			m_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 0.65f, 0.0f));
+			break;
+		case PARTS_BODY:
+			m_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
+			break;
+		case PARTS_ARM_RIGHT:
+			m_Parts[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
+			break;
+		case PARTS_ARM_LEFT:
+			m_Parts[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
+			break;
+		case PARTS_LEG_RIGHT:
+			m_Parts[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
+			break;
+		case PARTS_LEG_LEFT:
+			m_Parts[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
+			break;
+		default:
+			break;
 		}
-
 	}
+
+	
 	Player_SetAnimMove();
 	Player_SetAnimJunp();
 	Player_SetAnimHave_MAX();
@@ -961,28 +978,28 @@ void PLAYER::Player_SetAnimIdle()
 			switch (i)
 			{
 			case PARTS_HEAD:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			case PARTS_BODY:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			case PARTS_ARM_RIGHT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			case PARTS_ARM_LEFT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			case PARTS_LEG_RIGHT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			case PARTS_LEG_LEFT:
-				m_Model[i].SetlasPosMax(0);
-				m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
+				m_Parts[i].SetlasPosMax(0);
+				m_Parts[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
 				break;
 			default:
 				break;

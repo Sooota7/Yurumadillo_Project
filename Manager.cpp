@@ -107,8 +107,8 @@ void	MANAGER::Manager_Initialize()
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
 	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
 
-	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
-	PlayAudio(g_BgmID, true);		//再生開始（ループあり）
+	//g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
+	//PlayAudio(g_BgmID, true);		//再生開始（ループあり）
 
 }
 
@@ -178,7 +178,7 @@ void	MANAGER::Manager_Update()
 
 	if (m_Fade.GetFadeState() == FADE_OUT && m_Fade.Fade_GetColorW() > 1.0f)
 	{
-		Manager_BGM_Initialize(m_Fade.Fade_GetScene());
+		//Manager_BGM_Initialize(m_Fade.Fade_GetScene());
 		SetScene(m_Fade.Fade_GetScene());
 	}
 
