@@ -7,6 +7,17 @@
 #include	"player.h"
 using namespace DirectX;
 
+//enum RUNBOMB_TYPE
+//{
+//	RUNBOMB_NONE = 0,
+//	RUNBOMB_FREE,
+//	RUNBOMB_RIGHT,
+//	RUNBOMB_LEFT,
+//	RUNBOMB_UP,
+//	RUNBOMB_DOWN,
+//	RUNBOMB_MAX
+//};
+
 enum RUNBOMB_STATE
 {
 	RUNBOMB_NONE,
@@ -35,7 +46,7 @@ class RUNBOMBSOURCE
 
 	bool		m_fieldColision;
 
-	//BOMB_TYPE	m_Type;
+	//RUNBOMB_TYPE	m_Type;
 
 public:
 
