@@ -138,7 +138,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		switch (i)
 		{
 		case EG_PARTS_BODY:
-			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
+			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundBody.fbx");
 			break;
 		case EG_PARTS_ARM_RIGHT:
 			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
@@ -944,6 +944,9 @@ void ENEMYSPAWNER::Enemy_Ground_SetAnimMove()
 
 void ENEMYSPAWNER::Enemy_Ground_SetAnimAttack()
 {
+	//‚±‚±‚É‘„‚ğ“Š‚°‚éƒ‚[ƒVƒ‡ƒ“‚ğ“ü‚ê‚é
+	//¶è‚É‘„‚ğ‚Á‚Ä‚Ü‚·
+
 	{//body
 
 	}

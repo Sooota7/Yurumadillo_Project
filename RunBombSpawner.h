@@ -24,13 +24,15 @@ private:
 
 	bool		m_Use = false;
 
+	RUNBOMB_TYPE m_Type;
+
 	const float W = 60.0f;
 
 
 public:
 
 
-	void Initialize_RunBombSpawner(XMFLOAT3 pos);
+	void Initialize_RunBombSpawner(XMFLOAT3 pos, RUNBOMB_TYPE Type);
 	void Finalize_RunBombSpawner();
 	void Update_RunBombSpawner(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
 	void Draw_RunBombSpawner();

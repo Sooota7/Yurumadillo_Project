@@ -116,7 +116,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					a++;
 					break;
 				case 4:
-					m_RunBomb[b].Initialize_RunBombSpawner(XMFLOAT3(l, q, i));
+					m_RunBomb[b].Initialize_RunBombSpawner(XMFLOAT3(l, q, i),RUNBOMB_TYPE_DOWN);
 					b++;
 					break;
 				case 7:

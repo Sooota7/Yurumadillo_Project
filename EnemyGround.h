@@ -28,6 +28,7 @@ enum ENEMY_GROUND_STATE
 	ENEMY_GROUND_STATE_IDLE,	//‰½‚à‚µ‚È‚¢
 	ENEMY_GROUND_STATE_MOVE,		//ˆÚ“®
 	ENEMY_GROUND_STATE_ATTACK,	//•ûŒüŽwŽ¦
+	ENEMY_GROUND_STATE_CREATE_WEAPON,	//•ûŒüŽwŽ¦
 	ENEMY_GROUND_STATE_COOL,	//•ûŒüŽwŽ¦
 	ENEMY_GROUND_STATE_DEAD,			//Ž€–S
 	ENEMY_GROUND_STATE_MAX			//Ž€–S
@@ -79,6 +80,8 @@ private:
 	void	Enemy_Ground_Move();
 	
 	void	Enemy_Ground_Attack(XMFLOAT3 chasePos);
+	void	Enemy_Ground_CreateWeapon();
+	void	Enemy_Ground_Cool();
 	void	Enemy_Ground_Dead();
 
 	void	Enemy_Ground_SetAnimMove();

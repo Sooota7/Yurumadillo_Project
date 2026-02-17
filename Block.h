@@ -22,7 +22,7 @@ enum FIELD
 
 	FIELD_OBT_0, // áŠQ•¨
 
-	FIELD_OBT_1, // ƒS[ƒ‹
+	FIELD_GOAL, // ƒS[ƒ‹
 
 	FIELD_BREAK, // ‰ó‚ê‚é°
 

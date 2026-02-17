@@ -7,16 +7,16 @@
 #include	"player.h"
 using namespace DirectX;
 
-//enum RUNBOMB_TYPE
-//{
-//	RUNBOMB_NONE = 0,
-//	RUNBOMB_FREE,
-//	RUNBOMB_RIGHT,
-//	RUNBOMB_LEFT,
-//	RUNBOMB_UP,
-//	RUNBOMB_DOWN,
-//	RUNBOMB_MAX
-//};
+enum RUNBOMB_TYPE
+{
+	RUNBOMB_TYPE_NONE = 0,
+	RUNBOMB_TYPE_UP,
+	RUNBOMB_TYPE_DOWN,
+	RUNBOMB_TYPE_RIGHT,
+	RUNBOMB_TYPE_LEFT,
+	RUNBOMB_TYPE_FREE,
+	RUNBOMB_TYPE_MAX
+};
 
 enum RUNBOMB_STATE
 {
@@ -33,24 +33,24 @@ enum RUNBOMB_STATE
 
 class RUNBOMBSOURCE
 {
-	XMFLOAT3	m_FirstPosition;		//”š’e‚ÌÀ•W
-	XMFLOAT3	m_Position;		//”š’e‚ÌÀ•W
-	XMFLOAT3	m_Velocity;		//‘¬“x
-	XMFLOAT3	m_Rotation;		//‘¬“x
-	XMFLOAT3	m_Acceleration;	//—‰º‘¬“x
-	float		m_Count;		//”š”­‚Ü‚Å‚ÌƒJƒEƒ“ƒg
-	float		m_StopTime;		//Ã~‚·‚é‚Ü‚Å‚ÌŠÔ
-	RUNBOMB_STATE	m_State;		//Œ»İ‚Ìó‘Ô
+	XMFLOAT3	m_FirstPosition;		//çˆ†å¼¾ã®åº§æ¨™
+	XMFLOAT3	m_Position;		//çˆ†å¼¾ã®åº§æ¨™
+	XMFLOAT3	m_Velocity;		//é€Ÿåº¦
+	XMFLOAT3	m_Rotation;		//é€Ÿåº¦
+	XMFLOAT3	m_Acceleration;	//è½ä¸‹é€Ÿåº¦
+	float		m_Count;		//çˆ†ç™ºã¾ã§ã®ã‚«ã‚¦ãƒ³ãƒˆ
+	float		m_StopTime;		//é™æ­¢ã™ã‚‹ã¾ã§ã®æ™‚é–“
+	RUNBOMB_STATE	m_State;		//ç¾åœ¨ã®çŠ¶æ…‹
 	float		m_LimitCount;	//
 	bool		m_Touch;
 
 	bool		m_fieldColision;
 
-	//RUNBOMB_TYPE	m_Type;
+	RUNBOMB_TYPE	m_Type;
 
 public:
 
-	void		Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state);
+	void		Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state, RUNBOMB_TYPE type);
 	void		Runbombsource_Finalize(void);
 
 
@@ -64,7 +64,7 @@ public:
 	//void		Runbombsource_Active_Type();
 
 
-	//ƒZƒbƒ^[‹y‚ÑƒQƒbƒ^[
+	//ã‚»ãƒƒã‚¿ãƒ¼åŠã³ã‚²ãƒƒã‚¿ãƒ¼
 	void		Runbombsource_SetPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3	Runbombsource_GetPosition() { return m_Position; };
 
@@ -76,6 +76,9 @@ public:
 
 	void		Runbombsource_SetState(RUNBOMB_STATE state) { m_State = state; };
 	RUNBOMB_STATE	Runbombsource_GetState() { return m_State; };
+
+	void		Runbombsource_SetType(RUNBOMB_TYPE type) { m_Type = type; };
+	RUNBOMB_TYPE	Runbombsource_GetType() { return m_Type; };
 
 	void		Runbombsource_SetCount(float count) { m_Count = count; };
 	float		Runbombsource_GetCount() { return m_Count; };

@@ -193,6 +193,7 @@
     <ClCompile Include="Tutorial2.cpp" />
     <ClCompile Include="Tutorial3.cpp" />
     <ClCompile Include="weapon.cpp" />
+    <ClCompile Include="WeaponEnemyGround.cpp" />
     <ClCompile Include="weaponSource.cpp" />
   </ItemGroup>
   <ItemGroup>

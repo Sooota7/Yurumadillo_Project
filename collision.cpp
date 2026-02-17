@@ -47,7 +47,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerVel.x *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_3;
 
-					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					if (Map[i].MapData_GetNo() == FIELD_GOAL)
 					{
 						hit = COLLISION_HIT::HIT_WALL_CREAR;
 					}
@@ -59,7 +59,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
 
-					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					if (Map[i].MapData_GetNo() == FIELD_GOAL)
 					{
 						hit = COLLISION_HIT::HIT_WALL_CREAR;
 					}
@@ -75,7 +75,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerVel.z *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_0;
 
-					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					if (Map[i].MapData_GetNo() == FIELD_GOAL)
 					{
 						hit = COLLISION_HIT::HIT_WALL_CREAR;
 					}
@@ -87,7 +87,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
 
-					if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+					if (Map[i].MapData_GetNo() == FIELD_GOAL)
 					{
 						hit = COLLISION_HIT::HIT_WALL_CREAR;
 					}
@@ -109,7 +109,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 						PlayerPos.y += (mapPos.y - BOX_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
 						PlayerVel.y *= -COE; //移動ベクトルの反転
 						//hit = 
-						if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+						if (Map[i].MapData_GetNo() == FIELD_GOAL)
 						{
 							hit = COLLISION_HIT::HIT_WALL_CREAR;
 						}
@@ -133,7 +133,7 @@ float	COLLISION::PlayerFieldCollision(PLAYER* pPlayer, MAPDATA* pField)
 							PlayerJump = true;
 						}
 
-						if (Map[i].MapData_GetNo() == FIELD_OBT_1)
+						if (Map[i].MapData_GetNo() == FIELD_GOAL)
 						{
 							hit = COLLISION_HIT::HIT_WALL_CREAR;
 						}
@@ -1119,7 +1119,7 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 		XMFLOAT3 BombVel = pRunBombSource->Runbombsource_GetVelocity();
 
-		if (pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY)
+		if (pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY && pRunBombSource->Runbombsource_GetType() == RUNBOMB_TYPE_FREE)
 		{
 			XMFLOAT3 Rotation = pRunBombSource->Runbombsource_GetRotation();
 
@@ -1240,7 +1240,8 @@ float	COLLISION::BombFieldCollision(BOMB* pBomb, MAPDATA* pField)
 		}
 
 		if (pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ITEM ||
-			pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
+			pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW||
+			pRunBombSource->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY)
 		{
 			XMFLOAT3 BombPos = pRunBombSource->Runbombsource_GetPosition();
 
