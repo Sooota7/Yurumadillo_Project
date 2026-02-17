@@ -31,7 +31,7 @@ void BACKGROUND::Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContex
 
 	g_Background.Speed = BACKGROUND_ROTATION_SPEED;
 
-	g_Background.Model = ModelLoad("asset\\model\\sky_castle03.fbx");
+	g_Background.Model = ModelLoad("asset\\model\\sky_castle04.fbx");
 }
 
 void BACKGROUND::Background_Finalize(void)

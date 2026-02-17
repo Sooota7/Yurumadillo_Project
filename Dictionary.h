@@ -929,6 +929,7 @@ enum BILLBOARD_TEXTURE
 {
 	TEST = 0,
 	EXPLOSION,
+	DAMAGE,
 	MAX,
 };
 
