@@ -49,7 +49,7 @@ private:
 	bool m_EnemyLushInitialized = false;
 	bool m_BossInitialized = false;
 
-	int m_ClearCount = 0;
+	int m_ClearCount =3;
 
 	int	g_BgmID{ NULL };
 

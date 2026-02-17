@@ -20,7 +20,7 @@
 #include <windows.h>
 #include <memory>
 
-static bool input = false;
+static bool input = true;
 
 static bool InputKeyKonCheck() { return input; };
 

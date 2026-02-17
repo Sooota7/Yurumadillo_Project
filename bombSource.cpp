@@ -227,11 +227,11 @@ void BOMBSOURCE::BombSource_Active_Throw_Boss()
 		m_Count = 0;
 	}
 
-	if (m_Position.z >= 20.0f && m_pBossMonster != nullptr)
+	if (m_Position.z >= BOMB_EXPLOSION_AREA_ && m_pBossMonster != nullptr)
 	{
-		m_State = BOMB_STATE::BOMB_EXPLOSION;
+		m_State = BOMB_STATE::BOMB_EXPLOSION_BOSS;
 		m_Count = 0;
-		m_Position.x = 7.0f;
+		m_Position.x = FIELD_WIDTH_X/2;
 		m_Position.y = 2.0f;
 
 		float BossHP = m_pBossMonster->GetBossmonsterHp();
@@ -272,6 +272,22 @@ void BOMBSOURCE::BombSource_Explosion()
 	}
 }
 
+void BOMBSOURCE::BombSource_Explosion_Boss()
+{
+	if (!m_Exploded)
+	{
+		m_Count = 0;
+		m_Exploded = true;
+	}
+	m_Count += 1.0f / 60.0f;
+	if (m_Count > 2.0f)
+	{
+		m_State = BOMB_STATE::BOMB_COOL;
+		m_Count = 0;
+		m_Exploded = false;
+	}
+}
+
 //BombSource_Active_Throw
 void BOMBSOURCE::BombSource_Active_Type()
 {
@@ -292,4 +308,5 @@ void BOMBSOURCE::BombSource_Active_Type()
 	}
 
 }
+
 
