@@ -26,7 +26,7 @@ void BombUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BO
 		switch (i)
 		{
 		case BOMBUI_HOLDER:
-			LoadFromWICFile(L"asset\\texture\\ui\\itemholder.png",
+			LoadFromWICFile(L"asset\\texture\\ui\\itemholder4.png",
 				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
 			CreateShaderResourceView(pDevice, image.GetImages(),
 				image.GetImageCount(), metadata, &m_Texture[i]);
@@ -118,7 +118,7 @@ void BombUI::Draw()
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
 	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.9f, SCREEN_HEIGHT * 0.9f, 0.0f);
-	XMFLOAT2	holderSize = XMFLOAT2(200.0f, 200.0f);
+	XMFLOAT2	holderSize = XMFLOAT2(220.0f, 200.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
