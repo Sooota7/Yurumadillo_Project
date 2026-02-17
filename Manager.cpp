@@ -170,6 +170,9 @@ void	MANAGER::Manager_Update()
 	case SCENE_ENDING:
 		m_Ending.Ending_Update();
 		break;
+	case SCENE_GAMEOVER:
+		m_GameOver.GameOver_Update();
+		break;
 	default:
 		break;
 	}
@@ -234,6 +237,9 @@ void	MANAGER::Manager_Draw()
 			break;
 		case SCENE_ENDING:
 			m_Ending.Ending_Draw();
+			break;
+		case SCENE_GAMEOVER:
+			m_GameOver.GameOver_Draw();
 			break;
 		default:
 			break;
@@ -319,6 +325,9 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		break;
 	case SCENE_ENDING:
 		m_Ending.Ending_Finalize();
+		break;
+	case SCENE_GAMEOVER:
+		m_GameOver.GameOver_Finalize();
 		break;
 	default:
 		break;
@@ -431,7 +440,10 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			m_Result.Result_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
 			break;
 		case SCENE_ENDING:
-			m_Ending.Ending_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade);
+			m_Ending.Ending_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
+			break;
+		case SCENE_GAMEOVER:
+			m_GameOver.GameOver_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
 			break;
 		default:
 			break;

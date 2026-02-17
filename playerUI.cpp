@@ -69,7 +69,7 @@ void PlayerUI::Update_HpDigit()
 {
 	if (m_pPlayer->GetPlayerHp() <= 0.0f) return;  // 0‚Í•`‰æ‚µ‚Ü‚¹‚ñ
 
-	float currentHp = m_pPlayer->GetPlayerHp() / 20.0f;
+	float currentHp = m_pPlayer->GetPlayerHp() /*/ 20.0f*/;
 
 	m_HpDigit = (int)currentHp;
 }

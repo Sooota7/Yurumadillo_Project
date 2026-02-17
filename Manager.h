@@ -1,4 +1,3 @@
-
 //Manager.h
 #pragma once
 
@@ -6,6 +5,7 @@
 #include "Title.h"
 #include "Pause.h"
 #include "Result.h"
+#include "GameOver.h"
 #include "fade.h"
 #include "dictionary.h"
 #include "Menu.h"
@@ -18,6 +18,7 @@
 #include "Gimmick.h"
 #include "EnemyLush.h"
 #include "Boss.h"
+#include "enemySpawner.h"
 
 class MANAGER
 {
@@ -36,6 +37,7 @@ private:
 	GAME  m_Game;
 	PAUSE m_Pause;
 	RESULT m_Result;
+	GAMEOVER m_GameOver;
 	STAGESELECTION m_StageSelection;
 	ENDING m_Ending;
 	GIMMICK m_Gimmick;
@@ -53,6 +55,8 @@ private:
 
 	int	g_BgmID{ NULL };
 
+	ENEMYSPAWNER m_EnemySpawner;
+
 public:
 	void	Manager_Initialize();
 	void	Manager_Finalize();
@@ -64,6 +68,8 @@ public:
 
 	void IncrementClearCount() { ++m_ClearCount; };
 	
+	void ResetClearCount() { m_ClearCount = 0; };
+
 	int  GetClearCount() const { return m_ClearCount; };
 	
 	void Manager_BGM_Initialize(SCENE scene);
