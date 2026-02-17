@@ -3,14 +3,14 @@
 #include "camera.h"
 
 
-//ƒOƒ[ƒoƒ‹•Ï”
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
-//’¸“_ƒoƒbƒtƒ@
+//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_VertexBuffer = NULL;
-//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@
+//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡
 static ID3D11Buffer* g_IndexBuffer = NULL;
-//ƒeƒNƒXƒ`ƒƒ•Ï”
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ•°
 static ID3D11ShaderResourceView* g_Texture;
 
 
@@ -19,7 +19,11 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	// ƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
+	// ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’æ˜ç¤ºçš„ã«åˆæœŸåŒ–ï¼ˆé‡è¦ï¼‰
+	MaxNum = 0;
+	NowKillNum = 0;
+
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£èª­ã¿è¾¼ã¿
 	TexMetadata metadata;
 	ScratchImage image;
 	LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
@@ -27,7 +31,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);
 
-	//‰Šú‰»
+	//åˆæœŸåŒ–
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		m_Enemy[i].Initialize(g_pDevice, g_pContext);
@@ -35,7 +39,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	}
 
 	// ======================================================
-	// ‚È‚ñ‚©ˆá‚Á‚½‚ç•Ï‚¦‚Ä
+	// ãªã‚“ã‹é•ã£ãŸã‚‰å¤‰ãˆã¦
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		m_EnemyButterfly[i].Initialize(g_pDevice, g_pContext);
@@ -43,7 +47,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	}
 	 
 	// ======================================================
-	// ‚È‚ñ‚©ˆá‚Á‚½‚ç•Ï‚¦‚Ä(“¡Œ´version)
+	// ãªã‚“ã‹é•ã£ãŸã‚‰å¤‰ãˆã¦(è—¤åŸversion)
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		m_EnemyGround[i].Initialize(g_pDevice, g_pContext);
@@ -53,10 +57,10 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	// ======================================================
 
 
-	//ƒ}ƒbƒv‚ÌƒZƒbƒg
+	//ãƒãƒƒãƒ—ã®ã‚»ãƒƒãƒˆ
 	int a = 0;
 	int b = 0;
-	int c = 0;	//EnemyGround‚Ì”
+	int c = 0;	//EnemyGroundã®æ•°
 
 	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 	{
@@ -94,7 +98,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	}
 	
 
-	//ƒuƒƒbƒN‚Ìì¬
+	//ãƒ–ãƒ­ãƒƒã‚¯ã®ä½œæˆ
 	for (int i = 0; i < ENEMY_TYPE_MAX; i++)
 	{
 		switch (i)
@@ -102,10 +106,10 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		case ENEMY_TYPE_NONE:
 			break;
 		case ENEMY_TYPE_NORMAL:
-			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//ƒfƒoƒbƒO
+			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//ãƒ‡ãƒãƒƒã‚°
 			break;
 		case ENEMY_TYPE_BUTTERFLY:
-			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//ƒfƒoƒbƒO
+			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//ãƒ‡ãƒãƒƒã‚°
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -114,6 +118,8 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		}
 	}
 
+	// --- é‡è¦ ---
+	// (ã“ã®é–¢æ•°ã®æœ«å°¾ã«) ãƒ­ãƒ¼ã‚«ãƒ«ã§ `int MaxNum = 0;` ã‚„ `int NowKillNum = 0;` ã‚’è¿½åŠ ã—ãªã„ã§ãã ã•ã„ã€‚
 	int MaxNum = 0;
 
 	int NowKillNum = 0;
@@ -190,18 +196,18 @@ void ENEMYSPAWNER::EnemySpawner_Finalize(void)
 
 void ENEMYSPAWNER::EnemySpawner_Draw(void)
 {
-	//ƒVƒF[ƒ_[‚ğ•`‰æƒpƒCƒvƒ‰ƒCƒ“‚Öİ’è
+	//ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’æç”»ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã¸è¨­å®š
 	Shader_Begin();
 
 
-	//ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñì¬
+	//ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³è¡Œåˆ—ä½œæˆ
 	XMMATRIX	Projection = GetProjectionMatrix();
-	//ƒrƒ…[s—ñì¬
+	//ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—ä½œæˆ
 	XMMATRIX	View = GetViewMatrix();
-	//æ‚ÉVP•ÏŠ·s—ñ‚ğì‚Á‚Ä‚¨‚­
+	//å…ˆã«VPå¤‰æ›è¡Œåˆ—ã‚’ä½œã£ã¦ãŠã
 	XMMATRIX	VP = View * Projection;
 
-	//MAP‚Ì•\¦
+	//MAPã®è¡¨ç¤º
 	int i = 0;
 
 	static float rot = 0.0f;
@@ -209,20 +215,20 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 	for(int i = 0; i< Enemy_Spawner_MAX;i++)
 	{
-		//€–SA‘¶İ‚µ‚È‚¢ê‡‘‚©‚È‚¢
+		//æ­»äº¡ã€å­˜åœ¨ã—ãªã„å ´åˆæ›¸ã‹ãªã„
 		if (m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE&&
 			m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
 			XMFLOAT3 mapPos = m_Enemy[i].GetEnemyPosition();
 
-			//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+			//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//•½sˆÚ“®s—ñ‚Ìì¬
+			//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -230,7 +236,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//‰ñ“]s—ñ‚Ìì¬
+			//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(0.0f),
@@ -239,29 +245,29 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				XMConvertToRadians(0.0f),
 				XMConvertToRadians(0.0f)
 			);
-			//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+			//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectX‚Ös—ñ‚ğƒZƒbƒg
+			//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 			Shader_SetMatrix(WVP);
 
-			//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-			UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+			//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+			UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+			//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+			//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			//•`‰æƒŠƒNƒGƒXƒg
-			//ƒ‚ƒfƒ‹ˆêŒÂ‚µ‚©‚È‚¢‚©‚ç’Ç‰Á‚·‚é‚Æ‚«‚É•Ï‚¦‚é
+			//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+			//ãƒ¢ãƒ‡ãƒ«ä¸€å€‹ã—ã‹ãªã„ã‹ã‚‰è¿½åŠ ã™ã‚‹ã¨ãã«å¤‰ãˆã‚‹
 			switch (m_Enemy[i].GetEnemyNormalState())
 			{
 			case ENEMY_NORMAL_STATE_IDLE:
@@ -286,24 +292,24 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			
 		}
 	}
-	// ‚¢‚Á‚½‚ñ‚»‚Ì‚Ü‚Ü
-	// •‚‚¢‚Ä‚é“G
+	// ã„ã£ãŸã‚“ãã®ã¾ã¾
+	// æµ®ã„ã¦ã‚‹æ•µ
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
-		//€–SA‘¶İ‚µ‚È‚¢ê‡‘‚©‚È‚¢
+		//æ­»äº¡ã€å­˜åœ¨ã—ãªã„å ´åˆæ›¸ã‹ãªã„
 		if (m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE &&
 			m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
 			XMFLOAT3 mapPos = m_EnemyButterfly[i].GetEnemyPosition();
 
-			//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+			//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//•½sˆÚ“®s—ñ‚Ìì¬
+			//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -311,7 +317,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//‰ñ“]s—ñ‚Ìì¬
+			//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().x),
@@ -321,29 +327,29 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				//XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().y),
 				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().z)
 			);
-			//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+			//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectX‚Ös—ñ‚ğƒZƒbƒg
+			//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 			Shader_SetMatrix(WVP);
 
-			//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-			UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+			//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+			UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+			//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+			//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			//•`‰æƒŠƒNƒGƒXƒg
-			//ƒ‚ƒfƒ‹ˆêŒÂ‚µ‚©‚È‚¢‚©‚ç’Ç‰Á‚·‚é‚Æ‚«‚É•Ï‚¦‚é
+			//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+			//ãƒ¢ãƒ‡ãƒ«ä¸€å€‹ã—ã‹ãªã„ã‹ã‚‰è¿½åŠ ã™ã‚‹ã¨ãã«å¤‰ãˆã‚‹
 			switch (m_EnemyButterfly[i].GetEnemyButterflyState())
 			{
 			case ENEMY_BUTTERFLY_STATE_IDLE:
@@ -368,11 +374,11 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 	}
 
 	//=======================================================
-	//EnemyGround•`‰æ“®ìŠm”F—p_•`‰æƒ‚ƒfƒ‹ƒoƒ^ƒtƒ‰ƒC‚Ì‚Ü‚Ü
+	//EnemyGroundæç”»å‹•ä½œç¢ºèªç”¨_æç”»ãƒ¢ãƒ‡ãƒ«ãƒã‚¿ãƒ•ãƒ©ã‚¤ã®ã¾ã¾
 	//=======================================================
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
-		//€–SA‘¶İ‚µ‚È‚¢ê‡‘‚©‚È‚¢
+		//æ­»äº¡ã€å­˜åœ¨ã—ãªã„å ´åˆæ›¸ã‹ãªã„
 		if (m_EnemyGround[i].GetEnemyGroundType() != ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_NONE &&
 			m_EnemyGround[i].GetEnemyGroundType() != ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_DEAD)
 		{
@@ -381,14 +387,14 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 			XMFLOAT3 mapPos = m_EnemyGround[i].GetEnemyPosition();
 
-			//ƒXƒP[ƒŠƒ“ƒOs—ñ‚Ìì¬
+			//ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//•½sˆÚ“®s—ñ‚Ìì¬
+			//å¹³è¡Œç§»å‹•è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -396,7 +402,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//‰ñ“]s—ñ‚Ìì¬
+			//å›è»¢è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(m_EnemyGround[i].GetEnemyRotation().x),
@@ -406,31 +412,31 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				//XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().y),
 				XMConvertToRadians(m_EnemyGround[i].GetEnemyRotation().z)
 			);
-			//ƒ[ƒ‹ƒhs—ñ‚Ìì¬
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã®ä½œæˆ
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//ÅI“I‚È•ÏŠ·s—ñ‚ğì¬
+			//æœ€çµ‚çš„ãªå¤‰æ›è¡Œåˆ—ã‚’ä½œæˆ
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectX‚Ös—ñ‚ğƒZƒbƒg
+			//DirectXã¸è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 			Shader_SetMatrix(WVP);
 
-			//ƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+			//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//’¸“_ƒoƒbƒtƒ@‚ğƒZƒbƒg
-			UINT	stride = sizeof(Vertex3D);	//’¸“_‚PŒÂ‚Ìƒf[ƒ^ƒTƒCƒY
+			//é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
+			UINT	stride = sizeof(Vertex3D);	//é ‚ç‚¹ï¼‘å€‹ã®ãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚º
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ğƒZƒbƒg
+			//ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã‚’ã‚»ãƒƒãƒˆ
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//•`‰æ‚·‚éƒ|ƒŠƒSƒ“‚Ìí—Ş‚ğƒZƒbƒg 3’¸“_‚Åƒ|ƒŠƒSƒ“‚P–‡‚Æ‚µ‚Ä•\¦
+			//æç”»ã™ã‚‹ãƒãƒªã‚´ãƒ³ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ 3é ‚ç‚¹ã§ãƒãƒªã‚´ãƒ³ï¼‘æšã¨ã—ã¦è¡¨ç¤º
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			PARTS* EG_Parts = m_EnemyGround[i].GetEnemyGroundParts();
 
-			//•`‰æƒŠƒNƒGƒXƒg
-			//ƒ‚ƒfƒ‹ˆêŒÂ‚µ‚©‚È‚¢‚©‚ç’Ç‰Á‚·‚é‚Æ‚«‚É•Ï‚¦‚é
+			//æç”»ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+			//ãƒ¢ãƒ‡ãƒ«ä¸€å€‹ã—ã‹ãªã„ã‹ã‚‰è¿½åŠ ã™ã‚‹ã¨ãã«å¤‰ãˆã‚‹
 			for (int i = 0; i < EG_PARTS_MAX; i++)
 			{
 				switch (i)
@@ -473,8 +479,8 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_Enemy[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//€‚ñ‚¾‚çƒJƒEƒ“ƒg‚·‚é
-			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE_NONE);	//‘¶İ‚ğÁ‚·
+			EnemySpawner_SetKillNum(1);						//æ­»ã‚“ã ã‚‰ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
+			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE_NONE);	//å­˜åœ¨ã‚’æ¶ˆã™
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -486,7 +492,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 
 	}
 	
-	// •‚‚¢‚Ä‚é“G
+	// æµ®ã„ã¦ã‚‹æ•µ
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		switch (m_EnemyButterfly[i].GetEnemyButterflyType())
@@ -497,8 +503,8 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_EnemyButterfly[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//€‚ñ‚¾‚çƒJƒEƒ“ƒg‚·‚é
-			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE_NONE);	//‘¶İ‚ğÁ‚·
+			EnemySpawner_SetKillNum(1);						//æ­»ã‚“ã ã‚‰ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
+			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE_NONE);	//å­˜åœ¨ã‚’æ¶ˆã™
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -511,7 +517,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 	}
 	
 	//==========================================
-	// EnemyGround‚ÌUpdate
+	// EnemyGroundã®Update
 	//==========================================
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
@@ -524,8 +530,8 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_EnemyGround[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//€‚ñ‚¾‚çƒJƒEƒ“ƒg‚·‚é
-			m_EnemyGround[i].SetEnemyGroundType(ENEMY_TYPE_NONE);	//‘¶İ‚ğÁ‚·
+			EnemySpawner_SetKillNum(1);						//æ­»ã‚“ã ã‚‰ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹
+			m_EnemyGround[i].SetEnemyGroundType(ENEMY_TYPE_NONE);	//å­˜åœ¨ã‚’æ¶ˆã™
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -551,24 +557,59 @@ ENEMY_GROUND* ENEMYSPAWNER::EnemySpawner_GetEnemyGround()
 	return m_EnemyGround;
 }
 
-//”z’u‚µ‚½”A“|‚·‚×‚«“G‚Ì”
+//é…ç½®ã—ãŸæ•°ã€å€’ã™ã¹ãæ•µã®æ•°
 int ENEMYSPAWNER::EnemySpawner_GetEnemyNum()
 {
 	return MaxNum;
 }
 
-//“|‚µ‚½”‚ğƒJƒEƒ“ƒgA¡‚Ì‚Æ‚±‚ë‚P‚Ì‚İ
+//å€’ã—ãŸæ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã€ä»Šã®ã¨ã“ã‚ï¼‘ã®ã¿
 void ENEMYSPAWNER::EnemySpawner_SetKillNum(int killnum)
 {
 	NowKillNum += killnum;
 }
 
-//Œ»İ“|‚µ‚½“G‚Ì‡Œv”‚ğ•Ô‚·
+//ç¾åœ¨å€’ã—ãŸæ•µã®åˆè¨ˆæ•°ã‚’è¿”ã™
 int ENEMYSPAWNER::EnemySpawner_GetKillNum()
 {
 	return NowKillNum;
 }
 
+bool ENEMYSPAWNER::EnemySpawner_SpawnButterfly(const XMFLOAT3& pos)
+{
+	for (int i = 0; i < Enemy_Spawner_MAX; ++i)
+	{
+		if (m_EnemyButterfly[i].GetEnemyButterflyType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			// ä½ç½®ã¨ã‚¿ã‚¤ãƒ—ã‚’è¨­å®šã—ã¦å†åˆ©ç”¨ï¼ˆçŠ¶æ…‹ã‚’åˆæœŸåŒ–ï¼‰
+			m_EnemyButterfly[i].SetEnemyPosition(pos);
+			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_BUTTERFLY);
+			m_EnemyButterfly[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_EnemyButterfly[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_MOVE);
+			m_EnemyButterfly[i].SetEnemyHp(100); // å¿…è¦ãªHPã«åˆã‚ã›ã‚‹
+			// å¿…è¦ãªã‚‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ã‚¿ç­‰ã‚‚ãƒªã‚»ãƒƒãƒˆï¼ˆprivate ãƒ¡ãƒ³ãƒãŒã‚ã‚‹ãªã‚‰ãƒ¡ã‚½ãƒƒãƒ‰ã‚’è¿½åŠ ã—ã¦æ‰±ã†ï¼‰
+			return true;
+		}
+	}
+	return false; // ç©ºããªã—
+}
+
+bool ENEMYSPAWNER::EnemySpawner_SpawnNormal(const XMFLOAT3& pos)
+{
+	for (int i = 0; i < Enemy_Spawner_MAX; ++i)
+	{
+		if (m_Enemy[i].GetEnemyNormalType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			m_Enemy[i].SetEnemyPosition(pos);
+			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE::ENEMY_TYPE_NORMAL);
+			m_Enemy[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_Enemy[i].SetEnemyHp(100); // å¿…è¦ãªã‚‰èª¿æ•´
+			// çŠ¶æ…‹ãƒªã‚»ãƒƒãƒˆç”¨ãƒ¡ã‚½ãƒƒãƒ‰ãŒã‚ã‚Œã°å‘¼ã¶
+			return true;
+		}
+	}
+	return false;
+}
 
 
 //============================================================
@@ -685,26 +726,26 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 	XMFLOAT3 lastRot = m_EG_Anim[state].anim[part].fps[frame].Rotation;
 	bool	 loop = parts->GetAnimLoop();
 	/*parts->GetAnimLastPosition(parts->GetNowPos());*/
-	//x’l
+	//xå€¤
 	position.x -= InisPos.x * cosf(rot.y);
 	position.z += InisPos.x * sinf(rot.y);
 
-	//z’l
+	//zå€¤
 	position.x -= InisPos.z * cosf(rot.y);
 	position.z += InisPos.z * sinf(rot.y);
 
-	//‚™’l
+	//ï½™å€¤
 	position.y += InisPos.y;
 
-	//x’l
+	//xå€¤
 	position.x -= lastPos.x * cosf(rot.y);
 	position.z += lastPos.x * sinf(rot.y);
 
-	//z’l
+	//zå€¤
 	position.z += lastPos.z * cosf(rot.y);
 	position.x += lastPos.z * sinf(rot.y);
 
-	//‚™’l
+	//ï½™å€¤
 	position.y += lastPos.y;
 
 	return position;
@@ -714,7 +755,7 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 
 
 //=====================================================================
-// EnemyGroundAnimSetŠÖ”‹y‚Ñ•âŠÔŠÖ”
+// EnemyGroundAnimSeté–¢æ•°åŠã³è£œé–“é–¢æ•°
 //=====================================================================
 
 void ENEMYSPAWNER::Enemy_Ground_SetAnimHokan(ENEMY_GROUND_STATE state)

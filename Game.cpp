@@ -1,4 +1,3 @@
-
 //Game.cpp
 
 #include	"Manager.h"
@@ -117,25 +116,18 @@ void GAME::Game_Update()
 	m_BombUI.Update();
 	m_TargetUI.Update();
 
-	if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
+	/*if (collision.PlayerFieldCollision(&m_Player, &m_Map) == COLLISION_HIT::HIT_WALL_CREAR)
 	{
-		if (m_NowField == FIELD_NO::NO_1)
-		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_2);
-			m_NowField = FIELD_NO::NO_2;
-		}
-		else if (m_NowField == FIELD_NO::NO_2)
-		{
-			Game_SetNextMap(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), FIELD_NO::NO_1);
-			m_NowField = FIELD_NO::NO_1;
-		}
-	}
+		...
+	}*/
 	
 	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 	{
-		m_Manager->SetScene(SCENE_PAUSE);
+		m_Manager->SetScene(SCENE_GAMEOVER);
+		return; // ← ここで即座に抜ける：Finalize 後のアクセスを防止
 	}
 
+	// 以下はプレイヤー等のメンバにアクセスするコード
 	collision.PlayerFieldCollision(&m_Player, &m_Map);
 	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
 	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
@@ -170,6 +162,16 @@ void GAME::Game_Update()
 		
 		m_Manager->SetScene(SCENE_RESULT);
 		
+	}
+
+	if (Keyboard_IsKeyDownTrigger(KK_C))
+	{
+		if (m_Manager->GetClearCount() == 0)
+		{
+			m_Manager->IncrementClearCount();
+		};
+
+		m_Manager->SetScene(SCENE_RESULT);
 	}
 }
 

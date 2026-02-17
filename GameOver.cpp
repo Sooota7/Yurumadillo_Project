@@ -1,23 +1,20 @@
-
-
-//Ending.cpp
+//GameOver.cpp
 #include	"Manager.h"
 #include	"sprite.h"
 #include	"keyboard.h"
 #include	"inputx.h"
 
-#include	"Ending.h"
+#include	"GameOver.h"
 
 #include "fade.h"
 #include "shader.h"
-//aaa
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
 
-void ENDING::Ending_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade, MANAGER* manager)
+void GAMEOVER::GameOver_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade, MANAGER* manager)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
@@ -28,37 +25,38 @@ void ENDING::Ending_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//テクスチャ読み込みなど
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\ending.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\GameOver.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
 	//フェードインのセット
 	XMFLOAT4	color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-	m_Fade->Fade_SetFade(60.0f, color, FADE_IN, SCENE_GAME);
-	m_Manager->ResetClearCount();
+	//m_Fade->Fade_SetFade(60.0f, color, FADE_IN, SCENE_GAME);
 
 }
-void ENDING::Ending_Finalize()
+void GAMEOVER::GameOver_Finalize()
 {
 	//テクスチャの解放など
 	SAFE_RELEASE(g_Texture);
 
 }
-void ENDING::Ending_Update()
+void GAMEOVER::GameOver_Update()
 { 
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
 	if ((Keyboard_IsKeyDownTrigger(KK_ENTER) || IsButtonPressed(0, XINPUT_GAMEPAD_B)) 
-		&& (m_Fade->GetFadeState() == FADE_NONE))
+		&& (m_Fade->GetFadeState() == FADE_NONE)&&m_Manager->GetClearCount()<STAGE_MAX)
 	{
 		//フェードアウトさせてシーンを切り替える
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_TITLE);
+		// 変更: 固定の SCENE_STAGESELECTION ではなく、GameOver を開いた直前のシーンへ戻す
+		SCENE previous = m_Fade->Fade_GetScene();
+		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, previous);
 	}
-
+	
 }
-void ENDING::Ending_Draw()
+void GAMEOVER::GameOver_Draw()
 {
 	// シェーダーを描画パイプラインに設定
 	Shader_Begin();

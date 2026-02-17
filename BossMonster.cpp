@@ -222,28 +222,20 @@ void	BOSSMONSTER::Bossmonster_Idle()
 void BOSSMONSTER::Bossmonster_Phase1()
 {
 	// フェーズ1開始時に敵をスポーン（ENEMYSPAWNER に空きがあれば）
-	if ( m_pSpawner != nullptr)
+	if (m_pSpawner != nullptr)
 	{
-		ENEMY_BUTTERFLY* arr = m_pSpawner->EnemySpawner_GetEnemyButterfly();
 		int spawned = 0;
 
 		// 指定場所（例: ボスの左右に出現）
 		XMFLOAT3 spawnPos[2];
-		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, m_Position.z - 80.0f);
-		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, m_Position.z - 80.0f);
+		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, m_Position.z - 40.0f);
+		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, m_Position.z - 40.0f);
 
 		for (int s = 0; s < 2; ++s)
 		{
-			for (int i = 0; i < Enemy_Spawner_MAX; ++i)
+			if (m_pSpawner->EnemySpawner_SpawnButterfly(spawnPos[s]))
 			{
-				if (arr[i].GetEnemyButterflyType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
-				{
-					arr[i].SetEnemyPosition(spawnPos[s]);
-					arr[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_BUTTERFLY);
-					// 必要なら初期化を呼ぶ（EnemySpawner_Initialize ですでに Initialize されている前提）
-					spawned++;
-					break;
-				}
+				spawned++;
 			}
 		}
 
