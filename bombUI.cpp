@@ -26,7 +26,7 @@ void BombUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BO
 		switch (i)
 		{
 		case BOMBUI_HOLDER:
-			LoadFromWICFile(L"asset\\texture\\ui\\itemholder.png",
+			LoadFromWICFile(L"asset\\texture\\ui\\itemholder4.png",
 				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
 			CreateShaderResourceView(pDevice, image.GetImages(),
 				image.GetImageCount(), metadata, &m_Texture[i]);
@@ -118,7 +118,7 @@ void BombUI::Draw()
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
 
 	XMFLOAT3	position = XMFLOAT3(SCREEN_WIDTH * 0.9f, SCREEN_HEIGHT * 0.9f, 0.0f);
-	XMFLOAT2	holderSize = XMFLOAT2(200.0f, 200.0f);
+	XMFLOAT2	holderSize = XMFLOAT2(220.0f, 200.0f);
 	XMFLOAT4	color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//シェーダーのセット
@@ -238,7 +238,7 @@ float BombUI::CheckBombState()
 	FLOWTBOMBSOURCE* flowtBombs;
 
 	bombs = m_pBomb->Bomb_GetBomb();
-	runBombs = RunBombSpawner->GetRunBombSource__RunBombSpawner();
+
 	flowtBombs = m_pBomb->Bomb_GetFlowtBomb();
 	
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -267,11 +267,13 @@ float BombUI::CheckBombState()
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		if (runBombs[i].Runbombsource_GetState() == BOMB_ACTIVE_HAVE)
+		runBombs = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		if (runBombs->Runbombsource_GetState() == RUNBOMB_ACTIVE_HAVE)
 		{
 			m_BombType = 3;
 			m_limit = 5.0f; // (仮)
-			return runBombs[i].Runbombsource_GetCount();
+			return runBombs->Runbombsource_GetCount();
 			break;
 		}
 

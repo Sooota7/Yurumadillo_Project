@@ -48,7 +48,7 @@ void TUTORIAL3::Tutorial3_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 	m_Manager = manager;
 
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
@@ -178,7 +178,7 @@ void TUTORIAL3::Tutorial3_Draw()
 	Light6.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light6.Light);	//ライト構造体をシェーダーへセット
 
-	m_BillboardManager.Draw(m_NowField);
+	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
@@ -216,7 +216,7 @@ void TUTORIAL3::Tutorial3_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);

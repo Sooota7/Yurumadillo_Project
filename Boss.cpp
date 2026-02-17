@@ -40,7 +40,7 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
@@ -186,7 +186,7 @@ void BOSS::Boss_Draw()
 	Light4.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
 
-	m_BillboardManager.Draw(m_NowField);
+	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
@@ -227,7 +227,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);

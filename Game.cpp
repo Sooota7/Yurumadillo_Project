@@ -31,7 +31,7 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-	m_NowField = FIELD_NO::NO_2;
+	m_NowField = FIELD_NO::NO_1;
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -41,7 +41,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
@@ -194,7 +194,7 @@ void GAME::Game_Draw()
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 
 
-	m_BillboardManager.Draw(m_NowField);
+	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
 	m_BombUI.Draw();
@@ -232,7 +232,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_BillboardManager.Initialize(pDevice, pContext);
+	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
