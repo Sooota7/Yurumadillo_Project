@@ -19,6 +19,7 @@ void		DrawSpriteScroll(XMFLOAT2 pos, XMFLOAT2 size, XMFLOAT4 col,
 void		DrawSpriteExRotation(XMFLOAT2 pos, XMFLOAT2 size, XMFLOAT4 col, int bno, int wc, int hc, float radian);
 
 void	DrawSprite(XMFLOAT2 size, XMFLOAT4 col, int bno, int wc, int hc);//行列使用版
+void	DrawSpriteRopeRight(XMFLOAT2 size, XMFLOAT4 col, int bno, int wc, int hc); //導火線描画
 
 
 // 頂点構造体

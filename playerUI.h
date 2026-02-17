@@ -5,7 +5,7 @@
 // 
 // ====================================================================
 
-#pragma once
+
 #ifndef PLAYERUI_H
 #define PLAYERUI_H
 
@@ -19,6 +19,9 @@ using namespace DirectX;
 class PlayerUI
 {
 private:
+	static constexpr int P_UI_MAX = 2;
+	static constexpr int HP_DIGIT_MAX = 5;
+
 	ID3D11Device* m_pDevice = nullptr;
 	ID3D11DeviceContext* m_pContext = nullptr;
 
@@ -26,7 +29,7 @@ private:
 
 	int m_HpDigit;
 
-	ID3D11ShaderResourceView* m_Texture = NULL;
+	ID3D11ShaderResourceView* m_Texture[P_UI_MAX] = { NULL };
 public:
 	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,PLAYER* pPlayer);
 	void Finalize();

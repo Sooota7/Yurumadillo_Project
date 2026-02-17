@@ -15,6 +15,7 @@
 #include "background.h"
 #include "playerUI.h"
 #include "bombUI.h"
+#include "targetUI.h"
 class MANAGER;
 
 class GAME
@@ -37,6 +38,7 @@ private:
 
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;
+	TargetUI m_TargetUI;
 public:
 	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Game_Finalize();

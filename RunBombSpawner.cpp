@@ -1,6 +1,5 @@
 #include "RunBombSpawner.h"
 
-static const float Waru = 60.0f; 
 
 void RUNBOMBSPAWNER::Initialize_RunBombSpawner(XMFLOAT3 pos)
 {
@@ -9,17 +8,20 @@ void RUNBOMBSPAWNER::Initialize_RunBombSpawner(XMFLOAT3 pos)
 	m_Scaling  = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	m_Active = false;
-	m_CoolTime = 0.0f;
+	m_RCoolTime = 0.0f;
 
 	m_RunBomb.Runbombsource_Initialize(pos, RUNBOMB_NONE);
+	m_Use = true;
 }
 
 void RUNBOMBSPAWNER::Finalize_RunBombSpawner()
 {
+	m_RunBomb.Runbombsource_Finalize();
 }
 
 void RUNBOMBSPAWNER::Update_RunBombSpawner(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
+
 	if (m_Active)
 	{
 		switch (m_RunBomb.Runbombsource_GetState())
@@ -55,13 +57,13 @@ void RUNBOMBSPAWNER::Update_RunBombSpawner(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayer
 	}
 	else
 	{
-		m_CoolTime += 1.0f / Waru;
+		m_RCoolTime += 1.0f / W;
 		
-		if (m_CoolTime > 3.0f)
+		if (m_RCoolTime > 5.0f)
 		{
 			m_RunBomb.Runbombsource_Initialize(m_Position, RUNBOMB_ENEMY);
 
-			m_CoolTime = 0.0f;
+			m_RCoolTime = 0.0f;
 			m_Active = true;
 		}
 	}

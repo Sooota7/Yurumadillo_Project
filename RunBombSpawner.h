@@ -20,7 +20,12 @@ private:
 	RUNBOMBSOURCE m_RunBomb;
 
 	bool		m_Active;
-	float		m_CoolTime;
+	float		m_RCoolTime;
+
+	bool		m_Use = false;
+
+	const float W = 60.0f;
+
 
 public:
 
@@ -32,6 +37,9 @@ public:
 
 	void SetPosition_RunBombSpawner(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3 GetPosition_RunBombSpawner() { return m_Position; };
+
+	void SetUse(bool use) { m_Use = use; };
+	bool GetUse() { return m_Use; };
 
 	RUNBOMBSPAWNER* GetRunBombSpawner_RunBombSpawner() { return this; };
 	RUNBOMBSOURCE* GetRunBombSource__RunBombSpawner() { return &m_RunBomb; };

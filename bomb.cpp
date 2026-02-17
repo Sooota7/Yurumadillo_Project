@@ -18,186 +18,6 @@ static ID3D11ShaderResourceView* g_Texture;
 
 
 
-//int GetBomb(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return Field_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return Field_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return Field_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//int GetBomb2(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return Field2_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return Field2_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return Field2_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//
-//int GetBomb3(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return tutorial_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return tutorial_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return tutorial_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//
-//int GetBomb4(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return tutorial_balloon_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return tutorial_balloon_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return tutorial_balloon_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//
-//int GetBomb5(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return tutorial_mouse_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return tutorial_mouse_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return tutorial_mouse_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//
-//int GetBomb6(int x, int y, int z)
-//{
-//	switch (z)
-//	{
-//	case(0):
-//		return boss_pos_row[y][x];
-//
-//		break;
-//	case(1):
-//		return boss_pos_nor[y][x];
-//
-//
-//		break;
-//	case(2):
-//		return boss_pos_high[y][x];
-//
-//
-//		break;
-//	default:
-//		break;
-//	}
-//
-//
-//}
-//int CheckBomb(int x, int y, int z,FIELD_NO no)
-//{
-//	switch (no)
-//	{
-//	case NO_NONE:
-//		break;
-//	case NO_1:
-//		return GetBomb(x, y, z);
-//		break;
-//	case NO_2:
-//		return GetBomb2(x, y, z);
-//		break;
-//	case NO_3:
-//		return GetBomb3(x, y, z);
-//		break;
-//	case NO_4:
-//		return GetBomb4(x, y, z);
-//		break;
-//	case NO_5:
-//		return GetBomb5(x, y, z);
-//		break;
-//	case NO_6:
-//		return GetBomb6(x, y, z);
-//		break;
-//
-//	default:
-//		break;
-//	}
-//
-//
-//}
-
 void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 	g_pDevice = pDevice;
@@ -573,110 +393,114 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		RUNBOMBSOURCE* runBomb = m_RunBomb[i].GetRunBombSource__RunBombSpawner();
 
-
-		XMFLOAT3 bombPos = runBomb->Runbombsource_GetPosition();
-		XMFLOAT3 bombRot = runBomb->Runbombsource_GetRotation();
-
-		//スケーリング行列の作成
-		XMMATRIX	ScalingMatrix = XMMatrixScaling
-		(
-			1.0f,
-			1.0f,
-			1.0f
-		);
-
-		//平行移動行列の作成
-		XMMATRIX	TranslationMatrix = XMMatrixTranslation
-		(
-			bombPos.x,
-			bombPos.y,
-			bombPos.z
-		);
-
-		//回転行列の作成
-		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
-		(
-			bombRot.x,
-			bombRot.y,
-			bombRot.z
-		);
-		//ワールド行列の作成
-		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//最終的な変換行列を作成
-		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXへ行列をセット
-		Shader_SetMatrix(WVP);
-
-		//テクスチャをセット
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
-
-		//頂点バッファをセット
-		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
-		UINT	offset = 0;
-		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
-
-		//インデックスバッファをセット
-		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
-		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		//描画リクエスト
-		switch (runBomb->Runbombsource_GetState())
+		if (m_RunBomb[i].GetUse())
 		{
-		case RUNBOMB_NONE:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-			break;
-		case RUNBOMB_ENEMY:
-			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
-			break;
-		case RUNBOMB_ITEM:
-			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
-			break;
-		case RUNBOMB_ACTIVE_HAVE:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
-			m_Rbno[i] = 0;
-			break;
-		case RUNBOMB_ACTIVE_THROW:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
-			break;
 
-		case RUNBOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			RUNBOMBSOURCE* runBomb = m_RunBomb[i].GetRunBombSource__RunBombSpawner();
+
+
+			XMFLOAT3 bombPos = runBomb->Runbombsource_GetPosition();
+			XMFLOAT3 bombRot = runBomb->Runbombsource_GetRotation();
+
+			//スケーリング行列の作成
+			XMMATRIX	ScalingMatrix = XMMatrixScaling
+			(
+				1.0f,
+				1.0f,
+				1.0f
+			);
+
+			//平行移動行列の作成
+			XMMATRIX	TranslationMatrix = XMMatrixTranslation
+			(
+				bombPos.x,
+				bombPos.y,
+				bombPos.z
+			);
+
+			//回転行列の作成
+			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+			(
+				bombRot.x,
+				bombRot.y,
+				bombRot.z
+			);
+			//ワールド行列の作成
+			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+			//最終的な変換行列を作成
+			XMMATRIX WVP = World * VP;//(VP = View*Projection)
+			//DirectXへ行列をセット
+			Shader_SetMatrix(WVP);
+
+			//テクスチャをセット
+			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+
+			//頂点バッファをセット
+			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			UINT	offset = 0;
+			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+			//インデックスバッファをセット
+			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+			//描画リクエスト
+			switch (runBomb->Runbombsource_GetState())
 			{
-				XMFLOAT3 pos = runBomb->Runbombsource_GetPosition();
-				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
-				float cnt = runBomb->Runbombsource_GetCount();
+			case RUNBOMB_NONE:
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+				break;
+			case RUNBOMB_ENEMY:
+				ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
+				break;
+			case RUNBOMB_ITEM:
+				ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
+				break;
+			case RUNBOMB_ACTIVE_HAVE:
+				ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
+				m_Rbno[i] = 0;
+				break;
+			case RUNBOMB_ACTIVE_THROW:
+				ModelDraw(m_BombModel[BOMB_TYPE::TYPE_RUN]);
+				break;
 
-				int wc = 3;
-				int hc = 3;
-
-				if (cnt > (1.0f / (wc * hc)) * (m_Rbno[i] + 1))
+			case RUNBOMB_EXPLOSION:
+				ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 				{
-					m_Rbno[i]++;
+					XMFLOAT3 pos = runBomb->Runbombsource_GetPosition();
+					XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+					float cnt = runBomb->Runbombsource_GetCount();
+
+					int wc = 3;
+					int hc = 3;
+
+					if (cnt > (1.0f / (wc * hc)) * (m_Rbno[i] + 1))
+					{
+						m_Rbno[i]++;
+					}
+
+					XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+					if (m_Rbno[i] < wc * hc)
+					{
+						Billboard* bb = new Billboard(pos, size, col, m_Rbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+						billboardManager->Register(bb);
+					}
+
+
 				}
 
-				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+				break;
 
-				if (m_Rbno[i] < wc * hc)
-				{
-					Billboard* bb = new Billboard(pos, size, col, m_Rbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
-					billboardManager->Register(bb);
-				}
+			case RUNBOMB_COOL:
 
-
+				break;
 			}
 
-			break;
-
-		case RUNBOMB_COOL:
-
-			break;
 		}
-
-
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -813,7 +637,10 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
+		if (m_RunBomb[i].GetUse())
+		{
+			m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
+		}
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -874,7 +701,10 @@ void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
-		m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
+		if (m_RunBomb[i].GetUse())
+		{
+			m_RunBomb[i].Update_RunBombSpawner(pPlayerPos, pPlayerRot);
+		}
 	}
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{

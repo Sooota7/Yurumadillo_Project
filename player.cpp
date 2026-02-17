@@ -244,7 +244,7 @@ void	PLAYER::Player_Idle()
 			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
 		}
 
-		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount == true)
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount == true && m_Velocity.y <= 0.0f)
 		{
 			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 		}
@@ -270,7 +270,7 @@ void	PLAYER::Player_Idle()
 			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
 		}
 
-		if (IsButtonPressed(0, XINPUT_GAMEPAD_A) && JumpCount == true)
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_A) && JumpCount == true && m_Velocity.y <= 0.0f)
 		{
 			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 		}
@@ -307,8 +307,15 @@ void PLAYER::Player_Move()
 		if (Keyboard_IsKeyDown(KK_A)) // 左
 			move.x += right.x, move.z += right.z;
 
+
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE)
+			&& JumpCount && BalloonFlag)
+		{
+			BalloomUp = true;
+			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+		}
 		//junp
-		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount) {
+		else if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount) {
 			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 		}
 
@@ -459,8 +466,43 @@ void PLAYER::Player_Balloon()
    		if (!BombHave && m_State == PLAYER_STATE::PLAYER_STATE_BALLOON)
 		{
 			BalloomUp = false;
+			BalloonFlag = false;
 			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
 		}
+
+		// カメラの横の向きを取得
+		float camY = XMConvertToRadians(GetCameraYoko());
+
+		// �J������̑O�����x�N�g��
+		XMFLOAT3 forward = XMFLOAT3(sinf(camY), 0.0f, cosf(camY));
+
+		// �J������̉E�����x�N�g��
+		XMFLOAT3 right = XMFLOAT3(cosf(camY), 0.0f, -sinf(camY));
+
+		XMFLOAT3 move = XMFLOAT3(0, 0, 0);
+
+		//コントローラー
+		if (Keyboard_IsKeyDown(KK_W) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || GetThumbLeftY(0) >= 0.5f))
+		{
+			move.x -= forward.x, move.z -= forward.z;
+		}
+
+		if(Keyboard_IsKeyDown(KK_S) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) || GetThumbLeftY(0) <= -0.5f))
+		{
+			move.x += forward.x, move.z += forward.z;
+		}
+
+		if ((Keyboard_IsKeyDown(KK_D))||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f))
+		{
+			move.x -= right.x, move.z -= right.z;
+		}
+			
+		if(Keyboard_IsKeyDown(KK_A) ||(IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f))
+		{
+			move.x += right.x, move.z += right.z;
+		}
+
+	
 
 		
 
@@ -1003,154 +1045,6 @@ void PLAYER::Player_SetAnimMove()
 
 	Player_SetAnimHokan(PLAYER_STATE::PLAYER_STATE_MOVE);
 
-	//Player_SetAnimInis();
-	/*
-	////7 15 22 30
-	//int animPoint[] = { 7,15,22,29 };
-	//for (int i = 0; i < PARTS_MAX; i++)
-	//{
-	//	switch (i)
-	//	{
-	//	case PARTS_HEAD:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	case PARTS_BODY:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	case PARTS_ARM_RIGHT:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.4f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.4f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	case PARTS_ARM_LEFT:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.4f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.4f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	case PARTS_LEG_RIGHT:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.3f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, +0.3f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	case PARTS_LEG_LEFT:
-	//		m_Model[i].m_Frame[7].SetPosition(XMFLOAT3(0.0f, 0.0f, -0.3f));
-	//		m_Model[i].m_Frame[15].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		m_Model[i].m_Frame[22].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.3f));
-	//		m_Model[i].m_Frame[29].SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-
-	
-	
-
-	//for (int a = 0; a < PARTS_MAX; a++)
-	//{
-	//	
-	//		int y = 0;
-
-	//	switch (a)
-	//	{
-	//	case PARTS_HEAD:
-	//	case PARTS_BODY:
-	//	case PARTS_ARM_RIGHT:
-	//	case PARTS_ARM_LEFT:
-	//	case PARTS_LEG_RIGHT:
-	//	case PARTS_LEG_LEFT:
-
-	//		for (int i : animPoint)
-	//		{
-
-	//			XMFLOAT3 nextPos = m_Model[a].m_Frame[i].GetPosition();
-	//			XMFLOAT3 pos = m_Model[a].m_Frame[y].GetPosition();
-
-	//			for (int p = (y); p < (i - y); p++)
-	//			{
-	//				if (pos.x > nextPos.x)
-	//				{
-	//					pos.x += (pos.x - nextPos.x / (i - y)) + (-pos.x / (i - y));
-	//				}
-	//				else
-	//				{
-	//					pos.x -= ( nextPos.x - pos.x/ (i - y)) + (-pos.x / (i - y));
-	//				}
-
-	//				if (pos.y > nextPos.y)
-	//				{
-	//					pos.y += (pos.y - nextPos.y / (i - y)) + (-pos.y / (i - y));
-	//				}
-	//				else
-	//				{
-	//					pos.y -= (nextPos.y - pos.y / (i - y)) + (-pos.y / (i - y));
-	//				}
-
-	//				if (pos.z > nextPos.z)
-	//				{
-	//					pos.z += (pos.z - nextPos.z / (i - y)) + (-pos.z / (i - y));
-	//				}
-	//				else
-	//				{
-	//					pos.z -= (nextPos.z - pos.z / (i - y)) + (-pos.z / (i - y));
-	//				}
-
-	//				m_Model[a].m_Frame[p].SetPosition(pos);
-	//			}
-
-	//			y = i;
-	//		}
-	//		
-	//		break;
-	//	case PARTS_MAX:
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
-		
-	*/
-	//for (int i = 0; i < PARTS_MAX; i++)
-	//{
-	//	switch (i)
-	//	{
-	//	case PARTS_HEAD:
-	//		m_Model[i].SetlasPosMax(0);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
-	//		break;
-	//	case PARTS_BODY:
-	//		m_Model[i].SetlasPosMax(0);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.0f, 0.0f, 0.0f),0);
-	//		break;
-	//	case PARTS_ARM_RIGHT:
-	//		m_Model[i].SetlasPosMax(2);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.5f, 0.0f, -0.5f),0);
-	//		break;
-	//	case PARTS_ARM_LEFT:
-	//		m_Model[i].SetlasPosMax(0);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.5f, 0.0f, 0.5f),0);
-	//		break;
-	//	case PARTS_LEG_RIGHT:
-	//		m_Model[i].SetlasPosMax(0);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(-0.3f, 0.0f, -0.3f),0);
-	//		break;
-	//	case PARTS_LEG_LEFT:
-	//		m_Model[i].SetlasPosMax(0);
-	//		m_Model[i].SetAnimLastPosition(XMFLOAT3(0.3f, 0.0f, 0.3f),0);
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//}
 }
 
 void PLAYER::Player_SetAnimJunp()

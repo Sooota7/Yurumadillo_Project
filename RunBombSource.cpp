@@ -143,7 +143,7 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 	//m_Rotation.y = XMConvertToRadians(rotY);
 
 	//落下判定
-	if (m_Position.y < -10.0f)
+	if (m_Position.y < -8.0f)
 	{
 		m_State = RUNBOMB_STATE::RUNBOMB_COOL;
 		return;
@@ -250,14 +250,14 @@ void RUNBOMBSOURCE::Runbombsource_Enemy(XMFLOAT3 pPlayerPos)
 
 
 			//落下判定
-		if (m_Position.y < -10.0f)
+		if (m_Position.y < -15.0f)
 		{
 			m_State = RUNBOMB_STATE::RUNBOMB_COOL;
 			return;
 		}
 
 		m_Velocity.x *= 0.99f;//速度を適当に減衰させる
-		m_Velocity.y *= 0.98f;//追加する
+		//m_Velocity.y *= 0.98f;//追加する
 		m_Velocity.z *= 0.99f;
 
 		//静止チェック
