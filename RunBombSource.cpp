@@ -17,6 +17,7 @@ void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state,R
 	m_Touch = false;
 	m_Type = type;
 
+	m_isDamage = false;
 	m_fieldColision = false;
 }
 

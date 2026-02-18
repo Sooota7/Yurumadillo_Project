@@ -45,6 +45,7 @@ class RUNBOMBSOURCE
 	bool		m_Touch;
 
 	bool		m_fieldColision;
+	bool		m_isDamage;
 
 	RUNBOMB_TYPE	m_Type;
 
@@ -89,6 +90,8 @@ public:
 	void		Runbombsource_SetFieldCollision(bool touch) { m_fieldColision = touch; };
 	bool		Runbombsource_GetFieldCollision() { return m_fieldColision; };
 
+	void		Runbombsource_SetDamage(bool damage) { m_isDamage = damage; };
+	bool		Runbombsource_GetDamage() { return m_isDamage; };
 
 	RUNBOMBSOURCE* Runbombsource_GetRunbombsource() { return this; };
 };

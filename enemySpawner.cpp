@@ -8,9 +8,9 @@ static ID3D11Device* g_pDevice = NULL;
 static ID3D11DeviceContext* g_pContext = NULL;
 //頂点バッファ
 static ID3D11Buffer* g_VertexBuffer = NULL;
-//インデックスバッファ
+//インチE��クスバッファ
 static ID3D11Buffer* g_IndexBuffer = NULL;
-//テクスチャ変数
+//チE��スチャ変数
 static ID3D11ShaderResourceView* g_Texture;
 
 
@@ -19,11 +19,11 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	// メンバ変数を明示的に初期化（重要）
+	// メンバ変数を�E示皁E��初期化（重要E��E
 	MaxNum = 0;
 	NowKillNum = 0;
 
-	// テクスチャ読み込み
+	// チE��スチャ読み込み
 	TexMetadata metadata;
 	ScratchImage image;
 	LoadFromWICFile(L"Asset\\Texture\\block_field.png", WIC_FLAGS_NONE, &metadata, image);
@@ -31,7 +31,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);
 
-	//初期化
+	//初期匁E
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		m_Enemy[i].Initialize(g_pDevice, g_pContext);
@@ -57,7 +57,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	// ======================================================
 
 
-	//マップのセット
+	//マップ�EセチE��
 	int a = 0;
 	int b = 0;
 	int c = 0;	//EnemyGroundの数
@@ -98,7 +98,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	}
 	
 
-	//ブロックの作成
+	//ブロチE��の作�E
 	for (int i = 0; i < ENEMY_TYPE_MAX; i++)
 	{
 		switch (i)
@@ -106,10 +106,10 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		case ENEMY_TYPE_NONE:
 			break;
 		case ENEMY_TYPE_NORMAL:
-			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
+			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//チE��チE��
 			break;
 		case ENEMY_TYPE_BUTTERFLY:
-			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//チE��チE��
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -118,8 +118,8 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		}
 	}
 
-	// --- 重要 ---
-	// (この関数の末尾に) ローカルで `int MaxNum = 0;` や `int NowKillNum = 0;` を追加しないでください。
+	// --- 重要E---
+	// (こ�E関数の末尾に) ローカルで `int MaxNum = 0;` めE`int NowKillNum = 0;` を追加しなぁE��ください、E
 	int MaxNum = 0;
 
 	int NowKillNum = 0;
@@ -196,15 +196,15 @@ void ENEMYSPAWNER::EnemySpawner_Finalize(void)
 
 void ENEMYSPAWNER::EnemySpawner_Draw(void)
 {
-	//シェーダーを描画パイプラインへ設定
+	//シェーダーを描画パイプラインへ設宁E
 	Shader_Begin();
 
 
-	//プロジェクション行列作成
+	//プロジェクション行�E作�E
 	XMMATRIX	Projection = GetProjectionMatrix();
-	//ビュー行列作成
+	//ビュー行�E作�E
 	XMMATRIX	View = GetViewMatrix();
-	//先にVP変換行列を作っておく
+	//先にVP変換行�Eを作っておく
 	XMMATRIX	VP = View * Projection;
 
 	//MAPの表示
@@ -215,20 +215,20 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 	for(int i = 0; i< Enemy_Spawner_MAX;i++)
 	{
-		//死亡、存在しない場合書かない
+		//死亡、存在しなぁE��合書かなぁE
 		if (m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_NONE&&
 			m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
 			XMFLOAT3 mapPos = m_Enemy[i].GetEnemyPosition();
 
-			//スケーリング行列の作成
+			//スケーリング行�Eの作�E
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//平行移動行列の作成
+			//平行移動行�Eの作�E
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -236,7 +236,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//回転行列の作成
+			//回転行�Eの作�E
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(0.0f),
@@ -245,29 +245,29 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				XMConvertToRadians(0.0f),
 				XMConvertToRadians(0.0f)
 			);
-			//ワールド行列の作成
+			//ワールド行�Eの作�E
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//最終的な変換行列を作成
+			//最終的な変換行�Eを作�E
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectXへ行列をセット
+			//DirectXへ行�EをセチE��
 			Shader_SetMatrix(WVP);
 
-			//テクスチャをセット
+			//チE��スチャをセチE��
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//頂点バッファをセット
-			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			//頂点バッファをセチE��
+			UINT	stride = sizeof(Vertex3D);	//頂点�E�個�EチE�Eタサイズ
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//インデックスバッファをセット
+			//インチE��クスバッファをセチE��
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			//描画するポリゴンの種類をセチE�� 3頂点でポリゴン�E�枚として表示
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			//描画リクエスト
-			//モデル一個しかないから追加するときに変える
+			//描画リクエスチE
+			//モチE��一個しかなぁE��ら追加するときに変えめE
 			switch (m_Enemy[i].GetEnemyNormalState())
 			{
 			case ENEMY_NORMAL_STATE_IDLE:
@@ -292,24 +292,24 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			
 		}
 	}
-	// いったんそのまま
-	// 浮いてる敵
+	// ぁE��たんそ�Eまま
+	// 浮ぁE��る敵
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
-		//死亡、存在しない場合書かない
+		//死亡、存在しなぁE��合書かなぁE
 		if (m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE &&
 			m_EnemyButterfly[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
 			XMFLOAT3 mapPos = m_EnemyButterfly[i].GetEnemyPosition();
 
-			//スケーリング行列の作成
+			//スケーリング行�Eの作�E
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//平行移動行列の作成
+			//平行移動行�Eの作�E
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -317,7 +317,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//回転行列の作成
+			//回転行�Eの作�E
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().x),
@@ -327,29 +327,29 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				//XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().y),
 				XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().z)
 			);
-			//ワールド行列の作成
+			//ワールド行�Eの作�E
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//最終的な変換行列を作成
+			//最終的な変換行�Eを作�E
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectXへ行列をセット
+			//DirectXへ行�EをセチE��
 			Shader_SetMatrix(WVP);
 
-			//テクスチャをセット
+			//チE��スチャをセチE��
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//頂点バッファをセット
-			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			//頂点バッファをセチE��
+			UINT	stride = sizeof(Vertex3D);	//頂点�E�個�EチE�Eタサイズ
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//インデックスバッファをセット
+			//インチE��クスバッファをセチE��
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			//描画するポリゴンの種類をセチE�� 3頂点でポリゴン�E�枚として表示
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-			//描画リクエスト
-			//モデル一個しかないから追加するときに変える
+			//描画リクエスチE
+			//モチE��一個しかなぁE��ら追加するときに変えめE
 			switch (m_EnemyButterfly[i].GetEnemyButterflyState())
 			{
 			case ENEMY_BUTTERFLY_STATE_IDLE:
@@ -374,11 +374,11 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 	}
 
 	//=======================================================
-	//EnemyGround描画動作確認用_描画モデルバタフライのまま
+	//EnemyGround描画動作確認用_描画モチE��バタフライのまま
 	//=======================================================
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
-		//死亡、存在しない場合書かない
+		//死亡、存在しなぁE��合書かなぁE
 		if (m_EnemyGround[i].GetEnemyGroundType() != ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_NONE &&
 			m_EnemyGround[i].GetEnemyGroundType() != ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_DEAD)
 		{
@@ -387,14 +387,14 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 			XMFLOAT3 mapPos = m_EnemyGround[i].GetEnemyPosition();
 
-			//スケーリング行列の作成
+			//スケーリング行�Eの作�E
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
 			(
 				1.0f,
 				1.0f,
 				1.0f
 			);
-			//平行移動行列の作成
+			//平行移動行�Eの作�E
 			XMMATRIX	TranslationMatrix = XMMatrixTranslation
 			(
 				mapPos.x,
@@ -402,7 +402,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				mapPos.z
 			);
 
-			//回転行列の作成
+			//回転行�Eの作�E
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
 				XMConvertToRadians(m_EnemyGround[i].GetEnemyRotation().x),
@@ -412,31 +412,31 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 				//XMConvertToRadians(m_EnemyButterfly[i].GetEnemyRotation().y),
 				XMConvertToRadians(m_EnemyGround[i].GetEnemyRotation().z)
 			);
-			//ワールド行列の作成
+			//ワールド行�Eの作�E
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-			//最終的な変換行列を作成
+			//最終的な変換行�Eを作�E
 			XMMATRIX WVP = World * VP;//(VP = View*Projection)
-			//DirectXへ行列をセット
+			//DirectXへ行�EをセチE��
 			Shader_SetMatrix(WVP);
 
-			//テクスチャをセット
+			//チE��スチャをセチE��
 			g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-			//頂点バッファをセット
-			UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+			//頂点バッファをセチE��
+			UINT	stride = sizeof(Vertex3D);	//頂点�E�個�EチE�Eタサイズ
 			UINT	offset = 0;
 			g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-			//インデックスバッファをセット
+			//インチE��クスバッファをセチE��
 			g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-			//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+			//描画するポリゴンの種類をセチE�� 3頂点でポリゴン�E�枚として表示
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 			PARTS* EG_Parts = m_EnemyGround[i].GetEnemyGroundParts();
 
-			//描画リクエスト
-			//モデル一個しかないから追加するときに変える
+			//描画リクエスチE
+			//モチE��一個しかなぁE��ら追加するときに変えめE
 			for (int i = 0; i < EG_PARTS_MAX; i++)
 			{
 				switch (i)
@@ -479,7 +479,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_Enemy[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//死んだらカウントする
+			EnemySpawner_SetKillNum(1);						//死んだらカウントすめE
 			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE_NONE);	//存在を消す
 			break;
 		case ENEMY_TYPE_MAX:
@@ -492,7 +492,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 
 	}
 	
-	// 浮いてる敵
+	// 浮ぁE��る敵
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
 		switch (m_EnemyButterfly[i].GetEnemyButterflyType())
@@ -503,7 +503,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_EnemyButterfly[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//死んだらカウントする
+			EnemySpawner_SetKillNum(1);						//死んだらカウントすめE
 			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE_NONE);	//存在を消す
 			break;
 		case ENEMY_TYPE_MAX:
@@ -530,7 +530,7 @@ void ENEMYSPAWNER::EnemySpawner_Update(XMFLOAT3 pPlayerPos)
 			m_EnemyGround[i].Update(pPlayerPos);
 			break;
 		case ENEMY_TYPE_DEAD:
-			EnemySpawner_SetKillNum(1);						//死んだらカウントする
+			EnemySpawner_SetKillNum(1);						//死んだらカウントすめE
 			m_EnemyGround[i].SetEnemyGroundType(ENEMY_TYPE_NONE);	//存在を消す
 			break;
 		case ENEMY_TYPE_MAX:
@@ -563,7 +563,7 @@ int ENEMYSPAWNER::EnemySpawner_GetEnemyNum()
 	return MaxNum;
 }
 
-//倒した数をカウント、今のところ１のみ
+//倒した数をカウント、今�Eところ�E��Eみ
 void ENEMYSPAWNER::EnemySpawner_SetKillNum(int killnum)
 {
 	NowKillNum += killnum;
@@ -581,17 +581,17 @@ bool ENEMYSPAWNER::EnemySpawner_SpawnButterfly(const XMFLOAT3& pos)
 	{
 		if (m_EnemyButterfly[i].GetEnemyButterflyType() == ENEMY_TYPE::ENEMY_TYPE_NONE)
 		{
-			// 位置とタイプを設定して再利用（状態を初期化）
+			// 位置とタイプを設定して再利用�E�状態を初期化！E
 			m_EnemyButterfly[i].SetEnemyPosition(pos);
 			m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_BUTTERFLY);
 			m_EnemyButterfly[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
 			m_EnemyButterfly[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_MOVE);
-			m_EnemyButterfly[i].SetEnemyHp(100); // 必要なHPに合わせる
-			// 必要ならフレームカウンタ等もリセット（private メンバがあるならメソッドを追加して扱う）
+			m_EnemyButterfly[i].SetEnemyHp(100); // 忁E��なHPに合わせる
+			// 忁E��ならフレームカウンタ等もリセチE���E�Erivate メンバがあるならメソチE��を追加して扱ぁE��E
 			return true;
 		}
 	}
-	return false; // 空きなし
+	return false; // 空きなぁE
 }
 
 bool ENEMYSPAWNER::EnemySpawner_SpawnNormal(const XMFLOAT3& pos)
@@ -603,8 +603,8 @@ bool ENEMYSPAWNER::EnemySpawner_SpawnNormal(const XMFLOAT3& pos)
 			m_Enemy[i].SetEnemyPosition(pos);
 			m_Enemy[i].SetEnemyNormalType(ENEMY_TYPE::ENEMY_TYPE_NORMAL);
 			m_Enemy[i].SetEnemyVelocity(XMFLOAT3(0.0f, 0.0f, 0.0f));
-			m_Enemy[i].SetEnemyHp(100); // 必要なら調整
-			// 状態リセット用メソッドがあれば呼ぶ
+			m_Enemy[i].SetEnemyHp(100); // 忁E��なら調整
+			// 状態リセチE��用メソチE��があれ�E呼ぶ
 			return true;
 		}
 	}
@@ -735,7 +735,7 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 	position.x -= InisPos.z * cosf(rot.y);
 	position.z += InisPos.z * sinf(rot.y);
 
-	//ｙ値
+	//�E�値
 	position.y += InisPos.y;
 
 	//x値
@@ -746,7 +746,7 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 	position.z += lastPos.z * cosf(rot.y);
 	position.x += lastPos.z * sinf(rot.y);
 
-	//ｙ値
+	//�E�値
 	position.y += lastPos.y;
 
 	return position;
@@ -756,7 +756,7 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 
 
 //=====================================================================
-// EnemyGroundAnimSet関数及び補間関数
+// EnemyGroundAnimSet関数及�E補間関数
 //=====================================================================
 
 void ENEMYSPAWNER::Enemy_Ground_SetAnimHokan(ENEMY_GROUND_STATE state)
