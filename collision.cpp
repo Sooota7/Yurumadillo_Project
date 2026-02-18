@@ -853,7 +853,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
 
 
-			bombPos = RunBomb->Runbombsource_GetPosition();
+			bombPos = RunBomb[i].Runbombsource_GetPosition();
 
 
 
@@ -875,16 +875,12 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					if (bombPos.x - BOMB_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
 						PlayerPos.x <= bombPos.x - BOMB_RADIUS)
 					{//BOXの-X面にぶつかったので座標の補正
-						PlayerPos.x += (bombPos.x - BOMB_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //移動ベクトルの反転
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
 					{//BOXの+X面にぶつかった
-						PlayerPos.x += (bombPos.x + BOMB_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
-						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
 						touch = true;
 					}
@@ -895,16 +891,12 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					if (bombPos.z - BOMB_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
 						PlayerPos.z <= bombPos.z - BOMB_RADIUS)
 					{//BOXの-Z面にぶつかったので座標の補正
-						PlayerPos.z += (bombPos.z - BOMB_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //移動ベクトルの反転
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
 					{//BOXの+Z面にぶつかった
-						PlayerPos.z += (bombPos.z + BOMB_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
-						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
 						touch = true;
 					}
@@ -922,8 +914,6 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 						if (bombPos.y - BOMB_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
 						{//BOXの-X面にぶつかったので座標の補正
-							PlayerPos.y += (bombPos.y - BOMB_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //移動ベクトルの反転
 							//hit = 
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
@@ -936,7 +926,9 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 							{
 								PlayerJump = true;
 							}
-							RunBomb->Runbombsource_SetState(RUNBOMB_ITEM);
+							if (RunBomb->Runbombsource_GetState() == RUNBOMB_ENEMY) {
+								RunBomb->Runbombsource_SetState(RUNBOMB_ITEM);
+							}
 						}
 					}
 				}
@@ -949,12 +941,21 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			if (pPlayer->GetPlayerTransBombFlag())
 			{
-				RunBomb->Runbombsource_SetTouch(touch);
+				RunBomb[i].Runbombsource_SetTouch(touch);
 			}
 
 			pPlayer->SetPlayerJump(PlayerJump);
 			pPlayer->SetPlayerPosition(PlayerPos);
 			pPlayer->SetPlayerVelocity(PlayerVel);
+
+			// テスト
+			if (hit && !RunBomb[i].Runbombsource_GetDamage()
+				&& !RunBomb[i].Runbombsource_GetState() == EG_WEAPON_NONE)
+			{
+				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+				RunBomb[i].Runbombsource_SetDamage(true);
+				continue;
+			}
 
 		}
 
