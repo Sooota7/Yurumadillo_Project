@@ -17,7 +17,6 @@ enum EG_WEAPON_STATE
 	EG_WEAPON_MOVE,
 	EG_WEAPON_DIRECTION,
 	EG_WEAPON_POWER,
-	EG_WEAPON_GROUND,
 	EG_WEAPON_COOL,
 	EG_WEAPON_MAX
 
@@ -44,7 +43,6 @@ public:
 	void		Weapon_EG_Move();
 	void		Weapon_EG_Direction(XMFLOAT3 pPlayerPos);
 	void		Weapon_EG_Power();
-	void		Weapon_EG_Ground();
 	void		Weapon_EG_Cool();
 
 	void		Weapon_EG_SetPosition(XMFLOAT3 pos) { m_Position = pos; };

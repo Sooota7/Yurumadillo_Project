@@ -232,7 +232,7 @@ void ENEMY_GROUND::Enemy_Ground_Attack(XMFLOAT3 chasePos)
 
 
 
-	if (m_AttackCool > 2.0f)
+	if (m_AttackCool > 1.0f)
 	{
 		SetEnemyGroundState(ENEMY_GROUND_STATE_CREATE_WEAPON);
 		m_AttackCool = 0.0f;

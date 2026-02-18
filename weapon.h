@@ -35,6 +35,7 @@ public:
 	void	Weapon_Draw(void);
 	void	Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner);
 	WEAPONSOURCE* Weapon_GetWeapon();
+	WEAPONENEMYGROUND* EG_Weapon_GetWeapon();
 
 	void	SetWeapon(XMFLOAT3 pos);
 	void	SetWeaponEG(XMFLOAT3 pos);
