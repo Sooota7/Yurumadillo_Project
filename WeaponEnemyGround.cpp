@@ -34,6 +34,13 @@ void WEAPONENEMYGROUND::Weapon_EG_Move()
 	//	Weapon_EG_SetState(EG_WEAPON_GROUND);
 	//}
 
+	m_Count += 1.0f / 60.0f;
+	if (m_Count > 5.0f)
+	{
+		m_Count = 0.0f;
+		m_isDamage = false;
+		Weapon_EG_SetState(EG_WEAPON_NONE);
+	}
 
 	if (m_Position.y < -10.0f)
 	{
@@ -61,6 +68,8 @@ void WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
 
 	m_Velocity = direction;
 	Weapon_EG_SetState(EG_WEAPON_POWER);
+	
+	
 }
 
 void WEAPONENEMYGROUND::Weapon_EG_Power()
@@ -72,17 +81,6 @@ void WEAPONENEMYGROUND::Weapon_EG_Power()
 	m_Velocity.z *= power;
 
 	Weapon_EG_SetState(EG_WEAPON_MOVE);
-}
-
-void WEAPONENEMYGROUND::Weapon_EG_Ground()
-{
-	m_Count += 1.0f / 60.0f;
-	if (m_Count > 3.0f)
-	{
-		m_Count = 0.0f;
-		m_isDamage = false;
-		Weapon_EG_SetState(EG_WEAPON_NONE);
-	}
 }
 
 void WEAPONENEMYGROUND::Weapon_EG_Cool()

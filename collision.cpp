@@ -387,6 +387,7 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 	XMFLOAT3 PlayerVel = pPlayer->GetPlayerVelocity();
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
 	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
+	ENEMY_GROUND* enemyC = pEnemy->EnemySpawner_GetEnemyGround();
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
@@ -471,7 +472,7 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 			pPlayer->SetPlayerVelocity(PlayerVel);
 
 
-			return hit;
+			//return hit;
 		}
 	}
 
@@ -559,9 +560,103 @@ float	COLLISION::PlayerEnemyCollision(PLAYER* pPlayer, ENEMYSPAWNER* pEnemy)
 			pPlayer->SetPlayerVelocity(PlayerVel);
 
 
-			return hit;
+			//return hit;
 		}
 	}
+
+	//==================================================================
+	// EnemyGround
+	//==================================================================
+	{
+		for (int i = 0; i < Enemy_Spawner_MAX; i++)
+		{
+			if (enemyC[i].GetEnemyGroundType() != ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_NONE)
+			{
+				XMFLOAT3 EnemyPos = enemyC[i].GetEnemyPosition();
+				XMFLOAT3 EnemyVel = enemyC[i].GetEnemyVelocity();
+				float BoxTop;	// BOXの+Y面の座標
+
+				BoxTop = EnemyPos.y + BOX_RADIUS;
+
+				// 壁としての判定処理
+				if (EnemyPos.y - BOX_RADIUS < PlayerPos.y &&
+					PlayerPos.y < BoxTop - 0.1f)
+				{
+					if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
+						PlayerPos.z < EnemyPos.z + BOX_RADIUS)
+					{
+						if (EnemyPos.x - BOX_RADIUS < PlayerPos.x + BALL_RADIUS &&
+							PlayerPos.x < EnemyPos.x - BOX_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							PlayerPos.x += (EnemyPos.x - BOX_RADIUS) - (PlayerPos.x + BALL_RADIUS);
+							PlayerVel.x *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_3;
+						}
+						else if (EnemyPos.x + BOX_RADIUS > PlayerPos.x - BALL_RADIUS &&
+							PlayerPos.x > EnemyPos.x + BOX_RADIUS)
+						{//BOXの+X面にぶつかった
+							PlayerPos.x += (EnemyPos.x + BOX_RADIUS) - (PlayerPos.x - BALL_RADIUS);
+							PlayerVel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_1;
+						}
+					}
+					else if (EnemyPos.x - BOX_RADIUS < PlayerPos.x &&
+						PlayerPos.x < EnemyPos.x + BOX_RADIUS)
+					{
+						if (EnemyPos.z - BOX_RADIUS < PlayerPos.z + BALL_RADIUS &&
+							PlayerPos.z < EnemyPos.z - BOX_RADIUS)
+						{//BOXの-Z面にぶつかったので座標の補正
+							PlayerPos.z += (EnemyPos.z - BOX_RADIUS) - (PlayerPos.z + BALL_RADIUS);
+							PlayerVel.z *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_0;
+						}
+						else if (EnemyPos.z + BOX_RADIUS > PlayerPos.z - BALL_RADIUS &&
+							PlayerPos.z > EnemyPos.z + BOX_RADIUS)
+						{//BOXの+Z面にぶつかった
+							PlayerPos.z += (EnemyPos.z + BOX_RADIUS) - (PlayerPos.z - BALL_RADIUS);
+							PlayerVel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_2;
+						}
+					}
+				}
+				//地面として判定処理
+				else
+				{
+					if (EnemyPos.z - BOX_RADIUS < PlayerPos.z &&
+						PlayerPos.z < EnemyPos.z + BOX_RADIUS)
+					{
+						if (EnemyPos.x - BOX_RADIUS < PlayerPos.x &&
+							PlayerPos.x < EnemyPos.x + BOX_RADIUS)
+						{
+							if (EnemyPos.y - BOX_RADIUS < PlayerPos.y + BALL_RADIUS &&
+								PlayerPos.y < EnemyPos.y - BOX_RADIUS)
+							{//BOXの-X面にぶつかったので座標の補正
+								PlayerPos.y += (EnemyPos.y - BOX_RADIUS) - (PlayerPos.y + BALL_RADIUS);
+								EnemyVel.y *= -COE; //移動ベクトルの反転
+								//hit = 
+							}
+							else if (BoxTop > PlayerPos.y - BALL_RADIUS &&
+								PlayerPos.y > BoxTop)
+							{//BOXの+X面にぶつかった
+								PlayerPos.y += (BoxTop)-(PlayerPos.y - BALL_RADIUS);
+								EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+						}
+					}
+				}
+
+
+				pPlayer->SetPlayerPosition(PlayerPos);
+				pPlayer->SetPlayerVelocity(PlayerVel);
+
+
+				return hit;
+			}
+		}
+	}
+
+
 }
 
 float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
@@ -758,7 +853,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
 
 
-			bombPos = RunBomb->Runbombsource_GetPosition();
+			bombPos = RunBomb[i].Runbombsource_GetPosition();
 
 
 
@@ -780,16 +875,12 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					if (bombPos.x - BOMB_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
 						PlayerPos.x <= bombPos.x - BOMB_RADIUS)
 					{//BOXの-X面にぶつかったので座標の補正
-						PlayerPos.x += (bombPos.x - BOMB_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //移動ベクトルの反転
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
 					{//BOXの+X面にぶつかった
-						PlayerPos.x += (bombPos.x + BOMB_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
-						PlayerVel.x *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_1;
 						touch = true;
 					}
@@ -800,16 +891,12 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					if (bombPos.z - BOMB_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
 						PlayerPos.z <= bombPos.z - BOMB_RADIUS)
 					{//BOXの-Z面にぶつかったので座標の補正
-						PlayerPos.z += (bombPos.z - BOMB_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //移動ベクトルの反転
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
 					{//BOXの+Z面にぶつかった
-						PlayerPos.z += (bombPos.z + BOMB_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
-						PlayerVel.z *= -COE;
 						hit = COLLISION_HIT::HIT_WALL_2;
 						touch = true;
 					}
@@ -827,8 +914,6 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 						if (bombPos.y - BOMB_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
 						{//BOXの-X面にぶつかったので座標の補正
-							PlayerPos.y += (bombPos.y - BOMB_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //移動ベクトルの反転
 							//hit = 
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
@@ -841,7 +926,9 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 							{
 								PlayerJump = true;
 							}
-							RunBomb->Runbombsource_SetState(RUNBOMB_ITEM);
+							if (RunBomb->Runbombsource_GetState() == RUNBOMB_ENEMY) {
+								RunBomb->Runbombsource_SetState(RUNBOMB_ITEM);
+							}
 						}
 					}
 				}
@@ -854,12 +941,21 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			if (pPlayer->GetPlayerTransBombFlag())
 			{
-				RunBomb->Runbombsource_SetTouch(touch);
+				RunBomb[i].Runbombsource_SetTouch(touch);
 			}
 
 			pPlayer->SetPlayerJump(PlayerJump);
 			pPlayer->SetPlayerPosition(PlayerPos);
 			pPlayer->SetPlayerVelocity(PlayerVel);
+
+			// テスト
+			if (hit && !RunBomb[i].Runbombsource_GetDamage()
+				&& !RunBomb[i].Runbombsource_GetState() == EG_WEAPON_NONE)
+			{
+				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+				RunBomb[i].Runbombsource_SetDamage(true);
+				continue;
+			}
 
 		}
 
@@ -2497,129 +2593,217 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 
 	WEAPONSOURCE* Weapon = pWeapon->Weapon_GetWeapon();	// マップ
 	//int			i = 0;
-
+	WEAPONENEMYGROUND* GroundWeapon = pWeapon->EG_Weapon_GetWeapon();
 
 	// 全てのブロックをチェック
 	for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
-		/*switch (Weapon[i].WeaponSource_GetState())
 		{
-		case WEAPON_NONE:
-		case WEAPON_MAX:
-		default:
-			continue;
-			break;
-		}*/
-
-		bool	touch = false;
-		float BoxTop;	// BOXの+Y面の座標
-
-		XMFLOAT3 weaponPos = Weapon[i].WeaponSource_GetPosition();
-
-
-		switch (Weapon[i].WeaponSource_GetState())
-		{
-
-		default:
-			BoxTop = weaponPos.y + WEAPON_RADIUS;	// 普通のBOX
-			break;
-		}
-
-		if (Weapon[i].WeaponSource_GetState() != WEAPON_NONE)
-		{
-			// 壁としての判定処理
-			if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y &&
-				PlayerPos.y <= BoxTop - 0.1f)
+			/*switch (Weapon[i].WeaponSource_GetState())
 			{
-				if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
-					PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
-				{
-					if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
-						PlayerPos.x <= weaponPos.x - WEAPON_RADIUS)
-					{//BOXの-X面にぶつかったので座標の補正
-						PlayerPos.x += (weaponPos.x - WEAPON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
-						PlayerVel.x *= -COE; //移動ベクトルの反転
-						hit = COLLISION_HIT::HIT_WALL_3;
-						touch = true;
-					}
-					else if (weaponPos.x + WEAPON_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
-						PlayerPos.x >= weaponPos.x + WEAPON_RADIUS)
-					{//BOXの+X面にぶつかった
-						PlayerPos.x += (weaponPos.x + WEAPON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
-						PlayerVel.x *= -COE;
-						hit = COLLISION_HIT::HIT_WALL_1;
-						touch = true;
-					}
-				}
-				else if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
-					PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
-				{
-					if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
-						PlayerPos.z <= weaponPos.z - WEAPON_RADIUS)
-					{//BOXの-Z面にぶつかったので座標の補正
-						PlayerPos.z += (weaponPos.z - WEAPON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
-						PlayerVel.z *= -COE; //移動ベクトルの反転
-						hit = COLLISION_HIT::HIT_WALL_0;
-						touch = true;
-					}
-					else if (weaponPos.z + WEAPON_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
-						PlayerPos.z >= weaponPos.z + WEAPON_RADIUS)
-					{//BOXの+Z面にぶつかった
-						PlayerPos.z += (weaponPos.z + WEAPON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
-						PlayerVel.z *= -COE;
-						hit = COLLISION_HIT::HIT_WALL_2;
-						touch = true;
-					}
-				}
+			case WEAPON_NONE:
+			case WEAPON_MAX:
+			default:
+				continue;
+				break;
+			}*/
+
+			bool	touch = false;
+			float BoxTop;	// BOXの+Y面の座標
+
+			XMFLOAT3 weaponPos = Weapon[i].WeaponSource_GetPosition();
+
+
+			switch (Weapon[i].WeaponSource_GetState())
+			{
+
+			default:
+				BoxTop = weaponPos.y + WEAPON_RADIUS;	// 普通のBOX
+				break;
 			}
-			//地面として判定処理
-			else
+
+			if (Weapon[i].WeaponSource_GetState() != WEAPON_NONE)
 			{
-				if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
-					PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+				// 壁としての判定処理
+				if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y &&
+					PlayerPos.y <= BoxTop - 0.1f)
 				{
-					if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
+					if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
+						PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+					{
+						if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
+							PlayerPos.x <= weaponPos.x - WEAPON_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							PlayerPos.x += (weaponPos.x - WEAPON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
+							PlayerVel.x *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_3;
+							touch = true;
+						}
+						else if (weaponPos.x + WEAPON_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
+							PlayerPos.x >= weaponPos.x + WEAPON_RADIUS)
+						{//BOXの+X面にぶつかった
+							PlayerPos.x += (weaponPos.x + WEAPON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
+							PlayerVel.x *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_1;
+							touch = true;
+						}
+					}
+					else if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
 						PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
 					{
-						if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
-							PlayerPos.y <= weaponPos.y - WEAPON_RADIUS)
-						{//BOXの-X面にぶつかったので座標の補正
-							PlayerPos.y += (weaponPos.y - WEAPON_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
-							PlayerVel.y *= -COE; //移動ベクトルの反転
-							//hit = 
+						if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
+							PlayerPos.z <= weaponPos.z - WEAPON_RADIUS)
+						{//BOXの-Z面にぶつかったので座標の補正
+							PlayerPos.z += (weaponPos.z - WEAPON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
+							PlayerVel.z *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_0;
+							touch = true;
 						}
-						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
-							PlayerPos.y >= BoxTop)
-						{//BOXの+X面にぶつかった
-							PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
-							PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
-							hit = COLLISION_HIT::HIT_GROUND;
-							if (PlayerJump == false)
-							{
-								PlayerJump = true;
+						else if (weaponPos.z + WEAPON_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
+							PlayerPos.z >= weaponPos.z + WEAPON_RADIUS)
+						{//BOXの+Z面にぶつかった
+							PlayerPos.z += (weaponPos.z + WEAPON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
+							PlayerVel.z *= -COE;
+							hit = COLLISION_HIT::HIT_WALL_2;
+							touch = true;
+						}
+					}
+				}
+				//地面として判定処理
+				else
+				{
+					if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
+						PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+					{
+						if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
+							PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
+						{
+							if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y + PLAYER_RADIUS &&
+								PlayerPos.y <= weaponPos.y - WEAPON_RADIUS)
+							{//BOXの-X面にぶつかったので座標の補正
+								PlayerPos.y += (weaponPos.y - WEAPON_RADIUS) - (PlayerPos.y + PLAYER_RADIUS);
+								PlayerVel.y *= -COE; //移動ベクトルの反転
+								//hit = 
+							}
+							else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
+								PlayerPos.y >= BoxTop)
+							{//BOXの+X面にぶつかった
+								PlayerPos.y += (BoxTop)-(PlayerPos.y - PLAYER_RADIUS);
+								PlayerVel.y = PlayerVel.y * (-COE * 1.0f);
+								hit = COLLISION_HIT::HIT_GROUND;
+								if (PlayerJump == false)
+								{
+									PlayerJump = true;
+								}
 							}
 						}
 					}
 				}
+
+				pPlayer->SetPlayerJump(PlayerJump);
+				pPlayer->SetPlayerPosition(PlayerPos);
+				pPlayer->SetPlayerVelocity(PlayerVel);
+
+				// テスト
+				if (hit && !Weapon[i].WeaponSource_GetIsDamage()
+					&& !Weapon[i].WeaponSource_GetState() == WEAPON_NONE)
+				{
+					pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+					Weapon[i].WeaponSource_SetIsDamage(true);
+				}
 			}
-
-			pPlayer->SetPlayerJump(PlayerJump);
-			pPlayer->SetPlayerPosition(PlayerPos);
-			pPlayer->SetPlayerVelocity(PlayerVel);
-
-			// テスト
-			if (hit && !Weapon[i].WeaponSource_GetIsDamage()
-				&& !Weapon[i].WeaponSource_GetState() == WEAPON_NONE)
-			{
-				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 20);
-				Weapon[i].WeaponSource_SetIsDamage(true);
-			}
-
 		}
+		//===============================================================
+		// EnemyGround
+		//===============================================================
+
+		{
+
+			bool	touch = false;
+			float BoxTop;	// BOXの+Y面の座標
+
+			XMFLOAT3 weaponPos = GroundWeapon[i].Weapon_EG_GetPosition();
+
+
+			switch (GroundWeapon[i].Weapon_EG_GetState())
+			{
+
+			default:
+				BoxTop = weaponPos.y + WEAPON_RADIUS;	// 普通のBOX
+				break;
+			}
+
+			if (GroundWeapon[i].Weapon_EG_GetState() != EG_WEAPON_NONE)
+			{
+				// 壁としての判定処理
+				if (weaponPos.y - WEAPON_RADIUS <= PlayerPos.y &&
+					PlayerPos.y <= BoxTop - 0.1f)
+				{
+					if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z &&
+						PlayerPos.z <= weaponPos.z + WEAPON_RADIUS)
+					{
+						if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x + PLAYER_RADIUS &&
+							PlayerPos.x <= weaponPos.x - WEAPON_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							//PlayerPos.x += (weaponPos.x - WEAPON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
+							//PlayerVel.x *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_3;
+							touch = true;
+						}
+						else if (weaponPos.x + WEAPON_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
+							PlayerPos.x >= weaponPos.x + WEAPON_RADIUS)
+						{//BOXの+X面にぶつかった
+							/*PlayerPos.x += (weaponPos.x + WEAPON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
+							PlayerVel.x *= -COE;*/
+							hit = COLLISION_HIT::HIT_WALL_1;
+							touch = true;
+						}
+					}
+					else if (weaponPos.x - WEAPON_RADIUS <= PlayerPos.x &&
+						PlayerPos.x <= weaponPos.x + WEAPON_RADIUS)
+					{
+						if (weaponPos.z - WEAPON_RADIUS <= PlayerPos.z + PLAYER_RADIUS &&
+							PlayerPos.z <= weaponPos.z - WEAPON_RADIUS)
+						{//BOXの-Z面にぶつかったので座標の補正
+							//PlayerPos.z += (weaponPos.z - WEAPON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
+							//PlayerVel.z *= -COE; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_0;
+							touch = true;
+						}
+						else if (weaponPos.z + WEAPON_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
+							PlayerPos.z >= weaponPos.z + WEAPON_RADIUS)
+						{//BOXの+Z面にぶつかった
+							/*PlayerPos.z += (weaponPos.z + WEAPON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
+							PlayerVel.z *= -COE;*/
+							hit = COLLISION_HIT::HIT_WALL_2;
+							touch = true;
+						}
+					}
+				}
+
+
+				pPlayer->SetPlayerJump(PlayerJump);
+				pPlayer->SetPlayerPosition(PlayerPos);
+				pPlayer->SetPlayerVelocity(PlayerVel);
+
+				// テスト
+				if (hit && !GroundWeapon[i].Weapon_EG_GetIsDamage()
+					&& !GroundWeapon[i].Weapon_EG_GetState() == EG_WEAPON_NONE)
+				{
+					pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+					GroundWeapon[i].Weapon_EG_SetIsDamage(true);
+				}
+
+			}
+		}
+
+
+
 	}
 
-	return hit;  // ぶつかったかどうかを示す
+	return hit; // ぶつかったかどうかを示す
 }
+
 
 
 float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)

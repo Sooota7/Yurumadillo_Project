@@ -244,9 +244,6 @@ void WEAPON::Weapon_Draw(void)
 		case EG_WEAPON_POWER:
 			ModelDraw(m_Model[WEAPON_POWER]);
 			break;
-		case EG_WEAPON_GROUND:
-			ModelDraw(m_Model[WEAPON_GROUND]);
-			break;
 		case EG_WEAPON_MAX:
 			break;
 		default:
@@ -311,9 +308,6 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		case EG_WEAPON_POWER:
 			m_EG_Weapon[i].Weapon_EG_Power();
 			break;
-		case EG_WEAPON_GROUND:
-			m_EG_Weapon[i].Weapon_EG_Ground();
-			break;
 		case EG_WEAPON_MAX:
 			break;
 		default:
@@ -325,6 +319,11 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 WEAPONSOURCE* WEAPON::Weapon_GetWeapon()
 {
 	return m_Weapon;
+}
+
+WEAPONENEMYGROUND* WEAPON::EG_Weapon_GetWeapon()
+{
+	return m_EG_Weapon;
 }
 
 void WEAPON::SetWeapon(XMFLOAT3 pos)
