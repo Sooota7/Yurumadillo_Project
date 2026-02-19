@@ -118,9 +118,11 @@ void ENEMY_GROUND::Update(XMFLOAT3 chasePos)
 		m_Rotation.y = yaw;
 	}
 
-	if (length < 4)
+	if (length < 4 && m_State == ENEMY_GROUND_STATE_MOVE)
 	{
 		SetEnemyGroundState(ENEMY_GROUND_STATE_ATTACK);
+		m_FrameCnt = 0.0f;
+		m_AttackCool = 0.0f;
 	}
 
 	switch (m_State)
@@ -226,18 +228,18 @@ void ENEMY_GROUND::Enemy_Ground_SetDirection()
 
 void ENEMY_GROUND::Enemy_Ground_Attack(XMFLOAT3 chasePos)
 {
-	m_AttackCool += 1.0f / 60.0;
-
-
-
-
-
-	if (m_AttackCool > 1.0f)
+	if (m_FrameCnt >= 29.0f && m_FrameCnt < 30.0f)
 	{
 		SetEnemyGroundState(ENEMY_GROUND_STATE_CREATE_WEAPON);
-		m_AttackCool = 0.0f;
+		return;
 	}
 
+	// 60fで攻撃アニメーション終わり→クールダウン
+	if (m_FrameCnt >= 59.0f)
+	{
+		SetEnemyGroundState(ENEMY_GROUND_STATE_COOL);
+		m_AttackCool = 0.0f;
+	}
 }
 
 void ENEMY_GROUND::Enemy_Ground_CreateWeapon()
