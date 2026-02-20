@@ -8,7 +8,8 @@
 #include	"model.h"
 using namespace DirectX;
 
-
+//bossmonstar用アニメーション
+#include "BossAnimation.h"
 
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
@@ -58,7 +59,7 @@ private:
 
 	 float m_Hp;
 
-	 
+	 BOSSANIMATION m_BossAnim;		//アニメーションデータ
 
 private:
 	void	Bossmonster_Idle();
@@ -120,6 +121,8 @@ public:
 
 	// 追加: スポナーを設定
 	void SetEnemySpawner(ENEMYSPAWNER* spawner) { m_pSpawner = spawner; }
+
+	void BossHeadAnimation_Update(XMFLOAT3 playerPos) { m_BossAnim.BossAnimation_UpdateHead(playerPos); };// 追加: ボスの頭部アニメーションを更新する関数
 };
 
 
