@@ -9,6 +9,8 @@
 #include "parts.h"
 #include "model.h"
 
+#define BOSS_ANIM_SPEED (1.0f / 3.0f)  // 1.0fÇ≈60f=1ïbÅA1/3Ç≈180f=3ïb
+
 enum BOSS_ANIMATION_STATE
 {
 	BOSS_STATE_NONE = 0,	//í èÌ
@@ -85,6 +87,7 @@ public:
 	bool GetBossAnimLoop() { return m_AnimLoop; }
 
 };
+
 
 
 

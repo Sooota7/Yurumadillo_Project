@@ -134,7 +134,7 @@ void BOSSANIMATION::BossAnimation_Update(XMFLOAT3 bossPos,XMFLOAT3 bossRot)
 		}*/
 	}
 
-	m_FrameCnt += 1.0f;
+	m_FrameCnt += BOSS_ANIM_SPEED; //ボスのアニメーションだけスピードを変えるため
 	if (m_FrameCnt >= 60.0f)
 	{
 		//一旦ループ前提
@@ -378,32 +378,32 @@ void BOSSANIMATION::BossAnimation_Hokan(BOSS_ANIMATION_STATE state)
 void BOSSANIMATION::BossAnimation_SetAnimWait()
 {
 	{//head
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f,0.0f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f,0.0f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.15f, 0.0f }, { -2.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f, 0.3f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f, 0.15f, 0.0f }, { 2.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
-	{//body
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f,0.0f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f,-0.1f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,0.0f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f,-0.1f,0.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f,0.0f,0.0f });
+	{//body 
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f,-0.1f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,-0.2f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f,-0.1f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//right_arm
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,   { 0.0f,-2.0f,0.0f }, {0.0f,0.0f,35.0f});
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_RIGHT].SetInisFlame(14,  { 0.0f,-2.1f,0.0f }, { 0.0f,0.0f,45.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_RIGHT].SetInisFlame(29,  { 0.0f,-2.0f,0.0f }, { 0.0f,0.0f,35.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_RIGHT].SetInisFlame(44,  { 0.0f,-2.1f,0.0f }, { 0.0f,0.0f,45.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_RIGHT].SetInisFlame(59,  { 0.0f,-2.0f,0.0f }, { 0.0f,0.0f,35.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,-2.1f, 0.0f }, { 0.0f, 0.0f, 38.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-2.2f, 0.0f }, { 0.0f, 0.0f, 42.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-2.1f, 0.0f }, { 0.0f, 0.0f, 38.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
 	}
 	{//left_arm
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_LEFT].SetInisFlame(0,   { 0.0f,-2.0f,0.0f }, { 0.0f,0.0f,-35.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_LEFT].SetInisFlame(14,  { 0.0f,-2.1f,0.0f }, { 0.0f,0.0f,-45.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_LEFT].SetInisFlame(29,  { 0.0f,-2.0f,0.0f }, { 0.0f,0.0f,-35.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_LEFT].SetInisFlame(44,  { 0.0f,-2.1f,0.0f }, { 0.0f,0.0f,-45.0f });
-		m_BossAnim[BOSS_ANIMATION_STATE::BOSS_STATE_IDLE].m_Anim[BOSS_PARTS::BOSS_PARTS_ARM_LEFT].SetInisFlame(59,  { 0.0f,-2.0f,0.0f }, { 0.0f,0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-2.1f, 0.0f }, { 0.0f, 0.0f,-38.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-2.2f, 0.0f }, { 0.0f, 0.0f,-42.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-2.1f, 0.0f }, { 0.0f, 0.0f,-38.0f });
+		m_BossAnim[BOSS_STATE_IDLE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_IDLE);
@@ -413,16 +413,32 @@ void BOSSANIMATION::BossAnimation_SetAnimMove()
 {
 
 	{//head
-
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { -5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.3f, 0.0f }, { 5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f, 0.0f, 0.0f }, { -5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f, 0.3f, 0.0f }, { 5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { -5.0f, 0.0f, 0.0f });
 	}
 	{//body
-
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f,-3.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f,-0.3f, 0.0f }, { 0.0f, 0.0f, 3.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f,-3.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f,-0.3f, 0.0f }, { 0.0f, 0.0f, 3.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f,-3.0f });
 	}
 	{//right_arm
-
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-1.5f,-0.3f }, { 0.0f, 0.0f, 30.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,-2.5f, 0.3f }, { 0.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-1.5f,-0.3f }, { 0.0f, 0.0f, 30.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-2.5f, 0.3f }, { 0.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-1.5f,-0.3f }, { 0.0f, 0.0f, 30.0f });
 	}
 	{//left_arm
-
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.5f, 0.3f }, { 0.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-1.5f,-0.3f }, { 0.0f, 0.0f,-30.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-2.5f, 0.3f }, { 0.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-1.5f,-0.3f }, { 0.0f, 0.0f,-30.0f });
+		m_BossAnim[BOSS_STATE_MOVE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.5f, 0.3f }, { 0.0f, 0.0f,-50.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_MOVE);
@@ -466,16 +482,36 @@ void BOSSANIMATION::BossAnimation_SetAnimPhase01()
 void BOSSANIMATION::BossAnimation_SetAnimPhase02_01()
 {
 	{//head
-
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.5f, 0.0f }, { 10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(24, { 0.0f, 0.8f, 0.0f }, { 15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f,-0.3f, 0.0f }, { -15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(35, { 0.0f,-0.1f, 0.0f }, { -5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//body
-
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f, 0.3f, 0.0f }, { 8.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(24, { 0.0f, 0.5f, 0.0f }, { 12.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,-0.4f, 0.0f }, { -10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(35, { 0.0f,-0.2f, 0.0f }, { -3.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
-	{//right_arm
-
+	{//right_arm 
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f, 3.0f, 0.5f }, { 60.0f, 0.0f, 20.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(24, { 0.0f, 4.0f, 0.8f }, { 80.0f, 0.0f, 10.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-3.0f,-1.0f }, { -40.0f, 0.0f, 45.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(35, { 0.0f,-2.5f,-0.5f }, { -20.0f, 0.0f, 40.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-2.0f,-0.2f }, { -5.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
 	}
 	{//left_arm
-
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-1.0f, 0.0f }, { 0.0f, 0.0f,-70.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_PHASE02_01);
@@ -484,16 +520,36 @@ void BOSSANIMATION::BossAnimation_SetAnimPhase02_01()
 void BOSSANIMATION::BossAnimation_SetAnimPhase02_02()
 {
 	{//head
-
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.5f, 0.0f }, { 10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(24, { 0.0f, 0.8f, 0.0f }, { 15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f,-0.3f, 0.0f }, { 15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(35, { 0.0f,-0.1f, 0.0f }, { 5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//body
-
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f, 0.3f, 0.0f }, { 8.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(24, { 0.0f, 0.5f, 0.0f }, { 12.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,-0.4f, 0.0f }, { -10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(35, { 0.0f,-0.2f, 0.0f }, { -3.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//right_arm
-
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-1.0f, 0.0f }, { 0.0f, 0.0f, 70.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
 	}
-	{//left_arm
-
+	{//left_arm 
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f, 3.0f, 0.5f }, { 60.0f, 0.0f,-20.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(24, { 0.0f, 4.0f, 0.8f }, { 80.0f, 0.0f,-10.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-3.0f,-1.0f }, { -40.0f, 0.0f,-45.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(35, { 0.0f,-2.5f,-0.5f }, { -20.0f, 0.0f,-40.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-2.0f,-0.2f }, { -5.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_02].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_PHASE02_02);
@@ -502,16 +558,41 @@ void BOSSANIMATION::BossAnimation_SetAnimPhase02_02()
 void BOSSANIMATION::BossAnimation_SetAnimPhase03()
 {
 	{//head
-
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(7,  { 0.0f, 0.3f, 0.0f }, { 5.0f,-3.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.6f, 0.0f }, { 8.0f, 3.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(20, { 0.0f, 1.0f, 0.0f }, { 12.0f,-3.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(29, { 0.0f,-0.5f, 0.0f }, { -20.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(35, { 0.0f,-0.3f, 0.0f }, { -10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f,-0.1f, 0.0f }, { -3.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
-	{//body
-
+	{//body 
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f, 0.5f, 0.0f }, { 10.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(20, { 0.0f, 0.8f, 0.0f }, { 15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,-0.6f, 0.0f }, { -15.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(35, { 0.0f,-0.3f, 0.0f }, { -5.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f,-0.1f, 0.0f }, { -2.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//right_arm
-
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(10, { 0.0f, 1.0f, 0.3f }, { 40.0f, 0.0f, 20.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(20, { 0.0f, 5.0f, 1.0f }, { 90.0f, 0.0f, 5.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-4.0f,-1.5f }, { -50.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(35, { 0.0f,-3.0f,-0.8f }, { -25.0f, 0.0f, 45.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-2.5f,-0.3f }, { -10.0f, 0.0f, 38.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
 	}
-	{//left_arm
-
+	{//left_arm 
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(10, { 0.0f, 1.0f, 0.3f }, { 40.0f, 0.0f,-20.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(20, { 0.0f, 5.0f, 1.0f }, { 90.0f, 0.0f,-5.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-4.0f,-1.5f }, { -50.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(35, { 0.0f,-3.0f,-0.8f }, { -25.0f, 0.0f,-45.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-2.5f,-0.3f }, { -10.0f, 0.0f,-38.0f });
+		m_BossAnim[BOSS_STATE_PHASE03].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_PHASE03);
@@ -521,16 +602,37 @@ void BOSSANIMATION::BossAnimation_SetAnimDamage()
 {
 
 	{//head
-
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(5,  { 0.0f, 0.5f, 0.0f }, { 15.0f,-10.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(14, { 0.0f, 0.3f, 0.0f }, { 10.0f, 12.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(24, { 0.0f, 0.1f, 0.0f }, { 3.0f,-8.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(35, { 0.0f, 0.05f, 0.0f }, { 1.0f, 4.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f, 0.0f, 0.0f }, { 0.0f,-2.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
-	{//body
-
+	{//body 
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(5,  { 0.0f, 0.0f, 0.0f }, { 12.0f, 0.0f,-5.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f, 0.0f, 0.0f }, { 8.0f, 0.0f, 5.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f, 0.0f, 0.0f }, { 3.0f, 0.0f,-3.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
 	}
 	{//right_arm
-
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(5,  { 0.0f, 0.0f, 0.3f }, { 20.0f, 0.0f, 80.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,-0.5f, 0.1f }, { 10.0f, 0.0f, 60.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-1.5f, 0.0f }, { 3.0f, 0.0f, 45.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-1.8f, 0.0f }, { 1.0f, 0.0f, 38.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
 	}
 	{//left_arm
-
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(5,  { 0.0f, 0.0f,-0.3f }, { 20.0f, 0.0f,-80.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-0.5f, 0.1f }, { 10.0f, 0.0f,-60.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-1.5f, 0.0f }, { 3.0f, 0.0f,-45.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-1.8f, 0.0f }, { 1.0f, 0.0f,-38.0f });
+		m_BossAnim[BOSS_STATE_DAMAGE].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_DAMAGE);
@@ -539,17 +641,35 @@ void BOSSANIMATION::BossAnimation_SetAnimDamage()
 void BOSSANIMATION::BossAnimation_SetAnimDeath()
 {
 
-	{//head
-
+	{//head 
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(10, { 0.0f, 2.0f, 0.0f }, { 0.0f,-15.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(20, { 0.0f, 3.5f, 0.0f }, { 0.0f,-40.0f,-10.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(35, { 0.0f, 4.0f, 0.0f }, { 0.0f,-80.0f,-15.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(44, { 0.0f, 2.0f, 0.0f }, { -10.0f,-120.0f,-20.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(52, { 0.0f, 0.0f, 0.0f }, { -15.0f,-160.0f,-25.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_HEAD].SetInisFlame(59, { 0.0f,-1.0f, 0.0f }, { -20.0f,-200.0f,-30.0f });
 	}
 	{//body
-
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_BODY].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_BODY].SetInisFlame(14, { 0.0f,-0.3f, 0.0f }, { -5.0f, 0.0f,-3.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_BODY].SetInisFlame(29, { 0.0f,-0.8f, 0.0f }, { -12.0f, 0.0f,-5.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_BODY].SetInisFlame(44, { 0.0f,-1.5f, 0.0f }, { -20.0f, 0.0f,-8.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_BODY].SetInisFlame(59, { 0.0f,-2.5f, 0.0f }, { -30.0f, 0.0f,-10.0f });
 	}
-	{//right_arm
-
+	{//right_arm 
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f, 35.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(14, { 0.0f,-3.0f,-0.1f }, { -5.0f, 0.0f, 50.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(29, { 0.0f,-4.5f,-0.2f }, { -10.0f, 0.0f, 70.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(44, { 0.0f,-5.5f,-0.3f }, { -15.0f, 0.0f, 85.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f,-6.0f,-0.4f }, { -20.0f, 0.0f, 90.0f });
 	}
-	{//left_arm
-
+	{//left_arm 
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-3.0f, 0.1f }, { -5.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-4.5f, 0.2f }, { -10.0f, 0.0f,-70.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-5.5f, 0.3f }, { -15.0f, 0.0f,-85.0f });
+		m_BossAnim[BOSS_STATE_DEATH].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-6.0f, 0.4f }, { -20.0f, 0.0f,-90.0f });
 	}
 
 	BossAnimation_Hokan(BOSS_STATE_DEATH);
