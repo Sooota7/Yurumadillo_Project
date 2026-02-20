@@ -118,6 +118,11 @@ void	PLAYER::Player_Finalize()
 	for (int i = 0; i < PARTS_MAX; i++)
 	{
 		m_Parts[i].PartsFinalize();
+		if (m_ModelData[i] != NULL)
+		{
+			ModelRelease(m_ModelData[i]);
+			m_ModelData[i] = NULL;
+		}
 	}
 }
 
