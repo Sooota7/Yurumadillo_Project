@@ -151,6 +151,7 @@
     <ClCompile Include="Dictionary.cpp" />
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="EffectDamage.cpp" />
     <ClCompile Include="Ending.cpp" />
     <ClCompile Include="EnemyButterfly.cpp" />
     <ClCompile Include="EnemyGround.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="EffectDamage.h" />
     <ClInclude Include="Ending.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyButterfly.h" />
