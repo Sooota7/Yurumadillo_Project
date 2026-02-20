@@ -557,42 +557,46 @@ void BOSSANIMATION::BossAnimation_SetAnimDeath()
 
 void BOSSANIMATION::BossAnimation_UpdateHead(XMFLOAT3 playerPos)
 {
-	// 敵の向きをプレイヤーに向ける（Y軸に加えX軸回転＝ピッチを追加）
-	XMFLOAT3 direction;
-	XMFLOAT3 m_Position = m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].GetPartsPosition();
-	XMFLOAT3 m_Rotation = m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].GetPartsRotation();
 
-	direction.x = playerPos.x - m_Position.x;
-	direction.y = playerPos.y - m_Position.y; // プレイヤーの高さ差を使う
-	direction.z = playerPos.z - m_Position.z;
-
-	// 水平成分の長さ（XZ 平面）
-	float horiz = sqrtf((direction.x * direction.x) + (direction.z * direction.z));
-
-	// Yaw（Y軸回転）: 既存ロジックを保持
-	if (horiz != 0.0f)
+	if (m_State == BOSS_STATE_IDLE)
 	{
-		// 正規化して atan2 をとる (X,Z の順に atan2f を使っている既存の向きと一致)
-		float dirx = direction.x / horiz;
-		float dirz = direction.z / horiz;
-		// atan2f の引数は (x, z) なので既存の挙動をそのまま利用
-		float yaw = atan2f(dirx, dirz);
+		// 敵の向きをプレイヤーに向ける（Y軸に加えX軸回転＝ピッチを追加）
+		XMFLOAT3 direction;
+		XMFLOAT3 m_Position = m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].GetPartsPosition();
+		XMFLOAT3 m_Rotation = m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].GetPartsRotation();
 
-		// [-π, π] に正規化
-		if (yaw > XM_PI) yaw -= XM_2PI;
-		if (yaw < -XM_PI) yaw += XM_2PI;
+		direction.x = playerPos.x - m_Position.x;
+		direction.y = playerPos.y - m_Position.y; // プレイヤーの高さ差を使う
+		direction.z = playerPos.z - m_Position.z;
 
-		m_Rotation.y = yaw;
+		// 水平成分の長さ（XZ 平面）
+		float horiz = sqrtf((direction.x * direction.x) + (direction.z * direction.z));
 
-		// Pitch（X軸回転）: プレイヤーの上下位置に応じて上下を向く
-		// Pitch
-		float pitch = atan2f(direction.y, horiz);
-		m_Rotation.x = -pitch;   // 上下逆なら外す
+		// Yaw（Y軸回転）: 既存ロジックを保持
+		if (horiz != 0.0f)
+		{
+			// 正規化して atan2 をとる (X,Z の順に atan2f を使っている既存の向きと一致)
+			float dirx = direction.x / horiz;
+			float dirz = direction.z / horiz;
+			// atan2f の引数は (x, z) なので既存の挙動をそのまま利用
+			float yaw = atan2f(dirx, dirz);
 
+			// [-π, π] に正規化
+			if (yaw > XM_PI) yaw -= XM_2PI;
+			if (yaw < -XM_PI) yaw += XM_2PI;
+
+			m_Rotation.y = yaw;
+
+			// Pitch（X軸回転）: プレイヤーの上下位置に応じて上下を向く
+			// Pitch
+			float pitch = atan2f(direction.y, horiz);
+			m_Rotation.x = -pitch;   // 上下逆なら外す
+
+		}
+
+		// 更新を反映
+		m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].SetPartsRotation(m_Rotation);
 	}
-
-	// 更新を反映
-	m_Parts[BOSS_PARTS::BOSS_PARTS_HEAD].SetPartsRotation(m_Rotation);
 }
 
 XMFLOAT3 BOSSANIMATION::BossAnimation_AnimationPositiion(BOSS_ANIMATION_STATE state, BOSS_PARTS part, PARTS* parts, XMFLOAT3 pos, XMFLOAT3 rot, int frame)
