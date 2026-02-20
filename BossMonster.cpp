@@ -24,12 +24,12 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	float downSize = 10.0f;
 
-	m_Position = XMFLOAT3(7.0f, 10.0f, 60.0f);//ボスの位置　モデルにあわせて調整
+	m_Position = XMFLOAT3(7.0f, 7.0f, 60.0f);//ボスの位置　モデルにあわせて調整
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
 
-	m_Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);//ボスの大きさ　モデルにあわせて調整	
+	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);//ボスの大きさ　モデルにあわせて調整	
 
 
 	m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
@@ -56,33 +56,67 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 		image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
-	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
-	m_Model[2] = ModelLoad("asset\\model\\test.fbx");
-	m_Model[3] = ModelLoad("asset\\model\\test.fbx");
-	m_Model[4] = ModelLoad("asset\\model\\test.fbx");
+	//m_Model[1] = ModelLoad("asset\\model\\test.fbx");
+	//m_Model[2] = ModelLoad("asset\\model\\test.fbx");
+	//m_Model[3] = ModelLoad("asset\\model\\test.fbx");
+	//m_Model[4] = ModelLoad("asset\\model\\test.fbx");
 
 	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 	{
 		m_BossObjs[i].BossObj_Initialize(pDevice, pContext);
 		m_BossObjs[i].SetActive(false);
 	}
+
+	m_BossAnim.BossAnimation_Initialize(pDevice, pContext);//アニメーションの初期化
 	
 }
 void	BOSSMONSTER::Bossmonster_Finalize()
 {
-	for (int i = 0; i < 4; i++) {
+	/*for (int i = 0; i < 4; i++) {
 		ModelRelease(m_Model[i+1]);
-	}
+	}*/
 
 	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 	{
 		m_BossObjs[i].BossObj_Finalize();
 	}
+
+	m_BossAnim.BossAnimation_Finalize();//アニメーションの終了処理
 }
 
 
 void	BOSSMONSTER::Bossmonster_Update()
 {
+	//最初にボスのstateによってアニメーションを更新する
+	switch (m_State)
+	{
+	case BOSSMONSTER_STATE_IDLE:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_IDLE);
+		break;
+	case BOSSMONSTER_STATE_PHASE1:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_PHASE01);
+		break;
+	case BOSSMONSTER_STATE_PHASE2_1:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_PHASE02_01);
+		break;
+	case BOSSMONSTER_STATE_PHASE2_2:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_PHASE02_02);
+		break;
+	case BOSSMONSTER_STATE_PHASE3:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_PHASE03);
+		break;
+	case BOSSMONSTER_STATE_DEATH:
+		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_DEATH);
+		break;
+	case BOSSMONSTER_STATE_END:
+		break;
+	default:
+		break;
+	}
+
+	m_BossAnim.BossAnimation_Update(m_Position, m_Rotation);//アニメーション更新
+
+
 	switch (m_State)
 	{
 	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE:
@@ -126,54 +160,29 @@ void	BOSSMONSTER::Bossmonster_Update()
 }
 void	BOSSMONSTER::Bossmonster_Draw()
 {
-	//ワールド行列作成
-	XMMATRIX	scale = XMMatrixScaling(
-		m_Scaling.x,
-		m_Scaling.y,
-		m_Scaling.z);
-	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
-		m_Rotation.x,
-		m_Rotation.y,
-		m_Rotation.z);
-	XMMATRIX	translation = XMMatrixTranslation(
-		m_Position.x,
-		m_Position.y,
-		m_Position.z);
-	XMMATRIX	world = scale * rotation * translation;
-
-	//変換行列作成
-	XMMATRIX	view = GetViewMatrix();
-	XMMATRIX	projection = GetProjectionMatrix();
-	XMMATRIX	wvp = world * view * projection;
-
-	//シェーダーへ行列をセット
-	Shader_SetWorldMatrix(world);
-	Shader_SetMatrix(wvp);
-
 	
 
 		//モデルの描画リクエスト
 		switch (m_State)
 		{
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE:
-			ModelDraw(m_Model[1]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE1:
-			ModelDraw(m_Model[2]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_1:
-			ModelDraw(m_Model[3]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_2:
-			ModelDraw(m_Model[3]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE3:
-			ModelDraw(m_Model[4]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
 		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_DEATH:
-			//ModelDraw(m_Model[4]);
+			m_BossAnim.BossAnimation_Draw();
 			break;
-		
 		}
 		for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 		{

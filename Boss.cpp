@@ -120,6 +120,8 @@ void BOSS::Boss_Update()
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 	m_BossMonster.Bossmonster_Update();
 
+	m_BossMonster.BossHeadAnimation_Update(m_Player.GetPlayerPosition()); // 追加: ボスの頭部アニメーションを更新
+
 	m_PlayerUI.Update();
 	m_BombUI.Update();
 	m_TargetUI.Update();
