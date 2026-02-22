@@ -91,25 +91,7 @@ void BACKGROUND::SetBackground(FIELD_NO fn)
 {
 	switch (fn)
 	{
-	case FIELD_NO::NO_1: // 城
-		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
-		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
-
-		g_Background.Speed = 0.0f;
-
-		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
-		break;
-	case FIELD_NO::NO_2: // ダンジョン
-		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
-		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
-
-		g_Background.Speed = 0.0f;
-
-		g_Background.Model = ModelLoad("asset\\model\\sky_teaparty02.fbx");
-		break;
-	case FIELD_NO::NO_3: // きのこ
+	case FIELD_NO::NO_1: // きのこ
 		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
 		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
@@ -118,7 +100,7 @@ void BACKGROUND::SetBackground(FIELD_NO fn)
 
 		g_Background.Model = ModelLoad("asset\\model\\sky_kinoko11.fbx");
 		break;
-	case FIELD_NO::NO_4: // ダンジョン
+	case FIELD_NO::NO_2: // ダンジョン
 		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
 		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
@@ -126,6 +108,40 @@ void BACKGROUND::SetBackground(FIELD_NO fn)
 		g_Background.Speed = 0.0f;
 
 		g_Background.Model = ModelLoad("asset\\model\\sky_dungeon.fbx");
+		break;
+	case FIELD_NO::NO_3: // きのこ
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_dungeon.fbx");
+		break;
+	case FIELD_NO::NO_4: // お茶会
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_teaparty02.fbx");
+	case FIELD_NO::NO_5:
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
+	case FIELD_NO::NO_6:
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
 	default:
 		break;
 	}
