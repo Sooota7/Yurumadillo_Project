@@ -3,7 +3,7 @@
 void EffectDamage::SpawnEffectDamage(XMFLOAT3& worldPos)
 {
 
-    int emit = (int)RandRange(8.0f, 10.0f); // 8〜14 個
+    int emit = (int)RandRange(4.0f, 6.0f); // 8〜14 個
     if (emit < 1) { emit = 1; }
     if (emit > 14) { emit = 14; }
 
@@ -30,13 +30,13 @@ void EffectDamage::SpawnEffectDamage(XMFLOAT3& worldPos)
         // 発生位置：基準位置の少し上・前にバラす（オブジェクト種別に応じて調整可）
         XMFLOAT3 pos = worldPos;
         pos.y += RandRange(0.20f, 0.60f);
-        pos.z += RandRange(0.10f, 0.40f);
+        pos.z += RandRange(-0.40f, 0.40f);
         p->pos = pos;
 
         // 初速：
-        p->vel.x = RandRange(-0.1f, 0.1f);
-        p->vel.y = RandRange(0.05f, 0.1f);
-        p->vel.z = RandRange(-0.1f, 0.1f);
+        p->vel.x = RandRange(-0.035f, 0.035f);
+        p->vel.y = RandRange(0.01f, 0.025f);
+        p->vel.z = RandRange(-0.035f, 0.035f);
 
         // サイズ：0.20〜0.8
         float s = RandRange(0.20f, 0.8f);
@@ -46,19 +46,19 @@ void EffectDamage::SpawnEffectDamage(XMFLOAT3& worldPos)
         float g = RandRange(0.75f, 1.00f);
         float b = RandRange(0.75f, 1.00f);
         float a = RandRange(0.50f, 0.80f);
-        p->color = XMFLOAT4(1.0f, g, b, a);
+        p->color = XMFLOAT4(1.0f, g, b, 1.0f);
 
         // 寿命：
         p->life = 0;
-        p->lifeMax = (int)RandRange(30.0f, 60.0f);
+        p->lifeMax = (int)RandRange(36.0f, 60.0f);
     }
 
 }
 
 void EffectDamage::EffectDamage_Update()
 {
-    const float gravityY = -0.0020f; // 弱い落下。ふわっとさせるなら 0
-    const float damping = 0.92f;    // 速度減衰
+    const float gravityY = 0.0008f; // 弱い落下。ふわっとさせるなら 0
+    const float damping = 0.98f;    // 速度減衰
 
     for (int i = 0; i < MAX_PARTICLE; i++)
     {
