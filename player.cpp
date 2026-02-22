@@ -92,14 +92,9 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//爆弾変身フラグ
 	TransBombFlag = false;
 
-	//テクスチャ画像読み込み
-	TexMetadata		metadata;
-	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\diamond.png",
-		WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
-	CreateShaderResourceView(g_pDevice, image.GetImages(),
-		image.GetImageCount(), metadata, &g_Texture);
-	assert(g_Texture);//読み込み失敗時にダイアログを表示
+	// ダメージフラグ
+	isDamage = false;
+	DamageCount = 0;
 
 	for (int i = 0; i < PLAYER_STATE::PLAYER_STATE_MAX; i++)
 	{
@@ -223,19 +218,30 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		}
 	}
 
-	/*{
+	if (isDamage)
+	{
 		XMFLOAT3 pos = m_Position;
 		pos.y += 1.0f;
+		pos.z += 1.0f;
 		XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
-		XMFLOAT4 col = XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f);
+		XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ( (float)DamageCount / 60.0f));
 		int bno = 1;
 		int wc = 1;
 		int hc = 1;
 
-		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::TEST);
+		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::DAMAGE);
 		billboardManager->Register(bb);
-	}*/
 
+		if (DamageCount < 60)
+		{
+			DamageCount++;
+		}
+		else
+		{
+			DamageCount = 0;
+			isDamage = false;
+		}
+	}
 }
 
 void	PLAYER::Player_Idle()

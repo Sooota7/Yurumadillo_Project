@@ -81,6 +81,8 @@ private:
 	 bool BalloomUp;
 	 bool BalloomNow;
 
+	 bool isDamage;			// プレイヤーステートにDAMAGEを作ってもいい
+	 int DamageCount;			
 private:
 	void	Player_Idle();
 	void	Player_Move();
@@ -142,6 +144,8 @@ public:
 
 	void SetPlayerTransBombFlag(bool have) { TransBombFlag = have; };
 	bool GetPlayerTransBombFlag() { return TransBombFlag; };
+
+	void SetIsDamage(bool set) { isDamage = set; };
 
 	PLAYER_STATE GetPlayerState() { return m_State; };
 

@@ -39,6 +39,13 @@ void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 				image.GetImageCount(), metadata, &m_pSRV[i]);
 			assert(m_pSRV[i]);
 			break;
+		case BILLBOARD_TEXTURE::DAMAGE:
+			// テクスチャ読み込み
+			LoadFromWICFile(L"Asset\\Texture\\Effect\\Player_Effect_Damage.png", WIC_FLAGS_NONE, &metadata, image);
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_pSRV[i]);
+			assert(m_pSRV[i]);
+			break;
 		default:
 			break;
 		}
@@ -84,6 +91,9 @@ void BillboardManager::Draw()
 			break;
 		case BILLBOARD_TEXTURE::EXPLOSION:
 			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::EXPLOSION]);
+			break;
+		case BILLBOARD_TEXTURE::DAMAGE:
+			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::DAMAGE]);
 			break;
 		default:
 			delete m_pBillboard[i];
