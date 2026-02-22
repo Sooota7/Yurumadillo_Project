@@ -80,7 +80,7 @@ enum GIMMICK_GATE_TYPE
 	D,
 };*/
 
-const int FIELD_HEIGHT_Y{ 3 };
+const int FIELD_HEIGHT_Y{ 5 };
 const int FIELD_WIDTH_X{ 20 };
 const int FIELD_WIDTH_Z{ 30 };
 
