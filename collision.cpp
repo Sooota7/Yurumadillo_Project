@@ -2706,9 +2706,10 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 
 				// テスト
 				if (hit && !Weapon[i].WeaponSource_GetIsDamage()
-					&& !Weapon[i].WeaponSource_GetState() == WEAPON_NONE)
+					&& Weapon[i].WeaponSource_GetState() != WEAPON_NONE)
 				{
 					pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+					pPlayer->SetIsDamage(true);
 					Weapon[i].WeaponSource_SetIsDamage(true);
 				}
 			}
@@ -2788,9 +2789,10 @@ float COLLISION::PlayerWeaponCollision(PLAYER* pPlayer, WEAPON* pWeapon)
 
 				// テスト
 				if (hit && !GroundWeapon[i].Weapon_EG_GetIsDamage()
-					&& !GroundWeapon[i].Weapon_EG_GetState() == EG_WEAPON_NONE)
+					&& GroundWeapon[i].Weapon_EG_GetState() != EG_WEAPON_NONE)
 				{
 					pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+					pPlayer->SetIsDamage(true);
 					GroundWeapon[i].Weapon_EG_SetIsDamage(true);
 				}
 

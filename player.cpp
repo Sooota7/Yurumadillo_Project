@@ -95,6 +95,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	// ダメージフラグ
 	isDamage = false;
 	DamageCount = 0;
+	m_EDamage.EffectDamage_Initialize();
 
 	for (int i = 0; i < PLAYER_STATE::PLAYER_STATE_MAX; i++)
 	{
@@ -169,7 +170,12 @@ void	PLAYER::Player_Update()
 
 	Player_SetParts();
 
-
+	m_EDamage.EffectDamage_Update();
+	if (isDamage)
+	{
+		m_EDamage.SpawnEffectDamage(m_Position);
+		isDamage = false;
+	}
 }
 
 void	PLAYER::Player_Draw(BillboardManager* billboardManager)
@@ -218,30 +224,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		}
 	}
 
-	if (isDamage)
-	{
-		XMFLOAT3 pos = m_Position;
-		pos.y += 1.0f;
-		pos.z += 1.0f;
-		XMFLOAT2 size = XMFLOAT2(0.5f, 0.5f);
-		XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f - ( (float)DamageCount / 60.0f));
-		int bno = 1;
-		int wc = 1;
-		int hc = 1;
-
-		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::DAMAGE);
-		billboardManager->Register(bb);
-
-		if (DamageCount < 60)
-		{
-			DamageCount++;
-		}
-		else
-		{
-			DamageCount = 0;
-			isDamage = false;
-		}
-	}
+	m_EDamage.EffectDamage_Draw(billboardManager);
 }
 
 void	PLAYER::Player_Idle()
