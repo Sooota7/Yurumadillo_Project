@@ -10,6 +10,7 @@ using namespace DirectX;
 #include	"parts.h"
 
 #include	"billboardManager.h"
+#include	"EffectDamage.h"
 
 #define PLAYER_SPEEDMAX (0.1f)      //
 #define PLAYER_RADIUS (0.2f)
@@ -82,7 +83,8 @@ private:
 	 bool BalloomNow;
 
 	 bool isDamage;			// プレイヤーステートにDAMAGEを作ってもいい
-	 int DamageCount;			
+	 int DamageCount;
+	 EffectDamage m_EDamage;
 private:
 	void	Player_Idle();
 	void	Player_Move();
