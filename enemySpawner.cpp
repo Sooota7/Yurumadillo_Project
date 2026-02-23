@@ -90,6 +90,8 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 					m_EnemyGround[c].SetEnemyGroundType(ENEMY_TYPE_GROUND);
 					c++;
 					MaxNum++;
+				default:
+					break;
 				}
 
 				

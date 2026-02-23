@@ -262,6 +262,112 @@ float	COLLISION::EnemyFieldCollision(ENEMYSPAWNER* pEnemy, MAPDATA* pField)
 	}
 
 	//=============================================================
+	// EnemyButterflyの処理
+	//=============================================================
+
+	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
+	for (int i = 0; i < Enemy_Spawner_MAX; i++)
+	{
+		if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+		{
+			XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
+			XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+			MAP* Map = pField->GetFieldMap();	// マップ
+			int			l = 0;
+
+			// 全てのブロックをチェック
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+				float BoxTop;	// BOXの+Y面の座標
+
+				XMFLOAT3 mapPos = Map[l].MapData_GetPosition();
+
+				switch (Map[l].MapData_GetNo())
+				{
+
+				default:
+					BoxTop = mapPos.y + BOX_RADIUS;	// 普通のBOX
+					break;
+				}
+
+				// 壁としての判定処理
+				if (mapPos.y - BOX_RADIUS < EnemyPos.y &&
+					EnemyPos.y < BoxTop - 0.1f)
+				{
+					if (mapPos.z - BOX_RADIUS < EnemyPos.z &&
+						EnemyPos.z < mapPos.z + BOX_RADIUS)
+					{
+						if (mapPos.x - BOX_RADIUS < EnemyPos.x + BALL_RADIUS &&
+							EnemyPos.x < mapPos.x - BOX_RADIUS)
+						{//BOXの-X面にぶつかったので座標の補正
+							EnemyPos.x += (mapPos.x - BOX_RADIUS) - (EnemyPos.x + BALL_RADIUS);
+							EnemyVel.x *= 0.0f; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_3;
+						}
+						else if (mapPos.x + BOX_RADIUS > EnemyPos.x - BALL_RADIUS &&
+							EnemyPos.x > mapPos.x + BOX_RADIUS)
+						{//BOXの+X面にぶつかった
+							EnemyPos.x += (mapPos.x + BOX_RADIUS) - (EnemyPos.x - BALL_RADIUS);
+							EnemyVel.x *= 0.0f;
+							hit = COLLISION_HIT::HIT_WALL_1;
+						}
+					}
+					else if (mapPos.x - BOX_RADIUS < EnemyPos.x &&
+						EnemyPos.x < mapPos.x + BOX_RADIUS)
+					{
+						if (mapPos.z - BOX_RADIUS < EnemyPos.z + BALL_RADIUS &&
+							EnemyPos.z < mapPos.z - BOX_RADIUS)
+						{//BOXの-Z面にぶつかったので座標の補正
+							EnemyPos.z += (mapPos.z - BOX_RADIUS) - (EnemyPos.z + BALL_RADIUS);
+							EnemyVel.z *= 0.0f; //移動ベクトルの反転
+							hit = COLLISION_HIT::HIT_WALL_0;
+						}
+						else if (mapPos.z + BOX_RADIUS > EnemyPos.z - BALL_RADIUS &&
+							EnemyPos.z > mapPos.z + BOX_RADIUS)
+						{//BOXの+Z面にぶつかった
+							EnemyPos.z += (mapPos.z + BOX_RADIUS) - (EnemyPos.z - BALL_RADIUS);
+							EnemyVel.z *= 0.0f;
+							hit = COLLISION_HIT::HIT_WALL_2;
+						}
+					}
+				}
+				//地面として判定処理
+				else
+				{
+					if (mapPos.z - BOX_RADIUS < EnemyPos.z &&
+						EnemyPos.z < mapPos.z + BOX_RADIUS)
+					{
+						if (mapPos.x - BOX_RADIUS < EnemyPos.x &&
+							EnemyPos.x < mapPos.x + BOX_RADIUS)
+						{
+							if (mapPos.y - BOX_RADIUS < EnemyPos.y + BALL_RADIUS &&
+								EnemyPos.y < mapPos.y - BOX_RADIUS)
+							{//BOXの-X面にぶつかったので座標の補正
+								EnemyPos.y += (mapPos.y - BOX_RADIUS) - (EnemyPos.y + BALL_RADIUS);
+								EnemyVel.y *= -COE; //移動ベクトルの反転
+								//hit = 
+							}
+							else if (BoxTop > EnemyPos.y - BALL_RADIUS &&
+								EnemyPos.y > BoxTop)
+							{//BOXの+X面にぶつかった
+								EnemyPos.y += (BoxTop)-(EnemyPos.y - BALL_RADIUS);
+								EnemyVel.y = EnemyVel.y * (-COE * 1.0f);
+								hit = COLLISION_HIT::HIT_GROUND;
+							}
+						}
+					}
+				}
+
+
+				enemyB[i].SetEnemyPosition(EnemyPos);
+				enemyB[i].SetEnemyVelocity(EnemyVel);
+
+				l++;
+			}
+		}
+	}
+
+	//=============================================================
 	// EnemyGroundの処理
 	//=============================================================
 

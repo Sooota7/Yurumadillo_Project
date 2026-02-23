@@ -26,7 +26,7 @@ using namespace DirectX;
 #define PLAYER_BALLOON_SPEED (0.1)        //風船の上昇速度
 #define PLAYER_BALLOON_FALLSPEED (-0.05f)   //風船の下降速度
 #define PLAYER_START_POS_X (8.0f)     //プレイヤーの初期位置X
-#define PLAYER_START_POS_Y (2.0f)     //プレイヤーの初期位置Y
+#define PLAYER_START_POS_Y (5.0f)     //プレイヤーの初期位置Y
 #define PLAYER_START_POS_Z (0.0f)     //プレイヤーの初期位置Z
 
 //プレイヤーのステート

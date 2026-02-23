@@ -22,6 +22,7 @@ static int GetMap(int x, int y, int z)
 
 		break;
 	case(3):
+		return Field_pos_high2[y][x];
 		return 0;
 		break;
 	case(4):
