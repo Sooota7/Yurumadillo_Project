@@ -27,6 +27,7 @@ class WEAPONENEMYGROUND
 private:
 
 	XMFLOAT3			m_Position;		//爆弾の座標
+	XMFLOAT3			m_Rotation;		//爆弾の座標
 	XMFLOAT3			m_Velocity;		//速度
 	XMFLOAT3			m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);	//落下速度
 	float				m_Count;		//爆発までのカウント
@@ -47,6 +48,9 @@ public:
 
 	void		Weapon_EG_SetPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3	Weapon_EG_GetPosition() { return m_Position; };
+
+	void		Weapon_EG_SetRotation(XMFLOAT3 pos) { m_Rotation = pos; };
+	XMFLOAT3	Weapon_EG_GetRotation() { return m_Rotation; };
 
 	void		Weapon_EG_SetVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
 	XMFLOAT3	Weapon_EG_GetVelocity() { return m_Velocity; };

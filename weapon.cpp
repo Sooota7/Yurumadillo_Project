@@ -52,6 +52,7 @@ void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		}
 	}
 
+	m_EG_Model = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundWeapon.fbx");
 
 	/*for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
@@ -181,6 +182,7 @@ void WEAPON::Weapon_Draw(void)
 	{
 
 		XMFLOAT3 weaponPos = m_EG_Weapon[i].Weapon_EG_GetPosition();
+		XMFLOAT3 weaponRot = m_EG_Weapon[i].Weapon_EG_GetRotation();
 
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
@@ -201,12 +203,11 @@ void WEAPON::Weapon_Draw(void)
 		//回転行列の作成
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
-			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
-			XMConvertToRadians(0.0f),
-			XMConvertToRadians(0.0f)
+			weaponRot.x,
+			weaponRot.y,
+			weaponRot.z
 		);
+
 		//ワールド行列の作成
 		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
 		//最終的な変換行列を作成
@@ -236,13 +237,13 @@ void WEAPON::Weapon_Draw(void)
 			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case EG_WEAPON_MOVE:
-			ModelDraw(m_Model[WEAPON_MOVE]);
+			ModelDraw(m_EG_Model);
 			break;
 		case EG_WEAPON_DIRECTION:
-			ModelDraw(m_Model[WEAPON_DIRECTION]);
+			ModelDraw(m_EG_Model);
 			break;
 		case EG_WEAPON_POWER:
-			ModelDraw(m_Model[WEAPON_POWER]);
+			ModelDraw(m_EG_Model);
 			break;
 		case EG_WEAPON_MAX:
 			break;

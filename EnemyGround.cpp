@@ -62,19 +62,19 @@ void ENEMY_GROUND::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 		switch (i)
 		{
 		case EG_PARTS_BODY:
-			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 0.3f, 0.0f));
+			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 0.7f, 0.0f));
 			break;
 		case EG_PARTS_ARM_RIGHT:
-			m_EG_Parts[i].SetInisPosition(XMFLOAT3(-0.3f, 0.3f, 0.0f));
+			m_EG_Parts[i].SetInisPosition(XMFLOAT3(-0.6f, 0.9f, 0.0f));
 			break;
 		case EG_PARTS_ARM_LEFT:
-			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.3f, 0.3f, 0.0f));
+			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.7f, 0.9f, 0.0f));
 			break;
 		case EG_PARTS_LEG_RIGHT:
-			m_EG_Parts[i].SetInisPosition(XMFLOAT3(-0.2f, 0.0f, 0.0f));
+			m_EG_Parts[i].SetInisPosition(XMFLOAT3(-0.3f, 0.0f, 0.0f));
 			break;
 		case EG_PARTS_LEG_LEFT:
-			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.2f, 0.0f, 0.0f));
+			m_EG_Parts[i].SetInisPosition(XMFLOAT3(0.3f, 0.0f, 0.0f));
 			break;
 		default:
 			break;
