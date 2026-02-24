@@ -729,7 +729,7 @@ void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 
 			if ((currentPos.x == firstPos.x && currentPos.z == firstPos.z))
 			{
-				if (frameCnt == 180)
+				if (frameCnt == 240)
 				{
 					on = true;
 					turn = true;
@@ -743,7 +743,7 @@ void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 
 			if ((currentPos.x == targetPos.x && currentPos.z == targetPos.z))
 			{
-				if (frameCnt == 180)
+				if (frameCnt == 240)
 				{
 					turn = false;
 					frameCnt = 0;
