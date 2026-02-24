@@ -194,6 +194,35 @@ int GetMap6(int x, int y, int z)
 
 }
 
+int GetMap_ENEMYLUSH(int x, int y, int z)
+{
+	switch (z)
+	{
+	case(0):
+		return EnemyLush_Pos_01[y][x];
+		break;
+	case(1):
+		return EnemyLush_Pos_02[y][x];
+		break;
+	case(2):
+		return EnemyLush_Pos_03[y][x];
+		break;
+	case(3):
+		return EnemyLush_Pos_04[y][x];
+		break;
+	case(4):
+		return EnemyLush_Pos_05[y][x];
+		break;
+	case(5):
+		return EnemyLush_Pos_06[y][x];
+		break;
+	default:
+		break;
+	}
+
+
+}
+
 int CheckMap(int x, int y, int z, FIELD_NO no)
 {
 	switch (no)
@@ -217,6 +246,9 @@ int CheckMap(int x, int y, int z, FIELD_NO no)
 		break;
 	case NO_6:
 		return GetMap6(x, y, z);
+		break;
+	case NO_ENEMYLUSH:
+		return GetMap_ENEMYLUSH(x, y, z);
 		break;
 	default:
 		break;

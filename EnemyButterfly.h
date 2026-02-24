@@ -19,6 +19,7 @@ using namespace DirectX;
 //“Gi’±j‚Ìó‘Ô
 enum ENEMY_BUTTERFLY_STATE
 {
+	ENEMY_BUTTERFLY_STATE_NONE = -1,	//ó‘Ô‚È‚µ
 	ENEMY_BUTTERFLY_STATE_IDLE = 0,	//‰½‚à‚µ‚È‚¢
 	ENEMY_BUTTERFLY_STATE_MOVE,		//ˆÚ“®
 	ENEMY_BUTTERFLY_STATE_DIRECTION,	//•ûŒüŽwŽ¦

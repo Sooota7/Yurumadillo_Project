@@ -20,9 +20,24 @@ void GIMMICK_GATE::GimmickGate_Finalize(void)
 
 }
 
+bool test2 = false;
+float test = 0.0f;
+
 void GIMMICK_GATE::GimmickGate_Update(bool isOn)
 {
-	
+   /* if (test2) {
+        test += (1.0f / 60.0f);
+        m_Open = test;
+    }
+    else {
+		test -= (1.0f / 60.0f);
+        m_Open = test;
+    }
+
+    if (test > 1.0f || test < 0.0f) {
+        test2 = !test2;
+    }
+	*/
     float speed = 2.0f * (1.0f / 60.0f);
 
 
