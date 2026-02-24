@@ -56,12 +56,15 @@ static int GetMap2(int x, int y, int z)
 
 		break;
 	case(3):
-		return Gimmick_pos_high2[y][x];
-
+		//return Gimmick_pos_high2[y][x];
+		return 0;
 		break;
 	case(4):
-		return Gimmick_pos_high3[y][x];
-
+		//return Gimmick_pos_high3[y][x];
+		return 0;
+		break;
+	case(5):
+		return 0;
 		break;
 	default:
 		break;
