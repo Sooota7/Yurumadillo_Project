@@ -22,6 +22,16 @@ using namespace DirectX;
 #define		Enemy_Spawner_MAX	(200)
 
 
+class SPAWNPOSITION
+{
+private:
+	XMFLOAT3 m_Position;
+public:
+	void Set_SpawnPosition(XMFLOAT3 pos) { m_Position = pos; }
+	XMFLOAT3 Get_SpawnPosition() { return m_Position; }
+};
+
+
 class ENEMYSPAWNER
 {
 private:
@@ -62,12 +72,16 @@ public:
 	ENEMY_BUTTERFLY* EnemySpawner_GetEnemyButterfly();
 	ENEMY_GROUND* EnemySpawner_GetEnemyGround();		//’Ç‰Á
 
+	void	EnemySpawner_ResetEnemyNum() { MaxNum = 0; };
 	int		EnemySpawner_GetEnemyNum();
 	void	EnemySpawner_SetKillNum(int killnum);
+	void	EnemySpawner_ResetKillNum() { NowKillNum = 0; };
 	int		EnemySpawner_GetKillNum();
 
 	bool EnemySpawner_SpawnButterfly(const XMFLOAT3& pos);
 	bool EnemySpawner_SpawnNormal(const XMFLOAT3& pos);
+	void EnemySpawner_Spawn(XMFLOAT3 EL_Pos = XMFLOAT3{ 0.0f,0.0f,0.0f }, EL_E_TYPE EL_type = EL_NONE);
+
 };
 
 #endif // !_enemySpawner_H_

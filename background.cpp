@@ -142,6 +142,14 @@ void BACKGROUND::SetBackground(FIELD_NO fn)
 		g_Background.Speed = 0.0f;
 
 		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
+	case FIELD_NO::NO_ENEMYLUSH:
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
 	default:
 		break;
 	}

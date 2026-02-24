@@ -32,7 +32,7 @@ void ENEMY_BUTTERFLY::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	//m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	SetEnemyHp(100);
 
-	SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_MOVE);
+	SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_NONE);
 }
 
 void ENEMY_BUTTERFLY::Finalize()

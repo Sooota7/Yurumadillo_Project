@@ -19,6 +19,7 @@ using namespace DirectX;
 //“Gi’Êíj‚Ìó‘Ô
 enum ENEMY_NORMAL_STATE
 {
+	ENEMY_NORMAL_STATE_NONE = -1,	//ó‘Ô‚È‚µ
 	ENEMY_NORMAL_STATE_IDLE = 0,	//‰½‚à‚µ‚È‚¢
 	ENEMY_NORMAL_STATE_MOVE,		//ˆÚ“®
 	ENEMY_NORMAL_STATE_DIRECTION,	//•ûŒüŽwŽ¦

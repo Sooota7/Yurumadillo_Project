@@ -1021,6 +1021,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 							PlayerPos.y <= bombPos.y - BOMB_RADIUS)
 						{//BOXの-X面にぶつかったので座標の補正
 							//hit = 
+
 						}
 						else if (BoxTop >= PlayerPos.y - PLAYER_RADIUS &&
 							PlayerPos.y >= BoxTop)
@@ -1841,6 +1842,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 	ENEMY_NORMAL* enemy = pEnemy->EnemySpawner_GetEnemy();
 	ENEMY_BUTTERFLY* enemyB = pEnemy->EnemySpawner_GetEnemyButterfly();
+	ENEMY_GROUND* enemyG = pEnemy->EnemySpawner_GetEnemyGround();
 
 	{
 		for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -1906,14 +1908,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
 				{
 
-					if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					if (enemyB[l].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 					{//エネミーが存在するとき
 
-						XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
-						XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+						XMFLOAT3 EnemyPos = enemyB[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyB[l].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標
@@ -1938,13 +1940,69 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						//ステートを死亡に移動
 						if (test)
 						{
-							enemyB[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
+							enemyB[l].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
+							test = false;
 						}
 
 					}
 				}
 			}
+		}
 
+		// GroundEnemy
+		for (int i = 0; i < BOMB_NUM_MAX; i++)
+		{
+			//爆発したときのみ当たり判定を取る
+			if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_EXPLOSION)
+			{
+				int			l = 0;
+				bool test = false;
+
+				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				{
+
+					if (enemyG[i].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					{//エネミーが存在するとき
+
+						XMFLOAT3 EnemyPos = enemyG[i].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyG[i].GetEnemyVelocity();
+
+
+						float BoxTop;	// BOXの+Y面の座標
+
+						BoxTop = EnemyPos.y + BOX_RADIUS;
+
+						// 壁としての判定処理
+						if (BombPos.x + 1 > EnemyPos.x &&
+							BombPos.x - 1 < EnemyPos.x)
+						{
+							if (BombPos.y + 1 > EnemyPos.y &&
+								BombPos.y - 1 < EnemyPos.y)
+							{
+								if (BombPos.z + 1 > EnemyPos.z &&
+									BombPos.z - 1 < EnemyPos.z)
+								{
+									test = true;//死亡フラグ
+								}
+							}
+						}
+
+						//ステートを死亡に移動
+						if (test)
+						{
+							enemyG[i].SetEnemyGroundState(ENEMY_GROUND_STATE_DEAD);
+							test = false;
+						}
+
+					}
+				}
+			}
+		}
+		for (int i = 0; i < BOMB_NUM_MAX; i++)
+		{
 			//そくばく
 			//爆発したときのみ当たり判定を取る
 			if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
@@ -2004,19 +2062,67 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
 				{
 
-					if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					if (enemyB[l].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 					{//エネミーが存在するとき
 
-						XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
-						XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+						XMFLOAT3 EnemyPos = enemyB[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyB[l].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標
 
 						BoxTop = EnemyPos.y + BOX_RADIUS;
+
+						// 壁としての判定処理
+						if (BombPos.x + 1 > EnemyPos.x &&
+							BombPos.x - 1 < EnemyPos.x)
+						{
+							if (BombPos.y + 1 > EnemyPos.y &&
+								BombPos.y - 1 < EnemyPos.y)
+							{
+								if (BombPos.z + 1 > EnemyPos.z &&
+									BombPos.z - 1 < EnemyPos.z)
+								{
+									pBombSource[i].BombSource_SetCount(0.0f);
+									pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+								}
+							}
+						}
+
+
+					}
+				}
+			}
+		}
+
+		// あるいてる敵
+		for (int i = 0; i < BOMB_NUM_MAX; i++)
+		{
+			//爆発したときのみ当たり判定を取る
+			if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+			{
+				int			l = 0;
+				bool test = false;
+
+				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
+				{
+
+					if (enemyG[l].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					{//エネミーが存在するとき
+
+						XMFLOAT3 EnemyPos = enemyG[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyG[l].GetEnemyVelocity();
+
+
+						float BoxTop;	// BOXの+Y面の座標
+
+						BoxTop = EnemyPos.y + BOX_RADIUS+0.5f;
 
 						// 壁としての判定処理
 						if (BombPos.x + 1 > EnemyPos.x &&
@@ -2147,6 +2253,59 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 					}
 				}
 			}
+		}
+		// 浮いてる敵
+		for (int i = 0; i < BOMB_NUM_MAX; i++)
+		{
+			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();// マップ
+
+			//爆発したときのみ当たり判定を取る
+			if (RunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_EXPLOSION)
+			{
+				int			l = 0;
+				bool test = false;
+
+				XMFLOAT3 BombPos = RunBomb->Runbombsource_GetPosition();
+				XMFLOAT3 BombVel = RunBomb->Runbombsource_GetVelocity();
+
+				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				{
+
+					if (enemyG[i].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					{//エネミーが存在するとき
+
+						XMFLOAT3 EnemyPos = enemyG[i].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyG[i].GetEnemyVelocity();
+
+
+						float BoxTop;	// BOXの+Y面の座標
+
+						BoxTop = EnemyPos.y + BOX_RADIUS;
+
+						// 壁としての判定処理
+						if (BombPos.x + 1 > EnemyPos.x &&
+							BombPos.x - 1 < EnemyPos.x)
+						{
+							if (BombPos.y + 1 > EnemyPos.y &&
+								BombPos.y - 1 < EnemyPos.y)
+							{
+								if (BombPos.z + 1 > EnemyPos.z &&
+									BombPos.z - 1 < EnemyPos.z)
+								{
+									test = true;//死亡フラグ
+								}
+							}
+						}
+
+						//ステートを死亡に移動
+						if (test)
+						{
+							enemyG[i].SetEnemyGroundState(ENEMY_GROUND_STATE_DEAD);
+						}
+
+					}
+				}
+			}
 
 			//そくばく
 			//爆発したときのみ当たり判定を取る
@@ -2212,6 +2371,50 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 
 						XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
 						XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+
+
+						float BoxTop;	// BOXの+Y面の座標
+
+						BoxTop = EnemyPos.y + BOX_RADIUS;
+
+						// 壁としての判定処理
+						if (BombPos.x + 1 > EnemyPos.x &&
+							BombPos.x - 1 < EnemyPos.x)
+						{
+							if (BombPos.y + 1 > EnemyPos.y &&
+								BombPos.y - 1 < EnemyPos.y)
+							{
+								if (BombPos.z + 1 > EnemyPos.z &&
+									BombPos.z - 1 < EnemyPos.z)
+								{
+									RunBomb->Runbombsource_SetCount(0.0f);
+									RunBomb->Runbombsource_SetState(RUNBOMB_STATE::RUNBOMB_EXPLOSION);
+								}
+							}
+						}
+
+
+					}
+				}
+			}
+
+			//爆発したときのみ当たり判定を取る
+			if (RunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
+			{
+				int			l = 0;
+				bool test = false;
+
+				XMFLOAT3 BombPos = RunBomb->Runbombsource_GetPosition();
+				XMFLOAT3 BombVel = RunBomb->Runbombsource_GetVelocity();
+
+				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				{
+
+					if (enemyG[i].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					{//エネミーが存在するとき
+
+						XMFLOAT3 EnemyPos = enemyG[i].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyG[i].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標

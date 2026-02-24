@@ -20,7 +20,7 @@ void ENEMY_GROUND::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	//m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	SetEnemyHp(100);
 
-	SetEnemyGroundState(ENEMY_GROUND_STATE_IDLE);
+	SetEnemyGroundState(ENEMY_GROUND_STATE_NONE);
 
 	float downSize = 1.0f;
 
@@ -260,4 +260,5 @@ void ENEMY_GROUND::Enemy_Ground_Cool()
 
 void ENEMY_GROUND::Enemy_Ground_Dead()
 {
+	m_Type = ENEMY_TYPE_DEAD;
 }
