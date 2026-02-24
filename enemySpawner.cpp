@@ -79,7 +79,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 					a++;
 					MaxNum++;
 					break;
-				case 7:
+				case B:
 					m_EnemyButterfly[b].SetEnemyPosition(XMFLOAT3(l, q, i));
 					m_EnemyButterfly[b].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY);
 					b++;
