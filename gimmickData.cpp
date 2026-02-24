@@ -705,6 +705,8 @@ void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 		m_GimmickButton[i].GimmickButton_Update();
 	}
 
+	static int frameCnt = 0;
+	static bool turn = false;
 	// Field：必要ボタン数 1
 	for (int i = 0; i < m_FieldCount; i++)
 	{
@@ -717,6 +719,47 @@ void GIMMICK_DATA::Gimmick_Data_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 		{
 			on = true;
 		}
+
+		// チャンネル6以降は自動で動くフィールドにする
+		if (ch >= 6)
+		{
+			XMFLOAT3 currentPos = m_GimmickField[i].GimmickField_GetPosition();
+			XMFLOAT3 firstPos = m_GimmickField[i].GimmickField_GetFirstPosition();
+			XMFLOAT3 targetPos = m_GimmickField[i].GimmickField_GetTargetPosition();
+
+			if ((currentPos.x == firstPos.x && currentPos.z == firstPos.z))
+			{
+				if (frameCnt == 240)
+				{
+					on = true;
+					turn = true;
+					frameCnt = 0;
+				}
+				else
+				{
+					frameCnt++;
+				}
+			}
+
+			if ((currentPos.x == targetPos.x && currentPos.z == targetPos.z))
+			{
+				if (frameCnt == 240)
+				{
+					turn = false;
+					frameCnt = 0;
+				}
+				else
+				{
+					frameCnt++;
+				}
+			}
+
+			if (turn)
+			{
+				on = true;
+			}
+		}
+
 		m_GimmickField[i].GimmickField_Update(on); // on:動作中、off:停止
 	}
 

@@ -42,7 +42,7 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); load = true;//サウンドロード
 		break;
 	case SCENE_MENU:
-		g_BgmID = LoadAudio("asset\\Audio\\Menu_Test.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\menu.wav"); load = true;//サウンドロード
 		break;
 	case SCENE_TUTORIAL:
 		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
@@ -181,7 +181,7 @@ void	MANAGER::Manager_Update()
 
 	if (m_Fade.GetFadeState() == FADE_OUT && m_Fade.Fade_GetColorW() > 1.0f)
 	{
-		//Manager_BGM_Initialize(m_Fade.Fade_GetScene());
+		Manager_BGM_Initialize(m_Fade.Fade_GetScene());
 		SetScene(m_Fade.Fade_GetScene());
 	}
 

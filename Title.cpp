@@ -14,6 +14,7 @@
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
 static	ID3D11ShaderResourceView* g_TextureTag = NULL;	//テクスチャ１枚を表すオブジェクト
+static	ID3D11ShaderResourceView* g_TextureLogo = NULL;	//テクスチャ１枚を表すオブジェクト
 
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
@@ -31,13 +32,17 @@ void TITLE::Title_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	//テクスチャ読み込みなど
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\game_title_demo.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\title\\game_title.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
 
-	LoadFromWICFile(L"asset\\texture\\Press_B.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\title\\start_buttom.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_TextureTag);
 	assert(g_TextureTag);//読み込み失敗時にダイアログを表示
+
+	LoadFromWICFile(L"asset\\texture\\title\\title_logo.png", WIC_FLAGS_NONE, &metadata, image);
+	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_TextureLogo);
+	assert(g_TextureLogo);//読み込み失敗時にダイアログを表示
 
 	//フェードインのセット
 	XMFLOAT4	color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -56,6 +61,9 @@ void TITLE::Title_Finalize()
 	//テクスチャの解放など
 	SAFE_RELEASE(g_TextureTag);
 
+	//テクスチャの解放など
+	SAFE_RELEASE(g_TextureLogo);
+
 	UnloadAudio(g_SeID);//サウンドの解放
 
 
@@ -72,7 +80,7 @@ void TITLE::Title_Update()
 	}
 	if (FadeC < 0.0f)
 	{
-		FadeCP = 1.0f / 60.0f;
+		FadeCP = 1.0f / 90.0f;
 	}
 
 	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE))
@@ -151,9 +159,24 @@ void TITLE::Title_Draw()
 		//スプライト描画
 		SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
 		XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, FadeC };	//スプライトの色
-		XMFLOAT2 pos2 = { SCREEN_WIDTH / 2 - 50, SCREEN_HEIGHT / 2 + 200};
-		XMFLOAT2 size2 = { START_WIDTH, START_HEIGHT };
+		XMFLOAT2 pos2 = { SCREEN_WIDTH / 2, SCREEN_HEIGHT - 250};
+		XMFLOAT2 size2 = { (START_WIDTH+1)*3, (START_HEIGHT*3)*3 };
 		DrawSprite(pos2, size2, col2);//1枚絵を表示
+
+		//---------------------------------------------------
+	 
+		
+		//テクスチャをセット
+		g_pContext->PSSetShaderResources(0, 1, &g_TextureLogo);//g_Textureを使うように設定する
+
+		static XMFLOAT2 texcoord3 = { 0.0f, 0.0f };
+
+		//スプライト描画
+		SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
+		XMFLOAT4 col3 = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
+		XMFLOAT2 pos3 = { SCREEN_WIDTH / 2 - 170, SCREEN_HEIGHT / 2 - 100 };
+		XMFLOAT2 size3 = { (START_WIDTH + 1) * 3.3, (START_HEIGHT * 3) * 3.3 };
+		DrawSprite(pos3, size3, col3);//1枚絵を表示
 	}
 
 }

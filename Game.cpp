@@ -36,6 +36,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
+	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
@@ -82,6 +83,7 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 void GAME::Game_Finalize()
 {
+	m_GimmickData.Gimmick_Data_Finalize();
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -110,9 +112,21 @@ void GAME::Game_Update()
 	m_Player.Player_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
+	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Background.Background_Update();
 
-	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
+	collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
+	collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
+
+	collision.PlayerGimmickCollision(&m_Player, &m_GimmickData);
+	collision.EnemyGimmickCollision(&m_EnemyNormal, &m_GimmickData);
+	collision.BombGimmickCollision(&m_bomb, &m_GimmickData);
+
+	m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+	collision.PlayerGateCollision(&m_Player, &m_GimmickData);
+
+	collision.BombGateCollision(&m_bomb, &m_GimmickData);
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(),&m_EnemyNormal);
 	m_Goal.Goal_Update();
 	m_PlayerUI.Update();
@@ -201,6 +215,7 @@ void GAME::Game_Draw()
 	Camera_Draw();		//Drawの最初で呼ぶ！
 
 	m_Map.Field_Draw();
+	m_GimmickData.Gimmick_Data_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw(&m_BillboardManager);
@@ -227,7 +242,7 @@ void GAME::Game_Draw()
 
 void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
-
+	m_GimmickData.Gimmick_Data_Finalize();
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -247,6 +262,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
+	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);

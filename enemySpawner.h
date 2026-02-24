@@ -19,7 +19,7 @@ using namespace DirectX;
 
 // É}ÉNÉçíËã`
 
-#define		Enemy_Spawner_MAX	(100)
+#define		Enemy_Spawner_MAX	(200)
 
 
 class ENEMYSPAWNER
