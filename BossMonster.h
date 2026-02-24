@@ -15,51 +15,46 @@ using namespace DirectX;
 #define STOP_VELO (0.0002f)
 #define BOSSMONSTER_HP (100.0f)			 //HP
 
-// 攻撃待機時間
-#define BOSSMONSTER_IDLE_SECONDS (3)
-
-#define BOSSMONSTER_PHASE2_TIME (6) // フェーズ2_1継続時間（秒）
-
-// 撃破演出　(いらなければ1～2に設定する(爆弾の爆発すら見えずに移行してしまうから))
-#define BOSSMONSTER_DEATH_SECONDS (3)
+// フェーズ等
+#define BOSSMONSTER_IDLE_SECONDS (3)//攻撃待機
+#define BOSSMONSTER_PHASE2_TIME (6)
+#define BOSSMONSTER_DEATH_SECONDS (4.6)//撃破演出(合わせて調整)
 
 #define BOSS_OBJECT_MAX 3
 
-#include "enemySpawner.h" // 追加: スポーン用アクセス
-#include "BossObj.h"      // 追加: ボス攻撃オブジェクト
+#include "enemySpawner.h" // 参照: 敵生成用
+// forward declare BOMB to avoid heavy include in header
+class BOMB;
+#include "BossObj.h"      // 参照: ボス攻撃オブジェクト
 
-//ボスのステート
+// ステート
 enum BOSSMONSTER_STATE
 {
-	BOSSMONSTER_STATE_IDLE = 0,	//通常
-	BOSSMONSTER_STATE_PHASE1,		//フェーズ1
-	BOSSMONSTER_STATE_PHASE2_1,		//フェーズ2
-	BOSSMONSTER_STATE_PHASE2_2,		//フェーズ2
-	BOSSMONSTER_STATE_PHASE3,		//フェーズ3
-	BOSSMONSTER_STATE_DEATH,		//死
-	BOSSMONSTER_STATE_END,			//終了
-
+	BOSSMONSTER_STATE_IDLE = 0,
+	BOSSMONSTER_STATE_PHASE1,
+	BOSSMONSTER_STATE_PHASE2_1,
+	BOSSMONSTER_STATE_PHASE2_2,
+	BOSSMONSTER_STATE_PHASE3,
+	BOSSMONSTER_STATE_DEATH,
+	BOSSMONSTER_STATE_END,
 	BOSSMONSTER_STATE_MAX
 };
 
-
-
-//ボスのクラス
 class BOSSMONSTER
 {
 private:
-	XMFLOAT3	m_Position;	//ポジション
-	XMFLOAT3	m_Rotation;	//回転
-	XMFLOAT3	m_Scaling;	//大きさ
-	XMFLOAT3	m_Velocity;	//進行方向
-	XMFLOAT3	m_Acceleration;	// 加速
+	XMFLOAT3	m_Position;
+	XMFLOAT3	m_Rotation;
+	XMFLOAT3	m_Scaling;
+	XMFLOAT3	m_Velocity;
+	XMFLOAT3	m_Acceleration;
 
-	BOSSMONSTER_STATE	m_State;		//ステート
-	MODEL * m_Model[5];		//モデルデータ
+	BOSSMONSTER_STATE	m_State;
+	MODEL * m_Model[5];
 
-	 float m_Hp;
+	float m_Hp;
 
-	 BOSSANIMATION m_BossAnim;		//アニメーションデータ
+	BOSSANIMATION m_BossAnim;
 
 private:
 	void	Bossmonster_Idle();
@@ -69,25 +64,25 @@ private:
 	void    Bossmonster_Phase3();
 	void    Bossmonster_Death();
 
-	
-	
 	XMFLOAT3 m_LastPos;
 
-	// 追加: Idle 時のフレームカウンタ（60FPS 前提）
 	int m_IdleCounter;
-	 int deathCounter;
+	int deathCounter;
 	bool m_Phase2_1Fired = false;
-	bool m_Phase2_2Fired = false; // 後で使う
+	bool m_Phase2_2Fired = false;
 
-
-	// 追加: ENEMYSPAWNER への参照（フェーズで敵を生成するため）
+	// スポナー参照
 	ENEMYSPAWNER* m_pSpawner = nullptr;
-	// 追加: フェーズ1で一度だけスポーンするためのフラグ
-	bool m_Phase1Spawned = false;
 
-	// 追加: フェーズ2でスポーンする BOSSOBJ 配列
+	// Bomb (RunBomb) 参照（フェーズ3で横一列に生成）
+	BOMB* m_pBomb = nullptr;
+
+	// フェーズ3: そのフェーズ内で一度だけ生成するためのフラグ。
+	// フェーズから離れる（IDLE になる）際にリセットされ、次回 Phase3 に入るたびに再生成される。
+	bool m_Phase3Fired = false;
+
+	// BOSSOBJ
 	BOSSOBJ m_BossObjs[BOSS_OBJECT_MAX];
-	bool m_Phase2Spawned = false;
 
 public:
 	void	Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -114,15 +109,15 @@ public:
 
 	BOSSMONSTER* GetBossmonster();
 
-
 	BOSSOBJ* GetBossObjs() { return m_BossObjs; }
 
-
-
-	// 追加: スポナーを設定
+	// スポナーセット
 	void SetEnemySpawner(ENEMYSPAWNER* spawner) { m_pSpawner = spawner; }
 
-	void BossHeadAnimation_Update(XMFLOAT3 playerPos) { m_BossAnim.BossAnimation_UpdateHead(playerPos); };// 追加: ボスの頭部アニメーションを更新する関数
+	// Bomb をセット（BOSS 側で m_bomb を渡す）
+	void SetBomb(BOMB* bomb) { m_pBomb = bomb; }
+
+	void BossHeadAnimation_Update(XMFLOAT3 playerPos) { m_BossAnim.BossAnimation_UpdateHead(playerPos); };
 };
 
 

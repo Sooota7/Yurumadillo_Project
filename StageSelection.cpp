@@ -1,5 +1,3 @@
-
-
 //StageSelection.cpp
 #include	"Manager.h"
 #include	"sprite.h"
@@ -64,6 +62,7 @@ void STAGESELECTION::StageSelection_Initialize(ID3D11Device* pDevice, ID3D11Devi
 	assert(g_Texture[9]);//読み込み失敗時にダイアログを表示
 
 	stageselect = 0;
+	stagechangecounter = 0; // ← 初期化を追加
 
 	//フェードインのセット
 	XMFLOAT4	color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -83,102 +82,37 @@ void STAGESELECTION::StageSelection_Update()
 {
 	 claercount = m_Manager->GetClearCount();
 
-	 if (claercount == 1) //ステージ1個クリア 
+	 // フェード中はカウントしない（フェード完了後にカウント開始）
+	 if (m_Fade && m_Fade->GetFadeState() == FADE_NONE)
 	 {
-		 if ((Keyboard_IsKeyDownTrigger(KK_A) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_LEFT)) && stageselect > 0)
-		 {
-			 stageselect--;
-		 }
-		 else if ((Keyboard_IsKeyDownTrigger(KK_D) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_RIGHT)) && stageselect < 1)
-		 {
-			 stageselect++;
-		 }
-	 }
-	 else if (claercount == 2) //ステージ2個クリア 
-	 {
-		 if ((Keyboard_IsKeyDownTrigger(KK_A) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_LEFT)) && stageselect > 0)
-		 {
-			 stageselect--;
-		 }
-		 else if ((Keyboard_IsKeyDownTrigger(KK_D) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_RIGHT)) && stageselect < 2)
-		 {
-			 stageselect++;
-		 }
-	 }
-	 else if (claercount >= 3) //ステージ3個クリア 
-	 {
-		 if ((Keyboard_IsKeyDownTrigger(KK_A) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_LEFT)) && stageselect > 0)
-		 {
-			 stageselect--;
-		 }
-		 else if ((Keyboard_IsKeyDownTrigger(KK_D) || IsButtonTriggered(0, XINPUT_GAMEPAD_DPAD_RIGHT)) && stageselect < 3)
-		 {
-			 stageselect++;
-		 }
+		 stagechangecounter++;
 	 }
 
+	 // STAGE_CHANGE_TIME は秒なので、フレーム数に変換（想定フレームレート = 60fps）
+	 const int targetFrames = static_cast<int>(STAGE_CHANGE_TIME * 60.0f);
 
-	//キー入力チェック
-	//スタートボタンが押されたらシーンを切り替え
-	//フェード処理中はキーを受け付けない
-	//何ステージまでクリアしたかで選択可能なステージが変化
-
-	 if ((Keyboard_IsKeyDownTrigger(KK_ENTER) || IsButtonTriggered(0, XINPUT_GAMEPAD_A)) && (m_Fade->GetFadeState() == FADE_NONE))
+	 // フラグ代わりにフェードが開始されると GetFadeState() が FADE_OUT になるため、ここは一度だけ実行される
+	 if (stagechangecounter >= targetFrames && m_Fade && m_Fade->GetFadeState() == FADE_NONE)
 	 {
-		 if (stageselect == 0)
+		 XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
+		 SCENE targetScene = SCENE_GAME;
+
+		 switch (claercount)
 		 {
-			 //フェードアウトさせてシーンを切り替える
-			 XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-			 m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GAME);
+		 case 0: targetScene = SCENE_GAME; break;
+		 case 1: targetScene = SCENE_GIMMICK; break;
+		 case 2: targetScene = SCENE_ENEMYLUSH; break;
+		 case 3: targetScene = SCENE_BOSS; break;
+		 default: targetScene = SCENE_GAME; break;
 		 }
 
-		 if (stageselect == 1)
-		 {
-			 //フェードアウトさせてシーンを切り替える
-			 XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-			 m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GIMMICK);
-		 }
+		 m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, targetScene);
 
-		 if (stageselect == 2)
-		 {
-			 //フェードアウトさせてシーンを切り替える
-			 XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-			 m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_ENEMYLUSH);
-		 }
-
-		 if (stageselect == 3)
-		 {
-			 //フェードアウトさせてシーンを切り替える
-			 XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-			 m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_BOSS);
-		 }
+		 // 再発を防ぐためカウントをリセット（または必要なら別フラグを使う）
+		 stagechangecounter = 0;
 	 }
 
-	//if ((Keyboard_IsKeyDownTrigger(KK_D1)|| IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
-	//	&& (m_Fade->GetFadeState() == FADE_NONE)) //いつでも選択可能
-	//{
-	//	XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-	//	m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GAME);
-
-	//}
-	//else if ((Keyboard_IsKeyDownTrigger(KK_D2)|| IsButtonTriggered(0, XINPUT_GAMEPAD_B)) 
-	//	&& (m_Fade->GetFadeState() == FADE_NONE)&&claercount>=1) //1ステージクリアしたら解放 ギミックステージ
-	//{
-	//	XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-	//	m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_GIMMICK);
-	//}
-	//else if ((Keyboard_IsKeyDownTrigger(KK_D3)|| IsButtonTriggered(0, XINPUT_GAMEPAD_X)) 
-	//	&& (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 2) //2ステージクリアしたら解放　エネミーステージ
-	//{
-	//	XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-	//	m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_ENEMYLUSH);
-	//}
-	//else if ((Keyboard_IsKeyDownTrigger(KK_D4)|| IsButtonTriggered(0, XINPUT_GAMEPAD_Y)) 
-	//	&& (m_Fade->GetFadeState() == FADE_NONE) && claercount >= 3) //3ステージクリアしたら解放　ボスステージ
-	//{
-	//	XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-	//	m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_BOSS);
-	//}
+	
 
 }
 void STAGESELECTION::StageSelection_Draw()
@@ -208,48 +142,18 @@ void STAGESELECTION::StageSelection_Draw()
 	}
 	else if (claercount == 1)
 	{
-		if(stageselect==0)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[1]);//g_Textureを使うように設定する
-		}
-		else if(stageselect==1)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[2]);//g_Textureを使うように設定する
-		}
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[2]);//g_Textureを使うように設定する
+
 	}
 	else if (claercount == 2)
 	{
-		if (stageselect == 0)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[3]);//g_Textureを使うように設定する
-		}
-		else if (stageselect == 1)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[4]);//g_Textureを使うように設定する
-		}
-		else if (stageselect == 2)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[5]);//g_Textureを使うように設定する
-		}
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[5]);//g_Textureを使うように設定する
+
 	}
-	else if (claercount >= 3)
+	else if (claercount == 3)
 	{
-		if (stageselect == 0)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[6]);//g_Textureを使うように設定する
-		}
-		else if (stageselect == 1)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[7]);//g_Textureを使うように設定する
-		}
-		else if (stageselect == 2)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[8]);//g_Textureを使うように設定する
-		}
-		else if (stageselect == 3)
-		{
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture[9]);//g_Textureを使うように設定する
-		}
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[9]);//g_Textureを使うように設定する
+
 	}
 	
 

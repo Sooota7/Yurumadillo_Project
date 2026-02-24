@@ -45,4 +45,11 @@ public:
 
 	RUNBOMBSPAWNER* GetRunBombSpawner_RunBombSpawner() { return this; };
 	RUNBOMBSOURCE* GetRunBombSource__RunBombSpawner() { return &m_RunBomb; };
+
+	// 追加: Boss から直接生成したときに spawner をアクティブ化するための操作
+	void SetActive(bool active) { m_Active = active; }
+	bool IsActive() const { return m_Active; }
+
+	// 追加: クールタイムをリセットして即時アクティブ化しやすくする
+	void ResetRCoolTime() { m_RCoolTime = 0.0f; }
 };
