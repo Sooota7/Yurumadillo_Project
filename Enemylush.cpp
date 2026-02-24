@@ -149,7 +149,6 @@ void ENEMYLUSH::Enemylush_Update()
 	//更新処理
 	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
 	m_Player.Player_Update();
-	Enemylush_Phase_Update();
 	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
 	m_Map.Field_Update();
 	m_Background.Background_Update();
@@ -204,6 +203,8 @@ void ENEMYLUSH::Enemylush_Update()
 	{
 		m_Manager->SetScene(SCENE_PAUSE);
 	}
+
+	Enemylush_Phase_Update();
 
 	//Block_Update();
 	//Effect_Update();
@@ -312,34 +313,22 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 void ENEMYLUSH::Enemylush_Phase_Initialize()
 {
+	m_EL_State = EL_STATE_PHASE01;
+	m_EnemyNormal.EnemySpawner_ResetKillNum();
+	m_EnemyNormal.EnemySpawner_ResetEnemyNum();
+
 	for (int i = 0; i < EL_STATE_MAX; i++)
 	{
 		switch (i)
 		{
 		case EL_STATE_PHASE01:
-			m_Phase[i].Set_EN_TOTAL(2);
-			m_Phase[i].Set_EF_TOTAL(2);
-			m_Phase[i].Set_EG_TOTAL(6);
+			Enemylush_Phase_SetPhase01();
 			break;
 		case EL_STATE_PHASE02:
-			m_Phase[i].Set_EN_TOTAL(3);
-			m_Phase[i].Set_EF_TOTAL(3);
-			m_Phase[i].Set_EG_TOTAL(3);
+			Enemylush_Phase_SetPhase02();
 			break;
 		case EL_STATE_PHASE03:
-			m_Phase[i].Set_EN_TOTAL(1);
-			m_Phase[i].Set_EF_TOTAL(4);
-			m_Phase[i].Set_EG_TOTAL(4);
-			break;
-		case EL_STATE_END:
-			m_Phase[i].Set_EN_TOTAL(0);
-			m_Phase[i].Set_EF_TOTAL(0);
-			m_Phase[i].Set_EG_TOTAL(0);
-			break;
-		case EL_STATE_MAX:
-			m_Phase[i].Set_EN_TOTAL(0);
-			m_Phase[i].Set_EF_TOTAL(0);
-			m_Phase[i].Set_EG_TOTAL(0);
+			Enemylush_Phase_SetPhase03();
 			break;
 		default:
 			break;
@@ -353,20 +342,53 @@ void ENEMYLUSH::Enemylush_Phase_Finalize()
 
 void ENEMYLUSH::Enemylush_Phase_Update()
 {
-	
-	if (m_SpawnTime > 5.0f&&!m_NextSpawn)
-	{
-		srand(time(NULL));
-		m_SpawnTime = 0;
-		m_NextSpawn = true;
-		m_SpawnMax = 3;
-	}
-
-	m_SpawnTime += (1.0f / 60.0f);
 	int EN_NUM = m_Phase[m_EL_State].Get_EN_TOTAL();
 	int EF_NUM = m_Phase[m_EL_State].Get_EF_TOTAL();
 	int EG_NUM = m_Phase[m_EL_State].Get_EG_TOTAL();
 
+	if (EN_NUM <= 0 && EF_NUM <= 0 && EG_NUM <= 0 && 
+		m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())//出尽くしてかつ全滅でゲート開く
+	{
+		switch (m_EL_State)
+		{
+		case EL_STATE_PHASE01:
+			m_EL_State = EL_STATE_PHASE02; m_SpawnTime = 0; m_NextSpawn = false;
+			m_EnemyNormal.EnemySpawner_ResetKillNum();
+			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
+			return;
+		case EL_STATE_PHASE02:
+			m_EL_State = EL_STATE_PHASE03; m_SpawnTime = 0; m_NextSpawn = false;
+			m_EnemyNormal.EnemySpawner_ResetKillNum();
+			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
+			return;
+		case EL_STATE_PHASE03:
+			m_EL_State = EL_STATE_END; m_SpawnTime = 0; m_NextSpawn = false;
+			m_EnemyNormal.EnemySpawner_ResetKillNum();
+			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
+			return;
+		case EL_STATE_END:
+			m_Manager->SetScene(SCENE_RESULT);
+			return;
+		default:
+			break;
+		}
+
+		
+
+	}
+	
+	if (m_SpawnTime > 5.0f&&!m_NextSpawn)
+	{
+		srand(time(NULL));
+
+		m_SpawnTime = 0;
+		m_NextSpawn = true;
+		int ramd = rand();
+		m_SpawnMax = (ramd % 3) + 1;
+	}
+
+	m_SpawnTime += (1.0f / 60.0f);
+	
 	if (m_NextSpawn)
 	{
 		if (m_SpawnMax > 0)
@@ -380,15 +402,15 @@ void ENEMYLUSH::Enemylush_Phase_Update()
 
 			if (EnemyType == 1 && EN_NUM > 0) {
 				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EN);
-				EN_NUM--;
+				EN_NUM--;m_SpawnMax--;
 			}
 			else if (EnemyType == 2 && EF_NUM > 0) {
 				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EF);
-				EF_NUM--;
+				EF_NUM--; m_SpawnMax--;
 			}
 			else if (EnemyType == 3 && EG_NUM > 0) {
 				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EG);
-				EG_NUM--;
+				EG_NUM--; m_SpawnMax--;
 			}
 			else {
 			
@@ -398,7 +420,7 @@ void ENEMYLUSH::Enemylush_Phase_Update()
 			m_Phase[m_EL_State].Set_EF_TOTAL(EF_NUM);
 			m_Phase[m_EL_State].Set_EG_TOTAL(EG_NUM);
 
-			m_SpawnMax--;
+			
 		}
 		else { m_NextSpawn = false; }
 
@@ -408,5 +430,27 @@ void ENEMYLUSH::Enemylush_Phase_Update()
 
 void ENEMYLUSH::Enemylush_Phase_Draw()
 {
+}
+
+void ENEMYLUSH::Enemylush_Phase_SetPhase01()
+{
+	m_Phase[EL_STATE_PHASE01].Set_EN_TOTAL(0);
+	m_Phase[EL_STATE_PHASE01].Set_EF_TOTAL(1);
+	m_Phase[EL_STATE_PHASE01].Set_EG_TOTAL(2);
+}
+
+void ENEMYLUSH::Enemylush_Phase_SetPhase02()
+{
+	m_Phase[EL_STATE_PHASE02].Set_EN_TOTAL(0);
+	m_Phase[EL_STATE_PHASE02].Set_EF_TOTAL(1);
+	m_Phase[EL_STATE_PHASE02].Set_EG_TOTAL(2);
+
+}
+
+void ENEMYLUSH::Enemylush_Phase_SetPhase03()
+{
+	m_Phase[EL_STATE_PHASE03].Set_EN_TOTAL(0);
+	m_Phase[EL_STATE_PHASE03].Set_EF_TOTAL(1);
+	m_Phase[EL_STATE_PHASE03].Set_EG_TOTAL(2);
 }
 

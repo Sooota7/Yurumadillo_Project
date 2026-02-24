@@ -1802,14 +1802,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
 				{
 
-					if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					if (enemyB[l].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 					{//エネミーが存在するとき
 
-						XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
-						XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+						XMFLOAT3 EnemyPos = enemyB[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyB[l].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標
@@ -1834,7 +1834,8 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						//ステートを死亡に移動
 						if (test)
 						{
-							enemyB[i].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
+							enemyB[l].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE::ENEMY_BUTTERFLY_STATE_DEAD);
+							test = false;
 						}
 
 					}
@@ -1887,6 +1888,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						if (test)
 						{
 							enemyG[i].SetEnemyGroundState(ENEMY_GROUND_STATE_DEAD);
+							test = false;
 						}
 
 					}
@@ -1954,14 +1956,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
 				{
 
-					if (enemyB[i].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					if (enemyB[l].GetEnemyButterflyType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 					{//エネミーが存在するとき
 
-						XMFLOAT3 EnemyPos = enemyB[i].GetEnemyPosition();
-						XMFLOAT3 EnemyVel = enemyB[i].GetEnemyVelocity();
+						XMFLOAT3 EnemyPos = enemyB[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyB[l].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標
@@ -2002,19 +2004,19 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 				XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
 				XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
 
-				for (int i = 0; i < Enemy_Spawner_MAX; i++)
+				for (int l = 0; l < Enemy_Spawner_MAX; l++)
 				{
 
-					if (enemyG[i].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
+					if (enemyG[l].GetEnemyGroundType() != ENEMY_TYPE::ENEMY_TYPE_NONE)
 					{//エネミーが存在するとき
 
-						XMFLOAT3 EnemyPos = enemyG[i].GetEnemyPosition();
-						XMFLOAT3 EnemyVel = enemyG[i].GetEnemyVelocity();
+						XMFLOAT3 EnemyPos = enemyG[l].GetEnemyPosition();
+						XMFLOAT3 EnemyVel = enemyG[l].GetEnemyVelocity();
 
 
 						float BoxTop;	// BOXの+Y面の座標
 
-						BoxTop = EnemyPos.y + BOX_RADIUS;
+						BoxTop = EnemyPos.y + BOX_RADIUS+0.5f;
 
 						// 壁としての判定処理
 						if (BombPos.x + 1 > EnemyPos.x &&

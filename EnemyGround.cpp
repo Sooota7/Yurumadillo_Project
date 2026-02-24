@@ -260,5 +260,5 @@ void ENEMY_GROUND::Enemy_Ground_Cool()
 
 void ENEMY_GROUND::Enemy_Ground_Dead()
 {
-
+	m_Type = ENEMY_TYPE_DEAD;
 }

@@ -176,9 +176,9 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 
 void ENEMYSPAWNER::EnemySpawner_Spawn(XMFLOAT3 EL_Pos, EL_E_TYPE EL_type)
 {
-	int a2 = 0;
-	int b2 = 0;
-	int c2 = 0;
+	int a2 = 1;
+	int b2 = 1;
+	int c2 = 1;
 	
 	switch (EL_type)
 	{

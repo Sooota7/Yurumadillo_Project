@@ -72,8 +72,10 @@ public:
 	ENEMY_BUTTERFLY* EnemySpawner_GetEnemyButterfly();
 	ENEMY_GROUND* EnemySpawner_GetEnemyGround();		//’Ç‰Á
 
+	void	EnemySpawner_ResetEnemyNum() { MaxNum = 0; };
 	int		EnemySpawner_GetEnemyNum();
 	void	EnemySpawner_SetKillNum(int killnum);
+	void	EnemySpawner_ResetKillNum() { NowKillNum = 0; };
 	int		EnemySpawner_GetKillNum();
 
 	bool EnemySpawner_SpawnButterfly(const XMFLOAT3& pos);

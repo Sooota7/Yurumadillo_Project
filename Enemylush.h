@@ -76,7 +76,7 @@ private:
 	ENEMYLUSH_STATE m_EL_State;
 	float m_SpawnTime;
 	XMFLOAT3 m_SpawnPos[10];
-	int m_TotalSpawn;
+	int m_TotalSpawn = 0;
 	bool m_NextSpawn = false;
 	int m_SpawnMax = 0;
 
@@ -98,5 +98,9 @@ public:
 	void Enemylush_Phase_Finalize();
 	void Enemylush_Phase_Update();
 	void Enemylush_Phase_Draw();
+
+	void Enemylush_Phase_SetPhase01();
+	void Enemylush_Phase_SetPhase02();
+	void Enemylush_Phase_SetPhase03();
 
 };
