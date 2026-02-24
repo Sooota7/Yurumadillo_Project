@@ -13,6 +13,7 @@
 #include "Dictionary.h"
 #include "billboardManager.h"
 #include "background.h"
+#include "gimmickData.h"
 
 #include "playerUI.h"
 #include "bombUI.h"
@@ -20,6 +21,33 @@
 #include "Goal.h"
 
 class MANAGER;
+
+enum ENEMYLUSH_STATE
+{
+	EL_STATE_PHASE01,
+	EL_STATE_PHASE02,
+	EL_STATE_PHASE03,
+	EL_STATE_END,
+	EL_STATE_MAX
+};
+
+class ENEMYLUSH_PHASE
+{
+private:
+	int EN_TOTAL;
+	int EF_TOTAL;
+	int EG_TOTAL;
+
+public:
+	void Set_EN_TOTAL(int max) { EN_TOTAL = max; };
+	int Get_EN_TOTAL() { return EN_TOTAL; };
+
+	void Set_EF_TOTAL(int max) { EF_TOTAL = max; };
+	int Get_EF_TOTAL() { return EF_TOTAL; };
+
+	void Set_EG_TOTAL(int max) { EG_TOTAL = max; };
+	int Get_EG_TOTAL() { return EG_TOTAL; };
+};
 
 class ENEMYLUSH
 {
@@ -33,6 +61,9 @@ private:
 	WEAPON m_Weapon;
 	GOAL m_Goal;
 
+	GIMMICK_DATA m_GimmickData;
+	ENEMYLUSH_STATE m_EnemyLushState;
+
 	COLLISION collision;
 
 	FIELD_NO m_NowField;
@@ -43,6 +74,17 @@ private:
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;
 	TargetUI m_TargetUI;
+
+	ENEMYLUSH_PHASE m_Phase[EL_STATE_MAX];
+	ENEMYLUSH_STATE m_EL_State;
+	float m_SpawnTime;
+	XMFLOAT3 m_SpawnPos[10];
+	int m_TotalSpawn = 0;
+	bool m_NextSpawn = false;
+	int m_SpawnMax = 0;
+
+
+
 public:
 	void Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Enemylush_Finalize();
@@ -50,5 +92,18 @@ public:
 	void Enemylush_Draw();
 
 	void Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
+
+	//===================================================================================================
+	// EnemyLushPhase
+	//===================================================================================================
+
+	void Enemylush_Phase_Initialize();
+	void Enemylush_Phase_Finalize();
+	void Enemylush_Phase_Update();
+	void Enemylush_Phase_Draw();
+
+	void Enemylush_Phase_SetPhase01();
+	void Enemylush_Phase_SetPhase02();
+	void Enemylush_Phase_SetPhase03();
 
 };
