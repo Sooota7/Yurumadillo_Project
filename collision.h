@@ -20,6 +20,7 @@ using namespace DirectX;
 #include	"weapon.h"
 #include	"BossObj.h"
 #include    "player.h"
+#include    "Goal.h" // 追加：ゴール当たり判定用
 
 #define COE		(0.5f)
 #define COE_JUMP		(2.0f)
@@ -66,4 +67,6 @@ public:
 	float   BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
 	float   BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick);
 
+    // 追加：プレイヤーとゴールの当たり判定
+    float   PlayerGoalCollision(PLAYER* pPlayer, GOAL* pGoal);
 };
