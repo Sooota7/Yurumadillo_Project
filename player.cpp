@@ -68,7 +68,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		
 	}
 
-	m_Position = XMFLOAT3(PLAYER_START_POS_X,PLAYER_START_POS_Y, PLAYER_START_POS_Z);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -300,7 +300,7 @@ void PLAYER::Player_Move()
 		if (Keyboard_IsKeyDown(KK_D)) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (Keyboard_IsKeyDown(KK_A)) // 左
-			move.x += right.x, move.z += forward.z;
+			move.x += right.x, move.z += right.z;
 
 
 		if (Keyboard_IsKeyDownTrigger(KK_SPACE)
@@ -329,7 +329,7 @@ void PLAYER::Player_Move()
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT)  || GetThumbLeftX(0) <= -0.5f) // 左
-			move.x += right.x, move.z += forward.z;
+			move.x += right.x, move.z += right.z;
 
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
 		{
