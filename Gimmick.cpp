@@ -40,7 +40,7 @@ void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-
+	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
@@ -89,6 +89,7 @@ void GIMMICK::Gimmick_Finalize()
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
+	m_Goal.Goal_Finalize();
 	//Block_Finalize();
 	//Effect_Finalize();
 	//Score_Finalize();
@@ -112,7 +113,7 @@ void GIMMICK::Gimmick_Update()
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Map.Field_Update();
 	m_Background.Background_Update();
-
+	m_Goal.Goal_Update();
 	collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
 	collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
 	collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
@@ -181,8 +182,20 @@ void GIMMICK::Gimmick_Update()
 			m_Manager->IncrementClearCount();
 		};
 
-		m_Manager->SetScene(SCENE_RESULT);
+		m_Manager->SetScene(SCENE_STAGESELECTION);
 	}
+
+	// 追加：プレイヤーとゴールの当たり判定
+	if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
+	{
+		if (m_Manager->GetClearCount() == 1)
+		{
+			m_Manager->IncrementClearCount();
+		}
+		m_Manager->SetScene(SCENE_STAGESELECTION);
+		return; // シーン遷移するので更新処理を止める
+	}
+
 }
 
 void GIMMICK::Gimmick_Draw()
@@ -200,7 +213,7 @@ void GIMMICK::Gimmick_Draw()
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
-
+	m_Goal.Goal_Draw();
 	//2D描画
 	Light3.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
@@ -232,6 +245,7 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
+	m_Goal.Goal_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -248,5 +262,6 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
+	m_Goal.Goal_Initialize(pDevice, pContext, no);
 }
 

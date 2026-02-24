@@ -18,6 +18,8 @@
 #include "playerUI.h"
 #include "bombUI.h"
 #include "targetUI.h"
+#include "Goal.h"
+
 class MANAGER;
 
 enum ENEMYLUSH_STATE
@@ -57,6 +59,7 @@ private:
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
+	GOAL m_Goal;
 
 	GIMMICK_DATA m_GimmickData;
 	ENEMYLUSH_STATE m_EnemyLushState;

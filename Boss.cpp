@@ -49,12 +49,8 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
 	m_BossMonster.SetEnemySpawner(&m_EnemyNormal);
-	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
-	//Block_Initialize(pDevice, pContext);//ブロックの初期化
-	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
-	//Score_Initialize(pDevice, pContext);//スコア初期化
-
-	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
+	// 追加: BossMonster に BOMB 管理を渡す（フェーズ3 で RunBomb を生成するため）
+	m_BossMonster.SetBomb(&m_bomb);
 
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Manager = manager;
@@ -159,7 +155,7 @@ void BOSS::Boss_Update()
 			m_Manager->IncrementClearCount();
 		};
 
-		m_Manager->SetScene(SCENE_RESULT);
+		m_Manager->SetScene(SCENE_ENDING);
 	}
 
 	//Block_Update();
@@ -177,7 +173,7 @@ void BOSS::Boss_Draw()
 	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
 	SetDepthTest(TRUE);
 
-	Camera_Draw();		//Drawの最初で呼ぶ！
+	Camera_Draw();		//Drawの最初で呼ぶ！	
 
 	m_Map.Field_Draw();
 	m_Player.Player_Draw(&m_BillboardManager);
@@ -227,6 +223,8 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_BossMonster.Bossmonster_Initialize(pDevice, pContext);
+	// 追加: Boss に BOMB 管理を渡す（マップ切り替え時もセット）
+	m_BossMonster.SetBomb(&m_bomb);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
