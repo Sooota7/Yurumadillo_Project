@@ -213,6 +213,9 @@ int GetMap_ENEMYLUSH(int x, int y, int z)
 	case(4):
 		return EnemyLush_Pos_05[y][x];
 		break;
+	case(5):
+		return EnemyLush_Pos_06[y][x];
+		break;
 	default:
 		break;
 	}

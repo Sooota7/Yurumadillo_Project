@@ -564,7 +564,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
+			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
 			m_Fbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:
