@@ -155,7 +155,7 @@ void BOSS::Boss_Update()
 			m_Manager->IncrementClearCount();
 		};
 
-		m_Manager->SetScene(SCENE_RESULT);
+		m_Manager->SetScene(SCENE_ENDING);
 	}
 
 	//Block_Update();

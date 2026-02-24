@@ -16,6 +16,7 @@
 #include "playerUI.h"
 #include "bombUI.h"
 #include "targetUI.h"
+#include "Goal.h"
 class MANAGER;
 
 class GAME
@@ -35,6 +36,8 @@ private:
 
 	BillboardManager m_BillboardManager;
 	BACKGROUND m_Background;
+
+	GOAL m_Goal;
 
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;

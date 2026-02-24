@@ -17,6 +17,8 @@
 #include "playerUI.h"
 #include "bombUI.h"
 #include "targetUI.h"
+#include "Goal.h"
+
 class MANAGER;
 
 class ENEMYLUSH
@@ -29,6 +31,7 @@ private:
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
+	GOAL m_Goal;
 
 	COLLISION collision;
 

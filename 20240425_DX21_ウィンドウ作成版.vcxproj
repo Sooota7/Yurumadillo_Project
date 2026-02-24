@@ -168,6 +168,7 @@
     <ClCompile Include="gimmickData.cpp" />
     <ClCompile Include="gimmickField.cpp" />
     <ClCompile Include="gimmickGate.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
@@ -237,6 +238,7 @@
     <ClInclude Include="gimmickData.h" />
     <ClInclude Include="gimmickField.h" />
     <ClInclude Include="gimmickGate.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Manager.h" />
