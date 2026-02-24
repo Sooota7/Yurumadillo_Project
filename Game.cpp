@@ -41,6 +41,8 @@ void GAME::Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
 
+	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
+
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
@@ -94,6 +96,7 @@ void GAME::Game_Finalize()
 	//Polygon3D_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
+	m_Goal.Goal_Finalize();
 	m_BillboardManager.Finalize();
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
@@ -125,7 +128,7 @@ void GAME::Game_Update()
 
 	collision.BombGateCollision(&m_bomb, &m_GimmickData);
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(),&m_EnemyNormal);
-
+	m_Goal.Goal_Update();
 	m_PlayerUI.Update();
 	m_BombUI.Update();
 	m_TargetUI.Update();
@@ -185,8 +188,20 @@ void GAME::Game_Update()
 			m_Manager->IncrementClearCount();
 		};
 
-		m_Manager->SetScene(SCENE_RESULT);
+		m_Manager->SetScene(SCENE_STAGESELECTION);
 	}
+
+	// 追加：プレイヤーとゴールの当たり判定
+	if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
+	{
+		if (m_Manager->GetClearCount() == 0)
+		{
+			m_Manager->IncrementClearCount();
+		}
+		m_Manager->SetScene(SCENE_STAGESELECTION);
+		return; // シーン遷移するので更新処理を止める
+	}
+
 }
 
 void GAME::Game_Draw()
@@ -210,7 +225,7 @@ void GAME::Game_Draw()
 	Light.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light.Light);	//ライト構造体をシェーダーへセット
 
-
+	m_Goal.Goal_Draw();
 	m_BillboardManager.Draw();
 	SetDepthTest(FALSE);
 	m_PlayerUI.Draw();
@@ -238,6 +253,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
 	m_TargetUI.Finalize();
+	m_Goal.Goal_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -254,5 +270,6 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
+	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
 }
 

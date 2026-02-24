@@ -7,6 +7,8 @@
 #include "fade.h"
 #include "Manager.h"
 
+#define STAGE_CHANGE_TIME (1.5f)
+
 class STAGESELECTION
 {
 private:
@@ -14,7 +16,7 @@ private:
 	MANAGER* m_Manager;
 
 	int stageselect;
-
+	int stagechangecounter;
 public:
 	void StageSelection_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade, MANAGER* manager);
 	void StageSelection_Finalize();

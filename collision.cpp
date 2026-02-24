@@ -4434,3 +4434,37 @@ float COLLISION::BombGateCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 
 	return hit;
 }
+
+float COLLISION::PlayerGoalCollision(PLAYER* pPlayer, GOAL* pGoal)
+{
+	if (pPlayer == nullptr || pGoal == nullptr) return COLLISION_HIT::HIT_NONE;
+
+	GOAL::GoalItem* items = pGoal->GetGoalItems();
+	int count = pGoal->GetGoalCount();
+	if (items == nullptr || count <= 0) return COLLISION_HIT::HIT_NONE;
+
+	XMFLOAT3 playerPos = pPlayer->GetPlayerPosition();
+
+	// 判定半径（プレイヤー半径 + ゴールの半径）
+	const float GOAL_RADIUS = 0.6f;
+	const float radius = (PLAYER_RADIUS + GOAL_RADIUS);
+	const float radiusSq = radius * radius;
+
+	for (int i = 0; i < count; ++i)
+	{
+		if (!items[i].active) continue;
+
+		float dx = playerPos.x - items[i].pos.x;
+		float dy = playerPos.y - items[i].pos.y;
+		float dz = playerPos.z - items[i].pos.z;
+
+		float distSq = dx * dx + dy * dy + dz * dz;
+		if (distSq <= radiusSq)
+		{
+			// ゴール到達を表す値を返す（既存コードで使用されている値に合わせる）
+			return COLLISION_HIT::HIT_WALL_CREAR;
+		}
+	}
+
+	return COLLISION_HIT::HIT_NONE;
+}

@@ -40,7 +40,7 @@ void ENEMYLUSH::Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
 	m_Weapon.Weapon_Initialize(pDevice, pContext);
-
+	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
@@ -93,7 +93,7 @@ void ENEMYLUSH::Enemylush_Finalize()
 	//Score_Finalize();
 	//Polygon3D_Finalize();
 	Camera_Finalize();	//カメラ終了処理
-
+	m_Goal.Goal_Finalize();
 	m_BillboardManager.Finalize();
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
@@ -113,7 +113,7 @@ void ENEMYLUSH::Enemylush_Update()
 
 	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
-
+	m_Goal.Goal_Update();
 	m_PlayerUI.Update();
 	m_BombUI.Update();
 	m_TargetUI.Update();
@@ -179,9 +179,19 @@ void ENEMYLUSH::Enemylush_Update()
 			m_Manager->IncrementClearCount();
 		};
 
-		m_Manager->SetScene(SCENE_RESULT);
+		m_Manager->SetScene(SCENE_STAGESELECTION);
 	}
 
+	// 追加：プレイヤーとゴールの当たり判定
+	if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
+	{
+		if (m_Manager->GetClearCount() == 2)
+		{
+			m_Manager->IncrementClearCount();
+		}
+		m_Manager->SetScene(SCENE_STAGESELECTION);
+		return; // シーン遷移するので更新処理を止める
+	}
 }
 
 void ENEMYLUSH::Enemylush_Draw()
@@ -198,7 +208,7 @@ void ENEMYLUSH::Enemylush_Draw()
 	m_EnemyNormal.EnemySpawner_Draw();
 	m_bomb.Bomb_Draw(&m_BillboardManager);
 	m_Weapon.Weapon_Draw();
-
+	m_Goal.Goal_Draw();
 	//2D描画
 	Light5.SetEnable(FALSE);			//ライティングOFF
 	Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
@@ -229,6 +239,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_PlayerUI.Finalize();
 	m_BombUI.Finalize();
 	m_TargetUI.Finalize();
+	m_Goal.Goal_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -244,5 +255,6 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
+	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
 }
 
