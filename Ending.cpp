@@ -13,6 +13,7 @@
 //aaa
 
 static	ID3D11ShaderResourceView* g_Texture = NULL;	//テクスチャ１枚を表すオブジェクト
+static	ID3D11ShaderResourceView* g_TextureEnd = NULL;	//テクスチャ１枚を表すオブジェクト
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
@@ -28,9 +29,14 @@ void ENDING::Ending_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//テクスチャ読み込みなど
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\ending.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\ending\\ending.jpg", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture);
 	assert(g_Texture);//読み込み失敗時にダイアログを表示
+
+
+	LoadFromWICFile(L"asset\\texture\\ending\\end_logo.png", WIC_FLAGS_NONE, &metadata, image);
+	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_TextureEnd);
+	assert(g_TextureEnd);//読み込み失敗時にダイアログを表示
 
 	//フェードインのセット
 	XMFLOAT4	color = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -42,6 +48,7 @@ void ENDING::Ending_Finalize()
 {
 	//テクスチャの解放など
 	SAFE_RELEASE(g_Texture);
+	SAFE_RELEASE(g_TextureEnd);
 
 }
 void ENDING::Ending_Update()
@@ -80,6 +87,8 @@ void ENDING::Ending_Draw()
 
 		//テクスチャをセット
 	g_pContext->PSSetShaderResources(0, 1, &g_Texture);//g_Textureを使うように設定する
+	
+
 
 	static XMFLOAT2 texcoord = { 0.0f, 0.0f };
 
@@ -89,6 +98,24 @@ void ENDING::Ending_Draw()
 	XMFLOAT2 pos = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };
 	DrawSprite(pos, size, col);//1枚絵を表示
+
+
+	//---------------------------------------------------
+	
+	//テクスチャをセット
+	g_pContext->PSSetShaderResources(0, 1, &g_TextureEnd);//g_TextureEndを使うように設定する
+
+
+
+	static XMFLOAT2 texcoord2 = { 0.0f, 0.0f };
+
+	//スプライト描画
+	SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
+	XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
+	XMFLOAT2 pos2 = { 950.0f, 500.0f};
+	XMFLOAT2 size2 = { SCREEN_WIDTH*1.0f, SCREEN_HEIGHT*1.0f };
+	DrawSprite(pos2, size2, col2);//1枚絵を表示
+
 
 }
 
