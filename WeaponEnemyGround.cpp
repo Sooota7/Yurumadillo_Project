@@ -14,6 +14,8 @@ void WEAPONENEMYGROUND::Weapon_EG_Finalize(void)
 
 void WEAPONENEMYGROUND::Weapon_EG_Move()
 {
+	
+
 	m_Position.x += m_Velocity.x;
 	//m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
@@ -50,6 +52,35 @@ void WEAPONENEMYGROUND::Weapon_EG_Move()
 
 void WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
 {
+	{
+		// “G‚ÌŒü‚«‚ðƒvƒŒƒCƒ„[‚ÉŒü‚¯‚é
+		XMFLOAT3 direction;
+
+		direction.x = pPlayerPos.x - m_Position.x;
+		direction.y = 0.0f;
+		direction.z = pPlayerPos.z - m_Position.z;
+
+		// ‹——£
+		float length = sqrtf((direction.x * direction.x) +
+			(direction.z * direction.z));
+
+		if (length != 0.0f)
+		{// ³‹K‰»
+			direction.x /= length;
+			direction.z /= length;
+
+			float yaw = atan2(direction.x, direction.z);
+
+
+			// [-ƒÎ, ƒÎ] ‚É³‹K‰»
+			if (yaw > XM_PI) yaw -= XM_2PI;
+			if (yaw < -XM_PI) yaw += XM_2PI;
+
+
+			m_Rotation.y = yaw;
+		}
+	}
+
 	XMFLOAT3 direction;
 
 	direction.x = pPlayerPos.x - m_Position.x;
