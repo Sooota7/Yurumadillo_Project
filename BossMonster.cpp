@@ -26,7 +26,7 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	float downSize = 10.0f;
 
-	m_Position = XMFLOAT3(7.0f, 7.0f, 60.0f);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, 7.0f, FIELD_WIDTH_Z+BOSS_START_POS_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);

@@ -13,7 +13,7 @@ using namespace DirectX;
 #define		BOMB_GRAVITY		(1.0f/60.0f)
 #define		BOMB_THROW_POWER	(0.2f)
 #define		BOMB_DAMAGE_BOSS	(50.0f)//対ボスダメージ
-#define		BOMB_EXPLOSION_AREA_  (30.0f) //koreyorisakidebakuhatu
+#define		BOMB_EXPLOSION_AREA_  (60.0f) //koreyorisakidebakuhatu
 enum BOMB_STATE
 {
 	BOMB_NONE,

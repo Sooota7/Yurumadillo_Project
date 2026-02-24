@@ -22,6 +22,9 @@ using namespace DirectX;
 
 #define BOSS_OBJECT_MAX 3
 
+#define BOSS_START_POS_Y (5.0f)     //BOSSの初期位置Y
+#define BOSS_START_POS_Z (50.0f)     //BOSSの初期位置Z
+
 #include "enemySpawner.h" // 参照: 敵生成用
 // forward declare BOMB to avoid heavy include in header
 class BOMB;
