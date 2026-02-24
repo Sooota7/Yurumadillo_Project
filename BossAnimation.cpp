@@ -509,8 +509,8 @@ void BOSSANIMATION::BossAnimation_SetAnimPhase02_01()
 	{//left_arm
 		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(14, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f,-50.0f });
-		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-1.0f, 0.0f }, { 0.0f, 0.0f,-70.0f });
-		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(44, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f,-50.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(24, { 0.0f,-1.0f, 0.0f }, { 0.0f, 0.0f,-70.0f });
+		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(29, { 0.0f,-1.5f, 0.0f }, { 0.0f, 0.0f,-50.0f });
 		m_BossAnim[BOSS_STATE_PHASE02_01].m_Anim[BOSS_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f,-2.0f, 0.0f }, { 0.0f, 0.0f,-35.0f });
 	}
 

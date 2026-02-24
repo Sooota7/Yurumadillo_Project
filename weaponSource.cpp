@@ -21,9 +21,9 @@ void WEAPONSOURCE::WeaponSource_Move()
 	m_Position.y += m_Velocity.y;
 	m_Position.z += m_Velocity.z;
 
-	m_Velocity.x *= GENSUI;	// 速度を適当に減衰する
-	m_Velocity.y *= GENSUI;
-	m_Velocity.z *= GENSUI;
+	m_Velocity.x *= 0.99f;	// 速度を適当に減衰する
+	m_Velocity.y *= 0.99f;
+	m_Velocity.z *= 0.99f;
 
 	m_Position.y -= 1.0 / 40.0f;
 

@@ -130,6 +130,7 @@ void Camera_Update(XMFLOAT3 BallPos)
 	// 注視点（プレイヤー）
 	// ================================
 	CameraObject.AtPosition = BallPos;
+	CameraObject.AtPosition.y += 0.4f;		// 改善の余地あり？
 
 	// ================================
 	// カメラ座標計算

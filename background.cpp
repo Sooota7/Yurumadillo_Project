@@ -10,28 +10,22 @@
 using namespace DirectX;
 
 
-//”wŒii“V‹…jƒIƒuƒWƒFƒNƒg
+//èƒŒæ™¯ï¼ˆå¤©çƒï¼‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 BACKGROUND	g_Background;
 static ID3D11Device* g_pDevice;
 static ID3D11DeviceContext* g_pContext;
 
-//ƒeƒNƒXƒ`ƒƒ•Ï”
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£å¤‰æ•°
 static ID3D11ShaderResourceView* g_Texture;
 
 #define BACKGROUND_ROTATION_SPEED		(2.0f / 60.0f)
 
-void BACKGROUND::Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void BACKGROUND::Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO fn)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
 
-	g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	g_Background.Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	g_Background.Scaling = XMFLOAT3(100.0f, 30.0f, 100.0f);
-
-	g_Background.Speed = BACKGROUND_ROTATION_SPEED;
-
-	g_Background.Model = ModelLoad("asset\\model\\sky_castle03.fbx");
+	SetBackground(fn);
 }
 
 void BACKGROUND::Background_Finalize(void)
@@ -41,21 +35,21 @@ void BACKGROUND::Background_Finalize(void)
 
 void BACKGROUND::Background_Draw(void)
 {
-	// •½sˆÚ“®s—ñì¬
+	// å¹³è¡Œç§»å‹•è¡Œåˆ—ä½œæˆ
 	XMMATRIX	TranslationMatrix =
 		XMMatrixTranslation(
 			g_Background.Position.x,
 			g_Background.Position.y,
 			g_Background.Position.z
 		);
-	// ‰ñ“]s—ñì¬
+	// å›è»¢è¡Œåˆ—ä½œæˆ
 	XMMATRIX	RotationMatrix =
 		XMMatrixRotationRollPitchYaw(
 			XMConvertToRadians(g_Background.Rotation.x),
 			XMConvertToRadians(g_Background.Rotation.y),
 			XMConvertToRadians(g_Background.Rotation.z)
 		);
-	// ƒXƒP[ƒŠƒ“ƒOs—ñì¬
+	// ã‚¹ã‚±ãƒ¼ãƒªãƒ³ã‚°è¡Œåˆ—ä½œæˆ
 	XMMATRIX	ScalingMatrix =
 		XMMatrixScaling(
 			g_Background.Scaling.x,
@@ -63,7 +57,7 @@ void BACKGROUND::Background_Draw(void)
 			g_Background.Scaling.z
 		);
 
-	// ƒ[ƒ‹ƒhs—ñì¬ ¦æZ‚Ì‡”Ô‚É’ˆÓ
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ä½œæˆ â€»ä¹—ç®—ã®é †ç•ªã«æ³¨æ„
 	XMMATRIX	world =
 		ScalingMatrix * RotationMatrix * TranslationMatrix;
 
@@ -71,7 +65,7 @@ void BACKGROUND::Background_Draw(void)
 	XMMATRIX	projection = GetProjectionMatrix();
 	XMMATRIX	wvp = world * view * projection;
 
-	// wvps—ñ‚ğƒZƒbƒg
+	// wvpè¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 	Shader_SetMatrix(wvp);
 
 	ModelDraw(g_Background.Model);
@@ -80,15 +74,75 @@ void BACKGROUND::Background_Draw(void)
 
 void BACKGROUND::Background_Update(void)
 {
-	// ƒJƒƒ‰‚ÌˆÊ’u‚ğæ“¾‚µ‚ÄÀ•W‚ğŒˆ‚ß‚é
-	// ¡‰ñ‚ÍƒJƒƒ‰‚Æ“¯‚¶À•W‚Å•\¦‚µ‚Ä‚¨‚­
+	// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’å–å¾—ã—ã¦åº§æ¨™ã‚’æ±ºã‚ã‚‹
+	// ä»Šå›ã¯ã‚«ãƒ¡ãƒ©ã¨åŒã˜åº§æ¨™ã§è¡¨ç¤ºã—ã¦ãŠã
 	g_Background.Position = GetCameraPosition();
 
-	// “K“–‚É‰ñ“]‚³‚¹‚é
+	// é©å½“ã«å›è»¢ã•ã›ã‚‹
 	//g_Background.Rotation.y += g_Background.Speed;
 }
 
 BACKGROUND* BACKGROUND::GetBackground()
 {
 	return &g_Background;
+}
+
+void BACKGROUND::SetBackground(FIELD_NO fn)
+{
+	switch (fn)
+	{
+	case FIELD_NO::NO_1: // ãã®ã“
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_kinoko11.fbx");
+		break;
+	case FIELD_NO::NO_2: // ãƒ€ãƒ³ã‚¸ãƒ§ãƒ³
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_dungeon.fbx");
+		break;
+	case FIELD_NO::NO_3: // ãã®ã“
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_dungeon.fbx");
+		break;
+	case FIELD_NO::NO_4: // ãŠèŒ¶ä¼š
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 100.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_teaparty02.fbx");
+	case FIELD_NO::NO_5:
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
+	case FIELD_NO::NO_6:
+		g_Background.Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		g_Background.Rotation = XMFLOAT3(0.0f, -90.0f, 0.0f);
+		g_Background.Scaling = XMFLOAT3(100.0f, 50.0f, 100.0f);
+
+		g_Background.Speed = 0.0f;
+
+		g_Background.Model = ModelLoad("asset\\model\\sky_castle12.fbx");
+	default:
+		break;
+	}
 }

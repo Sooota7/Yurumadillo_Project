@@ -10,6 +10,7 @@
 using namespace DirectX;
 
 #include "Model.h"
+#include "field.h"
 
 // 天球オブジェクト
 class BACKGROUND
@@ -24,12 +25,13 @@ public:
 	MODEL* Model;			// 配列にしてステージごとに切り替える
 
 public:
-	void Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Background_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO fn);
 	void Background_Finalize(void);
 	void Background_Draw(void);
 	void Background_Update(void);
 
 	BACKGROUND* GetBackground();
+	void SetBackground(FIELD_NO fn);
 };
 
 
