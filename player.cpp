@@ -300,7 +300,7 @@ void PLAYER::Player_Move()
 		if (Keyboard_IsKeyDown(KK_D)) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (Keyboard_IsKeyDown(KK_A)) // 左
-			move.x += right.x, move.z += forward.z;
+			move.x += right.x, move.z += right.z;
 
 
 		if (Keyboard_IsKeyDownTrigger(KK_SPACE)

@@ -7,8 +7,10 @@
 #include	"collision.h"
 
 #include	"billboard.h"
-#include "enemySpawner.h" // 追加: Enemy 配列操作のため
-#include "BossObj.h"      // ボス攻撃オブジェクト
+#include "enemySpawner.h"
+#include "BossObj.h"
+#include "bomb.h"               // 追加: RunBomb を生成するため
+#include "RunBombSource.h"      // RUNBOMBSOURCE のアクセス
 
 //ボールオブジェクト
 
@@ -24,12 +26,12 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	float downSize = 10.0f;
 
-	m_Position = XMFLOAT3(7.0f, 7.0f, 60.0f);//ボスの位置　モデルにあわせて調整
+	m_Position = XMFLOAT3(7.0f, 7.0f, 60.0f);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
 
-	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);//ボスの大きさ　モデルにあわせて調整	
+	m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 
 	m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
@@ -42,24 +44,18 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 	m_IdleCounter = 0;
 
 	// フェーズフラグ初期化
-	m_Phase1Spawned = false;
-	m_Phase2Spawned = false;
-
-	
+	m_Phase2_1Fired = false;
+	m_Phase2_2Fired = false;
+	m_Phase3Fired = false;
 
 	//テクスチャ画像読み込み
 	TexMetadata		metadata;
 	ScratchImage	image;
 	LoadFromWICFile(L"asset\\texture\\diamond.png",
-		WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+		WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(g_pDeviceBoss, image.GetImages(),
 		image.GetImageCount(), metadata, &g_Texture);
-	assert(g_Texture);//読み込み失敗時にダイアログを表示
-
-	//m_Model[1] = ModelLoad("asset\\model\\test.fbx");
-	//m_Model[2] = ModelLoad("asset\\model\\test.fbx");
-	//m_Model[3] = ModelLoad("asset\\model\\test.fbx");
-	//m_Model[4] = ModelLoad("asset\\model\\test.fbx");
+	assert(g_Texture);
 
 	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 	{
@@ -67,27 +63,22 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 		m_BossObjs[i].SetActive(false);
 	}
 
-	m_BossAnim.BossAnimation_Initialize(pDevice, pContext);//アニメーションの初期化
-	
+	m_BossAnim.BossAnimation_Initialize(pDevice, pContext);
 }
 void	BOSSMONSTER::Bossmonster_Finalize()
 {
-	/*for (int i = 0; i < 4; i++) {
-		ModelRelease(m_Model[i+1]);
-	}*/
-
 	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 	{
 		m_BossObjs[i].BossObj_Finalize();
 	}
 
-	m_BossAnim.BossAnimation_Finalize();//アニメーションの終了処理
+	m_BossAnim.BossAnimation_Finalize();
 }
 
 
 void	BOSSMONSTER::Bossmonster_Update()
 {
-	//最初にボスのstateによってアニメーションを更新する
+	// アニメーション状態更新
 	switch (m_State)
 	{
 	case BOSSMONSTER_STATE_IDLE:
@@ -108,14 +99,11 @@ void	BOSSMONSTER::Bossmonster_Update()
 	case BOSSMONSTER_STATE_DEATH:
 		m_BossAnim.SetBossAnimState(BOSS_ANIMATION_STATE::BOSS_STATE_DEATH);
 		break;
-	case BOSSMONSTER_STATE_END:
-		break;
 	default:
 		break;
 	}
 
-	m_BossAnim.BossAnimation_Update(m_Position, m_Rotation);//アニメーション更新
-
+	m_BossAnim.BossAnimation_Update(m_Position, m_Rotation);
 
 	switch (m_State)
 	{
@@ -148,7 +136,7 @@ void	BOSSMONSTER::Bossmonster_Update()
 		&& m_State != BOSSMONSTER_STATE::BOSSMONSTER_STATE_END)
 	{
 		m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_DEATH;
-		deathCounter = 0;   // ここでリセットすると完璧
+		deathCounter = 0;
 	}
 
 
@@ -160,34 +148,25 @@ void	BOSSMONSTER::Bossmonster_Update()
 }
 void	BOSSMONSTER::Bossmonster_Draw()
 {
-	
+	// モデル（アニメ）描画
+	switch (m_State)
+	{
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE:
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE1:
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_1:
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_2:
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE3:
+	case BOSSMONSTER_STATE::BOSSMONSTER_STATE_DEATH:
+		m_BossAnim.BossAnimation_Draw();
+		break;
+	default:
+		break;
+	}
 
-		//モデルの描画リクエスト
-		switch (m_State)
-		{
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE1:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_1:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_2:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE3:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		case BOSSMONSTER_STATE::BOSSMONSTER_STATE_DEATH:
-			m_BossAnim.BossAnimation_Draw();
-			break;
-		}
-		for (int i = 0; i < BOSS_OBJECT_MAX; i++)
-		{
-			m_BossObjs[i].BossObj_Draw();
-		}
+	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
+	{
+		m_BossObjs[i].BossObj_Draw();
+	}
 
 	{
 		XMFLOAT3 pos = m_Position;
@@ -199,30 +178,31 @@ void	BOSSMONSTER::Bossmonster_Draw()
 		int hc = 1;
 
 		Billboard* bb = new Billboard(pos, size, col, bno, wc, hc, BILLBOARD_TEXTURE::TEST);
-	}	
-
+	}
 }
 
 
 void	BOSSMONSTER::Bossmonster_Idle()
 {
-	// 毎フレーム呼ばれる想定なのでフレームカウントで秒数を測る（60FPS 前提）
 	m_IdleCounter++;
 
-	// 指定秒数を過ぎたら次のステートへ
 	if (m_IdleCounter >= (BOSSMONSTER_IDLE_SECONDS * 60))
 	{
 		m_IdleCounter = 0;
-		if (m_Hp > BOSSMONSTER_HP / 3 * 2) //HP が 2/3 より大きいならフェーズ1へ
+		if (m_Hp > BOSSMONSTER_HP / 3 * 2)
 		{
+			// 次回 Phase3 入るときは再生成させたい -> フラグをリセット
+			m_Phase3Fired = false;
 			m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE1;
 		}
-		else if (m_Hp > BOSSMONSTER_HP / 3) //HP が 1/3 より大きいならフェーズ2へ
+		else if (m_Hp > BOSSMONSTER_HP / 3)
 		{
 			m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_1;
 		}
-		else                                //HP が 1/3 以下ならフェーズ3へ
+		else
 		{
+			// 次回 Phase3 入るときは再生成させたい -> フラグをリセット
+			m_Phase3Fired = false;
 			m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE3;
 		}
 	}
@@ -230,12 +210,10 @@ void	BOSSMONSTER::Bossmonster_Idle()
 
 void BOSSMONSTER::Bossmonster_Phase1()
 {
-	// フェーズ1開始時に敵をスポーン（ENEMYSPAWNER に空きがあれば）
 	if (m_pSpawner != nullptr)
 	{
 		int spawned = 0;
 
-		// 指定場所（例: ボスの左右に出現）
 		XMFLOAT3 spawnPos[2];
 		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, m_Position.z - 40.0f);
 		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, m_Position.z - 40.0f);
@@ -250,10 +228,9 @@ void BOSSMONSTER::Bossmonster_Phase1()
 
 		m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
 	}
-
-	// フェーズ1中の挙動（未実装） — 必要ならここに行動を追加
 }
 
+// フェーズ2は既存ロジック（省略）
 // フェーズ2実装はそのまま（省略）
 void BOSSMONSTER::Bossmonster_Phase2_1()
 {
@@ -347,23 +324,71 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 	}
 }
 
-
 void BOSSMONSTER::Bossmonster_Phase3()
 {
+	// フェーズ3 で RunBomb（走る爆弾）を横一列に生成する
+	// 同フェーズ内で何度も呼ばれるのを防ぐフラグチェック
+	if (m_Phase3Fired) return;
 
+	if (m_pBomb == nullptr) return; // Bomb 管理クラスがないと生成できない
+
+	// RunBomb 配列を取得
+	RUNBOMBSPAWNER* runArr = m_pBomb->Bomb_GetRunBomb();
+	if (runArr == nullptr) return;
+
+	const int spawnCount = 20;         // 横一列に出す数
+	const float spacing = 1.1f;       // X 軸間隔（調整可）
+	const float zOffset = -40.0f;     // ボスからの Z オフセット
+	const float yPos = 1.0f;          // Y 座標（地面高に合わせる）
+
+	// 開始 X を中央揃えで計算
+	float startX = m_Position.x - ((spawnCount - 1) * spacing) * 0.5f;
+	int spawned = 0;
+
+	for (int i = 0; i < BOMB_NUM_MAX && spawned < spawnCount; ++i)
+	{
+		// spawner が使えるか（地形配置によっては GetUse() が false の場合がある）
+		// ここでは state が NONE / COOL / ITEM のものを再利用する
+		RUNBOMBSOURCE* src = runArr[i].GetRunBombSource__RunBombSpawner();
+		if (src == nullptr) continue;
+
+		RUNBOMB_STATE st = src->Runbombsource_GetState();
+		if (st == RUNBOMB_NONE || st == RUNBOMB_COOL || st == RUNBOMB_ITEM)
+		{
+			// 生成位置を計算（左→右）
+			XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, m_Position.z + zOffset);
+
+			// 敵走る爆弾として初期化（横方向に進むタイプを使う -> RIGHT）
+			src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY, RUNBOMB_TYPE_DOWN);
+
+			// spawner を有効にしておく（既に true の可能性あり）
+			runArr[i].SetUse(true);
+
+			// 重要: spawner の m_Active を true にして Update_RunBombSpawner が
+			// Runbombsource_Enemy を呼ぶようにする
+			runArr[i].SetActive(true);
+			// クールタイムもリセットしておく（安全）
+			runArr[i].ResetRCoolTime();
+
+			spawned++;
+		}
+	}
+
+	// 同フェーズ内の二重生成を防ぐ
+	m_Phase3Fired = true;
+
+	// フェーズ終了または Idle に戻すなど挙動を追加（必要ならここで状態遷移）
+	m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
 }
 
 void BOSSMONSTER::Bossmonster_Death()
 {
-	
 	deathCounter++;
 	if (deathCounter >= (BOSSMONSTER_DEATH_SECONDS * 60))
 	{
 		deathCounter = 0;
 		m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_END;
-
 	}
-
 }
 
 
