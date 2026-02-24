@@ -145,16 +145,16 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundBody.fbx");
 			break;
 		case EG_PARTS_ARM_RIGHT:
-			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
+			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundHandR.fbx");
 			break;
 		case EG_PARTS_ARM_LEFT:
-			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
+			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundHandL.fbx");
 			break;
 		case EG_PARTS_LEG_RIGHT:
-			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
+			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundLegR.fbx");
 			break;
 		case EG_PARTS_LEG_LEFT:
-			m_EG_Model[i] = ModelLoad("asset\\model\\ball.fbx");
+			m_EG_Model[i] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundLegL.fbx");
 			break;
 		default:
 			break;
@@ -686,33 +686,34 @@ void ENEMYSPAWNER::ENEMY_GROUND_UpdateAnim()
 			for (int j = 0; j < ENEMY_GROUND_PARTS::EG_PARTS_MAX; j++)
 			{
 				XMFLOAT3 position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				XMFLOAT3 plasRot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 				XMFLOAT3 pos = m_EnemyGround[i].GetEnemyPosition();
 				XMFLOAT3 rot = m_EnemyGround[i].GetEnemyRotation();
-				//XMFLOAT3 plasRot = m_EG_Anim;
+				
 				ENEMY_GROUND_STATE state = m_EnemyGround[i].GetEnemyGroundState();
 
 				switch (j)
 				{
 				case EG_PARTS_BODY:
 					position = ENEMY_GROUND_AnimPos(state, EG_PARTS_BODY, &EG_Parts[j], pos, rot, (int)l);
-					//plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_BODY, &m_Model[i], rot, (int)l);
+					plasRot = ENEMY_GROUND_AnimRot(state, EG_PARTS_BODY, &EG_Parts[j], pos, rot, (int)l);
 					break;
 				case EG_PARTS_ARM_RIGHT:
 					position = ENEMY_GROUND_AnimPos(state, EG_PARTS_ARM_RIGHT, &EG_Parts[j], pos, rot, (int)l);
-					//plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_RIGHT, &m_Model[i], rot, (int)l);
+					plasRot = ENEMY_GROUND_AnimRot(state, EG_PARTS_ARM_RIGHT, &EG_Parts[j], pos, rot, (int)l);
 					break;
 				case EG_PARTS_ARM_LEFT:
 					position = ENEMY_GROUND_AnimPos(state, EG_PARTS_ARM_LEFT, &EG_Parts[j], pos, rot, (int)l);
-					//plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_ARM_LEFT, &m_Model[i], rot, (int)l);
+					plasRot = ENEMY_GROUND_AnimRot(state, EG_PARTS_ARM_LEFT, &EG_Parts[j], pos, rot, (int)l);
 					break;
 				case EG_PARTS_LEG_RIGHT:
 					position = ENEMY_GROUND_AnimPos(state, EG_PARTS_LEG_RIGHT, &EG_Parts[j], pos, rot, (int)l);
-					//plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_RIGHT, &m_Model[i], rot, (int)l);
+					plasRot = ENEMY_GROUND_AnimRot(state, EG_PARTS_LEG_RIGHT, &EG_Parts[j], pos, rot, (int)l);
 					break;
 				case EG_PARTS_LEG_LEFT:
 					position = ENEMY_GROUND_AnimPos(state, EG_PARTS_LEG_LEFT, &EG_Parts[j], pos, rot, (int)l);
-					//plasRot = Player_AnimRot(PLAYER_STATE_JUMP, PARTS_LEG_LEFT, &m_Model[i], rot, (int)l);
+					plasRot = ENEMY_GROUND_AnimRot(state, EG_PARTS_LEG_LEFT, &EG_Parts[j], pos, rot, (int)l);
 					break;
 				case PARTS_MAX:
 					break;
@@ -721,9 +722,9 @@ void ENEMYSPAWNER::ENEMY_GROUND_UpdateAnim()
 				}
 
 
-				rot.x += 0;//XMConvertToRadians(plasRot.x);
-				rot.y += 0;//XMConvertToRadians(plasRot.y);
-				rot.z += 0;//XMConvertToRadians(plasRot.z);
+				rot.x += XMConvertToRadians(plasRot.x);
+				rot.y += XMConvertToRadians(plasRot.y);
+				rot.z += XMConvertToRadians(plasRot.z);
 
 
 				switch (j)
@@ -801,6 +802,24 @@ XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROU
 
 	return position;
 
+}
+
+XMFLOAT3 ENEMYSPAWNER::ENEMY_GROUND_AnimRot(ENEMY_GROUND_STATE state, ENEMY_GROUND_PARTS part, PARTS* parts, XMFLOAT3 pos, XMFLOAT3 rot, int frame)
+{
+	XMFLOAT3 Rot = rot;
+	XMFLOAT3 lastRot = m_EG_Anim[state].anim[part].fps[frame].Rotation;
+
+	//x’l
+	Rot.x = lastRot.x;
+
+	//z’l
+	Rot.z = lastRot.z;
+
+	//‚™’l
+	Rot.y = lastRot.y;
+
+
+	return Rot;
 }
 
 
@@ -1015,11 +1034,11 @@ void ENEMYSPAWNER::Enemy_Ground_SetAnimAttack()
 		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_RIGHT].SetInisFlame(59, { 0.0f, 0.0f, 0.0f });
 	}
 	{//left_arm 
-		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f });
-		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(8,  { 0.15f, 0.25f, -0.15f }, { -140.0f, 20.0f, 10.0f });
-		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(20, { 0.2f, 0.35f, -0.2f }, { -160.0f, 25.0f, 15.0f });
-		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(28, { -0.2f, -0.1f, 0.4f }, { 80.0f, -15.0f, -10.0f });
-		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(40, { -0.15f, -0.05f, 0.25f }, { 50.0f, -10.0f, -5.0f });
+		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(0,  { 0.0f, 0.0f, 0.0f }, { 90.0f, 0.0f, 0.0f });
+		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(8,  { 0.15f, 0.25f, -0.15f }, { 90.0f, 20.0f, 10.0f });
+		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(20, { 0.2f, 0.35f, -0.2f }, { 90.0f, 25.0f, 15.0f });
+		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(28, { -0.2f, -0.1f, 0.4f }, { 90.0f, -15.0f, -10.0f });
+		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(40, { -0.15f, -0.05f, 0.25f }, { 90.0f, -10.0f, -5.0f });
 		m_EG_Anim[ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_ATTACK].anim[ENEMY_GROUND_PARTS::EG_PARTS_ARM_LEFT].SetInisFlame(59, { 0.0f, 0.0f, 0.0f });
 	}
 	{//right_leg
