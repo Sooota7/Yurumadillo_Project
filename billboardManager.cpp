@@ -143,6 +143,9 @@ void BillboardManager::Initialize_BombEffect(TexMetadata* tm, ScratchImage* si, 
 	case FIELD_NO::NO_6:
 		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
 		break;
+	case FIELD_NO::NO_ENEMYLUSH:
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		break;
 	default:
 		break;
 	}

@@ -45,7 +45,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		m_EnemyButterfly[i].Initialize(g_pDevice, g_pContext);
 		m_EnemyButterfly[i].SetEnemyButterflyType(ENEMY_TYPE::ENEMY_TYPE_NONE);
 	}
-	 
+
 	// ======================================================
 	// 縺ｪ繧薙°驕輔▲縺溘ｉ螟峨∴縺ｦ(阯､蜴殼ersion)
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
@@ -53,7 +53,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		m_EnemyGround[i].Initialize(g_pDevice, g_pContext);
 		m_EnemyGround[i].SetEnemyGroundType(ENEMY_TYPE::ENEMY_TYPE_NONE);
 	}
-	 
+
 	// ======================================================
 
 
@@ -61,6 +61,7 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	int a = 0;
 	int b = 0;
 	int c = 0;	//EnemyGround縺ｮ謨ｰ
+
 
 	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 	{
@@ -75,28 +76,29 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 					break;
 				case 6:
 					m_Enemy[a].SetEnemyPosition(XMFLOAT3(l, q, i));
-					m_Enemy[a].SetEnemyNormalType(ENEMY_TYPE_NORMAL);
+					m_Enemy[a].SetEnemyNormalType(ENEMY_TYPE_NORMAL); m_Enemy[a].SetEnemyNormalState(ENEMY_NORMAL_STATE_MOVE);
 					a++;
 					MaxNum++;
 					break;
 				case 7:
 					m_EnemyButterfly[b].SetEnemyPosition(XMFLOAT3(l, q, i));
-					m_EnemyButterfly[b].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY);
+					m_EnemyButterfly[b].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY); m_EnemyButterfly[b].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_MOVE);
 					b++;
 					MaxNum++;
 					break;
 				case G:
 					m_EnemyGround[c].SetEnemyPosition(XMFLOAT3(l, q, i));
-					m_EnemyGround[c].SetEnemyGroundType(ENEMY_TYPE_GROUND);
+					m_EnemyGround[c].SetEnemyGroundType(ENEMY_TYPE_GROUND); m_EnemyGround[c].SetEnemyGroundState(ENEMY_GROUND_STATE_IDLE);
 					c++;
 					MaxNum++;
 				}
 
-				
+
 			}
 		}
 	}
-	
+
+
 
 	//繝悶Ο繝・け縺ｮ菴懈・
 	for (int i = 0; i < ENEMY_TYPE_MAX; i++)
@@ -127,9 +129,9 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 
 
 
-//============================================================
-// Enemy_Ground_Anim
-//============================================================
+	//============================================================
+	// Enemy_Ground_Anim
+	//============================================================
 
 	float downSize = 1.0f;
 
@@ -169,6 +171,50 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 	ENEMY_GROUND_SetAnimInis();
 
 
+}
+
+
+void ENEMYSPAWNER::EnemySpawner_Spawn(XMFLOAT3 EL_Pos, EL_E_TYPE EL_type)
+{
+	int a2 = 0;
+	int b2 = 0;
+	int c2 = 0;
+	
+	switch (EL_type)
+	{
+	case EL_EN:
+		while (m_Enemy[a2].GetEnemyNormalState() != ENEMY_NORMAL_STATE_NONE) { if (Enemy_Spawner_MAX > a2) { a2++; } else { break; } }
+		if (Enemy_Spawner_MAX < a2) { a2 = Enemy_Spawner_MAX - 1; }
+		m_Enemy[a2].SetEnemyPosition(EL_Pos);
+		m_Enemy[a2].SetEnemyNormalType(ENEMY_TYPE_NORMAL);
+		m_Enemy[a2].SetEnemyNormalState(ENEMY_NORMAL_STATE_MOVE);
+		a2++;
+		MaxNum++;
+		break;
+
+	case EL_EF:
+		while (m_EnemyButterfly[b2].GetEnemyButterflyState() != ENEMY_BUTTERFLY_STATE_NONE){ if (Enemy_Spawner_MAX > b2) { b2++; } else { break; } }
+		if (Enemy_Spawner_MAX < b2) { b2 = Enemy_Spawner_MAX - 1; }
+		m_EnemyButterfly[b2].SetEnemyPosition(EL_Pos);
+		m_EnemyButterfly[b2].SetEnemyButterflyType(ENEMY_TYPE_BUTTERFLY);
+		m_EnemyButterfly[b2].SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_MOVE);
+		b2++; 
+		MaxNum++;
+		break;
+
+	case EL_EG:
+		while (m_EnemyGround[c2].GetEnemyGroundState() != ENEMY_GROUND_STATE_NONE) { if (Enemy_Spawner_MAX > c2) { c2++; } else { break; } }
+		if (Enemy_Spawner_MAX < c2) { c2 = Enemy_Spawner_MAX - 1; }
+		m_EnemyGround[c2].SetEnemyPosition(EL_Pos);
+		m_EnemyGround[c2].SetEnemyGroundType(ENEMY_TYPE_GROUND);
+		m_EnemyGround[c2].SetEnemyGroundState(ENEMY_GROUND_STATE_IDLE);
+		c2++; 
+		MaxNum++;
+		break;
+
+	default:
+		break;
+	}
 }
 
 void ENEMYSPAWNER::EnemySpawner_Finalize(void)
@@ -435,32 +481,33 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 
 			PARTS* EG_Parts = m_EnemyGround[i].GetEnemyGroundParts();
 
-			//謠冗判繝ｪ繧ｯ繧ｨ繧ｹ繝・
-			//繝｢繝・Ν荳蛟九＠縺九↑縺・°繧芽ｿｽ蜉縺吶ｋ縺ｨ縺阪↓螟峨∴繧・
-			for (int i = 0; i < EG_PARTS_MAX; i++)
-			{
-				switch (i)
+			if (m_EnemyGround[i].GetEnemyGroundState() != ENEMY_GROUND_STATE_DEAD) {
+				//謠冗判繝ｪ繧ｯ繧ｨ繧ｹ繝・
+				//繝｢繝・Ν荳蛟九＠縺九↑縺・°繧芽ｿｽ蜉縺吶ｋ縺ｨ縺阪↓螟峨∴繧・
+				for (int i = 0; i < EG_PARTS_MAX; i++)
 				{
-				case EG_PARTS_BODY:
-					EG_Parts[i].PartsDraw(m_EG_Model[i]);
-					break;
-				case EG_PARTS_ARM_RIGHT:
-					EG_Parts[i].PartsDraw(m_EG_Model[i]);
-					break;
-				case EG_PARTS_ARM_LEFT:
-					EG_Parts[i].PartsDraw(m_EG_Model[i]);
-					break;
-				case EG_PARTS_LEG_RIGHT:
-					EG_Parts[i].PartsDraw(m_EG_Model[i]);
-					break;
-				case EG_PARTS_LEG_LEFT:
-					EG_Parts[i].PartsDraw(m_EG_Model[i]);
-					break;
-				default:
-					break;
+					switch (i)
+					{
+					case EG_PARTS_BODY:
+						EG_Parts[i].PartsDraw(m_EG_Model[i]);
+						break;
+					case EG_PARTS_ARM_RIGHT:
+						EG_Parts[i].PartsDraw(m_EG_Model[i]);
+						break;
+					case EG_PARTS_ARM_LEFT:
+						EG_Parts[i].PartsDraw(m_EG_Model[i]);
+						break;
+					case EG_PARTS_LEG_RIGHT:
+						EG_Parts[i].PartsDraw(m_EG_Model[i]);
+						break;
+					case EG_PARTS_LEG_LEFT:
+						EG_Parts[i].PartsDraw(m_EG_Model[i]);
+						break;
+					default:
+						break;
+					}
 				}
 			}
-
 
 
 		}
@@ -610,6 +657,7 @@ bool ENEMYSPAWNER::EnemySpawner_SpawnNormal(const XMFLOAT3& pos)
 	}
 	return false;
 }
+
 
 
 //============================================================

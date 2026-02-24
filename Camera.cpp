@@ -176,12 +176,12 @@ void	Camera_Draw()
 	//ÉrÉÖÅ[çsóÒçÏê¨
 	XMVECTOR	vpos = XMVectorSet(
 		CameraObject.Position.x,
-		CameraObject.Position.y,
+		CameraObject.Position.y+1.5f,
 		CameraObject.Position.z,
 		0.0f);
 	XMVECTOR	vAt = XMVectorSet(
 		CameraObject.AtPosition.x,
-		CameraObject.AtPosition.y,
+		CameraObject.AtPosition.y+1.5f,
 		CameraObject.AtPosition.z,
 		0.0f
 	);

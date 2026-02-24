@@ -231,6 +231,9 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		case NO_6:
 			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
 			break;
+		case NO_ENEMYLUSH:
+			LoadFromWICFile(L"Asset\\Texture\\Boss_Map.png", WIC_FLAGS_NONE, &metadata, image);
+			break;
 		default:
 			break;
 		}

@@ -37,7 +37,7 @@ void	ENEMY_NORMAL::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	//m_Scaling = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	SetEnemyHp(100);
 
-	SetEnemyNormalState(ENEMY_NORMAL_STATE_MOVE);
+	SetEnemyNormalState(ENEMY_NORMAL_STATE_NONE);
 }
 
 void	ENEMY_NORMAL::Finalize()

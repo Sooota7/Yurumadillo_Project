@@ -773,7 +773,6 @@ XMFLOAT3 BOSSANIMATION::BossAnimation_AnimationRotation(BOSS_ANIMATION_STATE sta
 
 void BOSSANIMATION::SetBossAnimState(BOSS_ANIMATION_STATE state)
 {
-
 	//60framesで一度ループしたら次のステート確認をする。アニメーション待機
 	if (!m_AnimLoop)
 	{

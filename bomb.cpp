@@ -258,13 +258,14 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			//ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 			{
 				XMFLOAT3 pos = m_Bomb[i].BombSource_GetPosition();
-				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+				pos.y += 0.5f;
+				XMFLOAT2 size = XMFLOAT2(5.2f, 5.2f);
 				float cnt = m_Bomb[i].BombSource_GetCount();
 
 				int wc = 3;
 				int hc = 3;
 
-				if (cnt > (1.0f / (wc * hc)) * (m_Bbno[i] + 1))
+				if (cnt > (0.75f / (wc * hc)) * (m_Bbno[i] + 1))
 				{
 					m_Bbno[i]++;
 				}
