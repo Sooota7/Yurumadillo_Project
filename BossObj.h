@@ -9,7 +9,7 @@
 using namespace DirectX;
 
 #define BOSSOBJ_MAX (4)
-#define BOSSATK_RANGE (200.0f)
+#define BOSSATK_RANGE (30.0f)
 #define BOSSOBJ_RADIUS (1.0f)
 #define BOSSOBJ_DAMAGE (1)
 
