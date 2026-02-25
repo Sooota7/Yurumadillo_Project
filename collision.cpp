@@ -1056,8 +1056,8 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			pPlayer->SetPlayerVelocity(PlayerVel);
 
 			// テスト
-			if (hit && !RunBomb[i].Runbombsource_GetDamage()
-				&& !RunBomb[i].Runbombsource_GetState() == EG_WEAPON_NONE)
+			if (hit > COLLISION_HIT::HIT_GROUND && !RunBomb[i].Runbombsource_GetDamage()
+				&& (RunBomb[i].Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY))
 			{
 				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
 				RunBomb[i].Runbombsource_SetDamage(true);
@@ -1709,7 +1709,7 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					//�{���̃X�e�[�g�𔚔��ɕύX
 					if (test)
 					{
-						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -10000.0f, -100.0f));
 						test = false;
 
 					}
@@ -1722,10 +1722,14 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
+		if (!pRunBombSpawner[i].GetUse())
+			continue;
+
 		RUNBOMBSOURCE* pRunBomb = pRunBombSpawner[i].GetRunBombSource__RunBombSpawner();
 
 		//�X���[�̂Ƃ��̂ݓ����蔻������
-		if (pRunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_EXPLOSION)
+		if (pRunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_EXPLOSION ||
+			pRunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW)
 		{
 			int			l = 0;
 			bool test = false;
@@ -1763,9 +1767,10 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 					//�{���̃X�e�[�g�𔚔��ɕύX
 					if (test)
 					{
-						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -100.0f, -100.0f));
+						Map[l].MapData_SetPosition(XMFLOAT3(-100.0f, -10000.0f, -100.0f));
 						test = false;
-
+						pRunBomb->Runbombsource_SetCount(0.0f);
+						pRunBomb->Runbombsource_SetState(RUNBOMB_STATE::RUNBOMB_EXPLOSION);
 					}
 				}
 
@@ -2702,6 +2707,7 @@ float	COLLISION ::EXPLOSIONEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 					//ボムのステートを爆発に変更
 					if (test)
 					{
+						pBombSource[i].BombSource_SetCount(0.0f);
 						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
 						test = false;
 
