@@ -53,7 +53,7 @@ void	ENEMY_NORMAL::Update(XMFLOAT3 chasePos)
 		Enemy_Normal_Idle();
 		break;
 	case ENEMY_NORMAL_STATE_MOVE:
-		Enemy_Normal_Move();
+		Enemy_Normal_Move(chasePos);
 		break;
 	case ENEMY_NORMAL_STATE_DIRECTION:
 		Enemy_Normal_Direction(chasePos);
@@ -91,8 +91,36 @@ void	ENEMY_NORMAL::Enemy_Normal_Idle()
 
 }
 
-void	ENEMY_NORMAL::Enemy_Normal_Move()
+void	ENEMY_NORMAL::Enemy_Normal_Move(XMFLOAT3 chasePos)
 {
+	
+	{// “G‚ÌŒü‚«‚ðƒvƒŒƒCƒ„[‚ÉŒü‚¯‚é
+		XMFLOAT3 direction;
+
+		direction.x = chasePos.x - m_Position.x;
+		direction.y = 0.0f;
+		direction.z = chasePos.z - m_Position.z;
+
+		// ‹——£
+		float length = sqrtf((direction.x * direction.x) +
+			(direction.z * direction.z));
+
+		if (length != 0.0f)
+		{// ³‹K‰»
+			direction.x /= length;
+			direction.z /= length;
+
+			float yaw = atan2(direction.x, direction.z);
+
+
+			// [-ƒÎ, ƒÎ] ‚É³‹K‰»
+			if (yaw > XM_PI) yaw -= XM_2PI;
+			if (yaw < -XM_PI) yaw += XM_2PI;
+
+
+			m_Rotation.y = yaw;
+		}
+	}
 	m_Velocity.x += m_Acceleration.x;
 	m_Velocity.y += m_Acceleration.y;
 	m_Velocity.z += m_Acceleration.z;
@@ -122,6 +150,10 @@ void	ENEMY_NORMAL::Enemy_Normal_Move()
 
 void	ENEMY_NORMAL::Enemy_Normal_Direction(XMFLOAT3 chasePos)
 {
+
+	
+
+
 	XMFLOAT3 direction;
 
 	direction.x = chasePos.x - m_Position.x;
