@@ -26,7 +26,7 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	float downSize = 10.0f;
 
-	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, 7.0f, FIELD_WIDTH_Z+BOSS_START_POS_Z);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, 7.0f, FIELD_WIDTH_Z/4*3);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -215,8 +215,8 @@ void BOSSMONSTER::Bossmonster_Phase1()
 		int spawned = 0;
 
 		XMFLOAT3 spawnPos[2];
-		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, m_Position.z - 40.0f);
-		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, m_Position.z - 40.0f);
+		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, FIELD_WIDTH_Z / 2);
+		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, FIELD_WIDTH_Z / 2);
 
 		for (int s = 0; s < 2; ++s)
 		{
@@ -246,7 +246,7 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 			{
 				XMFLOAT3 spawnPos = m_Position;
 				spawnPos.y = 1.0f;
-				spawnPos.z -= 150.0f;
+				spawnPos.z -= BOSS_PHASE2_BACKRANGE;
 				spawnPos.x += (bulletsToSpawn - 4) * spread;
 
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
@@ -274,8 +274,13 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 	// 全弾消えたらフェーズ2_2へ
 	if (!anyActive)
 	{
-		m_Phase2_1Fired = false;              // 次回用リセット
-		m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_2; // フェーズ移行！
+		m_Phase2_interval++;
+		if(m_Phase2_interval>= (BOSSMONSTER_PHASE2_INTERVAL * 60))
+		{
+			m_Phase2_interval = 0;
+			m_Phase2_1Fired = false;              // 次回用リセット
+			m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_PHASE2_2; // フェーズ移行！
+		}
 	}
 }
 
@@ -356,7 +361,7 @@ void BOSSMONSTER::Bossmonster_Phase3()
 		if (st == RUNBOMB_NONE || st == RUNBOMB_COOL || st == RUNBOMB_ITEM)
 		{
 			// 生成位置を計算（左→右）
-			XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, m_Position.z + zOffset);
+			XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, FIELD_WIDTH_Z / 2);
 
 			// 敵走る爆弾として初期化（横方向に進むタイプを使う -> RIGHT）
 			src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY, RUNBOMB_TYPE_DOWN);

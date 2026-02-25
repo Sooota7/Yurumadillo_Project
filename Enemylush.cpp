@@ -37,14 +37,13 @@ static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void ENEMYLUSH::Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
-<<<<<<< HEAD
-	m_NowField = FIELD_NO::NO_4;
-=======
+	//m_NowField = FIELD_NO::NO_4;
+
 	m_NowField = FIELD_NO::NO_ENEMYLUSH;
 	
 	g_pDevice_EL = pDevice;
 	g_pContext_EL = pContext;
->>>>>>> 6e323480f8b92df1caca7316a9ce144fcf976020
+
 
 	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -216,17 +215,17 @@ void ENEMYLUSH::Enemylush_Update()
 	//Score_Update();
 	//Polygon3D_Update();
 	
-	//倒すべき敵の数と今まで倒した敵の数を比べる
-	if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
-	{
-		if (m_Manager->GetClearCount() == 2) 
-		{
-			m_Manager->IncrementClearCount();
-		};
-		
-		m_Manager->SetScene(SCENE_RESULT);
-		
-	}
+	////倒すべき敵の数と今まで倒した敵の数を比べる
+	//if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
+	//{
+	//	if (m_Manager->GetClearCount() == 2) 
+	//	{
+	//		m_Manager->IncrementClearCount();
+	//	};
+	//	
+	//	m_Manager->SetScene(SCENE_RESULT);
+	//	
+	//}
 
 	if (Keyboard_IsKeyDownTrigger(KK_C))
 	{

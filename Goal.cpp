@@ -28,7 +28,7 @@ void GOAL::Goal_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
             for (int x = 0; x < FIELD_WIDTH_X; ++x)
             {
                 int v = CheckMap(x, z, y, no); // 他ファイルと同スタイルの引数順に合わせる（Dictionary.cpp に準拠）
-                if (v == 19) // ← ここを 9 から 5 に修正（FIELD_GOAL は 5）
+                if (v == 56) // 
                 {
                     m_pItems[idx].pos = XMFLOAT3((float)x, (float)y, (float)z);
                     m_pItems[idx].active = true;
