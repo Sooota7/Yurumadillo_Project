@@ -215,6 +215,17 @@ void ENEMYLUSH::Enemylush_Update()
 	//Score_Update();
 	//Polygon3D_Update();
 	
+	//倒すべき敵の数と今まで倒した敵の数を比べる
+	/*if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
+	{
+		if (m_Manager->GetClearCount() == 2) 
+		{
+			m_Manager->IncrementClearCount();
+		};
+		
+		m_Manager->SetScene(SCENE_RESULT);
+		
+	}*/
 	////倒すべき敵の数と今まで倒した敵の数を比べる
 	//if (m_EnemyNormal.EnemySpawner_GetKillNum() >= m_EnemyNormal.EnemySpawner_GetEnemyNum())
 	//{
