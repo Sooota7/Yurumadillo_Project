@@ -451,7 +451,7 @@ void ENEMYLUSH::Enemylush_Phase_Draw()
 
 void ENEMYLUSH::Enemylush_Phase_SetPhase01()
 {
-	m_Phase[EL_STATE_PHASE01].Set_EN_TOTAL(0);
+	m_Phase[EL_STATE_PHASE01].Set_EN_TOTAL(2);
 	m_Phase[EL_STATE_PHASE01].Set_EF_TOTAL(1);
 	m_Phase[EL_STATE_PHASE01].Set_EG_TOTAL(2);
 }

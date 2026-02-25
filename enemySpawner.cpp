@@ -110,10 +110,10 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 		case ENEMY_TYPE_NONE:
 			break;
 		case ENEMY_TYPE_NORMAL:
-			m_Model[i] = ModelLoad("asset\\model\\tree.fbx");//繝・ヰ繝・げ
+			m_Model[i] = ModelLoad("asset\\model\\NormalEnemy\\EnemyNormal.fbx");//繝・ヰ繝・げ
 			break;
 		case ENEMY_TYPE_BUTTERFLY:
-			m_Model[i] = ModelLoad("asset\\model\\test_goal.fbx");//繝・ヰ繝・げ
+			m_Model[i] = ModelLoad("asset\\model\\FloatEnemy\\FlowtEnemy.fbx");//繝・ヰ繝・げ
 			break;
 		case ENEMY_TYPE_MAX:
 			break;
@@ -268,6 +268,7 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			m_Enemy[i].GetEnemyNormalType() != ENEMY_TYPE::ENEMY_TYPE_DEAD)
 		{
 			XMFLOAT3 mapPos = m_Enemy[i].GetEnemyPosition();
+			XMFLOAT3 mapRot = m_Enemy[i].GetEnemyRotation();
 
 			//繧ｹ繧ｱ繝ｼ繝ｪ繝ｳ繧ｰ陦悟・縺ｮ菴懈・
 			XMMATRIX	ScalingMatrix = XMMatrixScaling
@@ -287,11 +288,9 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			//蝗櫁ｻ｢陦悟・縺ｮ菴懈・
 			XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 			(
-				XMConvertToRadians(0.0f),
-				//XMConvertToRadians(rot),
-				//XMConvertToRadians(rot),
-				XMConvertToRadians(0.0f),
-				XMConvertToRadians(0.0f)
+				mapRot.x,
+				mapRot.y,
+				mapRot.z
 			);
 			//繝ｯ繝ｼ繝ｫ繝芽｡悟・縺ｮ菴懈・
 			XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;

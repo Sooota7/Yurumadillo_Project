@@ -40,7 +40,7 @@ private:
 
 private:
 	void	Enemy_Normal_Idle();
-	void	Enemy_Normal_Move();
+	void	Enemy_Normal_Move(XMFLOAT3 chasePos);
 	void	Enemy_Normal_Direction(XMFLOAT3 chasePos);
 	void	Enemy_Normal_Jump();
 	void	Enemy_Normal_Dead();
