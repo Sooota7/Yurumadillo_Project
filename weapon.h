@@ -27,6 +27,7 @@ private:
 	WEAPONSOURCE	m_Weapon[WEAPON_NUM_MAX];
 	WEAPONENEMYGROUND m_EG_Weapon[WEAPON_NUM_MAX];
 	MODEL* m_Model[WEAPON_MAX] = { NULL };//デバッグ
+	MODEL* m_EG_Model = { NULL };//デバッグ
 
 public:
 

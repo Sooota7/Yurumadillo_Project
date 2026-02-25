@@ -47,7 +47,7 @@ void BOSSOBJ::BossObj_Update()
 	m_Position.z += m_Velocity.z;
 
 	// âÊñ äOÇ…èoÇΩÇÁè¡Ç∑
-	if (m_Position.z < -BOSSATK_RANGE||m_Position.z>BOSSATK_RANGE)
+	if (m_Position.z < -BOSSATK_RANGE||m_Position.z>FIELD_WIDTH_Z / 4*3)
 	{
 		m_IsActive = false;
 	}

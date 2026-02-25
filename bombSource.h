@@ -12,8 +12,8 @@ using namespace DirectX;
 #define		BOMB_SPEED_MAX		(1.0f)
 #define		BOMB_GRAVITY		(1.0f/60.0f)
 #define		BOMB_THROW_POWER	(0.2f)
-#define		BOMB_DAMAGE_BOSS	(50.0f)//対ボスダメージ
-#define		BOMB_EXPLOSION_AREA_  (30.0f) //koreyorisakidebakuhatu
+#define		BOMB_DAMAGE_BOSS	(4.0f)//対ボスダメージ
+#define		BOMB_EXPLOSION_AREA_  ( FIELD_WIDTH_Z/2) //koreyorisakidebakuhatu
 enum BOMB_STATE
 {
 	BOMB_NONE,
@@ -30,6 +30,7 @@ enum BOMB_STATE
 enum BOMB_TYPE
 {
 	TYPE_NORMAL,
+	TYPE_FLOWT,
 	TYPE_FLOW,
 	TYPE_RUN,
 	TYPE_MAX

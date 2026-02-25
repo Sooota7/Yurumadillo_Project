@@ -13,14 +13,19 @@ using namespace DirectX;
 
 #define GENSUI (0.98f)
 #define STOP_VELO (0.0002f)
-#define BOSSMONSTER_HP (100.0f)			 //HP
+#define BOSSMONSTER_HP (10.0f)	//( Bombのダメージ×当ててほしい回数 ) 回当てれば倒せる
 
 // フェーズ等
-#define BOSSMONSTER_IDLE_SECONDS (3)//攻撃待機
-#define BOSSMONSTER_PHASE2_TIME (6)
+#define BOSSMONSTER_IDLE_SECONDS (5)//攻撃待機
+#define BOSSMONSTER_PHASE2_INTERVAL (3)//フェーズ2の攻撃の間隔
 #define BOSSMONSTER_DEATH_SECONDS (4.6)//撃破演出(合わせて調整)
 
 #define BOSS_OBJECT_MAX 3
+
+#define BOSS_PHASE2_BACKRANGE (60) //ボスからどのくらい後ろに攻撃オブジェクトを出現させるか
+
+#define BOSS_START_POS_Y (5.0f)     //BOSSの初期位置Y
+#define BOSS_START_POS_Z (50.0f)     //BOSSの初期位置Z
 
 #include "enemySpawner.h" // 参照: 敵生成用
 // forward declare BOMB to avoid heavy include in header
@@ -70,6 +75,8 @@ private:
 	int deathCounter;
 	bool m_Phase2_1Fired = false;
 	bool m_Phase2_2Fired = false;
+	int m_Phase2_interval = 0;
+
 
 	// スポナー参照
 	ENEMYSPAWNER* m_pSpawner = nullptr;

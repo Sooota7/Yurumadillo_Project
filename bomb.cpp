@@ -25,25 +25,12 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	m_NorBombModel = ModelLoad("asset\\model\\AliceObjCool.fbx");
 
-	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
-	{
-		switch (i)
-		{
-		case TYPE_NORMAL:
-			m_BombModel[i] = ModelLoad("asset\\model\\AliceBomb.fbx");
-			break;
-		case TYPE_FLOW:
-			m_BombModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
-			break;
-		case TYPE_RUN:
-			m_BombModel[i] = ModelLoad("asset\\model\\AliceRunBomb.fbx");
-			break;
-		case TYPE_MAX:
-			break;
-		default:
-			break;
-		}
-	}
+	m_BombModel[BOMB_TYPE::TYPE_NORMAL] = ModelLoad("asset\\model\\AliceBomb.fbx");
+
+	m_BombModel[BOMB_TYPE::TYPE_FLOW] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+
+	m_BombModel[BOMB_TYPE::TYPE_RUN] = ModelLoad("asset\\model\\AliceRunBomb.fbx");
+
 
 	for (int i = 0; i < BOMB_TYPE::TYPE_MAX; i++)
 	{
@@ -53,7 +40,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 			m_ItemModel[i] = ModelLoad("asset\\model\\AliceObj.fbx");
 			break;
 		case TYPE_FLOW:
-			m_ItemModel[i] = ModelLoad("asset\\model\\AliceFlowtBomb.fbx");
+			m_ItemModel[i] = ModelLoad("asset\\model\\AliceFlowtObj.fbx");
 			break;
 		case TYPE_RUN:
 			m_ItemModel[i] = ModelLoad("asset\\model\\AliceRunObj.fbx");
@@ -87,7 +74,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		}
 	}
 
-	
+
 
 	/*for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
@@ -136,7 +123,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 			}
 		}
 	}
-	
+
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bbno[i] = 0;
@@ -166,6 +153,8 @@ void BOMB::Bomb_Finalize(void)
 		{
 			ModelRelease(m_Model[i]);
 			m_Model[i] = NULL;
+			m_ItemModel[i] = NULL;
+			m_BombModel[i] = NULL;
 		}
 
 	}
@@ -571,7 +560,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
 			break;
 		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
+			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
 			m_Fbno[i] = 0;
 			break;
 		case BOMB_ACTIVE_THROW:

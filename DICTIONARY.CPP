@@ -172,23 +172,21 @@ int GetMap6(int x, int y, int z)
 	{
 	case(0):
 		return boss_pos_row[y][x];
-
 		break;
 	case(1):
 		return boss_pos_nor[y][x];
-
-
 		break;
 	case(2):
 		return boss_pos_high[y][x];
-
-
 		break;
 	case(3):
-		return 0;
+		return  boss_pos_high2[y][x];;
 		break;
 	case(4):
-		return 0;
+		return  boss_pos_high3[y][x];;
+		break;
+	case(5):
+		return  boss_pos_high4[y][x];;
 		break;
 	default:
 		break;

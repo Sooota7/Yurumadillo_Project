@@ -425,7 +425,7 @@ void   PLAYER::Player_Jump()
 
 void    PLAYER::Player_Respawn()
 {
-	m_Position = XMFLOAT3(PLAYER_START_POS_X, PLAYER_START_POS_Y, PLAYER_START_POS_Z);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);

@@ -57,6 +57,7 @@ private:
 	void ENEMY_GROUND_SetAnimInis();
 	void ENEMY_GROUND_UpdateAnim();
 	XMFLOAT3 ENEMY_GROUND_AnimPos(ENEMY_GROUND_STATE state, ENEMY_GROUND_PARTS part, PARTS* parts, XMFLOAT3 pos, XMFLOAT3 rot, int frame);
+	XMFLOAT3 ENEMY_GROUND_AnimRot(ENEMY_GROUND_STATE state, ENEMY_GROUND_PARTS part, PARTS* parts, XMFLOAT3 pos, XMFLOAT3 rot, int frame);
 
 	void	Enemy_Ground_SetAnimHokan(ENEMY_GROUND_STATE state);
 	void	Enemy_Ground_SetAnimMove();

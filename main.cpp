@@ -1,4 +1,3 @@
-
 //ウィンドウの表示
 #include <SDKDDKVer.h>	//利用できる最も上位の Windows プラットフォームが定義される
 #define WIN32_LEAN_AND_MEAN	//32bitアプリには不要な情報を抑止してコンパイル時間を短縮
@@ -25,6 +24,9 @@
 #include "inputx.h"
 
 ///////////////////////////////////////////
+// フルスクリーンを有効にする場合は 1、ウィンドウモードは 0 に設定
+#define FULLSCREEN_RUN 1
+
 #define		SCREEN_WIDTH	(1920)
 #define		SCREEN_HEIGHT	(1080)
 
@@ -81,23 +83,44 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	wc.hbrBackground = (HBRUSH)(COLOR_BACKGROUND + 1);//ウィンドウの背景色は黒
 	RegisterClass(&wc);	//構造体をWindowsへセット
 
-	//クライアント領域のサイズを表す矩形 (左からleft, top, right, bottom)
-	RECT window_rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	// ウィンドウの大きさ・スタイルを決定（フルスクリーン対応）
+	RECT window_rect;
+	DWORD window_style;
+	int window_width, window_height;
+	int window_x, window_y;
+
+#if FULLSCREEN_RUN
+	// フルスクリーン（プライマリモニタ全画面、境界なし）
+	int screenW = GetSystemMetrics(SM_CXSCREEN);
+	int screenH = GetSystemMetrics(SM_CYSCREEN);
+	window_rect.left = 0; window_rect.top = 0;
+	window_rect.right = screenW; window_rect.bottom = screenH;
+	window_style = WS_POPUP;
+	window_width = screenW;
+	window_height = screenH;
+	window_x = 0;
+	window_y = 0;
+#else
+	// ウィンドウモード（指定したクライアント領域を確保）
+	window_rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	//ウィンドウのスタイル（ウィンドウ枠と最大化ボタンを削除）
-	DWORD window_style = WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX);
+	window_style = WS_OVERLAPPEDWINDOW ^ (WS_THICKFRAME | WS_MAXIMIZEBOX);
 	//指定したクライアント領域を確保するために新たな矩形座標を計算
 	AdjustWindowRect(&window_rect, window_style, FALSE);
 	//調整された矩形の横と縦のサイズを計算
-	int window_width = window_rect.right - window_rect.left;
-	int window_height = window_rect.bottom - window_rect.top;
+	window_width = window_rect.right - window_rect.left;
+	window_height = window_rect.bottom - window_rect.top;
+	window_x = CW_USEDEFAULT;
+	window_y = CW_USEDEFAULT;
+#endif
 
 	//ウィンドウの作成
 	HWND	hWnd = CreateWindow(
 		CLASS_NAME,
 		WINDOW_CAPTION,
 		window_style,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
+		window_x,
+		window_y,
 		window_width,
 		window_height,
 		NULL,
@@ -107,7 +130,14 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	);
 
 	//作成したウィンドウを表示する
+#if FULLSCREEN_RUN
+	// フルスクリーンではサイズを確実に適用して表示
+	ShowWindow(hWnd, SW_SHOWMAXIMIZED);
+	SetWindowPos(hWnd, HWND_TOP, 0, 0, window_width, window_height, SWP_SHOWWINDOW | SWP_FRAMECHANGED);
+#else
 	ShowWindow(hWnd, nCmdShow);//引数に従って表示、または非表示
+#endif
+
 	//ウィンドウ内部の更新要求
 	UpdateWindow(hWnd);
 
