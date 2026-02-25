@@ -306,7 +306,7 @@ void PLAYER::Player_Move()
 		if (Keyboard_IsKeyDownTrigger(KK_SPACE)
 			&& JumpCount && BalloonFlag)
 		{
-			BalloomUp = true;
+         	BalloomUp = true;
 			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
 		}
 		//junp
@@ -373,8 +373,8 @@ void PLAYER::Player_Move()
 	//	m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
 	//}
     // ジャンプ
-    if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
-        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
+    /*if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
+        m_State = PLAYER_STATE::PLAYER_STATE_JUMP;*/
 
 	// --- 進行方向に体の向きを合わせる ---
 	if (len > 0.0f)
