@@ -6,6 +6,11 @@
 
 static bool inputB = InputKeyKonCheck();
 
+
+int RUNBOMBSOURCE::m_ExplosionSE_ID = -1;
+int RUNBOMBSOURCE::m_ThrowSE_ID = -1;
+bool RUNBOMBSOURCE::m_SEInitialized = false;
+
 void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state,RUNBOMB_TYPE type)
 {
 	m_FirstPosition = pos;
@@ -19,6 +24,15 @@ void RUNBOMBSOURCE::Runbombsource_Initialize(XMFLOAT3 pos, RUNBOMB_STATE state,R
 
 	m_isDamage = false;
 	m_fieldColision = false;
+	m_ExplosionSEPlayed = false;
+
+	// SEの初期化（最初のインスタンスでのみ実行）
+	if (!m_SEInitialized)
+	{
+		m_ExplosionSE_ID = LoadAudio("asset\\Audio\\SE\\chomouse.wav");
+		m_ThrowSE_ID = LoadAudio("asset\\Audio\\SE\\throw.wav");
+		m_SEInitialized = true;
+	}
 }
 
 void RUNBOMBSOURCE::Runbombsource_Finalize(void)
@@ -54,6 +68,12 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 	if (inputB) {
 		if (Mouse_IsLeftDownTrigger())
 		{
+			// 爆弾投げSEを再生
+			if (m_ThrowSE_ID != -1)
+			{
+				PlayAudio(m_ThrowSE_ID, false);
+			}
+
 			// プレイヤーの向き
 			float yaw = pPlayerRot.y;
 
@@ -81,6 +101,12 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 	else {
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
 		{
+			// 爆弾投げSEを再生
+			if (m_ThrowSE_ID != -1)
+			{
+				PlayAudio(m_ThrowSE_ID, false);
+			}
+
 			// プレイヤーの向き
 			float yaw = pPlayerRot.y;
 
@@ -180,11 +206,19 @@ void RUNBOMBSOURCE::Runbombsource_Cool()
 
 void RUNBOMBSOURCE::Runbombsource_Explosion()
 {
+	// 爆発開始時に一度だけSEを再生
+	if (!m_ExplosionSEPlayed && m_ExplosionSE_ID != -1)
+	{
+		PlayAudio(m_ExplosionSE_ID, false);
+		m_ExplosionSEPlayed = true;
+	}
+
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = RUNBOMB_STATE::RUNBOMB_COOL;
 		m_Count = 0;
+		m_ExplosionSEPlayed = false; // リセット
 	}
 }
 

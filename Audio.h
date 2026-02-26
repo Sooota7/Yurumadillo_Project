@@ -9,6 +9,9 @@ void UninitAudio();		//サウンドの終了
 int LoadAudio(const char* FileName);		//サウンドデータ読み込み
 void UnloadAudio(int Index);				//サウンドデータ解放（停止）
 void PlayAudio(int Index, bool Loop = false);//サウンドデータ再生
+void StopAudio(int Index);					//サウンドデータ停止
+void SetAudioVolume(int Index, float Volume); //SE音量設定（0.0f～1.0f）
+float GetAudioVolume(int Index);			//SE音量取得
 
 /*
 //以下の関数はプログラムの最初と最後に1回ずつ呼び出せばOK

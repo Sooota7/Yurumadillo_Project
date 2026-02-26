@@ -1,4 +1,3 @@
-
 //Manager.cpp
 
 #include "direct3d.h"
@@ -30,58 +29,91 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 
 	//ロードチェック
 	bool load = false;
+	float bgmVolume = 0.8f; // デフォルト音量
 
 	switch (scene)
 	{
 	case SCENE_NONE:
 		break;
 	case SCENE_TITLE:
-		g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav"); load = true;
+		g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav"); 
+		bgmVolume = 0.9f;
+		load = true;
 		break;
 	case SCENE_PROLOGUE:
-		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\Intro_Test.wav"); 
+		bgmVolume = 0.85f;
+		load = true;//サウンドロード
 		break;
 	case SCENE_MENU:
-		g_BgmID = LoadAudio("asset\\Audio\\menu.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\menu.wav"); 
+		bgmVolume = 0.5f;
+		load = true;//サウンドロード
 		break;
 	case SCENE_TUTORIAL:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.6f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_TUTORIAL2:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.6f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_TUTORIAL3:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.6f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_GAME:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.75f;
+		load = true;//サウンドロード
 		break;
 	case SCENE_PAUSE:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.5f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_RESULT:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.8f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_STAGESELECTION:
 		break;
 	case SCENE_ENDING:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_kinoko.wav"); 
+		bgmVolume = 0.9f;
+		load = true;//サウンドロード---
 		break;
 	case SCENE_GIMMICK:
-		g_BgmID = LoadAudio("asset\\Audio\\Gimmick_Stage_Test.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_gimmick.wav"); 
+		bgmVolume = 0.7f;
+		load = true;//サウンドロード
 		break;
 	case SCENE_ENEMYLUSH:
-		g_BgmID = LoadAudio("asset\\Audio\\Lush_Stage_Test.wav"); load = true;//サウンドロード
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_enemy.wav"); 
+		bgmVolume = 0.8f;
+		load = true;//サウンドロード
 		break;
 	case SCENE_BOSS:
-		g_BgmID = LoadAudio("asset\\Audio\\Kinoko_Stage_Test.wav"); load = true;//サウンドロード---
+		g_BgmID = LoadAudio("asset\\Audio\\stage\\Stage_boss.wav"); 
+		bgmVolume = 0.85f;
+		load = true;//サウンドロード---
 		break;
+	case SCENE_GAMEOVER:
+		load = false;//サウンドロードなし
+		break;
+
 	default:
 		break;
 	}
 
 	if (load)
 	{
+		// シーンごとの音量を設定
+		SetAudioVolume(g_BgmID, bgmVolume);
 		PlayAudio(g_BgmID, true);		//再生開始（ループあり）
 	}
 
@@ -108,6 +140,7 @@ void	MANAGER::Manager_Initialize()
 	SetScene(SCENE_STAGESELECTION);	//最初に動かすシーンに切り替える
 
 	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
+	SetAudioVolume(g_BgmID, 0.9f);		// タイトル画面BGM音量
 	PlayAudio(g_BgmID, true);		//再生開始（ループあり）
 
 }

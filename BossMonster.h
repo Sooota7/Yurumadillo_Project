@@ -91,6 +91,10 @@ private:
 	// BOSSOBJ
 	BOSSOBJ m_BossObjs[BOSS_OBJECT_MAX];
 
+	// çUåÇSEä÷òA
+	static int m_AttackSE_ID;
+	static bool m_SEInitialized;
+
 public:
 	void	Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void	Bossmonster_Finalize();

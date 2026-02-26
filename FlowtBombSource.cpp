@@ -6,6 +6,11 @@
 
 static bool inputB = InputKeyKonCheck();
 
+
+int FLOWTBOMBSOURCE::m_ExplosionSE_ID = -1;
+int FLOWTBOMBSOURCE::m_ThrowSE_ID = -1;
+bool FLOWTBOMBSOURCE::m_SEInitialized = false;
+
 void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
@@ -13,6 +18,15 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 	m_State = state;
 	m_Count = 0;
 	m_Touch = false;
+	m_ExplosionSEPlayed = false;
+
+	// SEの初期化（最初のインスタンスでのみ実行）
+	if (!m_SEInitialized)
+	{
+		m_ExplosionSE_ID = LoadAudio("asset\\Audio\\SE\\chomouse.wav");
+		m_ThrowSE_ID = LoadAudio("asset\\Audio\\SE\\throw.wav");
+		m_SEInitialized = true;
+	}
 }
 
 void FLOWTBOMBSOURCE::Flowtbombsource_Finalize(void)
@@ -170,11 +184,19 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Cool()
 
 void FLOWTBOMBSOURCE::Flowtbombsource_Explosion()
 {
+	// 爆発開始時に一度だけSEを再生
+	if (!m_ExplosionSEPlayed && m_ExplosionSE_ID != -1)
+	{
+		PlayAudio(m_ExplosionSE_ID, false);
+		m_ExplosionSEPlayed = true;
+	}
+
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;
+		m_ExplosionSEPlayed = false; // リセット
 	}
 }
 
