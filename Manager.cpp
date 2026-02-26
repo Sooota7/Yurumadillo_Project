@@ -103,7 +103,6 @@ void	MANAGER::Manager_BGM_Initialize(SCENE scene)
 		load = true;//サウンドロード---
 		break;
 	case SCENE_GAMEOVER:
-		load = false;//サウンドロードなし
 		break;
 
 	default:
@@ -361,6 +360,8 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 		break;
 	case SCENE_GAMEOVER:
 		m_GameOver.GameOver_Finalize();
+
+
 		break;
 	default:
 		break;
@@ -476,8 +477,10 @@ void	MANAGER::SetScene(SCENE scene) //シーンを切り替える
 			m_Ending.Ending_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
 			break;
 		case SCENE_GAMEOVER:
+			StopAudio(g_BgmID); // ゲームオーバーシーンに入る際にBGMを停止
 			m_GameOver.GameOver_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext(), &m_Fade,this);
 			break;
+
 		default:
 			break;
 	}
