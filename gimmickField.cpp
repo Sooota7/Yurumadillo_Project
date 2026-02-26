@@ -26,20 +26,24 @@ void GIMMICK_FIELD::GimmickField_Finalize(void)
 void GIMMICK_FIELD::GimmickField_Update(bool isOn)
 {
     XMFLOAT3 preview = m_Position; // 直前位置
+    float step = 0.0f;
 
 	// 目標地点の設定
     XMFLOAT3 dst;
     if (isOn)
     {
         dst = m_TargetPosition;
+        // 移動量の計算
+        step = (m_MoveSpeed * 2) * (1.0f / 60.0f);
     }
     else
     {
         dst = m_FirstPosition;
+        // 移動量の計算
+        step = m_MoveSpeed * (1.0f / 60.0f);
     }
 
-	// 移動量の計算
-    const float step = m_MoveSpeed * (1.0f / 60.0f);
+	
 
 	// 移動ベクトルの計算
     XMFLOAT3 diff(

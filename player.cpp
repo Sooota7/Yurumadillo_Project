@@ -372,7 +372,7 @@ void PLAYER::Player_Move()
 	//	BalloomUp = true;
 	//	m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
 	//}
-    // ジャンプ
+    // ジャンプio
     /*if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount)
         m_State = PLAYER_STATE::PLAYER_STATE_JUMP;*/
 
