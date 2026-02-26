@@ -171,6 +171,7 @@
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="keyboard.cpp" />
+    <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Goal.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="keyboard.h" />
+    <ClInclude Include="load.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="model.h" />

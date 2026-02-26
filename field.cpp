@@ -281,6 +281,26 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 				case 9:
 					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_JUMP);
 					break;
+				case R:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_BOX);
+					m_Map[a].MapData_SetGate(true);
+					m_Map[a].MapData_SetTrueR_FalseL(true);
+					m_Map[a].MapData_SetGateOpen(false);
+					if (q <= 0) {
+						SetGatePosition(FIELD_GATE_RIGHT,XMFLOAT3(l, q, i));
+					}
+
+					break;
+				case L:
+					m_Map[a].MapData_Initialize(XMFLOAT3(l, q, i), FIELD_BOX);
+					m_Map[a].MapData_SetGate(true);
+					m_Map[a].MapData_SetTrueR_FalseL(false);
+					m_Map[a].MapData_SetGateOpen(false);
+					if (q <= 0) {
+						SetGatePosition(FIELD_GATE_LEFT, XMFLOAT3(l, q, i));
+					}
+
+					break;
 				default:
 					break;
 				}
@@ -291,6 +311,21 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 	m_Map[a].MapData_Initialize( XMFLOAT3(2.0,-1.0f,5.0f),FIELD_MAX );
 	
+	for (int i = 0; i < FIELD_GATE_MAX; i++) {
+		switch (i)
+		{
+		case FIELD_GATE_RIGHT:
+			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateRight.fbx");//デバッグ
+			break;
+		case FIELD_GATE_LEFT:
+			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateLeft.fbx");//デバッグ
+			break;
+		default:
+			break;
+		}
+
+	}
+
 	//ブロックの作成
 	for (int i = 0; i < FIELD_MAX; i++)
 	{
@@ -301,7 +336,7 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			break;
 
 		case FIELD_OBT_0://障害物0
-			Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
+			//Model[FIELD_OBT_0] = ModelLoad("asset\\model\\tree.fbx");//デバッグ
 			break;
 
 		case FIELD_GOAL://障害物0
@@ -364,22 +399,37 @@ void  MAPDATA::Field_Draw(void)
 	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
 		XMFLOAT3 mapPos = m_Map[i].MapData_GetPosition();
+		XMFLOAT3 mapLastPos = m_Map[i].MapData_GetLastPosition();
 
-		//スケーリング行列の作成
-		XMMATRIX	ScalingMatrix = XMMatrixScaling
-		(
-			1.0f,
-			1.0f,
-			1.0f
-		);
+		XMMATRIX	ScalingMatrix = XMMatrixScaling(0.0f,0.0f,0.0f);
+
+		if (!m_Map[i].MapData_GetGate()) {
+			//スケーリング行列の作成
+			ScalingMatrix = XMMatrixScaling
+			(
+				1.0f,
+				1.0f,
+				1.0f
+			);
+		}
+		else {
+			 //スケーリング行列の作成
+			 ScalingMatrix = XMMatrixScaling
+			 (
+				 1.0f,
+				 1.0f,
+				 1.0f
+			 );
+		}
+
 		//平行移動行列の作成
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
-			mapPos.x,
-			mapPos.y,
-			mapPos.z
+			mapPos.x + mapLastPos.x,
+			mapPos.y + mapLastPos.y,
+			mapPos.z + mapLastPos.z
 		);
-		
+
 		//回転行列の作成
 		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
 		(
@@ -410,37 +460,47 @@ void  MAPDATA::Field_Draw(void)
 		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//描画リクエスト
-		if (m_Map[i].MapData_GetNo() == FIELD_BOX)
-		{
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-		}
-		else if(m_Map[i].MapData_GetNo() == FIELD_OBT_0)
-		{
-			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
-		}
-		else if(m_Map[i].MapData_GetNo() == FIELD_GOAL)
-		{
-			ModelDraw(Model[m_Map[i].MapData_GetNo()]);
-		}
-		else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
-		{
-			//テクスチャをセット
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-		}
-		else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
-		{
-			//テクスチャをセット
-			g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-		}
+		/*if (!m_Map[i].MapData_GetGate()) {*/
+			//描画リクエスト
+			if (m_Map[i].MapData_GetNo() == FIELD_BOX)
+			{
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+			}
+			else if (m_Map[i].MapData_GetNo() == FIELD_OBT_0)
+			{
+				ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+			}
+			else if (m_Map[i].MapData_GetNo() == FIELD_GOAL)
+			{
+				ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+			}
+			else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
+			{
+				//テクスチャをセット
+				g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+			}
+			else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
+			{
+				//テクスチャをセット
+				g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+			}
+		/*}
+		else {
+			if (m_Map[i].MapData_GetTrueR_FalseL()) {
+				ModelDraw(Model[FIELD_GATE_RIGHT]);
+			}
+			else {
+				ModelDraw(Model[FIELD_GATE_LEFT]);
+			}
+		}*/
 		i++;
 	}
 
 }
 
-void  MAPDATA::Field_Update(void)
+void  MAPDATA::Field_Update(bool GateTrue)
 {
 	int i = 0;
 
@@ -450,6 +510,14 @@ void  MAPDATA::Field_Update(void)
 		{
 			m_Map[i].MapData_Update();
 		}
+		
+
+		if (GateTrue)
+		{
+			m_Map[i].MapData_SetGateOpen(true);
+			m_Map[i].MapData_Update();
+		}
+		
 		i++;
 	}
 
