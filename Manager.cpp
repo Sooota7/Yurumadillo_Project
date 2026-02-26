@@ -136,7 +136,7 @@ void	MANAGER::Manager_Initialize()
 
 	//本来の形
 	m_Fade.Fade_Initialize(Direct3D_GetDevice(), Direct3D_GetDeviceContext());
-	SetScene(SCENE_TITLE);	//最初に動かすシーンに切り替える
+	SetScene(SCENE_STAGESELECTION);	//最初に動かすシーンに切り替える
 
 	g_BgmID = LoadAudio("asset\\Audio\\Title_Test.wav");	//サウンドロード
 	SetAudioVolume(g_BgmID, 0.9f);		// タイトル画面BGM音量

@@ -6,7 +6,7 @@
 #include "gimmickButton.h"
 using namespace DirectX;
 
-#define FIELD_MOVE_SPEED (2.0f)
+#define FIELD_MOVE_SPEED (3.0f)
 
 class GIMMICK_FIELD
 {

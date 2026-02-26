@@ -954,6 +954,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			bool	touch = false;
 			float BoxTop;	// BOXの+Y面の座標
+			bool damageTouch = false;
 
 			XMFLOAT3 bombPos;
 			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
@@ -983,12 +984,14 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					{//BOXの-X面にぶつかったので座標の補正
 						hit = COLLISION_HIT::HIT_WALL_3;
 						touch = true;
+						damageTouch = true;
 					}
 					else if (bombPos.x + BOMB_RADIUS >= PlayerPos.x - PLAYER_RADIUS &&
 						PlayerPos.x >= bombPos.x + BOMB_RADIUS)
 					{//BOXの+X面にぶつかった
 						hit = COLLISION_HIT::HIT_WALL_1;
 						touch = true;
+						damageTouch = true;
 					}
 				}
 				else if (bombPos.x - BOMB_RADIUS <= PlayerPos.x &&
@@ -999,12 +1002,14 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 					{//BOXの-Z面にぶつかったので座標の補正
 						hit = COLLISION_HIT::HIT_WALL_0;
 						touch = true;
+						damageTouch = true;
 					}
 					else if (bombPos.z + BOMB_RADIUS >= PlayerPos.z - PLAYER_RADIUS &&
 						PlayerPos.z >= bombPos.z + BOMB_RADIUS)
 					{//BOXの+Z面にぶつかった
 						hit = COLLISION_HIT::HIT_WALL_2;
 						touch = true;
+						damageTouch = true;
 					}
 				}
 			}
@@ -1057,7 +1062,8 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			// テスト
 			if (hit > COLLISION_HIT::HIT_GROUND && !RunBomb[i].Runbombsource_GetDamage()
-				&& (RunBomb[i].Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY))
+				&& (RunBomb[i].Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY) &&
+				damageTouch)
 			{
 				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
 				pPlayer->PlayDamageSE();  // ダメージSE再生
