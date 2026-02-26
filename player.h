@@ -11,6 +11,7 @@ using namespace DirectX;
 
 #include	"billboardManager.h"
 #include	"EffectDamage.h"
+#include	"Audio.h"
 
 #define PLAYER_SPEEDMAX (0.1f)      //
 #define PLAYER_RADIUS (0.2f)
@@ -85,6 +86,13 @@ private:
 	 bool isDamage;			// プレイヤーステートにDAMAGEを作ってもいい
 	 int DamageCount;
 	 EffectDamage m_EDamage;
+
+	 // SE関連
+	 int m_BombFireSE_ID;		// 爆弾を持っているときのSE
+	 bool m_IsBombFireSEPlaying;	// SE再生中フラグ
+	 int m_BombChangeSE_ID;		// 爆弾を持った瞬間のSE (change1.wav)
+	 int m_DamageSE_ID;			// ダメージを受けたときのSE (damage.wav)
+	 bool m_PreviousBombHave;		// 前フレームの爆弾所持状態
 private:
 	void	Player_Idle();
 	void	Player_Move();
@@ -148,6 +156,9 @@ public:
 	bool GetPlayerTransBombFlag() { return TransBombFlag; };
 
 	void SetIsDamage(bool set) { isDamage = set; };
+
+	// ダメージSEを再生する関数
+	void PlayDamageSE();
 
 	PLAYER_STATE GetPlayerState() { return m_State; };
 

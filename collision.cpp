@@ -1060,6 +1060,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				&& !RunBomb[i].Runbombsource_GetState() == EG_WEAPON_NONE)
 			{
 				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
+				pPlayer->PlayDamageSE();  // ダメージSE再生
 				RunBomb[i].Runbombsource_SetDamage(true);
 				continue;
 			}
@@ -3371,6 +3372,7 @@ float COLLISION::BossObjPlayerCollision(BOSSOBJ* bossObjs, PLAYER* pPlayer)
 			hit = true;
 
 			pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - BOSSOBJ_DAMAGE);
+			pPlayer->PlayDamageSE();  // ダメージSE再生
 			bossObjs[i].SetActive(false);
 		}
 	}

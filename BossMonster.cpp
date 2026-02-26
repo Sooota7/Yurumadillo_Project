@@ -5,6 +5,7 @@
 #include	"Camera.h"
 #include	"shader.h"
 #include	"collision.h"
+#include	"Audio.h"
 
 #include	"billboard.h"
 #include "enemySpawner.h"
@@ -18,6 +19,10 @@ ID3D11Device* g_pDeviceBoss;
 ID3D11DeviceContext* g_pContextBoss;
 
 static ID3D11ShaderResourceView* g_Texture = NULL;
+
+// SEの静的メンバ初期化
+int BOSSMONSTER::m_AttackSE_ID = -1;
+bool BOSSMONSTER::m_SEInitialized = false;
 
 void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -64,6 +69,15 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 	}
 
 	m_BossAnim.BossAnimation_Initialize(pDevice, pContext);
+
+	// SEの初期化（最初のインスタンスでのみ実行）
+	if (!m_SEInitialized)
+	{
+		m_AttackSE_ID = LoadAudio("asset\\Audio\\SE\\attack.wav");
+
+		SetAudioVolume(m_AttackSE_ID, 0.7f);
+		m_SEInitialized = true;
+	}
 }
 void	BOSSMONSTER::Bossmonster_Finalize()
 {
@@ -73,6 +87,14 @@ void	BOSSMONSTER::Bossmonster_Finalize()
 	}
 
 	m_BossAnim.BossAnimation_Finalize();
+
+	// SE解放
+	if (m_SEInitialized && m_AttackSE_ID != -1)
+	{
+		UnloadAudio(m_AttackSE_ID);
+		m_AttackSE_ID = -1;
+		m_SEInitialized = false;
+	}
 }
 
 
@@ -212,6 +234,12 @@ void BOSSMONSTER::Bossmonster_Phase1()
 {
 	if (m_pSpawner != nullptr)
 	{
+		// 攻撃SE再生
+		if (m_AttackSE_ID != -1)
+		{
+			PlayAudio(m_AttackSE_ID, false);
+		}
+
 		int spawned = 0;
 
 		XMFLOAT3 spawnPos[2];
@@ -237,6 +265,12 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 	// まだ撃ってない時だけ弾生成
 	if (!m_Phase2_1Fired)
 	{
+		// 攻撃SE再生
+		if (m_AttackSE_ID != -1)
+		{
+			PlayAudio(m_AttackSE_ID, false);
+		}
+
 		int bulletsToSpawn = 5;
 		float spread = 8.0f;//オブジェクトどうしの幅？
 
@@ -283,6 +317,12 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 {
 	if (!m_Phase2_2Fired)
 	{
+		// 攻撃SE再生
+		if (m_AttackSE_ID != -1)
+		{
+			PlayAudio(m_AttackSE_ID, false);
+		}
+
 		int bulletsToSpawn = 5;
 		float spread = 8.0f;
 
@@ -329,6 +369,12 @@ void BOSSMONSTER::Bossmonster_Phase3()
 	// フェーズ3 で RunBomb（走る爆弾）を横一列に生成する
 	// 同フェーズ内で何度も呼ばれるのを防ぐフラグチェック
 	if (m_Phase3Fired) return;
+
+	// 攻撃SE再生
+	if (m_AttackSE_ID != -1)
+	{
+		PlayAudio(m_AttackSE_ID, false);
+	}
 
 	if (m_pBomb == nullptr) return; // Bomb 管理クラスがないと生成できない
 
