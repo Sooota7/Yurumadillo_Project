@@ -8,6 +8,11 @@
 
 static bool inputB = InputKeyKonCheck();
 
+// SEの静的メンバ初期化
+int BOMBSOURCE::m_ExplosionSE_ID = -1;
+int BOMBSOURCE::m_ThrowSE_ID = -1;
+bool BOMBSOURCE::m_SEInitialized = false;
+
 void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 {
 	m_FirstPosition = pos;
@@ -15,6 +20,15 @@ void BOMBSOURCE::BombSource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 	m_State = state;
 	m_Count = 0;
 	m_Touch = false;
+	m_ExplosionSEPlayed = false;
+
+	// SEの初期化（最初のインスタンスでのみ実行）
+	if (!m_SEInitialized)
+	{
+		m_ExplosionSE_ID = LoadAudio("asset\\Audio\\SE\\normal2.wav");
+		m_ThrowSE_ID = LoadAudio("asset\\Audio\\SE\\throw.wav");
+		m_SEInitialized = true;
+	}
 }
 
 void BOMBSOURCE::BombSource_Finalize(void)
@@ -78,6 +92,12 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 	if (inputB) {
 		if (Mouse_IsLeftDownTrigger())
 		{
+			// 爆弾投げSEを再生
+			if (m_ThrowSE_ID != -1)
+			{
+				PlayAudio(m_ThrowSE_ID, false);
+			}
+
 			// プレイヤーの向き
 			float yaw = pPlayerRot.y;
 
@@ -105,6 +125,12 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 	else {
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
 		{
+			// 爆弾投げSEを再生
+			if (m_ThrowSE_ID != -1)
+			{
+				PlayAudio(m_ThrowSE_ID, false);
+			}
+
 			// プレイヤーの向き
 			float yaw = pPlayerRot.y;
 
@@ -258,33 +284,37 @@ void BOMBSOURCE::BombSource_Cool()
 
 void BOMBSOURCE::BombSource_Explosion()
 {
-	if (!m_Exploded)
+	// 爆発開始時に一度だけSEを再生
+	if (!m_ExplosionSEPlayed && m_ExplosionSE_ID != -1)
 	{
-		m_Count = 0;
-		m_Exploded = true;
+		PlayAudio(m_ExplosionSE_ID, false);
+		m_ExplosionSEPlayed = true;
 	}
+
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;
-		m_Exploded = false;
+		m_ExplosionSEPlayed = false; // リセット
 	}
 }
 
 void BOMBSOURCE::BombSource_Explosion_Boss()
 {
-	if (!m_Exploded)
+	// 爆発開始時に一度だけSEを再生
+	if (!m_ExplosionSEPlayed && m_ExplosionSE_ID != -1)
 	{
-		m_Count = 0;
-		m_Exploded = true;
+		PlayAudio(m_ExplosionSE_ID, false);
+		m_ExplosionSEPlayed = true;
 	}
+
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 2.0f)
 	{
 		m_State = BOMB_STATE::BOMB_COOL;
 		m_Count = 0;
-		m_Exploded = false;
+		m_ExplosionSEPlayed = false; // リセット
 	}
 }
 

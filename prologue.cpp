@@ -47,7 +47,7 @@ void PROLOGUE::Prologue_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	Prologue_TextureCount = 0;
 
-	g_SeID = LoadAudio("asset\\Audio\\Intro_Click_Test.wav");
+	g_SeID = LoadAudio("asset\\Audio\\SE\\kamishibai1.wav");
 
 
 }

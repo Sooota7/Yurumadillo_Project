@@ -8,6 +8,7 @@
 
 #include	"billboard.h"
 #include	"inputx.h"
+#include	"Audio.h"
 
 //ボールオブジェクト
 
@@ -92,6 +93,19 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	//爆弾変身フラグ
 	TransBombFlag = false;
 
+	// SE初期化
+	m_BombFireSE_ID = LoadAudio("asset\\Audio\\SE\\bombfire.wav");
+	m_BombChangeSE_ID = LoadAudio("asset\\Audio\\SE\\change1.wav");
+	m_DamageSE_ID = LoadAudio("asset\\Audio\\SE\\damage.wav");
+
+	// SE音量調整
+	SetAudioVolume(m_BombFireSE_ID, 0.6f);//導火線
+	SetAudioVolume(m_BombChangeSE_ID, 0.8f);//変身
+	SetAudioVolume(m_DamageSE_ID, 0.9f);//ダメージ
+
+	m_IsBombFireSEPlaying = false;
+	m_PreviousBombHave = false;
+
 	// ダメージフラグ
 	isDamage = false;
 	DamageCount = 0;
@@ -119,6 +133,11 @@ void	PLAYER::Player_Finalize()
 			m_ModelData[i] = NULL;
 		}
 	}
+
+	// SE解放
+	UnloadAudio(m_BombFireSE_ID);
+	UnloadAudio(m_BombChangeSE_ID);
+	UnloadAudio(m_DamageSE_ID);
 }
 
 
@@ -169,6 +188,29 @@ void	PLAYER::Player_Update()
 	}
 
 	Player_SetParts();
+
+	// 爆弾所持状態でのSE処理
+	if (BombHave && !m_PreviousBombHave)
+	{
+		// 爆弾を持った瞬間にchange1.wavを再生
+		PlayAudio(m_BombChangeSE_ID, false);
+	}
+
+	if (BombHave && !m_IsBombFireSEPlaying)
+	{
+		// 爆弾を持っている間はbombfire.wavをループ再生
+		PlayAudio(m_BombFireSE_ID, true);
+		m_IsBombFireSEPlaying = true;
+	}
+	else if (!BombHave && m_IsBombFireSEPlaying)
+	{
+		// 爆弾を持っていない場合はSEを停止
+		StopAudio(m_BombFireSE_ID);
+		m_IsBombFireSEPlaying = false;
+	}
+
+	// 現在の爆弾所持状態を記録
+	m_PreviousBombHave = BombHave;
 
 	m_EDamage.EffectDamage_Update();
 	if (isDamage)
@@ -431,6 +473,9 @@ void    PLAYER::Player_Respawn()
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
 
 	m_Hp--;
+	
+	// 落下ダメージでdamage.wavを再生
+	PlayDamageSE();
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
 	
@@ -444,6 +489,12 @@ void PLAYER::Player_Death()
 PLAYER* PLAYER::GetPlayer()
 {
 	return this;
+}
+
+void PLAYER::PlayDamageSE()
+{
+	// ダメージSEを再生
+	PlayAudio(m_DamageSE_ID, false);
 }
 
 void PLAYER::Player_Balloon()

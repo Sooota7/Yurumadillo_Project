@@ -3,6 +3,7 @@
 #include	"sprite.h"
 #include	"keyboard.h"
 #include	"inputx.h"
+#include	"Audio.h"
 
 #include	"GameOver.h"
 
@@ -22,6 +23,10 @@ static bool g_LogoAnimating = true;    // アニメーション中フラグ
 static const float GRAVITY = 0.8f;     // 重力
 static const float BOUNCE_DAMPING = 0.7f; // バウンドの減衰率
 static const float STOP_THRESHOLD = 2.0f; // 停止判定の閾値
+
+// SE関連
+static int g_DieSE_ID = -1;        // die.wavのSE ID
+static bool g_DieSEPlayed = false; // SE再生状態管理
 
 
 void GAMEOVER::GameOver_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FadeObject* fade, MANAGER* manager)
@@ -49,10 +54,21 @@ void GAMEOVER::GameOver_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 	// アニメーション初期化
 	const float SCREEN_HEIGHT = (float)Direct3D_GetBackBufferHeight();
-	g_LogoTargetY = SCREEN_HEIGHT / 2 - 330.0f; // 最終目標位置
-	g_LogoY = -200.0f;                          // 画面上部から開始
-	g_LogoVelocityY = 0.0f;                     // 初期速度
-	g_LogoAnimating = true;                     // アニメーション開始
+	g_LogoTargetY = SCREEN_HEIGHT / 2 - 330.0f;
+	g_LogoY = -200.0f;
+	g_LogoVelocityY = 0.0f;
+	g_LogoAnimating = true;// アニメーション開始
+
+	// SEの初期化と再生
+	if (g_DieSE_ID == -1)
+	{
+		g_DieSE_ID = LoadAudio("asset\\Audio\\SE\\die.wav");
+	}
+	if (!g_DieSEPlayed)
+	{
+		PlayAudio(g_DieSE_ID, false);
+		g_DieSEPlayed = true;
+	}
 }
 void GAMEOVER::GameOver_Finalize()
 {
@@ -60,8 +76,13 @@ void GAMEOVER::GameOver_Finalize()
 	SAFE_RELEASE(g_Texture);
 	SAFE_RELEASE(g_TextureLogo);
 
-
-
+	// SEの解放とフラグリセット
+	if (g_DieSE_ID != -1)
+	{
+		UnloadAudio(g_DieSE_ID);
+		g_DieSE_ID = -1;
+	}
+	g_DieSEPlayed = false;
 }
 void GAMEOVER::GameOver_Update()
 { 
@@ -76,9 +97,9 @@ g_LogoY += g_LogoVelocityY;
 if (g_LogoY >= g_LogoTargetY)
 {
 g_LogoY = g_LogoTargetY;
-g_LogoVelocityY = -g_LogoVelocityY * BOUNCE_DAMPING; // バウンド（減衰あり）
+g_LogoVelocityY = -g_LogoVelocityY * BOUNCE_DAMPING; // バウンド
 
-// 速度が十分小さくなったら停止
+// 速度が小さくなったら停止
 if (abs(g_LogoVelocityY) < STOP_THRESHOLD)
 {
 g_LogoVelocityY = 0.0f;

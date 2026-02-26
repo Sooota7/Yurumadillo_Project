@@ -5,6 +5,7 @@
 #include	<DirectXMath.h>
 #include	"direct3d.h"
 #include	"player.h"
+#include	"Audio.h"
 using namespace DirectX;
 
 enum RUNBOMB_TYPE
@@ -48,6 +49,12 @@ class RUNBOMBSOURCE
 	bool		m_isDamage;
 
 	RUNBOMB_TYPE	m_Type;
+
+	// SE関連
+	static int m_ExplosionSE_ID;
+	static int m_ThrowSE_ID;
+	static bool m_SEInitialized;		// SE初期化フラグ
+	bool m_ExplosionSEPlayed;			// インスタンスごとのSE再生管理
 
 public:
 

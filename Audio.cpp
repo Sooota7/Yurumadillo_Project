@@ -49,6 +49,7 @@ struct AUDIO
 
 	int						Length{};
 	int						PlayLength{};
+	float					Volume{1.0f};		// ボリューム（0.0f～1.0f）
 };
 
 #define AUDIO_MAX 100
@@ -133,6 +134,9 @@ int LoadAudio(const char *FileName)
 	g_Xaudio->CreateSourceVoice(&g_Audio[index].SourceVoice, &wfx);
 	assert(g_Audio[index].SourceVoice);
 
+	// ボリューム初期化
+	g_Audio[index].Volume = 1.0f;
+	g_Audio[index].SourceVoice->SetVolume(g_Audio[index].Volume);
 
 	return index;
 }
@@ -155,9 +159,14 @@ void UnloadAudio(int Index)
 
 void PlayAudio(int Index, bool Loop)
 {
+	if (Index < 0 || Index >= AUDIO_MAX || g_Audio[Index].SourceVoice == nullptr)
+		return;
+
 	g_Audio[Index].SourceVoice->Stop();
 	g_Audio[Index].SourceVoice->FlushSourceBuffers();
 
+	// ボリューム設定を適用
+	g_Audio[Index].SourceVoice->SetVolume(g_Audio[Index].Volume);
 
 	// バッファ設定
 	XAUDIO2_BUFFER bufinfo;
@@ -178,10 +187,38 @@ void PlayAudio(int Index, bool Loop)
 
 	g_Audio[Index].SourceVoice->SubmitSourceBuffer(&bufinfo, NULL);
 
-
 	// 再生
 	g_Audio[Index].SourceVoice->Start();
+}
 
+
+void StopAudio(int Index)
+{
+	if (Index < 0 || Index >= AUDIO_MAX || g_Audio[Index].SourceVoice == nullptr)
+		return;
+
+	g_Audio[Index].SourceVoice->Stop();
+}
+
+void SetAudioVolume(int Index, float Volume)
+{
+	if (Index < 0 || Index >= AUDIO_MAX || g_Audio[Index].SourceVoice == nullptr)
+		return;
+
+	// ボリュームを0.0f～1.0fの範囲に制限
+	if (Volume < 0.0f) Volume = 0.0f;
+	if (Volume > 1.0f) Volume = 1.0f;
+
+	g_Audio[Index].Volume = Volume;
+	g_Audio[Index].SourceVoice->SetVolume(Volume);
+}
+
+float GetAudioVolume(int Index)
+{
+	if (Index < 0 || Index >= AUDIO_MAX || g_Audio[Index].SourceVoice == nullptr)
+		return 0.0f;
+
+	return g_Audio[Index].Volume;
 }
 
 

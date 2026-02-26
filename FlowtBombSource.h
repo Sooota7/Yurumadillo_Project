@@ -6,6 +6,7 @@
 #include	"direct3d.h"
 #include	"player.h"
 #include	"bombSource.h"
+#include	"Audio.h"
 using namespace DirectX;
 
 
@@ -22,6 +23,12 @@ class FLOWTBOMBSOURCE
 	bool		m_Touch;
 
 	BOMB_TYPE	m_Type;
+
+	// SE関連
+	static int m_ExplosionSE_ID;
+	static int m_ThrowSE_ID;
+	static bool m_SEInitialized;		// SE初期化フラグ
+	bool m_ExplosionSEPlayed;			// インスタンスごとのSE再生管理
 
 public:
 
