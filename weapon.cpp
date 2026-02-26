@@ -27,6 +27,7 @@ void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	{
 		m_EG_Weapon[i].Weapon_EG_Initialize(XMFLOAT3(0.0f, 0.0f, 0.0f), EG_WEAPON_NONE);
 	}
+	
 
 	for (int i = 0; i < WEAPON_STATE::WEAPON_MAX; i++)
 	{
@@ -53,6 +54,8 @@ void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 
 	m_EG_Model = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundWeapon.fbx");
+
+	m_Nor_Model = ModelLoad("asset\\model\\ball.fbx");
 
 	/*for (int i = 0; i < WEAPON_NUM_MAX; i++)
 	{
@@ -229,27 +232,51 @@ void WEAPON::Weapon_Draw(void)
 		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
-		//描画リクエスト
-		switch (m_EG_Weapon[i].Weapon_EG_GetState())
-		{
-		case EG_WEAPON_NONE:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
-			break;
-		case EG_WEAPON_MOVE:
-			ModelDraw(m_EG_Model);
-			break;
-		case EG_WEAPON_DIRECTION:
-			ModelDraw(m_EG_Model);
-			break;
-		case EG_WEAPON_POWER:
-			ModelDraw(m_EG_Model);
-			break;
-		case EG_WEAPON_MAX:
-			break;
-		default:
-			break;
+		if (!m_EG_Weapon[i].Weapon_EG_GetNormalWeapon()) {
+			//描画リクエスト
+			switch (m_EG_Weapon[i].Weapon_EG_GetState())
+			{
+			case EG_WEAPON_NONE:
+				g_pContext->DrawIndexed(6 * 6, 0, 0);
+				break;
+			case EG_WEAPON_MOVE:
+				ModelDraw(m_EG_Model);
+				break;
+			case EG_WEAPON_DIRECTION:
+				ModelDraw(m_EG_Model);
+				break;
+			case EG_WEAPON_POWER:
+				ModelDraw(m_EG_Model);
+				break;
+			case EG_WEAPON_MAX:
+				break;
+			default:
+				break;
+			}
 		}
+		else {
+			// 描画リクエスト
+				switch (m_EG_Weapon[i].Weapon_EG_GetState())
+				{
+				case EG_WEAPON_NONE:
+					g_pContext->DrawIndexed(6 * 6, 0, 0);
+					break;
+				case EG_WEAPON_MOVE:
+					ModelDraw(m_Nor_Model);
+					break;
+				case EG_WEAPON_DIRECTION:
+					ModelDraw(m_Nor_Model);
+					break;
+				case EG_WEAPON_POWER:
+					ModelDraw(m_Nor_Model);
+					break;
+				case EG_WEAPON_MAX:
+					break;
+				default:
+					break;
+				}
+		}
+
 
 	}
 }
@@ -258,7 +285,7 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 {
 	ENEMY_BUTTERFLY* eb = enemySpawner->EnemySpawner_GetEnemyButterfly();
 	ENEMY_GROUND* eg = enemySpawner->EnemySpawner_GetEnemyGround();
-
+	ENEMY_NORMAL* en = enemySpawner->EnemySpawner_GetEnemy();
 
 	for (int i = 0; i < Enemy_Spawner_MAX; i++)
 	{
@@ -269,6 +296,12 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		if (eg[i].GetEnemyGroundState() == ENEMY_GROUND_STATE_CREATE_WEAPON)
 		{
 			SetWeaponEG(eg[i].GetEnemyPosition());
+		}
+		if(en[i].GetEnemyNormalState()==ENEMY_NORMAL_STATE_ATTACK)
+		{
+			XMFLOAT3 pos = en[i].GetEnemyPosition();
+			pos.y += 1.0f;
+			SetWeaponNor(pos);
 		}
 	}
 
@@ -314,6 +347,7 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		default:
 			break;
 		}
+
 	}
 }
 
@@ -346,6 +380,20 @@ void WEAPON::SetWeaponEG(XMFLOAT3 pos)
 		if (m_EG_Weapon[i].Weapon_EG_GetState() == EG_WEAPON_NONE)
 		{
 			m_EG_Weapon[i].Weapon_EG_Initialize(pos, EG_WEAPON_STATE::EG_WEAPON_DIRECTION);
+			m_EG_Weapon[i].Weapon_EG_SetNormalWeapon(false);	
+			break;
+		}
+	}
+}
+
+void WEAPON::SetWeaponNor(XMFLOAT3 pos)
+{
+	for (int i = 0; i < WEAPON_NUM_MAX; i++)
+	{
+		if (m_EG_Weapon[i].Weapon_EG_GetState() == EG_WEAPON_NONE)
+		{
+			m_EG_Weapon[i].Weapon_EG_Initialize(pos, EG_WEAPON_STATE::EG_WEAPON_DIRECTION);
+			m_EG_Weapon[i].Weapon_EG_SetNormalWeapon(true);
 			break;
 		}
 	}

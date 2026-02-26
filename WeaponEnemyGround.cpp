@@ -6,6 +6,8 @@ void WEAPONENEMYGROUND::Weapon_EG_Initialize(XMFLOAT3 pos, EG_WEAPON_STATE state
 	m_State = state;
 	m_Count = 0;
 	m_isDamage = false;
+
+	m_NormalWeapon = false;
 }
 
 void WEAPONENEMYGROUND::Weapon_EG_Finalize(void)
@@ -105,7 +107,14 @@ void WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
 
 void WEAPONENEMYGROUND::Weapon_EG_Power()
 {
-	float power = EG_WEAPON_THROW_POWER * 0.5f;
+	float power = 0.0f;
+
+	if (!m_NormalWeapon) {
+		power = EG_WEAPON_THROW_POWER * 0.7f;
+	}
+	else {
+		power = EG_WEAPON_THROW_POWER * 1.2f;
+	}
 
 	m_Velocity.x *= power;
 	//m_Velocity.y += 0.15f;

@@ -3,6 +3,8 @@
 #pragma once
 
 #include "direct3d.h"
+#include "load.h"
+
 #include "player.h"
 #include "Ball.h"
 #include "collision.h"
@@ -83,13 +85,17 @@ private:
 	bool m_NextSpawn = false;
 	int m_SpawnMax = 0;
 
+	bool m_PhaseEnd = false;
 
+	LOAD_MANAGER m_SceneLoad;
 
 public:
 	void Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Enemylush_Finalize();
 	void Enemylush_Update();
 	void Enemylush_Draw();
+
+	void Enemylush_DrawPhase();
 
 	void Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
 
@@ -101,6 +107,8 @@ public:
 	void Enemylush_Phase_Finalize();
 	void Enemylush_Phase_Update();
 	void Enemylush_Phase_Draw();
+
+	void Enemylush_LoadUpdate();
 
 	void Enemylush_Phase_SetPhase01();
 	void Enemylush_Phase_SetPhase02();

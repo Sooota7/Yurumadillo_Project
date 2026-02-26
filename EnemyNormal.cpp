@@ -8,7 +8,7 @@
 #include	"Camera.h"
 #include	"shader.h"
 #include	"collision.h"
-#include	"player.h"
+//#include	"player.h"
 
 
 
@@ -47,53 +47,6 @@ void	ENEMY_NORMAL::Finalize()
 
 void	ENEMY_NORMAL::Update(XMFLOAT3 chasePos)
 {
-	switch (m_State)
-	{
-	case ENEMY_NORMAL_STATE_IDLE:
-		Enemy_Normal_Idle();
-		break;
-	case ENEMY_NORMAL_STATE_MOVE:
-		Enemy_Normal_Move(chasePos);
-		break;
-	case ENEMY_NORMAL_STATE_DIRECTION:
-		Enemy_Normal_Direction(chasePos);
-		break;
-	case ENEMY_NORMAL_STATE_JUMP:
-		Enemy_Normal_Jump();
-		break;
-	case ENEMY_NORMAL_STATE_DEAD:
-		Enemy_Normal_Dead();
-		break;
-	default:
-		break;
-	}
-	
-	if (m_Position.y < FALL_MAX)
-	{
-		SetEnemyNormalState(ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DEAD);
-	}
-
-}
-
-void	ENEMY_NORMAL::Draw()
-{
-	//ドローはスポナーで行う
-}
-
-void	ENEMY_NORMAL::Enemy_Normal_Idle()
-{
-	m_FrameCnt++;			// カウントアップ
-	if (m_FrameCnt >= ENEMY_NORMAL_IDLE_CNT)
-	{
-		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DIRECTION;
-		m_FrameCnt = 0;
-	}
-
-}
-
-void	ENEMY_NORMAL::Enemy_Normal_Move(XMFLOAT3 chasePos)
-{
-	
 	{// 敵の向きをプレイヤーに向ける
 		XMFLOAT3 direction;
 
@@ -120,7 +73,69 @@ void	ENEMY_NORMAL::Enemy_Normal_Move(XMFLOAT3 chasePos)
 
 			m_Rotation.y = yaw;
 		}
+
+		if (length < 8 && m_State == ENEMY_NORMAL_STATE_MOVE)
+		{
+			SetEnemyNormalState(ENEMY_NORMAL_STATE_ATTACK);
+			m_FrameCnt = 0.0f;
+			m_AttackCool = 0.0f;
+		}
 	}
+
+	switch (m_State)
+	{
+	case ENEMY_NORMAL_STATE_IDLE:
+		Enemy_Normal_Idle();
+		break;
+	case ENEMY_NORMAL_STATE_MOVE:
+		Enemy_Normal_Move();
+		break;
+	case ENEMY_NORMAL_STATE_DIRECTION:
+		Enemy_Normal_Direction(chasePos);
+		break;
+	case ENEMY_NORMAL_STATE_JUMP:
+		Enemy_Normal_Jump();
+		break;
+	case ENEMY_NORMAL_STATE_ATTACK:
+		Enemy_Normal_Attack();
+		break;
+	case ENEMY_NORMAL_STATE_COOL:
+		Enemy_Normal_Cool();
+		break;
+	case ENEMY_NORMAL_STATE_DEAD:
+		Enemy_Normal_Dead();
+		break;
+	default:
+		break;
+	}
+	
+	if (m_Position.y < FALL_MAX)
+	{
+		SetEnemyNormalState(ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DEAD);
+	}
+
+}
+
+void	ENEMY_NORMAL::Draw()
+{
+	//ドローはスポナーで行う
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Idle()
+{
+	m_FrameCnt++;			// カウントアップ
+	if (m_FrameCnt >= ENEMY_NORMAL_IDLE_CNT)
+	{
+		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_ATTACK;
+		m_FrameCnt = 0;
+	}
+
+}
+
+void	ENEMY_NORMAL::Enemy_Normal_Move()
+{
+	
+	
 	m_Velocity.x += m_Acceleration.x;
 	m_Velocity.y += m_Acceleration.y;
 	m_Velocity.z += m_Acceleration.z;
@@ -151,43 +166,43 @@ void	ENEMY_NORMAL::Enemy_Normal_Move(XMFLOAT3 chasePos)
 void	ENEMY_NORMAL::Enemy_Normal_Direction(XMFLOAT3 chasePos)
 {
 
-	
+	//
 
 
-	XMFLOAT3 direction;
+	//XMFLOAT3 direction;
 
-	direction.x = chasePos.x - m_Position.x;
-	direction.y = 0.0f;
-	direction.z = chasePos.z - m_Position.z;
+	//direction.x = chasePos.x - m_Position.x;
+	//direction.y = 0.0f;
+	//direction.z = chasePos.z - m_Position.z;
 
-	// 距離
-	float length = sqrtf((direction.x * direction.x) +
-						 (direction.z * direction.z));
+	//// 距離
+	//float length = sqrtf((direction.x * direction.x) +
+	//					 (direction.z * direction.z));
 
-	if (length != 0.0f)
-	{// 正規化
-		direction.x /= length;
-		direction.z /= length;
-	}
-	
-	
-	if (length < 2.5f) // アルファテスト用
-	{// プレイヤーとの距離が近すぎたら
-		m_Velocity.x = -direction.x; // 反転
-		m_Velocity.z = -direction.z;
+	//if (length != 0.0f)
+	//{// 正規化
+	//	direction.x /= length;
+	//	direction.z /= length;
+	//}
+	//
+	//
+	//if (length < 2.5f) // アルファテスト用
+	//{// プレイヤーとの距離が近すぎたら
+	//	m_Velocity.x = -direction.x; // 反転
+	//	m_Velocity.z = -direction.z;
 
-		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_JUMP;
-	}
-	else if (length > 4.0f) // アルファテスト用
-	{// 遠すぎたら
-		m_Velocity = direction;
+	//	m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_JUMP;
+	//}
+	//else if (length > 4.0f) // アルファテスト用
+	//{// 遠すぎたら
+	//	m_Velocity = direction;
 
-		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_JUMP;
-	}
-	else
-	{// 攻撃範囲
-		//m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_ATTACK;  // 攻撃
-	}
+	//	m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_JUMP;
+	//}
+	//else
+	//{// 攻撃範囲
+	//	//m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_ATTACK;  // 攻撃
+	//}
 	
 }	
 
@@ -200,6 +215,22 @@ void	ENEMY_NORMAL::Enemy_Normal_Jump()
 	m_Velocity.z *= power;
 
 	m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_MOVE;
+}
+
+void ENEMY_NORMAL::Enemy_Normal_Attack()
+{
+	m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_COOL;
+}
+
+void ENEMY_NORMAL::Enemy_Normal_Cool()
+{
+	m_AttackCool++;			// カウントアップ
+	if (m_AttackCool >= ENEMY_NORMAL_IDLE_CNT)
+	{
+		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_IDLE;
+		m_AttackCool = 0;
+	}
+
 }
 
 void	ENEMY_NORMAL::Enemy_Normal_Dead()

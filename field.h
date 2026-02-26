@@ -16,6 +16,13 @@ using namespace DirectX;
 // マクロ定義
 #define		BOX_RADIUS		(0.5f)
 
+enum FIELD_GATE
+{
+	FIELD_GATE_RIGHT,
+	FIELD_GATE_LEFT_NO,
+	FIELD_GATE_LEFT,
+	FIELD_GATE_MAX
+};
 
 //MAPデータ構造体
 class MAPDATA
@@ -26,15 +33,47 @@ private:
 	MODEL* Model[FIELD_MAX] = { NULL };//デバッグ
 	//その他必要な物は追加する
 
+	XMFLOAT3 m_GatePositionRight;
+	XMFLOAT3 m_GatePositionLeft;
+	MODEL* m_GateModel[FIELD_GATE_MAX];
 
 public:
 
 	void Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no);
 	void Field_Finalize(void);
 	void Field_Draw(void);
-	void Field_Update(void);
+	void Field_Update(bool GateTrue = false);
 
 	MAP* GetFieldMap();
+
+	void SetGatePosition(FIELD_GATE gate, XMFLOAT3 pos) { 
+		switch (gate)
+		{
+		case FIELD_GATE_RIGHT:
+			m_GatePositionRight = pos;
+			break;
+		case FIELD_GATE_LEFT:
+			m_GatePositionLeft = pos;
+			break;
+		default:
+			break;
+		}
+	};
+
+	XMFLOAT3 GetGatePosition(FIELD_GATE gate) {
+		switch (gate)
+		{
+		case FIELD_GATE_RIGHT:
+			return m_GatePositionRight;
+			break;
+		case FIELD_GATE_LEFT:
+			return m_GatePositionLeft;
+			break;
+		default:
+			return XMFLOAT3(0, 0, 0);
+			break;
+		}
+	};
 
 };
 
