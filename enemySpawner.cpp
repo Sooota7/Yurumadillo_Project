@@ -329,6 +329,12 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			case ENEMY_NORMAL_STATE_JUMP:
 				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
 				break;
+			case ENEMY_NORMAL_STATE_ATTACK:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
+			case ENEMY_NORMAL_STATE_COOL:
+				ModelDraw(m_Model[ENEMY_TYPE_NORMAL]);
+				break;
 			case ENEMY_NORMAL_STATE_DEAD:
 				
 				break;

@@ -192,6 +192,13 @@ void MAP::MapData_Initialize(XMFLOAT3 pPos,FIELD pNo)
 {
 	position = pPos;
 	no = pNo;
+	m_Gate = false;
+	m_GateOpen = false;
+	m_TrueR_FalseL = true;
+	m_GateStop = false;
+
+	InitPosition = position;
+	LastPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 void  MAP::MapData_Finalize(void)
@@ -207,6 +214,41 @@ void  MAP::MapData_Update(void)
 	{
 
 	}*/
+	if (m_Gate)
+	{
+		if (m_GateOpen)
+		{
+			if (m_TrueR_FalseL)
+			{
+				if (!m_GateStop) {
+					//右に開く
+					if (LastPosition.x > 1.0f) {
+						m_GateStop = true;
+					}
+					else {
+						LastPosition.x += 1.0f / 60.0f;
+					}
+				}
+				
+			}
+			else
+			{
+				if (!m_GateStop) {
+					if (LastPosition.x < -1.0f) {
+						m_GateStop = true;
+					}
+					else {
+						LastPosition.x -= 1.0f / 60.0f;
+					}
+				}
+			}
+
+			position.x = InitPosition.x + LastPosition.x;
+
+		}
+	}
+
+
 
 	switch (no)
 	{

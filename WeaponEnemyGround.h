@@ -35,6 +35,8 @@ private:
 	EG_WEAPON_STATE		m_State;		//åªç›ÇÃèÛë‘
 
 	bool m_isDamage;
+	bool m_NormalWeapon;
+
 public:
 
 	void		Weapon_EG_Initialize(XMFLOAT3 pos, EG_WEAPON_STATE state);
@@ -65,5 +67,7 @@ public:
 	void		Weapon_EG_SetIsDamage(bool set) { m_isDamage = set; };
 	bool		Weapon_EG_GetIsDamage() { return m_isDamage; };
 	
+	void		Weapon_EG_SetNormalWeapon(bool set) { m_NormalWeapon = set; };
+	bool		Weapon_EG_GetNormalWeapon() { return m_NormalWeapon; };
 
 };

@@ -28,6 +28,7 @@ private:
 	WEAPONENEMYGROUND m_EG_Weapon[WEAPON_NUM_MAX];
 	MODEL* m_Model[WEAPON_MAX] = { NULL };//デバッグ
 	MODEL* m_EG_Model = { NULL };//デバッグ
+	MODEL* m_Nor_Model = { NULL };//デバッグ
 
 public:
 
@@ -40,4 +41,5 @@ public:
 
 	void	SetWeapon(XMFLOAT3 pos);
 	void	SetWeaponEG(XMFLOAT3 pos);
+	void	SetWeaponNor(XMFLOAT3 pos);
 };

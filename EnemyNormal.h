@@ -24,6 +24,8 @@ enum ENEMY_NORMAL_STATE
 	ENEMY_NORMAL_STATE_MOVE,		//移動
 	ENEMY_NORMAL_STATE_DIRECTION,	//方向指示
 	ENEMY_NORMAL_STATE_JUMP,		//ジャンプ
+	ENEMY_NORMAL_STATE_ATTACK,		//攻撃
+	ENEMY_NORMAL_STATE_COOL,		//クール
 	ENEMY_NORMAL_STATE_DEAD			//死亡
 };
 
@@ -34,15 +36,19 @@ private:
 	constexpr static float ENEMY_NORMAL_POWER = 2.0f; // 移動量
 
 	ENEMY_NORMAL_STATE m_State;		// 状態
-	int m_FrameCnt;					// フレームカウント
+	float m_FrameCnt;					// フレームカウント
+	float m_AttackCool;
+
 	XMFLOAT3	m_ChasePos;			// 追跡する相手
 	ENEMY_TYPE  m_Type;
 
 private:
 	void	Enemy_Normal_Idle();
-	void	Enemy_Normal_Move(XMFLOAT3 chasePos);
+	void	Enemy_Normal_Move();
 	void	Enemy_Normal_Direction(XMFLOAT3 chasePos);
 	void	Enemy_Normal_Jump();
+	void	Enemy_Normal_Attack();
+	void	Enemy_Normal_Cool();
 	void	Enemy_Normal_Dead();
 
 
