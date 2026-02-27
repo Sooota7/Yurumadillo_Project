@@ -65,7 +65,7 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 	}
 
 
-	if (inputB) {
+	{
 		if (Mouse_IsLeftDownTrigger())
 		{
 			// 爆弾投げSEを再生
@@ -98,7 +98,7 @@ void RUNBOMBSOURCE::Runbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPla
 			m_State = RUNBOMB_STATE::RUNBOMB_ACTIVE_THROW;
 		}
 	}
-	else {
+	{
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
 		{
 			// 爆弾投げSEを再生

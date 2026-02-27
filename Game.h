@@ -17,6 +17,9 @@
 #include "bombUI.h"
 #include "targetUI.h"
 #include "Goal.h"
+
+#include "load.h"
+
 class MANAGER;
 
 class GAME
@@ -43,6 +46,9 @@ private:
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;
 	TargetUI m_TargetUI;
+
+	LOAD_MANAGER m_SceneLoad;
+
 public:
 	void Game_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Game_Finalize();
@@ -50,5 +56,8 @@ public:
 	void Game_Draw();
 
 	void Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
+
+	void Game_LoadUpdate();
+
 
 };

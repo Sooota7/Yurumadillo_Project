@@ -24,6 +24,8 @@
 
 LIGHTOBJECT		Light3;//<<<<<<ライト管理オブジェクト
 
+static ID3D11Device* g_pDevice_GM = NULL;
+static ID3D11DeviceContext* g_pContext_GM = NULL;
 
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
@@ -32,37 +34,16 @@ void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 {
 	m_NowField = FIELD_NO::NO_2;
 
-	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
-	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
-	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
-	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
-	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, m_NowField);
-	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
-	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
-	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
-	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
-	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
-	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_SceneLoad.Load_Initialize(pDevice, pContext);
 
-	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
-	//Block_Initialize(pDevice, pContext);//ブロックの初期化
-	//Effect_Initialize(pDevice, pContext);//エフェクト初期化
-	//Score_Initialize(pDevice, pContext);//スコア初期化
-
-	//Polygon3D_Initialize(pDevice, pContext);//３Dテスト初期化
+	;//３Dテスト初期化
 
 	m_Manager = manager;
+	g_pDevice_GM = pDevice;
+	g_pContext_GM = pContext;
 
 
-
-	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
-	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
-	//PlayAudio(g_BgmID);			//再生開始（ループなし）
-	//PlayAudio(g_BgmID, false);	//再生開始（ループなし）
-
-	//ライト初期化
+//ライト初期化
 	XMFLOAT4	para;
 
 	para = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);//環境光の色
@@ -80,6 +61,61 @@ void GIMMICK::Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 }
 
+
+void GIMMICK::Gimmick_LoadUpdate()
+{
+	switch (m_SceneLoad.GetLoadCount())
+	{
+	case 0:
+		m_Player.Player_Initialize(g_pDevice_GM, g_pContext_GM); // ボールの初期化
+		break;
+	case 1:
+		Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
+		break;
+	case 2:
+		m_Map.Field_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField); // フィールドの初期化
+		break;
+	case 3:
+		m_Background.Background_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 4:
+		m_GimmickData.Gimmick_Data_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 5:
+		m_EnemyNormal.EnemySpawner_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 6:
+		m_bomb.Bomb_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 7:
+		m_Weapon.Weapon_Initialize(g_pDevice_GM, g_pContext_GM);
+		break;
+	case 8:
+		m_Goal.Goal_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 9:
+		m_BillboardManager.Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
+		break;
+	case 10:
+		m_PlayerUI.Initialize(g_pDevice_GM, g_pContext_GM, &m_Player);
+		break;
+	case 11:
+		m_BombUI.Initialize(g_pDevice_GM, g_pContext_GM, &m_bomb);
+		break;
+	case 12:
+		m_TargetUI.Initialize(g_pDevice_GM, g_pContext_GM);
+		break;
+	case 13:
+		g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
+		break;
+	default:
+		m_SceneLoad.SetLoadComplete(true);
+		break;
+	}
+
+	m_SceneLoad.Load_Update();
+}
+
 void GIMMICK::Gimmick_Finalize()
 {
 	m_Map.Field_Finalize();	// フィールドの終了処理
@@ -90,10 +126,9 @@ void GIMMICK::Gimmick_Finalize()
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_Goal.Goal_Finalize();
-	//Block_Finalize();
-	//Effect_Finalize();
-	//Score_Finalize();
-	//Polygon3D_Finalize();
+
+	m_SceneLoad.Load_Finalize();
+
 	Camera_Finalize();	//カメラ終了処理
 
 	m_BillboardManager.Finalize();
@@ -106,120 +141,125 @@ void GIMMICK::Gimmick_Finalize()
 
 void GIMMICK::Gimmick_Update()
 {
-	//更新処理
-	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
-	m_Player.Player_Update();
-	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
-	m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
-	m_Map.Field_Update();
-	m_Background.Background_Update();
-	m_Goal.Goal_Update();
-	collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
-	collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
-	collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
-
-	collision.PlayerGimmickCollision(&m_Player, &m_GimmickData);
-	collision.EnemyGimmickCollision(&m_EnemyNormal, &m_GimmickData);
-	collision.BombGimmickCollision(&m_bomb, &m_GimmickData);
-	
-	m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
-	collision.PlayerGateCollision(&m_Player, &m_GimmickData);
-
-	collision.BombGateCollision(&m_bomb, &m_GimmickData);
-
-	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
-
-	m_PlayerUI.Update();
-	m_BombUI.Update();
-	m_TargetUI.Update();
-
-	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
-	{
-		m_Manager->SetScene(SCENE_GAMEOVER);
-		return; // ← ここで即座に抜ける：Finalize 後のアクセスを防止
+	if (m_SceneLoad.GetLoadActive()) {
+		Gimmick_LoadUpdate();
 	}
+	else {
+		//更新処理
+		Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
+		m_Player.Player_Update();
+		m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
+		m_bomb.Bomb_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+		m_Map.Field_Update();
+		m_Background.Background_Update();
+		m_Goal.Goal_Update();
+		collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
+		collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
+		collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
 
-	// 以下はプレイヤー等のメンバにアクセスするコード
-	collision.PlayerFieldCollision(&m_Player, &m_Map);
-	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
-	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
-	collision.PlayerBombCollision(&m_Player, &m_bomb);
-	collision.BombFieldCollision(&m_bomb, &m_Map);
-	collision.EXPLOSIONFieldCollision(&m_bomb, &m_Map);
-	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
-	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
+		collision.PlayerGimmickCollision(&m_Player, &m_GimmickData);
+		collision.EnemyGimmickCollision(&m_EnemyNormal, &m_GimmickData);
+		collision.BombGimmickCollision(&m_bomb, &m_GimmickData);
 
-	//キー入力チェック
-//スタートボタンが押されたらシーンを切り替え
-//フェード処理中はキーを受け付けない
-	if (Keyboard_IsKeyDownTrigger(KK_P))
-	{
-		m_Manager->SetScene(SCENE_PAUSE);
-	}
+		m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+		collision.PlayerGateCollision(&m_Player, &m_GimmickData);
 
-	//Block_Update();
-	//Effect_Update();
-	//Score_Update();
-	//Polygon3D_Update();
+		collision.BombGateCollision(&m_bomb, &m_GimmickData);
 
-	
+		m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 
-	if (Keyboard_IsKeyDownTrigger(KK_C))
-	{
-		if (m_Manager->GetClearCount() == 1)
+		m_PlayerUI.Update();
+		m_BombUI.Update();
+		m_TargetUI.Update();
+
+		if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 		{
-			m_Manager->IncrementClearCount();
-		};
-
-		m_Manager->SetScene(SCENE_STAGESELECTION);
-	}
-
-	// 追加：プレイヤーとゴールの当たり判定
-	if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
-	{
-		if (m_Manager->GetClearCount() == 1)
-		{
-			m_Manager->IncrementClearCount();
+			m_Manager->SetScene(SCENE_GAMEOVER);
+			return; // ← ここで即座に抜ける：Finalize 後のアクセスを防止
 		}
-		m_Manager->SetScene(SCENE_STAGESELECTION);
-		return; // シーン遷移するので更新処理を止める
+
+		// 以下はプレイヤー等のメンバにアクセスするコード
+		collision.PlayerFieldCollision(&m_Player, &m_Map);
+		collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
+		collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
+		collision.PlayerBombCollision(&m_Player, &m_bomb);
+		collision.BombFieldCollision(&m_bomb, &m_Map);
+		collision.EXPLOSIONFieldCollision(&m_bomb, &m_Map);
+		collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
+		collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+		collision.WeaponFieldCollision(&m_Weapon, &m_Map);
+		collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
+
+		//キー入力チェック
+	//スタートボタンが押されたらシーンを切り替え
+	//フェード処理中はキーを受け付けない
+		if (Keyboard_IsKeyDownTrigger(KK_P))
+		{
+			m_Manager->SetScene(SCENE_PAUSE);
+		}
+
+		//Block_Update();
+		//Effect_Update();
+		//Score_Update();
+		//Polygon3D_Update();
+
+
+
+		if (Keyboard_IsKeyDownTrigger(KK_C))
+		{
+			if (m_Manager->GetClearCount() == 1)
+			{
+				m_Manager->IncrementClearCount();
+			};
+
+			m_Manager->SetScene(SCENE_STAGESELECTION);
+		}
+
+		// 追加：プレイヤーとゴールの当たり判定
+		if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
+		{
+			if (m_Manager->GetClearCount() == 1)
+			{
+				m_Manager->IncrementClearCount();
+			}
+			m_Manager->SetScene(SCENE_STAGESELECTION);
+			return; // シーン遷移するので更新処理を止める
+		}
 	}
 
 }
 
 void GIMMICK::Gimmick_Draw()
 {
-	m_Background.Background_Draw();
-	Light3.SetEnable(TRUE);			//ライティングON
-	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(TRUE);
+	if (m_SceneLoad.GetLoadActive()) {
+		m_SceneLoad.Load_Draw();
+	}
+	else {
+		m_Background.Background_Draw();
+		Light3.SetEnable(TRUE);			//ライティングON
+		//Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
+		SetDepthTest(TRUE);
 
-	Camera_Draw();		//Drawの最初で呼ぶ！
+		Camera_Draw();		//Drawの最初で呼ぶ！
 
-	m_Map.Field_Draw();
-	m_GimmickData.Gimmick_Data_Draw();
-	m_Player.Player_Draw(&m_BillboardManager);
-	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw(&m_BillboardManager);
-	m_Weapon.Weapon_Draw();
-	m_Goal.Goal_Draw();
-	//2D描画
-	Light3.SetEnable(FALSE);			//ライティングOFF
-	Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
-	
-	m_BillboardManager.Draw();
-	SetDepthTest(FALSE);
-	m_PlayerUI.Draw();
-	m_BombUI.Draw();
-	m_TargetUI.Draw();
+		m_Map.Field_Draw();
+		m_GimmickData.Gimmick_Data_Draw();
+		m_Player.Player_Draw(&m_BillboardManager);
+		m_EnemyNormal.EnemySpawner_Draw();
+		m_bomb.Bomb_Draw(&m_BillboardManager);
+		m_Weapon.Weapon_Draw();
+		m_Goal.Goal_Draw();
+		//2D描画
+		Light3.SetEnable(FALSE);			//ライティングOFF
+		Shader_SetLight(Light3.Light);	//ライト構造体をシェーダーへセット
 
-	//Block_Draw();
-	//Effect_Draw();
-	//Score_Draw();
+		m_BillboardManager.Draw();
+		SetDepthTest(FALSE);
+		m_PlayerUI.Draw();
+		m_BombUI.Draw();
+		m_TargetUI.Draw();
 
-	//Polygon3D_Draw();
+	}
 
 }
 
@@ -255,4 +295,5 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_TargetUI.Initialize(pDevice, pContext);
 	m_Goal.Goal_Initialize(pDevice, pContext, no);
 }
+
 

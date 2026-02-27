@@ -24,40 +24,22 @@
 #include	"BossMonster.h"
 LIGHTOBJECT		Light4;//<<<<<<ライト管理オブジェクト
 
-
+static ID3D11Device* g_pDevice_B = NULL;
+static ID3D11DeviceContext* g_pContext_B = NULL;
 
 static	int		g_BgmID = NULL;	//サウンド管理ID
 
 void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager)
 {
+	g_pDevice_B = pDevice;
+	g_pContext_B = pContext;
+
+	m_SceneLoad.Load_Initialize(pDevice, pContext);
+
 	m_NowField = FIELD_NO::NO_6;
 
-	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
-	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
-	m_Map.Field_Initialize(pDevice, pContext, m_NowField); // フィールドの初期化
-	m_Background.Background_Initialize(pDevice, pContext,m_NowField);
-	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
-	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
-
-	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
-	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
-	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
-
-	m_BossMonster.Bossmonster_Initialize(pDevice, pContext);
-
-	// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
-	m_BossMonster.SetEnemySpawner(&m_EnemyNormal);
-	// 追加: BossMonster に BOMB 管理を渡す（フェーズ3 で RunBomb を生成するため）
-	m_BossMonster.SetBomb(&m_bomb);
-
-	m_bomb.Bomb_SetBoss(&m_BossMonster);
 	m_Manager = manager;
 
-	
-
-	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
 	//PlayAudio(g_BgmID, true);	//再生開始（ループあり）
 	//PlayAudio(g_BgmID);			//再生開始（ループなし）
 	//PlayAudio(g_BgmID, false);	//再生開始（ループなし）
@@ -80,8 +62,75 @@ void BOSS::Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 }
 
+
+void BOSS::Boss_LoadUpdate()
+{
+	switch (m_SceneLoad.GetLoadCount())
+	{
+	case 0:
+		m_Player.Player_Initialize(g_pDevice_B, g_pContext_B); // ボールの初期化
+		break;
+	case 1:
+		Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
+		break;
+	case 2:
+		m_Map.Field_Initialize(g_pDevice_B, g_pContext_B, m_NowField); // フィールドの初期化
+		break;
+	case 3:
+		m_Background.Background_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
+		break;
+	case 4:
+		m_EnemyNormal.EnemySpawner_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
+		break;
+	case 5:
+		m_bomb.Bomb_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
+		break;
+	case 6:
+		m_Weapon.Weapon_Initialize(g_pDevice_B, g_pContext_B);
+		break;
+	case 7:
+		m_BillboardManager.Initialize(g_pDevice_B, g_pContext_B, m_NowField);
+		break;
+	case 8:
+		m_PlayerUI.Initialize(g_pDevice_B, g_pContext_B, &m_Player);
+		break;
+	case 9:
+		m_BombUI.Initialize(g_pDevice_B, g_pContext_B, &m_bomb);
+		break;
+	case 10:
+		m_TargetUI.Initialize(g_pDevice_B, g_pContext_B);
+		break;
+	case 11:
+		m_BossMonster.Bossmonster_Initialize(g_pDevice_B, g_pContext_B);
+		break;
+	case 12:
+		// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
+		m_BossMonster.SetEnemySpawner(&m_EnemyNormal);
+		break;
+	case 13:
+		// 追加: BossMonster に BOMB 管理を渡す（フェーズ3 で RunBomb を生成するため）
+		m_BossMonster.SetBomb(&m_bomb);
+		break;
+	case 14:
+		m_bomb.Bomb_SetBoss(&m_BossMonster);
+		break;
+	case 15:
+		g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
+		break;
+	default:
+		m_SceneLoad.SetLoadComplete(true);
+		break;
+	}
+
+	m_SceneLoad.Load_Update();
+}
+
+
+
 void BOSS::Boss_Finalize()
 {
+	m_SceneLoad.Load_Finalize();
+
 	m_Map.Field_Finalize();	// フィールドの終了処理
 	m_Background.Background_Finalize();
 	m_Player.Player_Finalize();	// ボールの終了処理
@@ -105,98 +154,107 @@ void BOSS::Boss_Finalize()
 
 void BOSS::Boss_Update()
 {
-	//更新処理
-	Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
-	m_Player.Player_Update();
-	m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
-	m_Map.Field_Update();
-	m_Background.Background_Update();
-
-	m_bomb.Bomb_Update_Boss(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
-	m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
-	m_BossMonster.Bossmonster_Update();
-
-	m_BossMonster.BossHeadAnimation_Update(m_Player.GetPlayerPosition()); // 追加: ボスの頭部アニメーションを更新
-
-	m_PlayerUI.Update();
-	m_BombUI.Update();
-	m_TargetUI.Update();
-	
-	if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
-	{
-		m_Manager->SetScene(SCENE_GAMEOVER);
-		return;
+	if (m_SceneLoad.GetLoadActive()) {
+		Boss_LoadUpdate();
 	}
+	else {
+		//更新処理
+		Camera_Update(m_Player.GetPlayerPosition());	//カメラ更新処理
+		m_Player.Player_Update();
+		m_EnemyNormal.EnemySpawner_Update(m_Player.GetPlayerPosition());
+		m_Map.Field_Update();
+		m_Background.Background_Update();
 
-	collision.PlayerFieldCollision(&m_Player, &m_Map);
-	collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
-	collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
-	collision.PlayerBombCollision(&m_Player, &m_bomb);
-	collision.BombFieldCollision(&m_bomb, &m_Map);
-	collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
-	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
-	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
-	collision.BossObjPlayerCollision(m_BossMonster.GetBossObjs(), &m_Player);
+		m_bomb.Bomb_Update_Boss(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+		m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
+		m_BossMonster.Bossmonster_Update();
 
+		m_BossMonster.BossHeadAnimation_Update(m_Player.GetPlayerPosition()); // 追加: ボスの頭部アニメーションを更新
 
-	//キー入力チェック
-//スタートボタンが押されたらシーンを切り替え
-//フェード処理中はキーを受け付けない
-	if (Keyboard_IsKeyDownTrigger(KK_P))
-	{
-		m_Manager->SetScene(SCENE_PAUSE);
-	}
+		m_PlayerUI.Update();
+		m_BombUI.Update();
+		m_TargetUI.Update();
 
-	if(m_BossMonster.GetBossmonsterState()==BOSSMONSTER_STATE::BOSSMONSTER_STATE_END)
-	{
-		if (m_Manager->GetClearCount() == 3)
+		if (m_Player.GetPlayerState() == PLAYER_STATE::PLAYER_STATE_DEATH)
 		{
-			m_Manager->IncrementClearCount();
-		};
+			m_Manager->SetScene(SCENE_GAMEOVER);
+			return;
+		}
 
-		m_Manager->SetScene(SCENE_ENDING);
+		collision.PlayerFieldCollision(&m_Player, &m_Map);
+		collision.EnemyFieldCollision(&m_EnemyNormal, &m_Map);
+		collision.PlayerEnemyCollision(&m_Player, &m_EnemyNormal);
+		collision.PlayerBombCollision(&m_Player, &m_bomb);
+		collision.BombFieldCollision(&m_bomb, &m_Map);
+		collision.BombEnemyCollision(&m_bomb, &m_EnemyNormal);
+		collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
+		collision.WeaponFieldCollision(&m_Weapon, &m_Map);
+		collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
+		collision.BossObjPlayerCollision(m_BossMonster.GetBossObjs(), &m_Player);
+
+
+		//キー入力チェック
+	//スタートボタンが押されたらシーンを切り替え
+	//フェード処理中はキーを受け付けない
+		if (Keyboard_IsKeyDownTrigger(KK_P))
+		{
+			m_Manager->SetScene(SCENE_PAUSE);
+		}
+
+		if (m_BossMonster.GetBossmonsterState() == BOSSMONSTER_STATE::BOSSMONSTER_STATE_END)
+		{
+			if (m_Manager->GetClearCount() == 3)
+			{
+				m_Manager->IncrementClearCount();
+			};
+
+			m_Manager->SetScene(SCENE_ENDING);
+		}
+
+		//Block_Update();
+		//Effect_Update();
+		//Score_Update();
+		//Polygon3D_Update();
+
 	}
-
-	//Block_Update();
-	//Effect_Update();
-	//Score_Update();
-	//Polygon3D_Update();
-	
-	
 }
 
 void BOSS::Boss_Draw()
-{ 
-	m_Background.Background_Draw();
-	Light4.SetEnable(TRUE);			//ライティングON
-	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
-	SetDepthTest(TRUE);
+{
+	if (m_SceneLoad.GetLoadActive()) {
+		m_SceneLoad.Load_Draw();
+	}
+	else {
+		m_Background.Background_Draw();
+		Light4.SetEnable(TRUE);			//ライティングON
 
-	Camera_Draw();		//Drawの最初で呼ぶ！	
+		SetDepthTest(TRUE);
 
-	m_Map.Field_Draw();
-	m_Player.Player_Draw(&m_BillboardManager);
-	m_EnemyNormal.EnemySpawner_Draw();
-	m_bomb.Bomb_Draw(&m_BillboardManager);
-	m_Weapon.Weapon_Draw();
-	m_BossMonster.Bossmonster_Draw();
-	//2D描画
-	Light4.SetEnable(FALSE);			//ライティングOFF
-	Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
+		Camera_Draw();		//Drawの最初で呼ぶ！	
 
-	m_BillboardManager.Draw();
-	SetDepthTest(FALSE);
-	m_PlayerUI.Draw();
-	m_BombUI.Draw();
-	m_TargetUI.Draw();
+		m_Map.Field_Draw();
+		m_Player.Player_Draw(&m_BillboardManager);
+		m_EnemyNormal.EnemySpawner_Draw();
+		m_bomb.Bomb_Draw(&m_BillboardManager);
+		m_Weapon.Weapon_Draw();
+		Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
+		m_BossMonster.Bossmonster_Draw();
+		//2D描画
+		Light4.SetEnable(FALSE);			//ライティングOFF
+		Shader_SetLight(Light4.Light);	//ライト構造体をシェーダーへセット
 
-	//Block_Draw();
-	//Effect_Draw();
-	//Score_Draw();
+		m_BillboardManager.Draw();
+		SetDepthTest(FALSE);
+		m_PlayerUI.Draw();
+		m_BombUI.Draw();
+		m_TargetUI.Draw();
 
-	//Polygon3D_Draw();
+		//Block_Draw();
+		//Effect_Draw();
+		//Score_Draw();
 
+		//Polygon3D_Draw();
+	}
 }
 
 void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
@@ -233,4 +291,3 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext);
 }
-

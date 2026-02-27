@@ -19,6 +19,8 @@
 #include "targetUI.h"
 #include "Goal.h"
 
+#include "load.h"
+
 class MANAGER;
 
 class GIMMICK
@@ -44,6 +46,9 @@ private:
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;
 	TargetUI m_TargetUI;
+
+	LOAD_MANAGER m_SceneLoad;
+
 public:
 	void Gimmick_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Gimmick_Finalize();
@@ -51,5 +56,7 @@ public:
 	void Gimmick_Draw();
 
 	void Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
+
+	void Gimmick_LoadUpdate();
 
 };

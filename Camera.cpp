@@ -54,7 +54,7 @@ void	Camera_Finalize()
 }
 void Camera_Update(XMFLOAT3 BallPos)
 {
-	if (inputC) {
+	{
 		// ================================
 		// マウス入力の取得
 		// ================================
@@ -101,7 +101,7 @@ void Camera_Update(XMFLOAT3 BallPos)
 			if (cameraTate < CAMERA_DOWN_MAX) cameraTate = CAMERA_DOWN_MAX; // 下限 
 		}
 	}
-	else {
+	{
 		//左右回転調整 
 		if ((GetThumbRightX(0) >= 0.5f))
 		{

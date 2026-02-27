@@ -63,7 +63,7 @@ void MENU::Menu_Update()
 		tutorialselect++;
 	}
 
-	if ((Keyboard_IsKeyDownTrigger(KK_ENTER) || IsButtonTriggered(0, XINPUT_GAMEPAD_A)) && (m_Fade->GetFadeState() == FADE_NONE))
+	if (((Keyboard_IsKeyDownTrigger(KK_ENTER)|| Keyboard_IsKeyDownTrigger(KK_SPACE)) || IsButtonTriggered(0, XINPUT_GAMEPAD_A)) && (m_Fade->GetFadeState() == FADE_NONE))
 	{
 		if (tutorialselect == 0)
 		{

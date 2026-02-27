@@ -48,12 +48,12 @@ void BOMBSOURCE::BombSource_Safe()
 	}
 }
 
-void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
+void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
 	m_Position.y += 1.5f;
 
-	
+
 
 	m_Count += 1.0f / 60.0f;
 	if (m_Count > 5.0f)
@@ -88,8 +88,8 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 	//	
 	//	m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 	//}
-	
-	if (inputB) {
+
+	{
 		if (Mouse_IsLeftDownTrigger())
 		{
 			// ”š’e“Š‚°SE‚ğÄ¶
@@ -122,7 +122,7 @@ void BOMBSOURCE::BombSource_Active_Have(XMFLOAT3 pPlayerPos,XMFLOAT3 pPlayerRot)
 			m_State = BOMB_STATE::BOMB_ACTIVE_THROW;
 		}
 	}
-	else {
+	{
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_B))
 		{
 			// ”š’e“Š‚°SE‚ğÄ¶

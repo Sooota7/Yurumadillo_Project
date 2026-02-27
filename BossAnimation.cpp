@@ -208,7 +208,7 @@ void BOSSANIMATION::BossAnimation_InisAnim()
 		switch (i)
 		{
 		case BOSS_PARTS_HEAD:
-			m_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 4.0f, 0.0f));
+			m_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 4.5f, 0.0f));
 			break;
 		case BOSS_PARTS_BODY:
 			m_Parts[i].SetInisPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));

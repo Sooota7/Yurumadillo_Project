@@ -312,7 +312,7 @@ void ENEMYLUSH::Enemylush_Draw()
 	else {
 		m_Background.Background_Draw();
 		Light5.SetEnable(TRUE);			//ライティングON
-		Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+		//Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
 		SetDepthTest(TRUE);
 
 		Camera_Draw();		//Drawの最初で呼ぶ！
@@ -328,7 +328,7 @@ void ENEMYLUSH::Enemylush_Draw()
 		m_Goal.Goal_Draw();
 		//2D描画
 		Light5.SetEnable(FALSE);			//ライティングOFF
-		Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+		//Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
 
 		m_BillboardManager.Draw();
 		SetDepthTest(FALSE);
