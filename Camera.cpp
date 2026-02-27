@@ -150,6 +150,7 @@ void Camera_Update(XMFLOAT3 BallPos)
 
 	CameraObject.UpVector = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
+#ifdef _DEBUG
 	// FOV キーボード調整はそのまま
 	if (Keyboard_IsKeyDown(KK_Z))
 	{
@@ -161,6 +162,8 @@ void Camera_Update(XMFLOAT3 BallPos)
 		CameraObject.Fov -= 0.3f;
 		if (CameraObject.Fov < 5.0f) CameraObject.Fov = 5.0f;
 	}
+#endif // DEBUG
+
 }
 
 void	Camera_Draw()

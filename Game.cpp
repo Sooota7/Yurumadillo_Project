@@ -208,17 +208,19 @@ void GAME::Game_Update()
 		//Effect_Update();
 		//Score_Update();
 		//Polygon3D_Update();
-
-
-		if (Keyboard_IsKeyDownTrigger(KK_C))
-		{
-			if (m_Manager->GetClearCount() == 0)
-			{
-				m_Manager->IncrementClearCount();
-			};
-
-			m_Manager->SetScene(SCENE_STAGESELECTION);
-		}
+//
+//#ifdef _DEBUG
+//
+//		if (Keyboard_IsKeyDownTrigger(KK_C))
+//		{
+//			if (m_Manager->GetClearCount() == 0)
+//			{
+//				m_Manager->IncrementClearCount();
+//			};
+//
+//			m_Manager->SetScene(SCENE_STAGESELECTION);
+//		}
+//#endif // _DEBUG
 
 		// 追加：プレイヤーとゴールの当たり判定
 		if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)

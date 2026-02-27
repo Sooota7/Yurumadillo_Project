@@ -204,6 +204,7 @@ void GIMMICK::Gimmick_Update()
 		//Polygon3D_Update();
 
 
+#ifdef _DEBUG
 
 		if (Keyboard_IsKeyDownTrigger(KK_C))
 		{
@@ -214,6 +215,7 @@ void GIMMICK::Gimmick_Update()
 
 			m_Manager->SetScene(SCENE_STAGESELECTION);
 		}
+#endif // _DEBUG
 
 		// 追加：プレイヤーとゴールの当たり判定
 		if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
