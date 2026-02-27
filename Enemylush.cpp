@@ -362,6 +362,7 @@ void ENEMYLUSH::Enemylush_DrawPhase()
 		1.0f));
 	//---------------------------------------------------
 
+
 	if (m_EL_State != EL_STATE_END) {
 
 		//テクスチャをセット
@@ -371,7 +372,7 @@ void ENEMYLUSH::Enemylush_DrawPhase()
 		//スプライト描画
 		SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
 		XMFLOAT4 col = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
-		XMFLOAT2 pos = { 700, 100 };
+		XMFLOAT2 pos = { 300, 100 };
 		XMFLOAT2 size = { 300,100 };
 		DrawSprite(pos, size, col);//1枚絵を表示
 
@@ -401,7 +402,7 @@ void ENEMYLUSH::Enemylush_DrawPhase()
 
 
 			XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
-			XMFLOAT2 pos2 = { 900 , 100 };
+			XMFLOAT2 pos2 = { 500 , 100 };
 			XMFLOAT2 size2 = { 100,100 };
 			DrawSpriteEx(pos2, size2, col2, (int)(m_EL_State + 1), 10, 1);//1枚絵を表示
 		}
@@ -414,7 +415,7 @@ void ENEMYLUSH::Enemylush_DrawPhase()
 		//スプライト描画
 		SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
 		XMFLOAT4 col = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
-		XMFLOAT2 pos = { 700, 100 };
+		XMFLOAT2 pos = { 300, 100 };
 		XMFLOAT2 size = { 300,100 };
 		DrawSprite(pos, size, col);//1枚絵を表示
 	}

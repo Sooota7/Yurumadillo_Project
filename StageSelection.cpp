@@ -12,7 +12,7 @@
 
 
 
-static	ID3D11ShaderResourceView* g_Texture[10] ;	
+static	ID3D11ShaderResourceView* g_Texture[4] ;	
 static ID3D11Device* g_pDevice = nullptr;
 static ID3D11DeviceContext* g_pContext = nullptr;
 
@@ -30,37 +30,19 @@ void STAGESELECTION::StageSelection_Initialize(ID3D11Device* pDevice, ID3D11Devi
 	//テクスチャ読み込みなど
 	TexMetadata		metadata;
 	ScratchImage	image;
-	LoadFromWICFile(L"asset\\texture\\Stageselection1.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\StageSelect_01.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[0]);
 	assert(g_Texture[0]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection2_1.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\StageSelect_02.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[1]);
 	assert(g_Texture[1]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection2_2.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\StageSelect_03.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[2]);
 	assert(g_Texture[2]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection3_1.png", WIC_FLAGS_NONE, &metadata, image);
+	LoadFromWICFile(L"asset\\texture\\StageSelect_04.png", WIC_FLAGS_NONE, &metadata, image);
 	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[3]);
 	assert(g_Texture[3]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection3_2.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[4]);
-	assert(g_Texture[4]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection3_3.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[5]);
-	assert(g_Texture[5]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection4_1.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[6]);
-	assert(g_Texture[6]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection4_2.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[7]);
-	assert(g_Texture[7]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection4_3.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[8]);
-	assert(g_Texture[8]);//読み込み失敗時にダイアログを表示
-	LoadFromWICFile(L"asset\\texture\\Stageselection4_4.png", WIC_FLAGS_NONE, &metadata, image);
-	CreateShaderResourceView(pDevice, image.GetImages(), image.GetImageCount(), metadata, &g_Texture[9]);
-	assert(g_Texture[9]);//読み込み失敗時にダイアログを表示
-
+	
 	stageselect = 0;
 	stagechangecounter = 0; // ← 初期化を追加
 
@@ -142,17 +124,17 @@ void STAGESELECTION::StageSelection_Draw()
 	}
 	else if (claercount == 1)
 	{
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture[2]);//g_Textureを使うように設定する
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[1]);//g_Textureを使うように設定する
 
 	}
 	else if (claercount == 2)
 	{
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture[5]);//g_Textureを使うように設定する
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[2]);//g_Textureを使うように設定する
 
 	}
 	else if (claercount == 3)
 	{
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture[9]);//g_Textureを使うように設定する
+		g_pContext->PSSetShaderResources(0, 1, &g_Texture[3]);//g_Textureを使うように設定する
 
 	}
 	
