@@ -453,6 +453,9 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 			case RUNBOMB_ENEMY:
 				ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
 				break;
+			case RUNBOMB_ENEMY_BOSS:
+				ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
+				break;
 			case RUNBOMB_ITEM:
 				ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_RUN]);
 				break;

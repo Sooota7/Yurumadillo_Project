@@ -33,6 +33,9 @@ void RUNBOMBSPAWNER::Update_RunBombSpawner(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayer
 		case RUNBOMB_ENEMY:
 			m_RunBomb.Runbombsource_Enemy(pPlayerPos);
 			break;
+		case RUNBOMB_ENEMY_BOSS:
+			m_RunBomb.Runbombsource_Enemy_Boss(pPlayerPos);
+			break;
 		case RUNBOMB_ITEM:
 			m_RunBomb.Runbombsource_Safe();
 			break;
