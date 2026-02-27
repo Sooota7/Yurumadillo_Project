@@ -3198,11 +3198,11 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 		//地面として判定処理
 		else
 		{
-			if (buttonsPos.z - BOX_RADIUS < PlayerPos.z &&
-				PlayerPos.z < buttonsPos.z + BOX_RADIUS)
+			if (buttonsPos.z - BUTTON_RADIUS < PlayerPos.z &&
+				PlayerPos.z < buttonsPos.z + BUTTON_RADIUS)
 			{
-				if (buttonsPos.x - BOX_RADIUS < PlayerPos.x &&
-					PlayerPos.x < buttonsPos.x + BOX_RADIUS)
+				if (buttonsPos.x - BUTTON_RADIUS < PlayerPos.x &&
+					PlayerPos.x < buttonsPos.x + BUTTON_RADIUS)
 				{
 					if (buttonsPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
 						PlayerPos.y < buttonsPos.y - BOX_RADIUS)
