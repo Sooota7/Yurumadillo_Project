@@ -554,9 +554,9 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		//スケーリング行列の作成
 		XMMATRIX	ScalingMatrix = XMMatrixScaling
 		(
-			1.2f,
+			4.0f,
 			0.5f,
-			1.2f
+			4.0f
 		);
 
 		//平行移動行列の作成
