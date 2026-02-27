@@ -361,6 +361,145 @@ void RUNBOMBSOURCE::Runbombsource_Enemy(XMFLOAT3 pPlayerPos)
 	}
 }
 
+void RUNBOMBSOURCE::Runbombsource_Enemy_Boss(XMFLOAT3 pPlayerPos)
+{
+
+	if (m_Type == RUNBOMB_TYPE_FREE)
+	{
+		// 敵の向きをプレイヤーに向ける
+		XMFLOAT3 direction;
+
+		direction.x = pPlayerPos.x - m_Position.x;
+		direction.y = 0.0f;
+		direction.z = pPlayerPos.z - m_Position.z;
+
+		// 距離
+		float length = sqrtf((direction.x * direction.x) +
+			(direction.z * direction.z));
+
+		if (length != 0.0f)
+		{// 正規化
+			direction.x /= length;
+			direction.z /= length;
+
+			float yaw = atan2(direction.x, direction.z);
+
+
+			// [-π, π] に正規化
+			if (yaw > XM_PI) yaw -= XM_2PI;
+			if (yaw < -XM_PI) yaw += XM_2PI;
+
+
+			m_Rotation.y = yaw;
+		}
+
+		{
+			m_Position.x += m_Velocity.x;
+			m_Position.y += m_Velocity.y;
+			m_Position.z += m_Velocity.z;
+
+
+			//落下判定
+			if (m_Position.y < -15.0f)
+			{
+				m_State = RUNBOMB_STATE::RUNBOMB_COOL;
+				return;
+			}
+
+			m_Velocity.x *= 0.99f;//速度を適当に減衰させる
+			//m_Velocity.y *= 0.98f;//追加する
+			m_Velocity.z *= 0.99f;
+
+			//静止チェック
+			float	len =
+				(
+					m_Velocity.x * m_Velocity.x +
+					m_Velocity.y * m_Velocity.y +
+					m_Velocity.z * m_Velocity.z
+					);
+
+			if (len <= 0.0002f)//静止とみなす速度
+			{
+				m_StopTime++;
+				if (m_StopTime > (60.0f * 2))//２秒間続いている
+				{
+					m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+					m_StopTime = 0.0f;
+				}
+			}
+
+
+			//m_Velocity.y -= BOMB_GRAVITY;
+
+		}
+	}
+	else
+	{
+		m_Velocity.x = 0;
+		m_Velocity.y = 0;
+		m_Velocity.z = 0;
+
+		//m_Velocity.y -= BOMB_GRAVITY;
+
+		switch (m_Type)
+		{
+		case RUNBOMB_TYPE_UP:
+			m_Velocity.z = 0.1f;
+			break;
+		case RUNBOMB_TYPE_DOWN:
+			m_Velocity.z = -0.1f;
+			break;
+		case RUNBOMB_TYPE_RIGHT:
+			m_Velocity.x = 0.1f;
+			break;
+		case RUNBOMB_TYPE_LEFT:
+			m_Velocity.x = -0.1f;
+			break;
+		default:
+			break;
+		}
+
+		XMFLOAT3 move = m_Velocity;
+
+		// 正規化
+		float len = sqrtf(move.x * move.x + move.z * move.z);
+		if (len > 0.0f)
+		{
+			move.x /= len;
+			move.z /= len;
+
+			// 移動
+			m_Velocity.x = move.x * PLAYER_SPEEDMAX;
+			m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+		}
+		else
+		{
+			// 停止
+			m_Velocity.x = 0.0f;
+			m_Velocity.z = 0.0f;
+		}
+
+		// --- 進行方向に体の向きを合わせる ---
+		if (len > 0.0f)
+		{
+			float angle = atan2f(m_Velocity.x, m_Velocity.z); // ← Y軸回転
+			m_Rotation.y = angle;
+		}
+
+		m_Position.x += m_Velocity.x;
+		m_Position.y += m_Velocity.y;
+		m_Position.z += m_Velocity.z;
+
+		//落下判定
+		if (m_Position.y < -2.0f)
+		{
+			m_State = RUNBOMB_STATE::RUNBOMB_COOL;
+			return;
+		}
+
+	}
+}
+
 //void RUNBOMBSOURCE::Runbombsource_Active_Type()
 //{
 //	switch (m_Type)

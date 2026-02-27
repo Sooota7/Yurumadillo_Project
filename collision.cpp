@@ -3128,6 +3128,7 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 {
 	float		hit = 0.0f;				// ヒットした方向
 	bool grounded_any = false;			// 何かに接地しているかどうか
+	const float BUTTON_RADIUS = 2.0f;			// ボタンの当たり判定の半径
 
 	pGimmick->Channels_Reset(); // チャンネルのカウントをリセット
 
@@ -3154,41 +3155,41 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 		
 
 		// 壁としての判定処理
-		if (buttonsPos.y - BOX_RADIUS < PlayerPos.y &&
+		if (buttonsPos.y - BUTTON_RADIUS < PlayerPos.y &&
 			PlayerPos.y < BoxTop - 0.1f)
 		{
-			if (buttonsPos.z - BOX_RADIUS < PlayerPos.z &&
-				PlayerPos.z < buttonsPos.z + BOX_RADIUS)
+			if (buttonsPos.z - BUTTON_RADIUS < PlayerPos.z &&
+				PlayerPos.z < buttonsPos.z + BUTTON_RADIUS)
 			{
-				if (buttonsPos.x - BOX_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
-					PlayerPos.x < buttonsPos.x - BOX_RADIUS)
+				if (buttonsPos.x - BUTTON_RADIUS < PlayerPos.x + PLAYER_RADIUS &&
+					PlayerPos.x < buttonsPos.x - BUTTON_RADIUS)
 				{//BOXの-X面にぶつかったので座標の補正
-					PlayerPos.x += (buttonsPos.x - BOX_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
+					PlayerPos.x += (buttonsPos.x - BUTTON_RADIUS) - (PlayerPos.x + PLAYER_RADIUS);
 					PlayerVel.x *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_3;
 				}
-				else if (buttonsPos.x + BOX_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
-					PlayerPos.x > buttonsPos.x + BOX_RADIUS)
+				else if (buttonsPos.x + BUTTON_RADIUS > PlayerPos.x - PLAYER_RADIUS &&
+					PlayerPos.x > buttonsPos.x + BUTTON_RADIUS)
 				{//BOXの+X面にぶつかった
-					PlayerPos.x += (buttonsPos.x + BOX_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
+					PlayerPos.x += (buttonsPos.x + BUTTON_RADIUS) - (PlayerPos.x - PLAYER_RADIUS);
 					PlayerVel.x *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_1;
 				}
 			}
-			else if (buttonsPos.x - BOX_RADIUS < PlayerPos.x &&
+			else if (buttonsPos.x - BUTTON_RADIUS < PlayerPos.x &&
 				PlayerPos.x < buttonsPos.x + BOX_RADIUS)
 			{
-				if (buttonsPos.z - BOX_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
-					PlayerPos.z < buttonsPos.z - BOX_RADIUS)
+				if (buttonsPos.z - BUTTON_RADIUS < PlayerPos.z + PLAYER_RADIUS &&
+					PlayerPos.z < buttonsPos.z - BUTTON_RADIUS)
 				{//BOXの-Z面にぶつかったので座標の補正
-					PlayerPos.z += (buttonsPos.z - BOX_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
+					PlayerPos.z += (buttonsPos.z - BUTTON_RADIUS) - (PlayerPos.z + PLAYER_RADIUS);
 					PlayerVel.z *= -COE; //移動ベクトルの反転
 					hit = COLLISION_HIT::HIT_WALL_0;
 				}
-				else if (buttonsPos.z + BOX_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
-					PlayerPos.z > buttonsPos.z + BOX_RADIUS)
+				else if (buttonsPos.z + BUTTON_RADIUS > PlayerPos.z - PLAYER_RADIUS &&
+					PlayerPos.z > buttonsPos.z + BUTTON_RADIUS)
 				{//BOXの+Z面にぶつかった
-					PlayerPos.z += (buttonsPos.z + BOX_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
+					PlayerPos.z += (buttonsPos.z + BUTTON_RADIUS) - (PlayerPos.z - PLAYER_RADIUS);
 					PlayerVel.z *= -COE;
 					hit = COLLISION_HIT::HIT_WALL_2;
 				}
@@ -3197,11 +3198,11 @@ float COLLISION::PlayerGimmickCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 		//地面として判定処理
 		else
 		{
-			if (buttonsPos.z - BOX_RADIUS < PlayerPos.z &&
-				PlayerPos.z < buttonsPos.z + BOX_RADIUS)
+			if (buttonsPos.z - BUTTON_RADIUS < PlayerPos.z &&
+				PlayerPos.z < buttonsPos.z + BUTTON_RADIUS)
 			{
-				if (buttonsPos.x - BOX_RADIUS < PlayerPos.x &&
-					PlayerPos.x < buttonsPos.x + BOX_RADIUS)
+				if (buttonsPos.x - BUTTON_RADIUS < PlayerPos.x &&
+					PlayerPos.x < buttonsPos.x + BUTTON_RADIUS)
 				{
 					if (buttonsPos.y - BOX_RADIUS < PlayerPos.y + PLAYER_RADIUS &&
 						PlayerPos.y < buttonsPos.y - BOX_RADIUS)

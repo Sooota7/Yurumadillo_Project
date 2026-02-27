@@ -23,6 +23,7 @@ enum RUNBOMB_STATE
 {
 	RUNBOMB_NONE,
 	RUNBOMB_ENEMY,
+	RUNBOMB_ENEMY_BOSS,
 	RUNBOMB_ITEM,
 	RUNBOMB_ACTIVE_HAVE,
 	RUNBOMB_ACTIVE_THROW,
@@ -68,6 +69,7 @@ public:
 	void		Runbombsource_Cool();
 	void		Runbombsource_Explosion();
 	void		Runbombsource_Enemy(XMFLOAT3 pPlayerPos);
+	void		Runbombsource_Enemy_Boss(XMFLOAT3 pPlayerPos);
 
 	//void		Runbombsource_Active_Type();
 
