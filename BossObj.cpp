@@ -1,4 +1,3 @@
-
 #include	"BossObj.h"
 #include	"shader.h"
 #include	"collision.h"
@@ -24,7 +23,7 @@ void BOSSOBJ::BossObj_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 	m_Scaling = XMFLOAT3(5.0f, 5.0f, 5.0f);
 
-	m_Model[0] = ModelLoad("asset\\model\\test.fbx");
+	m_Model[0] = ModelLoad("asset\\model\\EnemyGround\\EnemyGroundWeapon.fbx");
 	m_Model[1] = ModelLoad("asset\\model\\test.fbx");
 	m_Model[2] = ModelLoad("asset\\model\\test.fbx");
 	m_Model[3] = ModelLoad("asset\\model\\test.fbx");
@@ -62,10 +61,11 @@ void	BOSSOBJ::BossObj_Draw()
 		m_Scaling.x,
 		m_Scaling.y,
 		m_Scaling.z);
+	// --- ここを修正: m_Rotation は度 (°) でセットされることがあるため描画時にラジアンへ変換する ---
 	XMMATRIX	rotation = XMMatrixRotationRollPitchYaw(
-		m_Rotation.x,
-		m_Rotation.y,
-		m_Rotation.z);
+		XMConvertToRadians(m_Rotation.x),
+		XMConvertToRadians(m_Rotation.y),
+		XMConvertToRadians(m_Rotation.z));
 	XMMATRIX	translation = XMMatrixTranslation(
 		m_Position.x,
 		m_Position.y,

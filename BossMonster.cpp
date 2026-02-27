@@ -285,6 +285,7 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, 0.50f));
+				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 0.0f, 0.0f)); 
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -342,6 +343,7 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.50f));
+				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 180.0f, 0.0f)); // 反転させる
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -410,7 +412,7 @@ void BOSSMONSTER::Bossmonster_Phase3()
 			XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, FIELD_WIDTH_Z / 2);
 
 			// 敵走る爆弾として初期化（横方向に進むタイプを使う -> RIGHT）
-			src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY, RUNBOMB_TYPE_DOWN);
+			src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY_BOSS, RUNBOMB_TYPE_DOWN);
 
 			// spawner を有効にしておく（既に true の可能性あり）
 			runArr[i].SetUse(true);
