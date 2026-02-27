@@ -9,6 +9,7 @@
 #include	"billboard.h"
 #include	"inputx.h"
 #include	"Audio.h"
+#include	"mouse.h"
 
 //ボールオブジェクト
 
@@ -69,7 +70,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		
 	}
 
-	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z+2);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -271,7 +272,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 
 void	PLAYER::Player_Idle()
 {
-	if (input) {
+	{
 		//動いていない時の待機モーションを入れてもいいかも
 		if (Keyboard_IsKeyDown(KK_W) || //いずれかの移動キーを押したら移動状態に
 			Keyboard_IsKeyDown(KK_A) ||
@@ -289,8 +290,8 @@ void	PLAYER::Player_Idle()
 		//停止中も重力はかかる
 		m_Velocity.y -= PLAYER_GRAVITY;
 	}
-	else {//コントローラー
-		//動いていない時の待機モーションを入れてもいいかも
+	{//コントローラー
+	   //動いていない時の待機モーションを入れてもいいかも
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || //いずれかの移動キーを押したら移動状態に
 			IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) ||
 			IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) ||
@@ -300,7 +301,7 @@ void	PLAYER::Player_Idle()
 		}
 
 		if ((GetThumbLeftX(0) <= -0.5f) || //いずれかの移動キーを押したら移動状態に
-			(GetThumbLeftX(0) >= 0.5f)  ||
+			(GetThumbLeftX(0) >= 0.5f) ||
 			(GetThumbLeftY(0) <= -0.5f) ||
 			(GetThumbLeftY(0) >= 0.5f))
 		{
@@ -333,7 +334,7 @@ void PLAYER::Player_Move()
 
     XMFLOAT3 move = XMFLOAT3(0, 0, 0);
 
-	if (input) {
+	{
 		// WASDで移動
 		if (Keyboard_IsKeyDown(KK_W)) // 前
 			move.x -= forward.x, move.z -= forward.z;
@@ -344,11 +345,9 @@ void PLAYER::Player_Move()
 		if (Keyboard_IsKeyDown(KK_A)) // 左
 			move.x += right.x, move.z += right.z;
 
-
-		if (Keyboard_IsKeyDownTrigger(KK_SPACE)
-			&& JumpCount && BalloonFlag)
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount && BalloonFlag)
 		{
-         	BalloomUp = true;
+			BalloomUp = true;
 			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
 		}
 		//junp
@@ -357,20 +356,20 @@ void PLAYER::Player_Move()
 		}
 
 		//bombTrans
-		if (Keyboard_IsKeyDownTrigger(KK_V) && !BombHave) {
+		if (Mouse_IsLeftDownTrigger() && !BombHave) {
 			TransBombFlag = true;
 		}
 
 	}
-	else {
+	{
 		//コントローラー
-		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP)    || GetThumbLeftY(0) >= 0.5f) // 前
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_UP) || GetThumbLeftY(0) >= 0.5f) // 前
 			move.x -= forward.x, move.z -= forward.z;
-		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN)  || GetThumbLeftY(0) <= -0.5f) // 後
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_DOWN) || GetThumbLeftY(0) <= -0.5f) // 後
 			move.x += forward.x, move.z += forward.z;
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
 			move.x -= right.x, move.z -= right.z;
-		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT)  || GetThumbLeftX(0) <= -0.5f) // 左
+		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f) // 左
 			move.x += right.x, move.z += right.z;
 
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)

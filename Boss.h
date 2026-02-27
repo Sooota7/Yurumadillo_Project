@@ -19,6 +19,8 @@
 #include "bombUI.h"
 #include "targetUI.h"
 
+#include "load.h"
+
 class MANAGER;
 
 class BOSS
@@ -43,6 +45,9 @@ private:
 	PlayerUI m_PlayerUI;
 	BombUI m_BombUI;
 	TargetUI m_TargetUI;
+
+	LOAD_MANAGER m_SceneLoad;
+
 public:
 	void Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Boss_Finalize();
@@ -51,4 +56,5 @@ public:
 
 	void Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no );
 
+	void Boss_LoadUpdate();
 };

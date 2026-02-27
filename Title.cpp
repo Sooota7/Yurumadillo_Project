@@ -83,7 +83,7 @@ void TITLE::Title_Update()
 		FadeCP = 1.0f / 90.0f;
 	}
 
-	if (Keyboard_IsKeyDownTrigger(KK_ENTER) && (m_Fade->GetFadeState() == FADE_NONE))
+	if ((Keyboard_IsKeyDownTrigger(KK_ENTER)|| Keyboard_IsKeyDownTrigger(KK_SPACE)) && (m_Fade->GetFadeState() == FADE_NONE))
 	{
 		PlayAudio(g_SeID, false);		//再生開始（ループあり）
 

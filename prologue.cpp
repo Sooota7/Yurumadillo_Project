@@ -67,7 +67,7 @@ void PROLOGUE::Prologue_Finalize()
 void PROLOGUE::Prologue_Update()
 { 
 	//キー入力で次の画像へ
-	if ((Keyboard_IsKeyDownTrigger(KK_ENTER)||IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
+	if (((Keyboard_IsKeyDownTrigger(KK_ENTER)|| Keyboard_IsKeyDownTrigger(KK_SPACE))||IsButtonTriggered(0, XINPUT_GAMEPAD_A))
 		&& Prologue_TextureCount < MAX_PROLOGUE_TEXTURE)
 	{
 		PlayAudio(g_SeID, false);		//再生開始（ループあり）
@@ -76,14 +76,14 @@ void PROLOGUE::Prologue_Update()
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
-	if ((Keyboard_IsKeyDownTrigger(KK_ENTER)|| IsButtonTriggered(0, XINPUT_GAMEPAD_A)) 
-		&& (m_Fade->GetFadeState() == FADE_NONE)&&Prologue_TextureCount==MAX_PROLOGUE_TEXTURE)
+	if (((Keyboard_IsKeyDownTrigger(KK_ENTER) || Keyboard_IsKeyDownTrigger(KK_SPACE)) || IsButtonTriggered(0, XINPUT_GAMEPAD_A))
+		&& (m_Fade->GetFadeState() == FADE_NONE) && Prologue_TextureCount == MAX_PROLOGUE_TEXTURE)
 	{
 		PlayAudio(g_SeID, false);		//再生開始（ループあり）
 
 		//フェードアウトさせてシーンを切り替える
 		XMFLOAT4	color(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_MENU);
+		m_Fade->Fade_SetFade(40.0f, color, FADE_OUT, SCENE_STAGESELECTION);
 	}
 	
 }

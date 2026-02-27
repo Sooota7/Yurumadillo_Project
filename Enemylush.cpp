@@ -281,15 +281,18 @@ void ENEMYLUSH::Enemylush_Update()
 
 		Enemylush_Phase_Update();
 
-		if (Keyboard_IsKeyDownTrigger(KK_C))
-		{
-			if (m_Manager->GetClearCount() == 2)
-			{
-				m_Manager->IncrementClearCount();
-			};
-
-			m_Manager->SetScene(SCENE_STAGESELECTION);
-		}
+//#ifdef _DEBUG
+//
+//		if (Keyboard_IsKeyDownTrigger(KK_C))
+//		{
+//			if (m_Manager->GetClearCount() == 2)
+//			{
+//				m_Manager->IncrementClearCount();
+//			};
+//
+//			m_Manager->SetScene(SCENE_STAGESELECTION);
+//		}
+//#endif // _DEBUG
 
 		// 追加：プレイヤーとゴールの当たり判定
 		if (collision.PlayerGoalCollision(&m_Player, &m_Goal) == COLLISION_HIT::HIT_WALL_CREAR)
@@ -312,7 +315,7 @@ void ENEMYLUSH::Enemylush_Draw()
 	else {
 		m_Background.Background_Draw();
 		Light5.SetEnable(TRUE);			//ライティングON
-		Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+		//Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
 		SetDepthTest(TRUE);
 
 		Camera_Draw();		//Drawの最初で呼ぶ！
@@ -328,7 +331,7 @@ void ENEMYLUSH::Enemylush_Draw()
 		m_Goal.Goal_Draw();
 		//2D描画
 		Light5.SetEnable(FALSE);			//ライティングOFF
-		Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
+		//Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
 
 		m_BillboardManager.Draw();
 		SetDepthTest(FALSE);

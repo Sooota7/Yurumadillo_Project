@@ -56,7 +56,7 @@ void ENDING::Ending_Update()
 	//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
 	//フェード処理中はキーを受け付けない
-	if ((Keyboard_IsKeyDownTrigger(KK_ENTER) || IsButtonPressed(0, XINPUT_GAMEPAD_B)) 
+	if (((Keyboard_IsKeyDownTrigger(KK_ENTER) || Keyboard_IsKeyDownTrigger(KK_SPACE)) || IsButtonPressed(0, XINPUT_GAMEPAD_B))
 		&& (m_Fade->GetFadeState() == FADE_NONE))
 	{
 		//フェードアウトさせてシーンを切り替える
