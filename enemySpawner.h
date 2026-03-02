@@ -31,7 +31,6 @@ public:
 	XMFLOAT3 Get_SpawnPosition() { return m_Position; }
 };
 
-
 class ENEMYSPAWNER
 {
 private:
@@ -47,6 +46,8 @@ private:
 	MODEL* m_Model[ENEMY_TYPE_MAX] = { NULL };//デバッグ
 
 	MODEL* m_EG_Model[EG_PARTS_MAX];
+
+	MODEL* m_ModelData[BOMBFLOWT_PARTS_MAX];	//モデルデータ
 
 	//=============================================================
 	// EnemyGroundAnim

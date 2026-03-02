@@ -16,6 +16,9 @@ using namespace DirectX;
 
 #include	"Enemy.h"
 
+#include	"BombFlowtAnim.h"
+
+
 //ìGÅií±ÅjÇÃèÛë‘
 enum ENEMY_BUTTERFLY_STATE
 {
@@ -39,6 +42,8 @@ private:
 	XMFLOAT3	m_ChasePos;			// í«ê’Ç∑ÇÈëäéË
 	ENEMY_TYPE  m_Type;
 
+	BOMBFLOWTANIMATION m_FlowtEnemyAnim;
+
 	float cycle = 0.0f;
 private:
 	void	Enemy_Butterfly_Idle();
@@ -61,4 +66,6 @@ public:
 
 	void SetEnemyButterflyType(ENEMY_TYPE type) { m_Type = type; };
 	ENEMY_TYPE GetEnemyButterflyType() { return m_Type; };
+
+	BOMBFLOWTANIMATION* GetEnemyButterflyAnim() { return &m_FlowtEnemyAnim; };
 };

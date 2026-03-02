@@ -139,6 +139,7 @@
     <ClCompile Include="billboardManager.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="bomb.cpp" />
+    <ClCompile Include="BombFlowtAnim.cpp" />
     <ClCompile Include="bombSource.cpp" />
     <ClCompile Include="bombUI.cpp" />
     <ClCompile Include="Boss.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="billboardManager.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="bomb.h" />
+    <ClInclude Include="BombFlowtAnim.h" />
     <ClInclude Include="bombSource.h" />
     <ClInclude Include="bombUI.h" />
     <ClInclude Include="Boss.h" />

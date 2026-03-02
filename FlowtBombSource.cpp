@@ -11,10 +11,11 @@ int FLOWTBOMBSOURCE::m_ExplosionSE_ID = -1;
 int FLOWTBOMBSOURCE::m_ThrowSE_ID = -1;
 bool FLOWTBOMBSOURCE::m_SEInitialized = false;
 
-void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
+void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state, ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_FirstPosition = pos;
 	m_Position = pos;
+	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_State = state;
 	m_Count = 0;
 	m_Touch = false;
@@ -27,10 +28,53 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state)
 		m_ThrowSE_ID = LoadAudio("asset\\Audio\\SE\\throw.wav");
 		m_SEInitialized = true;
 	}
+
+	m_FlowtBombAnim.BombFlowtAnim_Initialize(pDevice, pContext);
+
 }
 
-void FLOWTBOMBSOURCE::Flowtbombsource_Finalize(void)
+void FLOWTBOMBSOURCE::Flowtbombsource_Update()
 {
+	switch (m_State)
+	{
+	case BOMB_NONE:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_NONE);
+		break;
+	case BOMB_ITEM:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_IDLE);
+		m_FlowtBombAnim.BombFlowtAnim_Update(m_Position,m_Rotation);
+		break;
+	case BOMB_ACTIVE_HAVE:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_MOVE);
+		m_FlowtBombAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
+		break;
+	case BOMB_ACTIVE_THROW:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_MOVE);
+		m_FlowtBombAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
+		break;
+	case BOMB_EXPLOSION:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_NONE);
+		m_FlowtBombAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
+		break;
+	case BOMB_COOL:
+		m_FlowtBombAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_NONE);
+		m_FlowtBombAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
+		break;
+	default:
+		break;
+	}
+}
+
+void FLOWTBOMBSOURCE::Flowtbombsource_Draw(MODEL* model, MODEL* model2, MODEL* model3)
+{
+	m_FlowtBombAnim.BombFlowtAnim_Draw(model,model2,model3);
+}
+
+	
+
+	void FLOWTBOMBSOURCE::Flowtbombsource_Finalize(void)
+{
+	m_FlowtBombAnim.BombFlowtAnim_Finalize();
 }
 
 void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
@@ -47,7 +91,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Safe()
 void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 {
 	m_Position = pPlayerPos;
-	m_Position.y += 1.5f;
+	m_Position.y += 1.0f;
 
 
 
