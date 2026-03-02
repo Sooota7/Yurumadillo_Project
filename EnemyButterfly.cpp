@@ -33,6 +33,9 @@ void ENEMY_BUTTERFLY::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	SetEnemyHp(100);
 
 	SetEnemyButterflyState(ENEMY_BUTTERFLY_STATE_NONE);
+
+	m_FlowtEnemyAnim.BombFlowtAnim_Initialize(pDevice, pContext);
+
 }
 
 void ENEMY_BUTTERFLY::Finalize()
@@ -78,18 +81,28 @@ void ENEMY_BUTTERFLY::Update(XMFLOAT3 chasePos)
 	{
 	case ENEMY_BUTTERFLY_STATE_IDLE:
 		Enemy_Butterfly_Idle();
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_NONE);
+		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	case ENEMY_BUTTERFLY_STATE_MOVE:
 		Enemy_Butterfly_Move();
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_IDLE);
+		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	case ENEMY_BUTTERFLY_STATE_DIRECTION:
 		Enemy_Butterfly_Direction(chasePos);
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_IDLE);
+		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	case ENEMY_BUTTERFLY_STATE_ATTACK:
 		Enemy_Butterfly_Attack(chasePos);
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_MOVE);
+		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	case ENEMY_BUTTERFLY_STATE_DEAD:
 		Enemy_Butterfly_Dead();
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_IDLE);
+		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	default:
 		break;
@@ -98,7 +111,6 @@ void ENEMY_BUTTERFLY::Update(XMFLOAT3 chasePos)
 
 void ENEMY_BUTTERFLY::Draw()
 {
-
 }
 
 void ENEMY_BUTTERFLY::Enemy_Butterfly_Idle()

@@ -162,6 +162,25 @@ void ENEMYSPAWNER::EnemySpawner_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 
 	}
 
+	for (int i = 0; i < BOMBFLOWT_PARTS::BOMBFLOWT_PARTS_MAX; i++)
+	{
+
+		switch (i)
+		{
+		case BOMBFLOWT_PARTS_BODY:
+			m_ModelData[i] = ModelLoad("asset\\model\\FloatEnemy\\FlowtEnemyBody.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_RIGHT:
+			m_ModelData[i] = ModelLoad("asset\\model\\FloatEnemy\\FlowtEnemyArmR.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_LEFT:
+			m_ModelData[i] = ModelLoad("asset\\model\\FloatEnemy\\FlowtEnemyArmL.fbx");
+			break;
+		default:
+			break;
+		}
+	}
+
 	for (int i = 0; i < ENEMY_GROUND_STATE::ENEMY_GROUND_STATE_MAX; i++)
 	{
 		for (int y = 0; y < ENEMY_GROUND_PARTS::EG_PARTS_MAX; y++)
@@ -401,21 +420,27 @@ void ENEMYSPAWNER::EnemySpawner_Draw(void)
 			//謠冗判縺吶ｋ繝昴Μ繧ｴ繝ｳ縺ｮ遞ｮ鬘槭ｒ繧ｻ繝・ヨ 3鬆らせ縺ｧ繝昴Μ繧ｴ繝ｳ・第椢縺ｨ縺励※陦ｨ遉ｺ
 			g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+			BOMBFLOWTANIMATION* anim = m_EnemyButterfly[i].GetEnemyButterflyAnim();
+
 			//謠冗判繝ｪ繧ｯ繧ｨ繧ｹ繝・
 			//繝｢繝・Ν荳蛟九＠縺九↑縺・°繧芽ｿｽ蜉縺吶ｋ縺ｨ縺阪↓螟峨∴繧・
 			switch (m_EnemyButterfly[i].GetEnemyButterflyState())
 			{
 			case ENEMY_BUTTERFLY_STATE_IDLE:
-				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				//ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				anim->BombFlowtAnim_Draw(m_ModelData[BOMBFLOWT_PARTS_BODY], m_ModelData[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelData[BOMBFLOWT_PARTS_ARM_LEFT]);
 				break;
 			case ENEMY_BUTTERFLY_STATE_MOVE:
-				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				//ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				anim->BombFlowtAnim_Draw(m_ModelData[BOMBFLOWT_PARTS_BODY], m_ModelData[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelData[BOMBFLOWT_PARTS_ARM_LEFT]);
 				break;
 			case ENEMY_BUTTERFLY_STATE_DIRECTION:
-				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				//ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				anim->BombFlowtAnim_Draw(m_ModelData[BOMBFLOWT_PARTS_BODY], m_ModelData[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelData[BOMBFLOWT_PARTS_ARM_LEFT]);
 				break;
 			case ENEMY_BUTTERFLY_STATE_ATTACK:
-				ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				//ModelDraw(m_Model[ENEMY_TYPE_BUTTERFLY]);
+				anim->BombFlowtAnim_Draw(m_ModelData[BOMBFLOWT_PARTS_BODY], m_ModelData[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelData[BOMBFLOWT_PARTS_ARM_LEFT]);
 				break;
 			case ENEMY_BUTTERFLY_STATE_DEAD:
 

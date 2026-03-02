@@ -195,6 +195,10 @@ void WEAPON::Weapon_Draw(void)
 			1.0f
 		);
 
+		if (m_EG_Weapon[i].Weapon_EG_GetNormalWeapon()) {
+			weaponPos.y += 1.0f;
+		}
+
 		//ïΩçsà⁄ìÆçsóÒÇÃçÏê¨
 		XMMATRIX	TranslationMatrix = XMMatrixTranslation
 		(
@@ -300,7 +304,7 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		if(en[i].GetEnemyNormalState()==ENEMY_NORMAL_STATE_ATTACK)
 		{
 			XMFLOAT3 pos = en[i].GetEnemyPosition();
-			pos.y += 1.0f;
+			//pos.y += 1.0f;
 			SetWeaponNor(pos);
 		}
 	}

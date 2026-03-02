@@ -74,6 +74,40 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 		}
 	}
 
+	for (int i = 0; i < BOMBFLOWT_PARTS::BOMBFLOWT_PARTS_MAX; i++)
+	{
+		
+		switch (i)
+		{
+		case BOMBFLOWT_PARTS_BODY:
+			m_ModelData[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtObjBody.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_RIGHT:
+			m_ModelData[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtObjArmR.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_LEFT:
+			m_ModelData[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtObjArmL.fbx");
+			break;
+		default:
+			break;
+		}
+
+		switch (i)
+		{
+		case BOMBFLOWT_PARTS_BODY:
+			m_ModelDataBomb[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtBombBody.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_RIGHT:
+			m_ModelDataBomb[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtBombArmR.fbx");
+			break;
+		case BOMBFLOWT_PARTS_ARM_LEFT:
+			m_ModelDataBomb[i] = ModelLoad("asset\\model\\FlowtBomb\\FlowtBombArmL.fbx");
+			break;
+		default:
+			break;
+		}
+	}
+
 
 
 	/*for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -114,7 +148,7 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 					b++;
 					break;
 				case 7:
-					m_FlowtBomb[c].Flowtbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM);
+					m_FlowtBomb[c].Flowtbombsource_Initialize(XMFLOAT3(l, q, i), BOMB_STATE::BOMB_ITEM, pDevice, pContext);
 					c++;
 					break;
 				}
@@ -134,6 +168,23 @@ void BOMB::Bomb_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 void BOMB::Bomb_Finalize(void)
 {
+	for (int i = 0; i < BOMBFLOWT_PARTS_MAX; i++)
+	{
+		if (m_ModelData[i] != NULL)
+		{
+			ModelRelease(m_ModelData[i]);
+			m_ModelData[i] = NULL;
+		}
+
+		if (m_ModelDataBomb[i] != NULL)
+		{
+			ModelRelease(m_ModelDataBomb[i]);
+			m_ModelDataBomb[i] = NULL;
+		}
+	}
+
+	
+
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		m_Bomb[i].BombSource_Finalize();
@@ -468,7 +519,7 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 				break;
 
 			case RUNBOMB_EXPLOSION:
-				ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+				//ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
 				{
 					XMFLOAT3 pos = runBomb->Runbombsource_GetPosition();
 					XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
@@ -557,45 +608,42 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 		switch (m_FlowtBomb[i].Flowtbombsource_GetState())
 		{
 		case BOMB_NONE:
-			g_pContext->DrawIndexed(6 * 6, 0, 0);
 			break;
 		case BOMB_ITEM:
-			ModelDraw(m_ItemModel[BOMB_TYPE::TYPE_FLOW]);
-			break;
-		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
+			m_FlowtBomb[i].Flowtbombsource_Draw(m_ModelData[BOMBFLOWT_PARTS_BODY], m_ModelData[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelData[BOMBFLOWT_PARTS_ARM_LEFT]);
 			m_Fbno[i] = 0;
 			break;
+		case BOMB_ACTIVE_HAVE:
 		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_BombModel[BOMB_TYPE::TYPE_FLOW]);
+			m_FlowtBomb[i].Flowtbombsource_Draw(m_ModelDataBomb[BOMBFLOWT_PARTS_BODY], m_ModelDataBomb[BOMBFLOWT_PARTS_ARM_RIGHT], m_ModelDataBomb[BOMBFLOWT_PARTS_ARM_LEFT]);
+			m_Fbno[i] = 0;
 			break;
-
 		case BOMB_EXPLOSION:
-			ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+			//ModelDraw(m_Model[BOMB_EXPLOSION]);//テストはツリー
+		{
+			XMFLOAT3 pos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
+			float cnt = m_FlowtBomb[i].Flowtbombsource_GetCount();
+
+			int wc = 3;
+			int hc = 3;
+
+			if (cnt > (1.0f / (wc * hc)) * (m_Fbno[i] + 1))
 			{
-				XMFLOAT3 pos = m_FlowtBomb[i].Flowtbombsource_GetPosition();
-				XMFLOAT2 size = XMFLOAT2(3.2f, 3.2f);
-				float cnt = m_FlowtBomb[i].Flowtbombsource_GetCount();
-
-				int wc = 3;
-				int hc = 3;
-
-				if (cnt > (1.0f / (wc * hc)) * (m_Fbno[i] + 1))
-				{
-					m_Fbno[i]++;
-				}
-
-				XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
-				if (m_Fbno[i] < wc * hc)
-				{
-					Billboard* bb = new Billboard(pos, size, col, m_Fbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
-					billboardManager->Register(bb);
-				}
-
-
+				m_Fbno[i]++;
 			}
-			break;
+
+			XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+			if (m_Fbno[i] < wc * hc)
+			{
+				Billboard* bb = new Billboard(pos, size, col, m_Fbno[i], wc, hc, BILLBOARD_TEXTURE::EXPLOSION);
+				billboardManager->Register(bb);
+			}
+
+
+		}
+		break;
 
 		case BOMB_COOL:
 
@@ -649,15 +697,19 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 		case BOMB_NONE:
 			break;
 		case BOMB_ITEM:
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			m_FlowtBomb[i].Flowtbombsource_Safe();
 			break;
 		case BOMB_ACTIVE_HAVE:
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos,pPlayerRot);
 			break;
 		case BOMB_ACTIVE_THROW:
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			m_FlowtBomb[i].Flowtbombsource_Active_Throw();
 			break;
 		case BOMB_EXPLOSION:
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			m_FlowtBomb[i].Flowtbombsource_Explosion();
 			break;
 		case BOMB_COOL:
@@ -714,15 +766,19 @@ void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 			break;
 		case BOMB_ITEM:
 			m_FlowtBomb[i].Flowtbombsource_Safe();
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			break;
 		case BOMB_ACTIVE_HAVE:
-			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos,pPlayerRot);
+			m_FlowtBomb[i].Flowtbombsource_Active_Have(pPlayerPos, pPlayerRot);
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			break;
 		case BOMB_ACTIVE_THROW:
 			m_FlowtBomb[i].Flowtbombsource_Active_Throw();
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			break;
 		case BOMB_EXPLOSION:
 			m_FlowtBomb[i].Flowtbombsource_Explosion();
+			m_FlowtBomb[i].Flowtbombsource_Update();
 			break;
 		case BOMB_COOL:
 			m_FlowtBomb[i].Flowtbombsource_Cool();

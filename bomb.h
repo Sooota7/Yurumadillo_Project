@@ -15,8 +15,11 @@ using namespace DirectX;
 #include	"RunBombSpawner.h"
 #include	"FlowtBombSource.h"
 #include	"Dictionary.h"
-#include "player.h"
+#include	 "player.h"
 #include     "billboardManager.h"
+#include	"BombFlowtAnim.h"
+
+
 // マクロ定義
 
 #define		BOMB_NUM_MAX	(100)
@@ -51,6 +54,13 @@ private:
 	MODEL* m_BombModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_NorBombModel;
+
+	MODEL* m_ModelData[BOMBFLOWT_PARTS::BOMBFLOWT_PARTS_MAX];	//モデルデータ
+	MODEL* m_ModelDataBomb[BOMBFLOWT_PARTS::BOMBFLOWT_PARTS_MAX];	//モデルデータ
+
+	MODEL** GetBombFlowtModelData() { return m_ModelData; }
+	MODEL** GetBombFlowtModelDataBomb() { return m_ModelDataBomb; }
+
 
 	ID3D11ShaderResourceView* m_Texture = NULL;
 

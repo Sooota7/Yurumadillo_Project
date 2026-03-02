@@ -8,12 +8,14 @@
 #include	"bombSource.h"
 #include	"Audio.h"
 using namespace DirectX;
+#include	"BombFlowtAnim.h"
 
 
 class FLOWTBOMBSOURCE
 {
 	XMFLOAT3	m_FirstPosition;		//爆弾の座標
 	XMFLOAT3	m_Position;		//爆弾の座標
+	XMFLOAT3	m_Rotation;
 	XMFLOAT3	m_Velocity;		//速度
 	XMFLOAT3	m_Acceleration;	//落下速度
 	float		m_Count;		//爆発までのカウント
@@ -22,6 +24,8 @@ class FLOWTBOMBSOURCE
 	float		m_LimitCount;	//
 	bool		m_Touch;
 
+
+	BOMBFLOWTANIMATION m_FlowtBombAnim;
 	BOMB_TYPE	m_Type;
 
 	// SE関連
@@ -32,7 +36,9 @@ class FLOWTBOMBSOURCE
 
 public:
 
-	void		Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state);
+	void		Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state, ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void		Flowtbombsource_Update();
+	void		Flowtbombsource_Draw(MODEL* model,MODEL* model2,MODEL* model3);
 	void		Flowtbombsource_Finalize(void);
 
 
@@ -48,6 +54,9 @@ public:
 	//セッター及びゲッター
 	void		Flowtbombsource_SetPosition(XMFLOAT3 pos) { m_Position = pos; };
 	XMFLOAT3	Flowtbombsource_GetPosition() { return m_Position; };
+
+	void		Flowtbombsource_SetRotation(XMFLOAT3 pos) { m_Rotation = pos; };
+	XMFLOAT3	Flowtbombsource_GetRotation() { return m_Rotation; };
 
 	void		Flowtbombsource_SetVelocity(XMFLOAT3 vel) { m_Velocity = vel; };
 	XMFLOAT3	Flowtbombsource_GetVelocity() { return m_Velocity; };
