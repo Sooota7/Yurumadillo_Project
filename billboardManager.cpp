@@ -46,6 +46,27 @@ void BillboardManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 				image.GetImageCount(), metadata, &m_pSRV[i]);
 			assert(m_pSRV[i]);
 			break;
+		case BILLBOARD_TEXTURE::HIT:
+			// テクスチャ読み込み
+			LoadFromWICFile(L"Asset\\Texture\\Effect\\hitfx.png", WIC_FLAGS_NONE, &metadata, image);
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_pSRV[i]);
+			assert(m_pSRV[i]);
+			break;
+		case BILLBOARD_TEXTURE::SLASH:
+			// テクスチャ読み込み
+			LoadFromWICFile(L"Asset\\Texture\\Effect\\slashfx.png", WIC_FLAGS_NONE, &metadata, image);
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_pSRV[i]);
+			assert(m_pSRV[i]);
+			break;
+		case BILLBOARD_TEXTURE::SMOKE:
+			// テクスチャ読み込み
+			LoadFromWICFile(L"Asset\\Texture\\Effect\\run_Smoke.png", WIC_FLAGS_NONE, &metadata, image);
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_pSRV[i]);
+			assert(m_pSRV[i]);
+			break;
 		default:
 			break;
 		}
@@ -94,6 +115,15 @@ void BillboardManager::Draw()
 			break;
 		case BILLBOARD_TEXTURE::DAMAGE:
 			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::DAMAGE]);
+			break;
+		case BILLBOARD_TEXTURE::HIT:
+			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::HIT]);
+			break;
+		case BILLBOARD_TEXTURE::SLASH:
+			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::SLASH]);
+			break;
+		case BILLBOARD_TEXTURE::SMOKE:
+			m_pContext->PSSetShaderResources(0, 1, &m_pSRV[BILLBOARD_TEXTURE::SMOKE]);
 			break;
 		default:
 			delete m_pBillboard[i];

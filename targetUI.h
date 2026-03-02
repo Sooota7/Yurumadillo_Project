@@ -14,6 +14,15 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include "field.h"
+
+enum T_UI_TEXTURE
+{
+	T_UI_BANNER = 0,
+	T_UI_TARGET,
+	T_UI_MAX,
+};
+
 class TargetUI
 {
 private:
@@ -35,7 +44,7 @@ private:
 
 	ID3D11ShaderResourceView* m_Texture[T_UI_MAX] = { NULL };
 public:
-	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO fn);
 	void Finalize();
 	void Update();
 	void Draw();

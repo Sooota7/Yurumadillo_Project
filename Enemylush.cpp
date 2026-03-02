@@ -158,7 +158,7 @@ void ENEMYLUSH::Enemylush_LoadUpdate()
 		m_BombUI.Initialize(g_pDevice_EL, g_pContext_EL, &m_bomb);
 		break;
 	case 12:
-		m_TargetUI.Initialize(g_pDevice_EL, g_pContext_EL);
+		m_TargetUI.Initialize(g_pDevice_EL, g_pContext_EL,m_NowField);
 		break;
 	case 13:
 		m_GimmickData.Gimmick_Data_Initialize(g_pDevice_EL, g_pContext_EL, m_NowField);
@@ -455,7 +455,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
 	m_Goal.Goal_Initialize(pDevice, pContext, m_NowField);
 }
 
