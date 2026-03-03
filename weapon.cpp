@@ -14,7 +14,7 @@ static ID3D11Buffer* g_IndexBuffer = NULL;
 //テクスチャ変数
 static ID3D11ShaderResourceView* g_Texture;
 
-void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,BillboardManager* pBm)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
@@ -62,6 +62,10 @@ void WEAPON::Weapon_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		m_Weapon[i].WeaponSource_Initialize(XMFLOAT3(0.0f, 2.0f, 0.0f), WEAPON_STATE::WEAPON_SAFE);
 		m_Model[WEAPON_ACTIVE] = ModelLoad("asset\\model\\ball.fbx");
 	}*/
+
+	m_pBm = pBm;
+	m_pEffectHit.EffectHit_Initialize();
+	m_pEffectSlash.EffectSlash_Initialize();
 }
 
 void WEAPON::Weapon_Finalize(void)
@@ -283,6 +287,8 @@ void WEAPON::Weapon_Draw(void)
 
 
 	}
+	m_pEffectHit.EffectHit_Draw(m_pBm);
+	m_pEffectSlash.EffectSlash_Draw(m_pBm);
 }
 
 void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
@@ -306,6 +312,7 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 			XMFLOAT3 pos = en[i].GetEnemyPosition();
 			//pos.y += 1.0f;
 			SetWeaponNor(pos);
+			/*m_pEffectHit.SpawnEffectHit(pos);*/
 		}
 	}
 
@@ -319,7 +326,12 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 			m_Weapon[i].WeaponSource_Move();
 			break;
 		case WEAPON_DIRECTION:
-			m_Weapon[i].WeaponSource_Direction(playerPos);
+			XMFLOAT3 dir = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			dir =  m_Weapon[i].WeaponSource_Direction(playerPos);
+			XMFLOAT3 pos = m_Weapon[i].WeaponSource_GetPosition();
+			pos.x += dir.x * 0.5f;
+			pos.z += dir.z * 0.5f;
+			m_pEffectHit.SpawnEffectHit(pos);
 			break;
 		case WEAPON_POWER:
 			m_Weapon[i].WeaponSource_Power();
@@ -341,7 +353,23 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 			m_EG_Weapon[i].Weapon_EG_Move();
 			break;
 		case EG_WEAPON_DIRECTION:
-			m_EG_Weapon[i].Weapon_EG_Direction(playerPos);
+			XMFLOAT3 dir = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			dir = m_EG_Weapon[i].Weapon_EG_Direction(playerPos);
+			XMFLOAT3 pos = m_EG_Weapon[i].Weapon_EG_GetPosition();
+			if (m_EG_Weapon[i].Weapon_EG_GetNormalWeapon())
+			{
+				pos.y += 0.5f;
+
+				pos.x += dir.x * 1.2f;
+				pos.z += dir.z * 1.2f;
+				m_pEffectHit.SpawnEffectHit(pos);
+			}
+			else
+			{
+				pos.x += dir.x * 0.5f;
+				pos.z += dir.z * 0.5f;
+				m_pEffectSlash.SpawnEffectSlash(pos);
+			}
 			break;
 		case EG_WEAPON_POWER:
 			m_EG_Weapon[i].Weapon_EG_Power();
@@ -353,6 +381,9 @@ void WEAPON::Weapon_Update(XMFLOAT3 playerPos, ENEMYSPAWNER* enemySpawner)
 		}
 
 	}
+
+	m_pEffectHit.EffectHit_Update();
+	m_pEffectSlash.EffectSlash_Update();
 }
 
 WEAPONSOURCE* WEAPON::Weapon_GetWeapon()

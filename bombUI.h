@@ -43,10 +43,12 @@ public:
 	void Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, BOMB* pBomb);
 	void Finalize();
 	void Update();
+	void BossUpdate();
 	void Draw();
 
 private:
 	float CheckBombState();		// 返値 爆弾のカウント
+	float CheckBossBombState();	// 返値 ボスの爆弾のカウント
 	void SetBombTexture();
 };
 

@@ -153,6 +153,8 @@
     <ClCompile Include="direct3d.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectDamage.cpp" />
+    <ClCompile Include="EffectHit.cpp" />
+    <ClCompile Include="EffectSlash.cpp" />
     <ClCompile Include="Ending.cpp" />
     <ClCompile Include="EnemyButterfly.cpp" />
     <ClCompile Include="EnemyGround.cpp" />
@@ -224,6 +226,8 @@
     <ClInclude Include="direct3d.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectDamage.h" />
+    <ClInclude Include="EffectHit.h" />
+    <ClInclude Include="EffectSlash.h" />
     <ClInclude Include="Ending.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyButterfly.h" />

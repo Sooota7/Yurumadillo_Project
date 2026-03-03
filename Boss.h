@@ -47,7 +47,6 @@ private:
 	TargetUI m_TargetUI;
 
 	LOAD_MANAGER m_SceneLoad;
-
 public:
 	void Boss_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Boss_Finalize();

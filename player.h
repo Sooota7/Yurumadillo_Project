@@ -86,6 +86,8 @@ private:
 	 bool isDamage;			// プレイヤーステートにDAMAGEを作ってもいい
 	 int DamageCount;
 	 EffectDamage m_EDamage;
+	 int rBno;
+	 float cnt;
 
 	 // SE関連
 	 int m_BombFireSE_ID;		// 爆弾を持っているときのSE
