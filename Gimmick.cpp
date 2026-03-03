@@ -67,7 +67,7 @@ void GIMMICK::Gimmick_LoadUpdate()
 	switch (m_SceneLoad.GetLoadCount())
 	{
 	case 0:
-		m_Player.Player_Initialize(g_pDevice_GM, g_pContext_GM); // ボールの初期化
+		m_Player.Player_Initialize(g_pDevice_GM, g_pContext_GM,m_NowField); // ボールの初期化
 		break;
 	case 1:
 		Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化

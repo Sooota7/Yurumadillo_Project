@@ -35,6 +35,11 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Initialize(XMFLOAT3 pos, BOMB_STATE state,
 
 void FLOWTBOMBSOURCE::Flowtbombsource_Update()
 {
+	if (m_Position.y < -3.0f)
+	{
+		m_State = BOMB_COOL;
+	}
+
 	switch (m_State)
 	{
 	case BOMB_NONE:

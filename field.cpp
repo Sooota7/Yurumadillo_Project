@@ -340,13 +340,16 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 			break;
 
 		case FIELD_GOAL://障害物0
-			Model[FIELD_GOAL] = ModelLoad("asset\\model\\test_goal.fbx");//デバッグ
+			Model[FIELD_GOAL] = ModelLoad("asset\\model\\TestGateGoal.fbx");//デバッグ
 			break;
 		case FIELD_BREAK:
 			CreateBox();
 			break;
+		/*case FIELD_JUMP:
+			CreateBox();*/
 		case FIELD_JUMP:
-			CreateBox();
+			Model[FIELD_JUMP] = ModelLoad("asset\\model\\JunpKinoko.fbx");//デバッグ
+			break;
 			break;
 
 		}
@@ -472,7 +475,7 @@ void  MAPDATA::Field_Draw(void)
 			}
 			else if (m_Map[i].MapData_GetNo() == FIELD_GOAL)
 			{
-				ModelDraw(Model[m_Map[i].MapData_GetNo()]);
+				ModelDraw(Model[FIELD_GOAL]);
 			}
 			else if (m_Map[i].MapData_GetNo() == FIELD_BREAK)
 			{
@@ -482,9 +485,7 @@ void  MAPDATA::Field_Draw(void)
 			}
 			else if (m_Map[i].MapData_GetNo() == FIELD_JUMP)
 			{
-				//テクスチャをセット
-				g_pContext->PSSetShaderResources(0, 1, &g_Texture_Jump);
-				g_pContext->DrawIndexed(6 * 6, 0, 0);
+				ModelDraw(Model[FIELD_JUMP]);
 			}
 		/*}
 		else {

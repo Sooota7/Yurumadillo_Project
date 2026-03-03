@@ -20,10 +20,11 @@ static ID3D11ShaderResourceView* g_Texture = NULL;
 
 static bool inputP = InputKeyKonCheck();
 
+static XMFLOAT3 SpawnPos = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);	// プレイヤーのスポーン位置	
 
 float g_StopTime = 0.0f;	// ボールが制止するまでの時間
 
-void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no)
 {
 	g_pDevice = pDevice;
 	g_pContext = pContext;
@@ -71,6 +72,10 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 
 	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z+2);
+
+	
+
+
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -121,6 +126,24 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	}
 
 	Player_SetAnimInis();
+
+	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
+	{
+		for (int i = 0; i < FIELD_WIDTH_Z; i++)
+		{
+			for (int l = 0; l < FIELD_WIDTH_X; l++)
+			{
+				switch (CheckMap(l, i, q, no))
+				{
+				case P:
+					m_Position = XMFLOAT3(l, q, i);
+					SpawnPos = XMFLOAT3(l, q, i);
+					return;
+					break;
+				}
+			}
+		}
+	}
 
 }
 void	PLAYER::Player_Finalize()
@@ -477,6 +500,8 @@ void    PLAYER::Player_Respawn()
 	PlayDamageSE();
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+
+	m_Position = SpawnPos;
 	
 }
 
