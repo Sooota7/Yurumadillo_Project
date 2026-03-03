@@ -51,7 +51,7 @@ void TUTORIAL::Tutorial_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
 
 
 	g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
@@ -218,6 +218,6 @@ void TUTORIAL::Tutorial_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
 }
 

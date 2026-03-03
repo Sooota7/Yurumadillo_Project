@@ -103,7 +103,7 @@ void GIMMICK::Gimmick_LoadUpdate()
 		m_BombUI.Initialize(g_pDevice_GM, g_pContext_GM, &m_bomb);
 		break;
 	case 12:
-		m_TargetUI.Initialize(g_pDevice_GM, g_pContext_GM);
+		m_TargetUI.Initialize(g_pDevice_GM, g_pContext_GM,m_NowField);
 		break;
 	case 13:
 		g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
@@ -277,7 +277,7 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_BillboardManager.Finalize();
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
 	m_Goal.Goal_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
@@ -294,7 +294,7 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
 	m_Goal.Goal_Initialize(pDevice, pContext, no);
 }
 

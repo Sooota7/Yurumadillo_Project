@@ -960,11 +960,11 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			RUNBOMBSOURCE* RunBomb = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
 
 
-			bombPos = RunBomb[i].Runbombsource_GetPosition();
+			bombPos = RunBomb->Runbombsource_GetPosition();
 
 
 
-			switch (RunBomb[i].Runbombsource_GetState())
+			switch (RunBomb->Runbombsource_GetState())
 			{
 
 			default:
@@ -1053,7 +1053,7 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 
 			if (pPlayer->GetPlayerTransBombFlag())
 			{
-				RunBomb[i].Runbombsource_SetTouch(touch);
+				RunBomb->Runbombsource_SetTouch(touch);
 			}
 
 			pPlayer->SetPlayerJump(PlayerJump);
@@ -1061,13 +1061,13 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 			pPlayer->SetPlayerVelocity(PlayerVel);
 
 			// テスト
-			if (hit > COLLISION_HIT::HIT_GROUND && !RunBomb[i].Runbombsource_GetDamage()
-				&& (RunBomb[i].Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY) &&
+			if (hit > COLLISION_HIT::HIT_GROUND && !RunBomb->Runbombsource_GetDamage()
+				&& (RunBomb->Runbombsource_GetState() == RUNBOMB_STATE::RUNBOMB_ENEMY) &&
 				damageTouch)
 			{
 				pPlayer->SetPlayerHp(pPlayer->GetPlayerHp() - 1);
 				pPlayer->PlayDamageSE();  // ダメージSE再生
-				RunBomb[i].Runbombsource_SetDamage(true);
+				RunBomb->Runbombsource_SetDamage(true);
 				continue;
 			}
 
@@ -4017,6 +4017,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 {
 	float hit = 0.0f;
+	const float BUTTON_RADIUS = 2.0f;			// ボタンの当たり判定の半径
 
 	BOMBSOURCE* Bomb = pBomb->Bomb_GetBomb();	// マップ
 	RUNBOMBSPAWNER* RunBombSpawner = pBomb->Bomb_GetRunBomb();// マップ
@@ -4047,9 +4048,9 @@ float COLLISION::BombGimmickCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 
 
 				// XZ 内側？
-				if (bpos.z - BOX_RADIUS < pos.z && pos.z < bpos.z + BOX_RADIUS)
+				if (bpos.z - BUTTON_RADIUS < pos.z && pos.z < bpos.z + BUTTON_RADIUS)
 				{
-					if (bpos.x - BOX_RADIUS < pos.x && pos.x < bpos.x + BOX_RADIUS)
+					if (bpos.x - BUTTON_RADIUS < pos.x && pos.x < bpos.x + BUTTON_RADIUS)
 					{
 						// 着地（交差）判定
 						bool landing = false;

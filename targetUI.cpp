@@ -11,7 +11,7 @@
 
 #include	"keyboard.h"
 
-void TargetUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void TargetUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO fn)
 {
 	m_pDevice = pDevice;
 	m_pContext = pContext;
@@ -37,8 +37,53 @@ void TargetUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		LoadFromWICFile(L"asset\\texture\\ui\\banner.png",
 			WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
 		CreateShaderResourceView(pDevice, image.GetImages(),
-			image.GetImageCount(), metadata, &m_Texture[0]);
+			image.GetImageCount(), metadata, &m_Texture[T_UI_BANNER]);
 		assert(m_Texture[0]);//読み込み失敗時にダイアログを表示
+	}
+
+	// 目標アイコン
+	{
+		TexMetadata		metadata;
+		ScratchImage	image;
+
+		switch (fn)
+		{
+		case FIELD_NO::NO_1:
+			LoadFromWICFile(L"asset\\texture\\ui\\TargetUI_01.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[T_UI_TARGET]);
+			assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+			break;
+		case FIELD_NO::NO_2:
+			LoadFromWICFile(L"asset\\texture\\ui\\TargetUI_01.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[T_UI_TARGET]);
+			assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+			break;
+		case FIELD_NO::NO_6:
+			LoadFromWICFile(L"asset\\texture\\ui\\TargetUI_03.png",
+					WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+				CreateShaderResourceView(pDevice, image.GetImages(),
+					image.GetImageCount(), metadata, &m_Texture[T_UI_TARGET]);
+				assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+				break;
+		case FIELD_NO::NO_ENEMYLUSH:
+			LoadFromWICFile(L"asset\\texture\\ui\\TargetUI_02.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[T_UI_TARGET]);
+			assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+			break;
+		default:
+			LoadFromWICFile(L"asset\\texture\\ui\\TargetUI_02.png",
+				WIC_FLAGS_NONE, &metadata, image);//テクスチャは変更可
+			CreateShaderResourceView(pDevice, image.GetImages(),
+				image.GetImageCount(), metadata, &m_Texture[T_UI_TARGET]);
+			assert(m_Texture[1]);//読み込み失敗時にダイアログを表示
+			break;
+		}
 	}
 }
 
@@ -109,28 +154,53 @@ void TargetUI::Draw()
 		1.0f
 	);
 
-	//平行移動 表示座標
-	XMMATRIX	Translation =
-		XMMatrixTranslation(m_Position.x, m_Position.y, 0.0f);
-	//回転
-	XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
-	//拡大率（0はだめ）
-	XMMATRIX	Scaling = XMMatrixScaling(m_Scaling.x, m_Scaling.y, 1.0f);
-	//ワールド行列
-	XMMATRIX	World = Scaling * Rotation * Translation;
-	//スクロール用行列作成
-	XMMATRIX	mat = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < T_UI_MAX; i++)
+	{
+		if(i == T_UI_TEXTURE::T_UI_BANNER)
+		{
+			//平行移動 表示座標
+			XMMATRIX	Translation =
+				XMMatrixTranslation(m_Position.x, m_Position.y, 0.0f);
+			//回転
+			XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
+			//拡大率（0はだめ）
+			XMMATRIX	Scaling = XMMatrixScaling(m_Scaling.x, m_Scaling.y, 1.0f);
+			//ワールド行列
+			XMMATRIX	World = Scaling * Rotation * Translation;
+			//スクロール用行列作成
+			XMMATRIX	mat = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
-	mat = World * mat * Projection;
+			mat = World * mat * Projection;
 
-	m_pContext->PSSetShaderResources(0, 1, &m_Texture[0]);
+			//シェーダーへ行列をセット
+			Shader_SetMatrix(mat);
+		}
+		else
+		{
+			//平行移動 表示座標
+			XMMATRIX	Translation =
+				XMMatrixTranslation(m_Position.x + 20.0f, m_Position.y - 10.0f, 0.0f);
+			//回転
+			XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
+			//拡大率（0はだめ）
+			XMMATRIX	Scaling = XMMatrixScaling(m_Scaling.x * 0.8f, m_Scaling.y * 0.8f, 1.0f);
+			//ワールド行列
+			XMMATRIX	World = Scaling * Rotation * Translation;
+			//スクロール用行列作成
+			XMMATRIX	mat = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 
-	//シェーダーへ行列をセット
-	Shader_SetMatrix(mat);
+			mat = World * mat * Projection;
 
-	//ブレンド無し
-	SetBlendState(BLENDSTATE_ALFA);
+			//シェーダーへ行列をセット
+			Shader_SetMatrix(mat);
+		}
 
-	//スプライト描画
-	DrawSprite(size, m_Color, 1, 1, 1);
+		m_pContext->PSSetShaderResources(0, 1, &m_Texture[i]);
+
+		//ブレンド無し
+		SetBlendState(BLENDSTATE_ALFA);
+
+		//スプライト描画
+		DrawSprite(size, m_Color, 1, 1, 1);
+	}
 }

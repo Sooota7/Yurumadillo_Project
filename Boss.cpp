@@ -98,7 +98,7 @@ void BOSS::Boss_LoadUpdate()
 		m_BombUI.Initialize(g_pDevice_B, g_pContext_B, &m_bomb);
 		break;
 	case 10:
-		m_TargetUI.Initialize(g_pDevice_B, g_pContext_B);
+		m_TargetUI.Initialize(g_pDevice_B, g_pContext_B, m_NowField);
 		break;
 	case 11:
 		m_BossMonster.Bossmonster_Initialize(g_pDevice_B, g_pContext_B);
@@ -289,5 +289,5 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext);
+	m_TargetUI.Initialize(pDevice, pContext, m_NowField);
 }
