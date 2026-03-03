@@ -52,7 +52,7 @@ void WEAPONENEMYGROUND::Weapon_EG_Move()
 	}
 }
 
-void WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
+XMFLOAT3 WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
 {
 	{
 		// ìGÇÃå¸Ç´ÇÉvÉåÉCÉÑÅ[Ç…å¸ÇØÇÈ
@@ -102,7 +102,7 @@ void WEAPONENEMYGROUND::Weapon_EG_Direction(XMFLOAT3 pPlayerPos)
 	m_Velocity = direction;
 	Weapon_EG_SetState(EG_WEAPON_POWER);
 	
-	
+	return m_Velocity;
 }
 
 void WEAPONENEMYGROUND::Weapon_EG_Power()

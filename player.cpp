@@ -112,6 +112,8 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	DamageCount = 0;
 	m_EDamage.EffectDamage_Initialize();
 
+	rBno = 0;
+
 	for (int i = 0; i < PLAYER_STATE::PLAYER_STATE_MAX; i++)
 	{
 		for (int y = 0; y < PLAYER_PARTS::PARTS_MAX; y++)
@@ -257,6 +259,41 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 			break;
 		case PLAYER_STATE::PLAYER_STATE_MOVE:
 			m_Parts[i].PartsDraw(m_ModelData[i]);
+
+			{
+				if (JumpCount)
+				{
+					XMFLOAT3 pos = m_Position;
+					pos.y -= 0.2f; // 少し上に出す
+					pos.z -= m_Velocity.z * 3; // 少し手前に出す
+					pos.x -= m_Velocity.x * 3; // 少し手前に出す
+					XMFLOAT2 size = XMFLOAT2(1.2f, 1.2f);
+					cnt += 1.0f / 60.0f;
+					const float lifeTime = 5.0f; // 全体の寿命（秒）
+
+					int wc = 3;
+					int hc = 2;
+
+					if (cnt > (5.0f / (wc * hc)) * (rBno + 1))
+					{
+						rBno++;
+					}
+
+					XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);
+
+					if (rBno < wc * hc)
+					{
+						Billboard* bb = new Billboard(pos, size, col, rBno, wc, hc, BILLBOARD_TEXTURE::SMOKE);
+						billboardManager->Register(bb);
+					}
+					else
+					{
+						rBno = 0;
+						cnt = 0.0f;
+					}
+				}
+			}
+
 			break;
 		case PLAYER_STATE::PLAYER_STATE_BALLOON:
 			m_Parts[i].PartsDraw(m_ModelData[i]);

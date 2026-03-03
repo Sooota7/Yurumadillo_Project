@@ -37,7 +37,7 @@ void TUTORIAL2::Tutorial2_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -136,7 +136,7 @@ void TUTORIAL2::Tutorial2_Update()
 	collision.EXPLOSIONEnemyCollision(&m_bomb, &m_EnemyNormal);
 	collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 	collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
-
+	
 	//キー入力チェック
 //スタートボタンが押されたらシーンを切り替え
 //フェード処理中はキーを受け付けない
@@ -215,7 +215,7 @@ void TUTORIAL2::Tutorial2_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
