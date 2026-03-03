@@ -1725,6 +1725,54 @@ float COLLISION::EXPLOSIONFieldCollision(BOMB* pBomb, MAPDATA* pField)
 				l++;
 			}
 		}
+		if (pBombSource[i].BombSource_GetState() == BOMB_STATE::BOMB_ACTIVE_THROW)
+		{
+			int			l = 0;
+			bool test = false;
+
+			XMFLOAT3 BombPos = pBombSource[i].BombSource_GetPosition();
+			XMFLOAT3 BombVel = pBombSource[i].BombSource_GetVelocity();
+
+			while (Map[l].MapData_GetNo() != FIELD_MAX)
+			{
+
+				if (Map[l].MapData_GetNo() == FIELD_BREAK)
+				{//���鏰�����݂���Ƃ�
+
+					XMFLOAT3 MapPos = Map[l].MapData_GetPosition();
+
+					float BoxTop;	// BOX��+Y�ʂ̍��W
+
+					BoxTop = MapPos.y + BOX_RADIUS;
+
+					// �ǂƂ��Ă̔��菈��
+					if (BombPos.x + 1 > MapPos.x &&
+						BombPos.x - 1 < MapPos.x)
+					{
+						if (BombPos.y + 1 > MapPos.y &&
+							BombPos.y - 1 < MapPos.y)
+						{
+							if (BombPos.z + 1 > MapPos.z &&
+								BombPos.z - 1 < MapPos.z)
+							{
+								test = true;//��������
+							}
+						}
+					}
+
+					//�{���̃X�e�[�g�𔚔��ɕύX
+					if (test)
+					{
+						pBombSource[i].BombSource_SetCount(0.0f);
+						pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
+						test = false;
+
+					}
+				}
+
+				l++;
+			}
+		}
 	}
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
@@ -1901,6 +1949,7 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						if (test)
 						{
 							enemy[l].SetEnemyNormalState(ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_DEAD);
+							test = false;
 						}
 
 					}
@@ -3970,6 +4019,7 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			st == BOMB_STATE::BOMB_ACTIVE_THROW)
 		{
 			XMFLOAT3 pos = FlowtBomb[i].Flowtbombsource_GetPosition();
+			XMFLOAT3 BombVel = FlowtBomb[i].Flowtbombsource_GetVelocity();
 
 			for (int b = 0; b < btnCount; b++)
 			{
@@ -3990,6 +4040,8 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 			for (int f = 0; f < fldCount; f++)
 			{
 				XMFLOAT3 fpos = fields[f].GimmickField_GetPosition();
+				float BoxTop = fpos.y + BOX_RADIUS;	// 普通のBOX	// BOXの+Y面の座標
+
 				if (fpos.z - BOX_RADIUS < pos.z && pos.z < fpos.z + BOX_RADIUS)
 				{
 					if (fpos.x - BOX_RADIUS < pos.x && pos.x < fpos.x + BOX_RADIUS)
@@ -4002,10 +4054,75 @@ float COLLISION::BombMovingFieldCollision(BOMB* pBomb, GIMMICK_DATA* pGimmick)
 							pos.z += fields[f].m_Velocity.z;
 						}
 					}
+					
+					// 壁としての判定処理
+					if (fpos.y - BOX_RADIUS < pos.y &&
+						pos.y < BoxTop - 0.1f)
+					{
+						if (fpos.z - BOX_RADIUS < pos.z &&
+							pos.z < fpos.z + BOX_RADIUS)
+						{
+							if (fpos.x - BOX_RADIUS < pos.x + PLAYER_RADIUS &&
+								pos.x < fpos.x - BOX_RADIUS)
+							{//BOXの-X面にぶつかったので座標の補正
+								pos.x += (fpos.x - BOX_RADIUS) - (pos.x + PLAYER_RADIUS);
+								BombVel.x *= -COE;
+							}
+							else if (fpos.x + BOX_RADIUS > pos.x - PLAYER_RADIUS &&
+								pos.x > fpos.x + BOX_RADIUS)
+							{//BOXの+X面にぶつかった
+								pos.x += (fpos.x + BOX_RADIUS) - (pos.x - PLAYER_RADIUS);
+								BombVel.x *= -COE;
+							}
+						}
+						else if (fpos.x - BOX_RADIUS < pos.x &&
+							pos.x < fpos.x + BOX_RADIUS)
+						{
+							if (fpos.z - BOX_RADIUS < pos.z + PLAYER_RADIUS &&
+								pos.z < fpos.z - BOX_RADIUS)
+							{//BOXの-Z面にぶつかったので座標の補正
+								pos.z += (fpos.z - BOX_RADIUS) - (pos.z + PLAYER_RADIUS);
+								BombVel.z *= -COE; //移動ベクトルの反転
+							}
+							else if (fpos.z + BOX_RADIUS > pos.z - PLAYER_RADIUS &&
+								pos.z > fpos.z + BOX_RADIUS)
+							{//BOXの+Z面にぶつかった
+								pos.z += (fpos.z + BOX_RADIUS) - (pos.z - PLAYER_RADIUS);
+								BombVel.z *= -COE;
+							}
+						}
+					}
+					//地面として判定処理
+					else
+					{
+						if (fpos.z - BOX_RADIUS < pos.z &&
+							pos.z < fpos.z + BOX_RADIUS)
+						{
+							if (fpos.x - BOX_RADIUS < pos.x &&
+								pos.x < fpos.x + BOX_RADIUS)
+							{
+								if (fpos.y - BOX_RADIUS < pos.y + PLAYER_RADIUS &&
+									pos.y < fpos.y - BOX_RADIUS)
+								{//BOXの-X面にぶつかったので座標の補正
+									pos.y += (fpos.y - BOX_RADIUS) - (pos.y + PLAYER_RADIUS);
+									BombVel.y = 0.0f; //移動ベクトルの反転
+								}
+								else if (BoxTop > pos.y - PLAYER_RADIUS &&
+									pos.y > BoxTop)
+								{//BOXの+X面にぶつかった
+									pos.y += (BoxTop)-(pos.y - PLAYER_RADIUS);
+									BombVel.y = 0.0;//BombVel.y * (-COE * 1.0f);
+								}
+							}
+						}
+					}
+
 				}
+
 			}
 
 			FlowtBomb[i].Flowtbombsource_SetPosition(pos);
+			FlowtBomb[i].Flowtbombsource_SetVelocity(BombVel);
 		}
 	}
 

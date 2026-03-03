@@ -74,7 +74,7 @@ void	ENEMY_NORMAL::Update(XMFLOAT3 chasePos)
 			m_Rotation.y = yaw;
 		}
 
-		if (length < 8 && m_State == ENEMY_NORMAL_STATE_MOVE)
+		if (length < 4 && m_State == ENEMY_NORMAL_STATE_MOVE)
 		{
 			SetEnemyNormalState(ENEMY_NORMAL_STATE_ATTACK);
 			m_FrameCnt = 0.0f;

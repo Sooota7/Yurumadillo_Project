@@ -671,7 +671,7 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		}
 
 		// ワールド行列：位置は X に offset を足す
-		XMMATRIX ScalingMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		XMMATRIX ScalingMatrix = XMMatrixScaling(1.0f, 3.0f, 1.0f);
 
 		XMMATRIX TranslationMatrix = XMMatrixTranslation(base.x + offset, base.y, base.z);
 
