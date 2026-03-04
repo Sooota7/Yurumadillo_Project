@@ -316,6 +316,7 @@ void BOMBSOURCE::BombSource_Explosion_Boss()
 		m_Count = 0;
 		m_ExplosionSEPlayed = false; // ƒŠƒZƒbƒg
 	}
+
 }
 
 //BombSource_Active_Throw

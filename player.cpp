@@ -129,6 +129,15 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	Player_SetAnimInis();
 
+	// フラグ初期化
+	JumpCount = true;
+	BalloonFlag = false;
+	BalloomUp = false;
+	BalloomNow = false;
+	g_StopTime = 0.0f;
+
+	// 追加: 攻撃後カウンタ初期化
+	m_AttackAfterCounter = 0;
 	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 	{
 		for (int i = 0; i < FIELD_WIDTH_Z; i++)
@@ -186,6 +195,9 @@ void	PLAYER::Player_Update()
 		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
+		break;
+	case PLAYER_STATE_ATTACK_AFTER:
+		Player_Attack_After();
 		break;
 	case PLAYER_STATE::PLAYER_STATE_DEATH:
 		Player_Death();
@@ -324,6 +336,9 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 		case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
+		case PLAYER_STATE::PLAYER_STATE_ATTACK_AFTER:
+			m_Parts[i].PartsDraw(m_ModelData[i]);
+			break;
 		}
 	}
 
@@ -430,7 +445,7 @@ void PLAYER::Player_Move()
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f) // 左
-			move.x += right.x, move.z += right.z;
+			move.x += right.x, move.z += forward.z;
 
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
 		{
@@ -546,6 +561,25 @@ void PLAYER::Player_Death()
 {
 	
 }
+
+void PLAYER::Player_Attack_After()
+{
+	if(m_Position.z>1.0f)
+	{
+		m_Velocity.y -= PLAYER_GRAVITY;
+		m_Velocity.x = 0.0f;
+		m_Velocity.z -= 0.1f;
+	}
+
+	if(m_Position.z <= 1.0f)
+	{
+		m_Velocity.z = 0.0f;
+		//m_Velocity.y -= PLAYER_GRAVITY;
+		m_Position.z = 1.0f;
+		m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+	}
+}
+
 
 PLAYER* PLAYER::GetPlayer()
 {
