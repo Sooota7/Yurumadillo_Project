@@ -143,7 +143,7 @@ void ENEMYLUSH::Enemylush_LoadUpdate()
 		m_bomb.Bomb_Initialize(g_pDevice_EL, g_pContext_EL, m_NowField);
 		break;
 	case 7:
-		m_Weapon.Weapon_Initialize(g_pDevice_EL, g_pContext_EL);
+		m_Weapon.Weapon_Initialize(g_pDevice_EL, g_pContext_EL,&m_BillboardManager);
 		break;
 	case 8:
 		m_Goal.Goal_Initialize(g_pDevice_EL, g_pContext_EL, m_NowField);
@@ -332,7 +332,7 @@ void ENEMYLUSH::Enemylush_Draw()
 		//2D描画
 		Light5.SetEnable(FALSE);			//ライティングOFF
 		//Shader_SetLight(Light5.Light);	//ライト構造体をシェーダーへセット
-
+		
 		m_BillboardManager.Draw();
 		SetDepthTest(FALSE);
 		m_PlayerUI.Draw();
@@ -449,7 +449,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 
 	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, no);
 

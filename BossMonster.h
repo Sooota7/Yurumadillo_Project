@@ -32,6 +32,9 @@ using namespace DirectX;
 class BOMB;
 #include "BossObj.h"      // 参照: ボス攻撃オブジェクト
 
+// forward declare PLAYER to avoid including player.h in header
+class PLAYER;
+
 // ステート
 enum BOSSMONSTER_STATE
 {
@@ -84,6 +87,9 @@ private:
 	// Bomb (RunBomb) 参照（フェーズ3で横一列に生成）
 	BOMB* m_pBomb = nullptr;
 
+	// 追加: プレイヤー参照用ポインタ（NULL チェックで安全に扱う）
+	PLAYER* m_pPlayer = nullptr;
+
 	// フェーズ3: そのフェーズ内で一度だけ生成するためのフラグ。
 	// フェーズから離れる（IDLE になる）際にリセットされ、次回 Phase3 に入るたびに再生成される。
 	bool m_Phase3Fired = false;
@@ -127,6 +133,9 @@ public:
 
 	// Bomb をセット（BOSS 側で m_bomb を渡す）
 	void SetBomb(BOMB* bomb) { m_pBomb = bomb; }
+
+	// 追加: プレイヤーをセット（NULL 可、セットされていればフェーズで参照する）
+	void SetPlayer(PLAYER* player) { m_pPlayer = player; }
 
 	void BossHeadAnimation_Update(XMFLOAT3 playerPos) { m_BossAnim.BossAnimation_UpdateHead(playerPos); };
 };

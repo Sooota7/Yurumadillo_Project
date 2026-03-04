@@ -44,7 +44,7 @@ public:
 
 
 	void		WeaponSource_Move();
-	void		WeaponSource_Direction(XMFLOAT3 pPlayerPos);
+	XMFLOAT3		WeaponSource_Direction(XMFLOAT3 pPlayerPos);
 	void		WeaponSource_Power();
 	void		WeaponSource_Ground();
 	void		WeaponSource_Cool();

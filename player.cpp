@@ -117,6 +117,8 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	DamageCount = 0;
 	m_EDamage.EffectDamage_Initialize();
 
+	rBno = 0;
+
 	for (int i = 0; i < PLAYER_STATE::PLAYER_STATE_MAX; i++)
 	{
 		for (int y = 0; y < PLAYER_PARTS::PARTS_MAX; y++)
@@ -127,9 +129,18 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	Player_SetAnimInis();
 
-	if (no != FIELD_NO::NO_NONE) {
+	// フラグ初期化
+	JumpCount = true;
+	BalloonFlag = false;
+	BalloomUp = false;
+	BalloomNow = false;
+	g_StopTime = 0.0f;
 
-		for (int q = 0; q < FIELD_HEIGHT_Y; q++)
+	// 追加: 攻撃後カウンタ初期化
+	m_AttackAfterCounter = 0;
+	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
+	{
+		for (int i = 0; i < FIELD_WIDTH_Z; i++)
 		{
 			for (int i = 0; i < FIELD_WIDTH_Z; i++)
 			{
@@ -189,6 +200,9 @@ void	PLAYER::Player_Update()
 		break;
 	case PLAYER_STATE::PLAYER_STATE_RESPAWN:
 		Player_Respawn();
+		break;
+	case PLAYER_STATE_ATTACK_AFTER:
+		Player_Attack_After();
 		break;
 	case PLAYER_STATE::PLAYER_STATE_DEATH:
 		Player_Death();
@@ -285,11 +299,49 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 			break;
 		case PLAYER_STATE::PLAYER_STATE_MOVE:
 			m_Parts[i].PartsDraw(m_ModelData[i]);
+
+			{
+				if (JumpCount)
+				{
+					XMFLOAT3 pos = m_Position;
+					pos.y -= 0.0f; // 少し上に出す
+					pos.z -= m_Velocity.z * 3; // 少し手前に出す
+					pos.x -= m_Velocity.x * 3; // 少し手前に出す
+					XMFLOAT2 size = XMFLOAT2(1.2f, 1.2f);
+					cnt += 1.0f / 60.0f;
+					const float lifeTime = 5.0f; // 全体の寿命（秒）
+
+					int wc = 3;
+					int hc = 2;
+
+					if (cnt > (5.0f / (wc * hc)) * (rBno + 1))
+					{
+						rBno++;
+					}
+
+					XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f);
+
+					if (rBno < wc * hc)
+					{
+						Billboard* bb = new Billboard(pos, size, col, rBno, wc, hc, BILLBOARD_TEXTURE::SMOKE);
+						billboardManager->Register(bb);
+					}
+					else
+					{
+						rBno = 0;
+						cnt = 0.0f;
+					}
+				}
+			}
+
 			break;
 		case PLAYER_STATE::PLAYER_STATE_BALLOON:
 			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		case PLAYER_STATE::PLAYER_STATE_RESPAWN:
+			m_Parts[i].PartsDraw(m_ModelData[i]);
+			break;
+		case PLAYER_STATE::PLAYER_STATE_ATTACK_AFTER:
 			m_Parts[i].PartsDraw(m_ModelData[i]);
 			break;
 		}
@@ -401,7 +453,7 @@ void PLAYER::Player_Move()
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f) // 左
-			move.x += right.x, move.z += right.z;
+			move.x += right.x, move.z += forward.z;
 
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
 		{
@@ -517,6 +569,25 @@ void PLAYER::Player_Death()
 {
 	
 }
+
+void PLAYER::Player_Attack_After()
+{
+	if(m_Position.z>1.0f)
+	{
+		m_Velocity.y -= PLAYER_GRAVITY;
+		m_Velocity.x = 0.0f;
+		m_Velocity.z -= 0.1f;
+	}
+
+	if(m_Position.z <= 1.0f)
+	{
+		m_Velocity.z = 0.0f;
+		//m_Velocity.y -= PLAYER_GRAVITY;
+		m_Position.z = 1.0f;
+		m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
+	}
+}
+
 
 PLAYER* PLAYER::GetPlayer()
 {

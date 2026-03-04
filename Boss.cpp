@@ -86,7 +86,7 @@ void BOSS::Boss_LoadUpdate()
 		m_bomb.Bomb_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
 		break;
 	case 6:
-		m_Weapon.Weapon_Initialize(g_pDevice_B, g_pContext_B);
+		m_Weapon.Weapon_Initialize(g_pDevice_B, g_pContext_B,&m_BillboardManager);
 		break;
 	case 7:
 		m_BillboardManager.Initialize(g_pDevice_B, g_pContext_B, m_NowField);
@@ -106,6 +106,8 @@ void BOSS::Boss_LoadUpdate()
 	case 12:
 		// 追加: BossMonster にスポナーを渡す（フェーズで敵を生成するため）
 		m_BossMonster.SetEnemySpawner(&m_EnemyNormal);
+		// 追加: BossMonster にプレイヤー参照を渡す（フェーズでプレイヤー Y を参照するため）
+		m_BossMonster.SetPlayer(&m_Player);
 		break;
 	case 13:
 		// 追加: BossMonster に BOMB 管理を渡す（フェーズ3 で RunBomb を生成するため）
@@ -165,7 +167,7 @@ void BOSS::Boss_Update()
 		m_Map.Field_Update();
 		m_Background.Background_Update();
 
-		m_bomb.Bomb_Update_Boss(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
+		m_bomb.Bomb_Update_Boss(&m_Player,&m_BossMonster);
 		m_Weapon.Weapon_Update(m_Player.GetPlayerPosition(), &m_EnemyNormal);
 		m_BossMonster.Bossmonster_Update();
 
@@ -285,7 +287,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BossMonster.SetBomb(&m_bomb);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);

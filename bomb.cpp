@@ -721,8 +721,12 @@ void BOMB::Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 	}
 }
 
-void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
+void BOMB::Bomb_Update_Boss(PLAYER* pPlayer,BOSSMONSTER*pBossmonster)
 {
+	// プレイヤーの位置／回転が必要な箇所は内部で取得
+	XMFLOAT3 pPlayerPos = pPlayer->GetPlayerPosition();
+	XMFLOAT3 pPlayerRot = pPlayer->GetPlayerRotation();
+
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
 		switch (m_Bomb[i].BombSource_GetState())
@@ -742,7 +746,16 @@ void BOMB::Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot)
 			m_Bomb[i].BombSource_Explosion();
 			break;
 		case BOMB_EXPLOSION_BOSS:
+			// 爆発（ボス用）処理
 			m_Bomb[i].BombSource_Explosion_Boss();
+
+			// ここでプレイヤーのステートを切り替える
+			if(pBossmonster->GetBossmonsterHp()>0)
+			{
+				pPlayer->SetPlayerState(PLAYER_STATE::PLAYER_STATE_ATTACK_AFTER);
+			}
+
+			// 必要に応じて位置やHPなども操作可能
 			break;
 		case BOMB_COOL:
 			m_Bomb[i].BombSource_Cool();
@@ -819,6 +832,12 @@ void BOMB::Bomb_Trail_Draw()
 
 
 }
+
+
+
+
+
+
 
 
 

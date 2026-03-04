@@ -88,7 +88,7 @@ void GIMMICK::Gimmick_LoadUpdate()
 		m_bomb.Bomb_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
 		break;
 	case 7:
-		m_Weapon.Weapon_Initialize(g_pDevice_GM, g_pContext_GM);
+		m_Weapon.Weapon_Initialize(g_pDevice_GM, g_pContext_GM,&m_BillboardManager);
 		break;
 	case 8:
 		m_Goal.Goal_Initialize(g_pDevice_GM, g_pContext_GM, m_NowField);
@@ -275,9 +275,9 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
 	m_BillboardManager.Finalize();
-	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
-	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
-	m_TargetUI.Initialize(pDevice, pContext,m_NowField);
+	m_PlayerUI.Finalize();
+	m_BombUI.Finalize();
+	m_TargetUI.Finalize();
 	m_Goal.Goal_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
@@ -290,7 +290,7 @@ void GIMMICK::Gimmick_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, no);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, no);
 	m_bomb.Bomb_Initialize(pDevice, pContext, no);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
