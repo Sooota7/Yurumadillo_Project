@@ -39,6 +39,7 @@ enum PLAYER_STATE
 	PLAYER_STATE_BALLOON,	//風船持ってる
 	PLAYER_STATE_RESPAWN,   //リスポーン
 	PLAYER_STATE_DEATH,		//死
+	PLAYER_STATE_ATTACK_AFTER,		//攻撃後
 	PLAYER_STATE_MAX
 };
 
@@ -100,6 +101,7 @@ private:
 	void    Player_Balloon();
 	void    Player_Respawn();
 	void    Player_Death();
+	void    Player_Attack_After();
 
 	void	Player_SetParts();
 	
@@ -121,6 +123,8 @@ private:
 	float	m_flame;
 
 	XMFLOAT3 m_LastPos;
+
+	int		m_AttackAfterCounter; // 追加: 攻撃後の強制移動をフレームで管理するカウンタ
 
 public:
 	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -161,13 +165,8 @@ public:
 	void PlayDamageSE();
 
 	PLAYER_STATE GetPlayerState() { return m_State; };
+	// 追加：ステートを外部から設定できるようにする
+	void SetPlayerState(PLAYER_STATE state) { m_State = state; };
 
 	PLAYER* GetPlayer();
 };
-
-
-
-
-
-
-
