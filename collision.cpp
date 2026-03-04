@@ -3525,8 +3525,8 @@ float COLLISION::PlayerGateCollision(PLAYER* pPlayer, GIMMICK_DATA* pGimmick)
 	int gateCount = pGimmick->GetGateCount();
 
 	// AABB 半径（ハーフサイズ）
-	const float hx = GATE_PANEL_HALF_W; // X半幅（＝厚み方向）
-	const float hy = GATE_PANEL_HALF_H; // Y半幅（高さ）
+	const float hx = (GATE_PANEL_HALF_W+0.05f); // X半幅（＝厚み方向）
+	const float hy = (GATE_PANEL_HALF_H * 10); // Y半幅（高さ）
 	const float hz = GATE_PANEL_HALF_D; // Z半幅（奥行）  ※描画は 1x1x1
 
 	for (int i = 0; i < gateCount; ++i)

@@ -398,10 +398,11 @@ void GIMMICK_DATA::Gimmick_Data_Initialize(ID3D11Device* pDevice, ID3D11DeviceCo
 			m_Model[i] = ModelLoad("asset\\model\\ball.fbx");
 			break;
 		case GIMMICK_STATE::GIMMICK_STATE_FIELD:
+			m_Model[i] = ModelLoad("asset\\model\\Gate\\GateRight.fbx");//とりあえず
 			CreateGimmickBox();
 			break;
 		case GIMMICK_STATE::GIMMICK_STATE_GATE:
-			CreateGimmickBox();
+			m_Model[i] = ModelLoad("asset\\model\\Gate\\GateLeft.fbx");
 			break;
 		case GIMMICK_STATE_MAX:
 			break;
@@ -671,7 +672,7 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		}
 
 		// ワールド行列：位置は X に offset を足す
-		XMMATRIX ScalingMatrix = XMMatrixScaling(1.0f, 3.0f, 1.0f);
+		XMMATRIX ScalingMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 
 		XMMATRIX TranslationMatrix = XMMatrixTranslation(base.x + offset, base.y, base.z);
 
@@ -694,7 +695,14 @@ void GIMMICK_DATA::Gimmick_Data_Draw(void)
 		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		g_pContext->DrawIndexed(6 * 6, 0, 0);
+		//描画リクエスト
+		
+		if (side == GATE_SIDE_LEFT){
+			ModelDraw(m_Model[GIMMICK_STATE::GIMMICK_STATE_FIELD]);
+		}
+		else {
+			ModelDraw(m_Model[GIMMICK_STATE::GIMMICK_STATE_GATE]);
+		}
 	}
 
 }
