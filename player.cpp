@@ -299,7 +299,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 				if (JumpCount)
 				{
 					XMFLOAT3 pos = m_Position;
-					pos.y -= 0.2f; // 少し上に出す
+					pos.y -= 0.0f; // 少し上に出す
 					pos.z -= m_Velocity.z * 3; // 少し手前に出す
 					pos.x -= m_Velocity.x * 3; // 少し手前に出す
 					XMFLOAT2 size = XMFLOAT2(1.2f, 1.2f);
@@ -314,7 +314,7 @@ void	PLAYER::Player_Draw(BillboardManager* billboardManager)
 						rBno++;
 					}
 
-					XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.3f);
+					XMFLOAT4 col = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.6f);
 
 					if (rBno < wc * hc)
 					{
