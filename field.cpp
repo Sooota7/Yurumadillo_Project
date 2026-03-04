@@ -315,10 +315,10 @@ void MAPDATA::Field_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		switch (i)
 		{
 		case FIELD_GATE_RIGHT:
-			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateRight.fbx");//デバッグ
+			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateRightLush.fbx");//デバッグ
 			break;
 		case FIELD_GATE_LEFT:
-			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateLeft.fbx");//デバッグ
+			m_GateModel[i] = ModelLoad("asset\\model\\Gate\\GateLeftLush.fbx");//デバッグ
 			break;
 		default:
 			break;
@@ -397,7 +397,8 @@ void  MAPDATA::Field_Draw(void)
 
 
 
-
+	bool GateR = true;
+	bool GateL = true;
 
 	while (m_Map[i].MapData_GetNo() != FIELD_MAX)
 	{
@@ -465,7 +466,7 @@ void  MAPDATA::Field_Draw(void)
 
 		/*if (!m_Map[i].MapData_GetGate()) {*/
 			//描画リクエスト
-			if (m_Map[i].MapData_GetNo() == FIELD_BOX)
+			if (m_Map[i].MapData_GetNo() == FIELD_BOX&&(!m_Map[i].MapData_GetGate()))
 			{
 				g_pContext->DrawIndexed(6 * 6, 0, 0);
 			}
@@ -487,6 +488,22 @@ void  MAPDATA::Field_Draw(void)
 			{
 				ModelDraw(Model[FIELD_JUMP]);
 			}
+			else if (m_Map[i].MapData_GetNo() == FIELD_BOX && (m_Map[i].MapData_GetGate()))
+			{
+				if (GateR) {
+					if (m_Map[i].MapData_GetTrueR_FalseL()) {
+						ModelDraw(m_GateModel[FIELD_GATE_LEFT]);
+						GateR = false;
+					}
+				}
+				if(GateL){
+					if (!m_Map[i].MapData_GetTrueR_FalseL()) {
+						ModelDraw(m_GateModel[FIELD_GATE_RIGHT]);
+						GateL = false;
+					}
+				}
+			}
+
 		/*}
 		else {
 			if (m_Map[i].MapData_GetTrueR_FalseL()) {

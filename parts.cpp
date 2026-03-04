@@ -69,7 +69,7 @@ void PARTS::PartsDraw(MODEL* model)
 		m_Rotation.z);
 	XMMATRIX	translation = XMMatrixTranslation(
 		m_Position.x,
-		m_Position.y,
+		m_Position.y - 0.05f,
 		m_Position.z);
 	XMMATRIX	world = scale * rotation * translation;
 

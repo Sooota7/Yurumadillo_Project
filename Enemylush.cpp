@@ -122,7 +122,7 @@ void ENEMYLUSH::Enemylush_LoadUpdate()
 	switch (m_SceneLoad.GetLoadCount())
 	{
 	case 0:
-		m_Player.Player_Initialize(g_pDevice_EL, g_pContext_EL); // ボールの初期化
+		m_Player.Player_Initialize(g_pDevice_EL, g_pContext_EL,m_NowField); // ボールの初期化
 		break;
 	case 1:
 		Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
@@ -443,7 +443,7 @@ void ENEMYLUSH::Enemylush_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 
 
-	m_Player.Player_Initialize(pDevice, pContext); // ボールの初期化
+	m_Player.Player_Initialize(pDevice, pContext,no); // ボールの初期化
 	Camera_Initialize(m_Player.GetPlayerPosition());	//カメラ初期化
 	m_Map.Field_Initialize(pDevice, pContext,no); // フィールドの初期化
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
@@ -546,39 +546,37 @@ void ENEMYLUSH::Enemylush_Phase_Update()
 	
 	if (m_NextSpawn)
 	{
-		if (m_SpawnMax > 0)
-		{
-			
-			int ramd = rand();
-			int SpawnPos = (ramd % m_TotalSpawn);
+		for (int i = 0; i < m_TotalSpawn; i++) {
+
+			int EN_NUM = m_Phase[m_EL_State].Get_EN_TOTAL();
+			int EF_NUM = m_Phase[m_EL_State].Get_EF_TOTAL();
+			int EG_NUM = m_Phase[m_EL_State].Get_EG_TOTAL();
 
 			int ramd2 = rand();
 			int EnemyType = (ramd2 % 3) + 1;
 
 			if (EnemyType == 1 && EN_NUM > 0) {
-				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EN);
-				EN_NUM--;m_SpawnMax--;
+				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[i], EL_EN);
+				EN_NUM--; m_SpawnMax--;
 			}
 			else if (EnemyType == 2 && EF_NUM > 0) {
-				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EF);
+				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[i], EL_EF);
 				EF_NUM--; m_SpawnMax--;
 			}
 			else if (EnemyType == 3 && EG_NUM > 0) {
-				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[SpawnPos], EL_EG);
+				m_EnemyNormal.EnemySpawner_Spawn(m_SpawnPos[i], EL_EG);
 				EG_NUM--; m_SpawnMax--;
 			}
 			else {
-			
+				
 			}
 
 			m_Phase[m_EL_State].Set_EN_TOTAL(EN_NUM);
 			m_Phase[m_EL_State].Set_EF_TOTAL(EF_NUM);
 			m_Phase[m_EL_State].Set_EG_TOTAL(EG_NUM);
-
-			
 		}
-		else { m_NextSpawn = false; }
 
+		m_NextSpawn = false;
 	}
 
 }
