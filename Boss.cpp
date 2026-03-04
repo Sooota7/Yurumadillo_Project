@@ -86,7 +86,7 @@ void BOSS::Boss_LoadUpdate()
 		m_bomb.Bomb_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
 		break;
 	case 6:
-		m_Weapon.Weapon_Initialize(g_pDevice_B, g_pContext_B);
+		m_Weapon.Weapon_Initialize(g_pDevice_B, g_pContext_B,&m_BillboardManager);
 		break;
 	case 7:
 		m_BillboardManager.Initialize(g_pDevice_B, g_pContext_B, m_NowField);
@@ -287,7 +287,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BossMonster.SetBomb(&m_bomb);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_SetBoss(&m_BossMonster);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);

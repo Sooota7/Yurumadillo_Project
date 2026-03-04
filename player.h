@@ -87,6 +87,8 @@ private:
 	 bool isDamage;			// プレイヤーステートにDAMAGEを作ってもいい
 	 int DamageCount;
 	 EffectDamage m_EDamage;
+	 int rBno;
+	 float cnt;
 
 	 // SE関連
 	 int m_BombFireSE_ID;		// 爆弾を持っているときのSE
@@ -127,7 +129,7 @@ private:
 	int		m_AttackAfterCounter; // 追加: 攻撃後の強制移動をフレームで管理するカウンタ
 
 public:
-	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no=FIELD_NO::NO_1);
 	void	Player_Finalize();
 	void	Player_Update();
 	void	Player_Draw(BillboardManager* billboardManager);
