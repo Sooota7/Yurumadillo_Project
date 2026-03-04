@@ -245,9 +245,21 @@ void BOSSMONSTER::Bossmonster_Phase1()
 
 		int spawned = 0;
 
+		int posY;
+		// 変更: プレイヤー位置の Y を参照（未セット時は既存の固定値を使用）
+		if (m_pPlayer)
+		{
+			XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+			posY = ppos.y;
+		}
+		else
+		{
+			posY = 1.0f;
+		}
+
 		XMFLOAT3 spawnPos[2];
-		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, 2.0f, FIELD_WIDTH_Z / 2);
-		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, 2.0f, FIELD_WIDTH_Z / 2);
+		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, posY+2.0f, FIELD_WIDTH_Z / 2);
+		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, posY+2.0f, FIELD_WIDTH_Z / 2);
 
 		for (int s = 0; s < 2; ++s)
 		{
