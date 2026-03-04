@@ -166,13 +166,13 @@ void BillboardManager::Initialize_BombEffect(TexMetadata* tm, ScratchImage* si, 
 	switch (fn)
 	{
 	case FIELD_NO::NO_1:
-		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Forest.png", WIC_FLAGS_NONE, tm, *si);
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	case FIELD_NO::NO_2:
-		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Teatime.png", WIC_FLAGS_NONE, tm, *si);
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Forest.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	case FIELD_NO::NO_3:
-		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_TeaTime.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	case FIELD_NO::NO_4:
 		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
@@ -181,10 +181,10 @@ void BillboardManager::Initialize_BombEffect(TexMetadata* tm, ScratchImage* si, 
 		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	case FIELD_NO::NO_6:
-		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Boss.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	case FIELD_NO::NO_ENEMYLUSH:
-		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_Test.png", WIC_FLAGS_NONE, tm, *si);
+		LoadFromWICFile(L"Asset\\Texture\\effect\\Bomb_Effect_TeaTime_004.png", WIC_FLAGS_NONE, tm, *si);
 		break;
 	default:
 		break;
