@@ -119,6 +119,9 @@ void BOSS::Boss_LoadUpdate()
 	case 15:
 		g_BgmID = LoadAudio("asset\\Audio\\bgm.wav");	//サウンドロード
 		break;
+	case 16:
+		m_GimmickData.Gimmick_Data_Initialize(g_pDevice_B, g_pContext_B, m_NowField);
+		break;
 	default:
 		m_SceneLoad.SetLoadComplete(true);
 		break;
@@ -139,6 +142,7 @@ void BOSS::Boss_Finalize()
 	m_EnemyNormal.EnemySpawner_Finalize();
 	m_bomb.Bomb_Finalize();
 	m_Weapon.Weapon_Finalize();
+	m_GimmickData.Gimmick_Data_Finalize();
 	//Block_Finalize();
 	//Effect_Finalize();
 	//Score_Finalize();
@@ -193,7 +197,14 @@ void BOSS::Boss_Update()
 		collision.WeaponFieldCollision(&m_Weapon, &m_Map);
 		collision.PlayerWeaponCollision(&m_Player, &m_Weapon);
 		collision.BossObjPlayerCollision(m_BossMonster.GetBossObjs(), &m_Player);
+		collision.PlayerMovingFieldCollision(&m_Player, &m_GimmickData);
+		collision.EnemyMovingFieldCollision(&m_EnemyNormal, &m_GimmickData);
+		collision.BombMovingFieldCollision(&m_bomb, &m_GimmickData);
+		collision.PlayerGimmickCollision(&m_Player, &m_GimmickData);
+		collision.EnemyGimmickCollision(&m_EnemyNormal, &m_GimmickData);
+		collision.BombGimmickCollision(&m_bomb, &m_GimmickData);
 
+		m_GimmickData.Gimmick_Data_Update(m_Player.GetPlayerPosition(), m_Player.GetPlayerRotation());
 
 		//キー入力チェック
 	//スタートボタンが押されたらシーンを切り替え
@@ -235,6 +246,7 @@ void BOSS::Boss_Draw()
 		Camera_Draw();		//Drawの最初で呼ぶ！	
 
 		m_Map.Field_Draw();
+		m_GimmickData.Gimmick_Data_Draw();
 		m_Player.Player_Draw(&m_BillboardManager);
 		m_EnemyNormal.EnemySpawner_Draw();
 		m_bomb.Bomb_Draw(&m_BillboardManager);
@@ -273,6 +285,7 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_BombUI.Finalize();
 	m_TargetUI.Finalize();
 	m_BossMonster.Bossmonster_Finalize();
+	m_GimmickData.Gimmick_Data_Finalize();
 	Camera_Finalize();	//カメラ終了処理
 
 
@@ -292,4 +305,6 @@ void BOSS::Boss_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);
 	m_TargetUI.Initialize(pDevice, pContext, m_NowField);
+	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, no);
+
 }

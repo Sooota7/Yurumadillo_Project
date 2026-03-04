@@ -445,7 +445,7 @@ void PLAYER::Player_Move()
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_RIGHT) || GetThumbLeftX(0) >= 0.5f) // 右
 			move.x -= right.x, move.z -= right.z;
 		if (IsButtonPressed(0, XINPUT_GAMEPAD_DPAD_LEFT) || GetThumbLeftX(0) <= -0.5f) // 左
-			move.x += right.x, move.z += forward.z;
+			move.x += right.x, move.z += right.z;
 
 		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
 		{
@@ -564,6 +564,7 @@ void PLAYER::Player_Death()
 
 void PLAYER::Player_Attack_After()
 {
+	m_Hp = PLAYER_HP;
 	if(m_Position.z>1.0f)
 	{
 		m_Velocity.y -= PLAYER_GRAVITY;
@@ -651,8 +652,8 @@ void PLAYER::Player_Balloon()
 			move.z /= len;
 
 			// 移動
-			m_Velocity.x = move.x * PLAYER_SPEEDMAX;
-			m_Velocity.z = move.z * PLAYER_SPEEDMAX;
+			m_Velocity.x = (move.x * PLAYER_SPEEDMAX)/2;
+			m_Velocity.z = (move.z * PLAYER_SPEEDMAX)/2;
 		}
 		else
 		{
