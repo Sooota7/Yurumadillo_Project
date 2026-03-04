@@ -81,7 +81,7 @@ void ENEMY_BUTTERFLY::Update(XMFLOAT3 chasePos)
 	{
 	case ENEMY_BUTTERFLY_STATE_IDLE:
 		Enemy_Butterfly_Idle();
-		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_NONE);
+		m_FlowtEnemyAnim.SetBombFlowtAnimState(BOMBFLOWT_STATE_IDLE);
 		m_FlowtEnemyAnim.BombFlowtAnim_Update(m_Position, m_Rotation);
 		break;
 	case ENEMY_BUTTERFLY_STATE_MOVE:

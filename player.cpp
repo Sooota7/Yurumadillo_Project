@@ -127,19 +127,24 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	Player_SetAnimInis();
 
-	for (int q = 0; q < FIELD_HEIGHT_Y; q++)
-	{
-		for (int i = 0; i < FIELD_WIDTH_Z; i++)
+	if (no != FIELD_NO::NO_NONE) {
+
+		for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 		{
-			for (int l = 0; l < FIELD_WIDTH_X; l++)
+			for (int i = 0; i < FIELD_WIDTH_Z; i++)
 			{
-				switch (CheckMap(l, i, q, no))
+				for (int l = 0; l < FIELD_WIDTH_X; l++)
 				{
-				case P:
-					m_Position = XMFLOAT3(l, q, i);
-					SpawnPos = XMFLOAT3(l, q, i);
-					return;
-					break;
+					switch (CheckMap(l, i, q, no))
+					{
+					case P:
+						m_Position = XMFLOAT3(l, q, i);
+						SpawnPos = XMFLOAT3(l, q, i);
+						return;
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}

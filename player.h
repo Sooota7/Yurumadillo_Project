@@ -123,7 +123,7 @@ private:
 	XMFLOAT3 m_LastPos;
 
 public:
-	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no=FIELD_NO::NO_1);
+	void	Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, FIELD_NO no=FIELD_NO::NO_NONE);
 	void	Player_Finalize();
 	void	Player_Update();
 	void	Player_Draw(BillboardManager* billboardManager);
