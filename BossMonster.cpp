@@ -310,7 +310,7 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, 0.50f));
 				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 0.0f, 0.0f)); 
-				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(5.0f, 5.0f, 5.0f));
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -378,7 +378,7 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.50f));
 				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 180.0f, 0.0f)); // 反転させる
-				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
+				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(5.0f, 5.0f, 5.0f));
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -416,7 +416,7 @@ void BOSSMONSTER::Bossmonster_Phase3()
 			PlayAudio(m_AttackSE_ID, false);
 		}
 
-		int bulletsToSpawn = 20;
+		int bulletsToSpawn = 30;
 		float spread = 1.0f;
 
 		for (int i = 0; i < BOSS_OBJECT_MAX && bulletsToSpawn > 0; i++)
@@ -434,7 +434,7 @@ void BOSSMONSTER::Bossmonster_Phase3()
 				{
 					spawnPos.y = 1.0f;
 				}
-				spawnPos.z -= 10.0f;
+				spawnPos.z -= 15.0f;
 				spawnPos.x += (bulletsToSpawn - 10) * spread;
 
 				m_BossObjs[i].SetBossObjPosition(spawnPos);

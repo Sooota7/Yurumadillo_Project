@@ -258,7 +258,7 @@ void BOMBSOURCE::BombSource_Active_Throw_Boss()
 		m_State = BOMB_STATE::BOMB_EXPLOSION_BOSS;
 		m_Count = 0;
 		m_Position.x = FIELD_WIDTH_X/2;
-		m_Position.y = 2.0f;
+		m_Position.y = 5.0f;
 
 		float BossHP = m_pBossMonster->GetBossmonsterHp();
 		BossHP -= BOMB_DAMAGE_BOSS;
