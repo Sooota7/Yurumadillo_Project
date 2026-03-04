@@ -13,6 +13,9 @@
 #include "bomb.h"               // 追加: RunBomb を生成するため
 #include "RunBombSource.h"      // RUNBOMBSOURCE のアクセス
 
+// 追加: プレイヤー参照を使うためにインクルード
+#include "player.h"
+
 //ボールオブジェクト
 
 ID3D11Device* g_pDeviceBoss;
@@ -279,7 +282,16 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 			if (!m_BossObjs[i].IsActive())
 			{
 				XMFLOAT3 spawnPos = m_Position;
-				spawnPos.y = 1.0f;
+				// 変更: プレイヤー位置の Y を参照（未セット時は既存の固定値を使用）
+				if (m_pPlayer)
+				{
+					XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+					spawnPos.y = ppos.y;
+				}
+				else
+				{
+					spawnPos.y = 1.0f;
+				}
 				spawnPos.z -= BOSS_PHASE2_BACKRANGE;
 				spawnPos.x += (bulletsToSpawn - 4) * spread;
 
@@ -337,7 +349,16 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 			if (!m_BossObjs[i].IsActive())
 			{
 				XMFLOAT3 spawnPos = m_Position;
-				spawnPos.y = 1.0f;
+				// 変更: プレイヤー位置の Y を参照（未セット時は既存の固定値を使用）
+				if (m_pPlayer)
+				{
+					XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+					spawnPos.y = ppos.y;
+				}
+				else
+				{
+					spawnPos.y = 1.0f;
+				}
 				spawnPos.z -= 10.0f;
 				spawnPos.x += (bulletsToSpawn - 4) * spread;
 
@@ -389,10 +410,12 @@ void BOSSMONSTER::Bossmonster_Phase3()
 	RUNBOMBSPAWNER* runArr = m_pBomb->Bomb_GetRunBomb();
 	if (runArr == nullptr) return;
 
+	XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+
 	const int spawnCount = 20;         // 横一列に出す数
 	const float spacing = 1.1f;       // X 軸間隔（調整可）
 	const float zOffset = -40.0f;     // ボスからの Z オフセット
-	const float yPos = 1.0f;          // Y 座標（地面高に合わせる）
+	const float yPos = ppos.y;          // Y 座標（地面高に合わせる）
 
 	// 開始 X を中央揃えで計算
 	float startX = m_Position.x - ((spawnCount - 1) * spacing) * 0.5f;

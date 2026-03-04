@@ -88,7 +88,6 @@ private:
 	bool m_PhaseEnd = false;
 
 	LOAD_MANAGER m_SceneLoad;
-
 public:
 	void Enemylush_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MANAGER* manager);
 	void Enemylush_Finalize();

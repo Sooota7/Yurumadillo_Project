@@ -107,6 +107,11 @@ void BombUI::Update()
 	m_Count = CheckBombState();
 }
 
+void BombUI::BossUpdate()
+{
+	m_Count = CheckBossBombState();
+}
+
 void BombUI::Draw()
 {
 	/*XMFLOAT3	position = XMFLOAT3(900.0f, 500.0f, 0.0f);
@@ -214,7 +219,7 @@ void BombUI::Draw()
 	{
 		m_pContext->PSSetShaderResources(0, 1, &m_Texture[BOMBUI_FIRE]);
 		float frameX = position.x - ropeSize.x;
-		float frameY = position.y - (holderSize.y / 2 - 20.0f);
+		float frameY = position.y - (holderSize.y / 2 - 20.0f) + 20.0f;
 
 		XMFLOAT2 frameSize = XMFLOAT2(180.0f, 180.0f);
 
@@ -247,6 +252,60 @@ float BombUI::CheckBombState()
 		{
 			m_BombType = 1;
 			m_limit = 5.0f; // (仮)
+			return bombs[i].BombSource_GetCount();
+			break;
+		}
+
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		if (flowtBombs[i].Flowtbombsource_GetState() == BOMB_ACTIVE_HAVE)
+		{
+			m_BombType = 2;
+			m_limit = 2.0f; // (仮)
+			return flowtBombs[i].Flowtbombsource_GetCount();
+			break;
+		}
+
+	}
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		runBombs = RunBombSpawner[i].GetRunBombSource__RunBombSpawner();
+
+		if (runBombs->Runbombsource_GetState() == RUNBOMB_ACTIVE_HAVE)
+		{
+			m_BombType = 3;
+			m_limit = 5.0f; // (仮)
+			return runBombs->Runbombsource_GetCount();
+			break;
+		}
+
+	}
+
+	// 何も持ってない
+	m_BombType = 100;
+	return 0.0f;
+}
+
+float BombUI::CheckBossBombState()
+{
+	BOMBSOURCE* bombs;
+	RUNBOMBSPAWNER* RunBombSpawner = m_pBomb->Bomb_GetRunBomb();
+	RUNBOMBSOURCE* runBombs;
+	FLOWTBOMBSOURCE* flowtBombs;
+
+	bombs = m_pBomb->Bomb_GetBomb();
+
+	flowtBombs = m_pBomb->Bomb_GetFlowtBomb();
+
+	for (int i = 0; i < BOMB_NUM_MAX; i++)
+	{
+		if (bombs[i].BombSource_GetState() == BOMB_ACTIVE_HAVE)
+		{
+			m_BombType = 1;
+			m_limit = 10.0f; // (仮)
 			return bombs[i].BombSource_GetCount();
 			break;
 		}

@@ -37,7 +37,7 @@ void TUTORIAL3::Tutorial3_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext, m_NowField);
 	m_bomb.Bomb_Initialize(pDevice, pContext, m_NowField);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 
 	//Player_Initialize(pDevice, pContext); // ポリゴンの初期化
 	//Block_Initialize(pDevice, pContext);//ブロックの初期化
@@ -215,7 +215,7 @@ void TUTORIAL3::Tutorial3_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext*
 	m_Background.Background_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);

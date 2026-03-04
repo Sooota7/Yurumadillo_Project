@@ -21,6 +21,7 @@ using namespace DirectX;
 #include	"BossObj.h"
 #include    "player.h"
 #include    "Goal.h" // 追加：ゴール当たり判定用
+#include	"EffectHit.h"
 
 #define COE		(0.5f)
 #define COE_JUMP		(2.0f)

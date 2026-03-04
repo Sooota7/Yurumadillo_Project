@@ -44,7 +44,7 @@ public:
 
 
 	void		Weapon_EG_Move();
-	void		Weapon_EG_Direction(XMFLOAT3 pPlayerPos);
+	XMFLOAT3		Weapon_EG_Direction(XMFLOAT3 pPlayerPos);
 	void		Weapon_EG_Power();
 	void		Weapon_EG_Cool();
 

@@ -89,7 +89,7 @@ void GAME::Game_LoadUpdate()
 		m_bomb.Bomb_Initialize(g_pDevice_G, g_pContext_G, m_NowField);
 		break;
 	case 7:
-		m_Weapon.Weapon_Initialize(g_pDevice_G, g_pContext_G);
+		m_Weapon.Weapon_Initialize(g_pDevice_G, g_pContext_G,&m_BillboardManager);
 		break;
 	case 8:
 		m_Goal.Goal_Initialize(g_pDevice_G, g_pContext_G, m_NowField);
@@ -300,7 +300,7 @@ void GAME::Game_SetNextMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	m_GimmickData.Gimmick_Data_Initialize(pDevice, pContext, m_NowField);
 	m_EnemyNormal.EnemySpawner_Initialize(pDevice, pContext,no);
 	m_bomb.Bomb_Initialize(pDevice, pContext,no);
-	m_Weapon.Weapon_Initialize(pDevice, pContext);
+	m_Weapon.Weapon_Initialize(pDevice, pContext,&m_BillboardManager);
 	m_BillboardManager.Initialize(pDevice, pContext, m_NowField);
 	m_PlayerUI.Initialize(pDevice, pContext, &m_Player);
 	m_BombUI.Initialize(pDevice, pContext, &m_bomb);

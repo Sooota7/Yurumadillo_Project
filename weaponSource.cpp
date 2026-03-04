@@ -44,7 +44,7 @@ void WEAPONSOURCE::WeaponSource_Move()
 	}
 }
 
-void WEAPONSOURCE::WeaponSource_Direction(XMFLOAT3 pPlayerPos)
+XMFLOAT3 WEAPONSOURCE::WeaponSource_Direction(XMFLOAT3 pPlayerPos)
 {
 	XMFLOAT3 direction;
 
@@ -64,6 +64,7 @@ void WEAPONSOURCE::WeaponSource_Direction(XMFLOAT3 pPlayerPos)
 
 	m_Velocity = direction;
 	WeaponSource_SetState(WEAPON_POWER);
+	return m_Velocity;
 }
 
 void WEAPONSOURCE::WeaponSource_Power()

@@ -50,6 +50,9 @@ private:
 	FLOWTBOMBSOURCE m_FlowtBomb[BOMB_NUM_MAX];
 	int				m_Fbno[BOMB_NUM_MAX];
 
+	// 追加: 前フレームの状態を保持して遷移を検出するための配列
+	BOMB_STATE		m_PrevState[BOMB_NUM_MAX];
+
 	MODEL*			m_Model[BOMB_MAX] = { NULL };//デバッグ
 	MODEL* m_BombModel[BOMB_TYPE::TYPE_MAX];
 	MODEL* m_ItemModel[BOMB_TYPE::TYPE_MAX];
@@ -70,7 +73,8 @@ public:
 	void	Bomb_Finalize(void);
 	void	Bomb_Draw(BillboardManager* billboardManager);
 	void	Bomb_Update(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
-	void	Bomb_Update_Boss(XMFLOAT3 pPlayerPos, XMFLOAT3 pPlayerRot);
+	// 変更：Boss用の更新は PLAYER* を受け取る
+	void	Bomb_Update_Boss(PLAYER* pPlayer,BOSSMONSTER* pBossmonster);
 	BOMBSOURCE* Bomb_GetBomb();
 	RUNBOMBSPAWNER* Bomb_GetRunBomb();
 	FLOWTBOMBSOURCE* Bomb_GetFlowtBomb();
@@ -82,5 +86,6 @@ public:
 };
 
 #endif // !_BOMB_H_
+
 
 
