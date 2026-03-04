@@ -34,7 +34,7 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 
 	float downSize = 10.0f;
 
-	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, 7.0f, FIELD_WIDTH_Z/4*3);
+	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, 7.0f, FIELD_WIDTH_Z);
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_Acceleration = XMFLOAT3(0.0f, -0.005f, 0.0f);
@@ -298,6 +298,7 @@ void BOSSMONSTER::Bossmonster_Phase2_1()
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, 0.50f));
 				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 0.0f, 0.0f)); 
+				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -365,6 +366,7 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
 				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.50f));
 				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 180.0f, 0.0f)); // 反転させる
+				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(2.0f, 2.0f, 2.0f));
 				m_BossObjs[i].SetActive(true);
 
 				bulletsToSpawn--;
@@ -394,67 +396,125 @@ void BOSSMONSTER::Bossmonster_Phase2_2()
 
 void BOSSMONSTER::Bossmonster_Phase3()
 {
-	// フェーズ3 で RunBomb（走る爆弾）を横一列に生成する
-	// 同フェーズ内で何度も呼ばれるのを防ぐフラグチェック
-	if (m_Phase3Fired) return;
-
-	// 攻撃SE再生
-	if (m_AttackSE_ID != -1)
+	if (!m_Phase3Fired)
 	{
-		PlayAudio(m_AttackSE_ID, false);
+		// 攻撃SE再生
+		if (m_AttackSE_ID != -1)
+		{
+			PlayAudio(m_AttackSE_ID, false);
+		}
+
+		int bulletsToSpawn = 20;
+		float spread = 1.0f;
+
+		for (int i = 0; i < BOSS_OBJECT_MAX && bulletsToSpawn > 0; i++)
+		{
+			if (!m_BossObjs[i].IsActive())
+			{
+				XMFLOAT3 spawnPos = m_Position;
+				// 変更: プレイヤー位置の Y を参照（未セット時は既存の固定値を使用）
+				if (m_pPlayer)
+				{
+					XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+					spawnPos.y = ppos.y;
+				}
+				else
+				{
+					spawnPos.y = 1.0f;
+				}
+				spawnPos.z -= 10.0f;
+				spawnPos.x += (bulletsToSpawn - 10) * spread;
+
+				m_BossObjs[i].SetBossObjPosition(spawnPos);
+				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.50f));
+				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 180.0f, 0.0f)); // 反転させる
+				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(1.5f, 1.5f, 1.5f));
+				m_BossObjs[i].SetActive(true);
+
+				bulletsToSpawn--;
+			}
+		}
+
+		m_Phase3Fired = true;
 	}
 
-	if (m_pBomb == nullptr) return; // Bomb 管理クラスがないと生成できない
-
-	// RunBomb 配列を取得
-	RUNBOMBSPAWNER* runArr = m_pBomb->Bomb_GetRunBomb();
-	if (runArr == nullptr) return;
-
-	XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
-
-	const int spawnCount = 20;         // 横一列に出す数
-	const float spacing = 1.1f;       // X 軸間隔（調整可）
-	const float zOffset = -40.0f;     // ボスからの Z オフセット
-	const float yPos = ppos.y;          // Y 座標（地面高に合わせる）
-
-	// 開始 X を中央揃えで計算
-	float startX = m_Position.x - ((spawnCount - 1) * spacing) * 0.5f;
-	int spawned = 0;
-
-	for (int i = 0; i < BOMB_NUM_MAX && spawned < spawnCount; ++i)
+	// 弾が全部消えたら Idle に戻すなど
+	bool anyActive = false;
+	for (int i = 0; i < BOSS_OBJECT_MAX; i++)
 	{
-		// spawner が使えるか（地形配置によっては GetUse() が false の場合がある）
-		// ここでは state が NONE / COOL / ITEM のものを再利用する
-		RUNBOMBSOURCE* src = runArr[i].GetRunBombSource__RunBombSpawner();
-		if (src == nullptr) continue;
-
-		RUNBOMB_STATE st = src->Runbombsource_GetState();
-		if (st == RUNBOMB_NONE || st == RUNBOMB_COOL || st == RUNBOMB_ITEM)
+		if (m_BossObjs[i].IsActive())
 		{
-			// 生成位置を計算（左→右）
-			XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, FIELD_WIDTH_Z / 2);
-
-			// 敵走る爆弾として初期化（横方向に進むタイプを使う -> RIGHT）
-			src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY_BOSS, RUNBOMB_TYPE_DOWN);
-
-			// spawner を有効にしておく（既に true の可能性あり）
-			runArr[i].SetUse(true);
-
-			// 重要: spawner の m_Active を true にして Update_RunBombSpawner が
-			// Runbombsource_Enemy を呼ぶようにする
-			runArr[i].SetActive(true);
-			// クールタイムもリセットしておく（安全）
-			runArr[i].ResetRCoolTime();
-
-			spawned++;
+			anyActive = true;
+			break;
 		}
 	}
 
-	// 同フェーズ内の二重生成を防ぐ
-	m_Phase3Fired = true;
+	if (!anyActive)
+	{
+		m_Phase3Fired = false;
+		m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
+	}
+	// フェーズ3 で RunBomb（走る爆弾）を横一列に生成する
+	// 同フェーズ内で何度も呼ばれるのを防ぐフラグチェック
+	//if (m_Phase3Fired) return;
 
-	// フェーズ終了または Idle に戻すなど挙動を追加（必要ならここで状態遷移）
-	m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
+	//// 攻撃SE再生
+	//if (m_AttackSE_ID != -1)
+	//{
+	//	PlayAudio(m_AttackSE_ID, false);
+	//}
+
+	//if (m_pBomb == nullptr) return; // Bomb 管理クラスがないと生成できない
+
+	//// RunBomb 配列を取得
+	//RUNBOMBSPAWNER* runArr = m_pBomb->Bomb_GetRunBomb();
+	//if (runArr == nullptr) return;
+
+	//XMFLOAT3 ppos = m_pPlayer->GetPlayerPosition();
+
+	//const int spawnCount = 20;         // 横一列に出す数
+	//const float spacing = 1.1f;       // X 軸間隔（調整可）
+	//const float zOffset = -40.0f;     // ボスからの Z オフセット
+	//const float yPos = ppos.y;          // Y 座標（地面高に合わせる）
+
+	//// 開始 X を中央揃えで計算
+	//float startX = m_Position.x - ((spawnCount - 1) * spacing) * 0.5f;
+	//int spawned = 0;
+
+	//for (int i = 0; i < BOMB_NUM_MAX && spawned < spawnCount; ++i)
+	//{
+	//	// spawner が使えるか（地形配置によっては GetUse() が false の場合がある）
+	//	// ここでは state が NONE / COOL / ITEM のものを再利用する
+	//	RUNBOMBSOURCE* src = runArr[i].GetRunBombSource__RunBombSpawner();
+	//	if (src == nullptr) continue;
+
+	//	RUNBOMB_STATE st = src->Runbombsource_GetState();
+	//	if (st == RUNBOMB_NONE || st == RUNBOMB_COOL || st == RUNBOMB_ITEM)
+	//	{
+	//		// 生成位置を計算（左→右）
+	//		XMFLOAT3 pos = XMFLOAT3(startX + spawned * spacing, yPos, FIELD_WIDTH_Z / 2);
+
+	//		// 敵走る爆弾として初期化（横方向に進むタイプを使う -> RIGHT）
+	//		src->Runbombsource_Initialize(pos, RUNBOMB_ENEMY_BOSS, RUNBOMB_TYPE_DOWN);
+
+	//		// spawner を有効にしておく（既に true の可能性あり）
+	//		runArr[i].SetUse(true);
+
+	//		// 重要: spawner の m_Active を true にして Update_RunBombSpawner が
+	//		// Runbombsource_Enemy を呼ぶようにする
+	//		runArr[i].SetActive(true);
+	//		// クールタイムもリセットしておく（安全）
+	//		runArr[i].ResetRCoolTime();
+
+	//		spawned++;
+	//	}
+	//}
+
+	//// 同フェーズ内の二重生成を防ぐ
+	//m_Phase3Fired = true;
+
+	//// フェーズ終了または Idle に戻すなど挙動を追加（必要ならここで状態遷移）
+	//m_State = BOSSMONSTER_STATE::BOSSMONSTER_STATE_IDLE;
 }
 
 void BOSSMONSTER::Bossmonster_Death()

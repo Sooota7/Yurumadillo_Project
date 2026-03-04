@@ -20,7 +20,7 @@
 #include "targetUI.h"
 
 #include "load.h"
-
+#include "gimmickData.h"
 class MANAGER;
 
 class BOSS
@@ -33,6 +33,7 @@ private:
 	BOMB	m_bomb;
 	ENEMYSPAWNER m_EnemyNormal;
 	WEAPON m_Weapon;
+	GIMMICK_DATA m_GimmickData;
 
 	BOSSMONSTER m_BossMonster;
 	COLLISION collision;
