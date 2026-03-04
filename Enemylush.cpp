@@ -587,7 +587,7 @@ void ENEMYLUSH::Enemylush_Phase_Draw()
 
 void ENEMYLUSH::Enemylush_Phase_SetPhase01()
 {
-	m_Phase[EL_STATE_PHASE01].Set_EN_TOTAL(0);
+	m_Phase[EL_STATE_PHASE01].Set_EN_TOTAL(1);
 	m_Phase[EL_STATE_PHASE01].Set_EF_TOTAL(1);
 	m_Phase[EL_STATE_PHASE01].Set_EG_TOTAL(2);
 }
@@ -595,7 +595,7 @@ void ENEMYLUSH::Enemylush_Phase_SetPhase01()
 void ENEMYLUSH::Enemylush_Phase_SetPhase02()
 {
 	m_Phase[EL_STATE_PHASE02].Set_EN_TOTAL(2);
-	m_Phase[EL_STATE_PHASE02].Set_EF_TOTAL(1);
+	m_Phase[EL_STATE_PHASE02].Set_EF_TOTAL(2);
 	m_Phase[EL_STATE_PHASE02].Set_EG_TOTAL(2);
 
 }
@@ -604,6 +604,6 @@ void ENEMYLUSH::Enemylush_Phase_SetPhase03()
 {
 	m_Phase[EL_STATE_PHASE03].Set_EN_TOTAL(2);
 	m_Phase[EL_STATE_PHASE03].Set_EF_TOTAL(2);
-	m_Phase[EL_STATE_PHASE03].Set_EG_TOTAL(2);
+	m_Phase[EL_STATE_PHASE03].Set_EG_TOTAL(3);
 }
 
