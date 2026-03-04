@@ -17,6 +17,16 @@ void PlayerUI::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, 
 	m_pPlayer = pPlayer;
 	m_HpDigit = 0;
 
+
+	// ウェーブ初期化
+	m_TimeSec = 0.0f;
+	m_FreqHz = FREQ_MIN;
+	m_HpRatio = 1.0f;
+	m_AmpPx = AMP_MIN;
+	m_ScaleAmp = 0.06f;
+	m_PhasePerHeart = XM_2PI / 4.0f;
+
+
 	//テクスチャ画像読み込み
 	// ハート（体力あり）
 	{
@@ -56,6 +66,10 @@ void PlayerUI::Finalize()
 void PlayerUI::Update()
 {
 	Update_HpDigit();
+
+	Update_WaveParams();      // 追加：HP比率から周波数/振幅を更新
+	m_TimeSec += (1.0f / 60.0f); // ご指定のフレーム固定Δt
+
 }
 
 void PlayerUI::Draw()
@@ -73,6 +87,27 @@ void PlayerUI::Update_HpDigit()
 
 	m_HpDigit = (int)currentHp;
 }
+
+
+// 追加：HP比率→周波数/振幅へ反映
+void PlayerUI::Update_WaveParams()
+{
+	// HP比率: 0.0 ~ 1.0
+	if (HP_DIGIT_MAX > 0) {
+		m_HpRatio = (float)m_HpDigit / (float)HP_DIGIT_MAX;
+	}
+	else {
+		m_HpRatio = 0.0f;
+	}
+	if (m_HpRatio < 0.0f) m_HpRatio = 0.0f;
+	if (m_HpRatio > 1.0f) m_HpRatio = 1.0f;
+
+	// HPが多いほどゆっくり、少ないほど速く
+	m_FreqHz = FREQ_MIN + (FREQ_MAX - FREQ_MIN) * (1.0f - m_HpRatio);
+	// HPが少ないほど上下が大きく
+	m_AmpPx = AMP_MIN + (AMP_MAX - AMP_MIN) * (1.0f - m_HpRatio);
+}
+
 
 void PlayerUI::Draw_HpDigit()
 {
@@ -101,15 +136,26 @@ void PlayerUI::Draw_HpDigit()
 		1.0f
 	);
 
+
+	// ウェーブの基本位相
+	const float basePhase = m_TimeSec * m_FreqHz * XM_2PI;
+
+
 	for(int i = 0; i < HP_DIGIT_MAX; i++)
 	{
+		// 位相ずらしで“波”を作る
+		const float phase = basePhase + (float)i * m_PhasePerHeart;
+		const float wave = sinf(phase);
+		const float yOffset = m_AmpPx * wave;
+		const float scale = 1.0f + m_ScaleAmp * wave;
+
 		//平行移動 表示座標
 		XMMATRIX	Translation =
-			XMMatrixTranslation(position.x, position.y, 0.0f);
+			XMMatrixTranslation(position.x, position.y + yOffset, 0.0f);
 		//回転
 		XMMATRIX	Rotation = XMMatrixRotationZ(XMConvertToRadians(0.0f));
 		//拡大率（0はだめ）
-		XMMATRIX	Scaling = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		XMMATRIX	Scaling = XMMatrixScaling(scale, scale, 1.0f);
 		//ワールド行列
 		XMMATRIX	World = Scaling * Rotation * Translation;
 		//スクロール用行列作成
