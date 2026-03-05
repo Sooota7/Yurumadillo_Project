@@ -101,7 +101,7 @@ void FLOWTBOMBSOURCE::Flowtbombsource_Active_Have(XMFLOAT3 pPlayerPos, XMFLOAT3 
 
 
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 2.0f)
+	if (m_Count > 3.0f)
 	{
 		m_State = BOMB_STATE::BOMB_EXPLOSION;
 		m_Count = 0;
