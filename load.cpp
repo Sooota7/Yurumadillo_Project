@@ -123,18 +123,18 @@ void LOAD_MANAGER::Load_Draw()
 		//---------------------------------------------------
 
 
-			//テクスチャをセット
+		//テクスチャをセット
 		g_pContext->PSSetShaderResources(0, 1, &g_TextureRabit);//g_Textureを使うように設定する
 
-			//スプライト描画
+		//スプライト描画
 		SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
 
 		for (int i = 0; i < LOAD_ANIM::LOAD_ANIM_MAX; i++) {
 
 			float plasPos = 200 * i;
 
-			XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
-			XMFLOAT2 pos2 = { 700 + plasPos, 700 };
+			XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, 1.0f };    //スプライトの色
+			XMFLOAT2 pos2 = { SCREEN_WIDTH / 2 - 300 + plasPos, SCREEN_HEIGHT / 2 + 100 };
 			XMFLOAT2 size2 = { 250,250 };
 			DrawSpriteEx(pos2, size2, col2, (int)m_LoadAnim[i], 2, 2);//1枚絵を表示
 		}
