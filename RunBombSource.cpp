@@ -196,7 +196,7 @@ void RUNBOMBSOURCE::Runbombsource_Active_Throw()
 void RUNBOMBSOURCE::Runbombsource_Cool()
 {
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 5.0f)
+	if (m_Count > 3.0f)
 	{
 		m_State = RUNBOMB_STATE::RUNBOMB_ITEM;
 		m_Count = 0;

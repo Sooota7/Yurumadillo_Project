@@ -56,6 +56,8 @@ void	BOSSMONSTER::Bossmonster_Initialize(ID3D11Device* pDevice, ID3D11DeviceCont
 	m_Phase2_2Fired = false;
 	m_Phase3Fired = false;
 
+	ButterflyCounter =  0;
+
 	//テクスチャ画像読み込み
 	TexMetadata		metadata;
 	ScratchImage	image;
@@ -261,11 +263,15 @@ void BOSSMONSTER::Bossmonster_Phase1()
 		spawnPos[0] = XMFLOAT3(m_Position.x - 2.0f, posY+2.0f, FIELD_WIDTH_Z / 2);
 		spawnPos[1] = XMFLOAT3(m_Position.x + 2.0f, posY+2.0f, FIELD_WIDTH_Z / 2);
 
-		for (int s = 0; s < 2; ++s)
+		if(ButterflyCounter< BOSS_BUTTERFLY)
 		{
-			if (m_pSpawner->EnemySpawner_SpawnButterfly(spawnPos[s]))
+			ButterflyCounter++;
+			for (int s = 0; s < 2; ++s)
 			{
-				spawned++;
+				if (m_pSpawner->EnemySpawner_SpawnButterfly(spawnPos[s]))
+				{
+					spawned++;
+				}
 			}
 		}
 
@@ -438,7 +444,7 @@ void BOSSMONSTER::Bossmonster_Phase3()
 				spawnPos.x += (bulletsToSpawn - 10) * spread;
 
 				m_BossObjs[i].SetBossObjPosition(spawnPos);
-				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.50f));
+				m_BossObjs[i].SetBossObjVelocity(XMFLOAT3(0.0f, 0.0f, -0.25f));
 				m_BossObjs[i].SetBossObjRotation(XMFLOAT3(0.0f, 180.0f, 0.0f)); // 反転させる
 				m_BossObjs[i].SetBossObjScaling(XMFLOAT3(1.5f, 1.5f, 1.5f));
 				m_BossObjs[i].SetActive(true);

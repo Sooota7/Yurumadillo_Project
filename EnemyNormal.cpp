@@ -126,7 +126,7 @@ void	ENEMY_NORMAL::Enemy_Normal_Idle()
 	m_FrameCnt++;			// カウントアップ
 	if (m_FrameCnt >= ENEMY_NORMAL_IDLE_CNT)
 	{
-		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_ATTACK;
+		m_State = ENEMY_NORMAL_STATE::ENEMY_NORMAL_STATE_MOVE;
 		m_FrameCnt = 0;
 	}
 
