@@ -20,7 +20,7 @@ using namespace DirectX;
 #define BOSSMONSTER_PHASE2_INTERVAL (3)//フェーズ2の攻撃の間隔
 #define BOSSMONSTER_DEATH_SECONDS (4.6)//撃破演出(合わせて調整)
 
-#define BOSS_OBJECT_MAX 3
+#define BOSS_OBJECT_MAX 100
 
 #define BOSS_PHASE2_BACKRANGE (60) //ボスからどのくらい後ろに攻撃オブジェクトを出現させるか
 

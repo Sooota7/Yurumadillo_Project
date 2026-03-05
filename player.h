@@ -24,7 +24,7 @@ using namespace DirectX;
 #define PLAYER_RESPAWN (-3.0f)         //これ以上下に行くと死
 #define PLAYER_MAGICRANGE (0.03f)    //魔法範囲
 #define PLAYER_HP (5.0f)			 //HP
-#define PLAYER_BALLOON_SPEED (0.1)        //風船の上昇速度
+#define PLAYER_BALLOON_SPEED (0.08f)        //風船の上昇速度
 #define PLAYER_BALLOON_FALLSPEED (-0.05f)   //風船の下降速度
 #define PLAYER_START_POS_X (8.0f)     //プレイヤーの初期位置X
 #define PLAYER_START_POS_Y (5.0f)     //プレイヤーの初期位置Y
