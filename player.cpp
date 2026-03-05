@@ -73,7 +73,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	m_Position = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z+2);
 
-	
+	m_No = no;
 
 
 	m_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -139,7 +139,7 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	// 追加: 攻撃後カウンタ初期化
 	m_AttackAfterCounter = 0;
 
-	if (no != FIELD_NO::NO_NONE) {
+		if (no != FIELD_NO::NO_NONE) {
 
 		for (int q = 0; q < FIELD_HEIGHT_Y; q++)
 		{
@@ -564,9 +564,9 @@ void    PLAYER::Player_Respawn()
 	PlayDamageSE();
 
 	m_State = PLAYER_STATE::PLAYER_STATE_IDLE;
-
-	m_Position = SpawnPos;
-	
+	if (m_No != FIELD_NO::NO_NONE) {
+		m_Position = SpawnPos;
+	}
 }
 
 void PLAYER::Player_Death()
