@@ -146,7 +146,7 @@ int LoadAudio(const char *FileName)
 
 void UnloadAudio(int Index)
 {
-	g_Audio[Index].SourceVoice->Stop();
+ 	g_Audio[Index].SourceVoice->Stop();
 	g_Audio[Index].SourceVoice->DestroyVoice();
 
 	delete[] g_Audio[Index].SoundData;

@@ -211,15 +211,15 @@ void GAME::Game_Update()
 //
 //#ifdef _DEBUG
 //
-//		if (Keyboard_IsKeyDownTrigger(KK_C))
-//		{
-//			if (m_Manager->GetClearCount() == 0)
-//			{
-//				m_Manager->IncrementClearCount();
-//			};
-//
-//			m_Manager->SetScene(SCENE_STAGESELECTION);
-//		}
+		if (Keyboard_IsKeyDownTrigger(KK_C))
+		{
+			if (m_Manager->GetClearCount() == 0)
+			{
+				m_Manager->IncrementClearCount();
+			};
+
+			m_Manager->SetScene(SCENE_STAGESELECTION);
+		}
 //#endif // _DEBUG
 
 		// 追加：プレイヤーとゴールの当たり判定
