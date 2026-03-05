@@ -112,7 +112,7 @@ void ENDING::Ending_Draw()
 	//スプライト描画
 	SetBlendState(BLENDSTATE_ALFA);//ブレンド無し
 	XMFLOAT4 col2 = { 1.0f, 1.0f, 1.0f, 1.0f };	//スプライトの色
-	XMFLOAT2 pos2 = { 900.0f, 500.0f};
+	XMFLOAT2 pos2 = { SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 };
 	XMFLOAT2 size2 = { SCREEN_WIDTH*1.0f, SCREEN_HEIGHT*1.0f };
 	DrawSprite(pos2, size2, col2);//1枚絵を表示
 
