@@ -283,15 +283,15 @@ void ENEMYLUSH::Enemylush_Update()
 
 //#ifdef _DEBUG
 //
-//		if (Keyboard_IsKeyDownTrigger(KK_C))
-//		{
-//			if (m_Manager->GetClearCount() == 2)
-//			{
-//				m_Manager->IncrementClearCount();
-//			};
-//
-//			m_Manager->SetScene(SCENE_STAGESELECTION);
-//		}
+		if (Keyboard_IsKeyDownTrigger(KK_C))
+		{
+			if (m_Manager->GetClearCount() == 2)
+			{
+				m_Manager->IncrementClearCount();
+			};
+
+			m_Manager->SetScene(SCENE_STAGESELECTION);
+		}
 //#endif // _DEBUG
 
 		// 追加：プレイヤーとゴールの当たり判定
@@ -508,16 +508,19 @@ void ENEMYLUSH::Enemylush_Phase_Update()
 		{
 		case EL_STATE_PHASE01:
 			m_EL_State = EL_STATE_PHASE02; m_SpawnTime = 0; m_NextSpawn = false;
+			m_Player.SetPlayerHp(PLAYER_HP);
 			m_EnemyNormal.EnemySpawner_ResetKillNum();
 			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
 			return;
 		case EL_STATE_PHASE02:
 			m_EL_State = EL_STATE_PHASE03; m_SpawnTime = 0; m_NextSpawn = false;
+			m_Player.SetPlayerHp(PLAYER_HP);
 			m_EnemyNormal.EnemySpawner_ResetKillNum();
 			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
 			return;
 		case EL_STATE_PHASE03:
 			m_EL_State = EL_STATE_END; m_SpawnTime = 0; m_NextSpawn = false;
+			m_Player.SetPlayerHp(PLAYER_HP);
 			m_EnemyNormal.EnemySpawner_ResetKillNum();
 			m_EnemyNormal.EnemySpawner_ResetEnemyNum();
 			return;
