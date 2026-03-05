@@ -403,7 +403,20 @@ void	PLAYER::Player_Idle()
 			m_State = PLAYER_STATE::PLAYER_STATE_MOVE;
 		}
 
-		if (IsButtonPressed(0, XINPUT_GAMEPAD_A) && JumpCount == true && m_Velocity.y <= 0.0f)
+		if (Keyboard_IsKeyDownTrigger(KK_SPACE) && JumpCount && BalloonFlag)
+		{
+			BalloomUp = true;
+			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+		}
+
+
+		if (IsButtonTriggered(0, XINPUT_GAMEPAD_A) && JumpCount && BalloonFlag)
+		{
+			BalloomUp = true;
+			m_State = PLAYER_STATE::PLAYER_STATE_BALLOON;
+		}
+
+		else if (IsButtonPressed(0, XINPUT_GAMEPAD_A) && JumpCount == true && m_Velocity.y <= 0.0f)
 		{
 			m_State = PLAYER_STATE::PLAYER_STATE_JUMP;
 		}
