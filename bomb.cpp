@@ -362,82 +362,82 @@ void BOMB::Bomb_Draw(BillboardManager* billboardManager)
 		}
 	}
 
-	//ボムの抜け殻（クールタイム中の描画）
-	for (int i = 0; i < BOMB_NUM_MAX; i++)
-	{
+	////ボムの抜け殻（クールタイム中の描画）
+	//for (int i = 0; i < BOMB_NUM_MAX; i++)
+	//{
 
-		XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetFirstPosition();
+	//	XMFLOAT3 bombPos = m_Bomb[i].BombSource_GetFirstPosition();
 
-		//スケーリング行列の作成
-		XMMATRIX	ScalingMatrix = XMMatrixScaling
-		(
-			1.0f,
-			1.0f,
-			1.0f
-		);
+	//	//スケーリング行列の作成
+	//	XMMATRIX	ScalingMatrix = XMMatrixScaling
+	//	(
+	//		1.0f,
+	//		1.0f,
+	//		1.0f
+	//	);
 
-		//平行移動行列の作成
-		XMMATRIX	TranslationMatrix = XMMatrixTranslation
-		(
-			bombPos.x,
-			bombPos.y,
-			bombPos.z
-		);
+	//	//平行移動行列の作成
+	//	XMMATRIX	TranslationMatrix = XMMatrixTranslation
+	//	(
+	//		bombPos.x,
+	//		bombPos.y,
+	//		bombPos.z
+	//	);
 
-		//回転行列の作成
-		XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
-		(
-			XMConvertToRadians(0.0f),
-			//XMConvertToRadians(rot),
-			//XMConvertToRadians(rot),
-			XMConvertToRadians(0.0f),
-			XMConvertToRadians(0.0f)
-		);
-		//ワールド行列の作成
-		XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
-		//最終的な変換行列を作成
-		XMMATRIX WVP = World * VP;//(VP = View*Projection)
-		//DirectXへ行列をセット
-		Shader_SetMatrix(WVP);
+	//	//回転行列の作成
+	//	XMMATRIX	RotationMatrix = XMMatrixRotationRollPitchYaw
+	//	(
+	//		XMConvertToRadians(0.0f),
+	//		//XMConvertToRadians(rot),
+	//		//XMConvertToRadians(rot),
+	//		XMConvertToRadians(0.0f),
+	//		XMConvertToRadians(0.0f)
+	//	);
+	//	//ワールド行列の作成
+	//	XMMATRIX World = ScalingMatrix * RotationMatrix * TranslationMatrix;
+	//	//最終的な変換行列を作成
+	//	XMMATRIX WVP = World * VP;//(VP = View*Projection)
+	//	//DirectXへ行列をセット
+	//	Shader_SetMatrix(WVP);
 
-		//テクスチャをセット
-		g_pContext->PSSetShaderResources(0, 1, &g_Texture);
+	//	//テクスチャをセット
+	//	g_pContext->PSSetShaderResources(0, 1, &g_Texture);
 
-		//頂点バッファをセット
-		UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
-		UINT	offset = 0;
-		g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+	//	//頂点バッファをセット
+	//	UINT	stride = sizeof(Vertex3D);	//頂点１個のデータサイズ
+	//	UINT	offset = 0;
+	//	g_pContext->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
-		//インデックスバッファをセット
-		g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	//	//インデックスバッファをセット
+	//	g_pContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-		//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
-		g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//	//描画するポリゴンの種類をセット 3頂点でポリゴン１枚として表示
+	//	g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		//描画リクエスト
-		switch (m_Bomb[i].BombSource_GetState())
-		{
-		case BOMB_NONE:
-			break;
-		case BOMB_ITEM:
-			break;
-		case BOMB_ACTIVE_HAVE:
-			ModelDraw(m_NorBombModel);
-			break;
-		case BOMB_ACTIVE_THROW:
-			ModelDraw(m_NorBombModel);
-			break;
+	//	//描画リクエスト
+	//	switch (m_Bomb[i].BombSource_GetState())
+	//	{
+	//	case BOMB_NONE:
+	//		break;
+	//	case BOMB_ITEM:
+	//		break;
+	//	case BOMB_ACTIVE_HAVE:
+	//		ModelDraw(m_NorBombModel);
+	//		break;
+	//	case BOMB_ACTIVE_THROW:
+	//		ModelDraw(m_NorBombModel);
+	//		break;
 
-		case BOMB_EXPLOSION:
-			ModelDraw(m_NorBombModel);
-			break;
+	//	case BOMB_EXPLOSION:
+	//		ModelDraw(m_NorBombModel);
+	//		break;
 
-		case BOMB_COOL:
-			ModelDraw(m_NorBombModel);
-			break;
-		}
+	//	case BOMB_COOL:
+	//		ModelDraw(m_NorBombModel);
+	//		break;
+	//	}
 
-	}
+	//}
 
 	for (int i = 0; i < BOMB_NUM_MAX; i++)
 	{
