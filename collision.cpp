@@ -925,6 +925,48 @@ float	COLLISION::PlayerBombCollision(PLAYER* pPlayer, BOMB* pBomb)
 				}
 			}
 
+			float BOMB_RADIUSa = 1.2f;
+			float PLAYER_RADIUSa = 0.2f;
+			// 壁としての判定処理
+			if (bombPos.y - BOMB_RADIUSa <= PlayerPos.y &&
+				PlayerPos.y <= BoxTop - 0.1f)
+			{
+				if (bombPos.z - BOMB_RADIUSa <= PlayerPos.z &&
+					PlayerPos.z <= bombPos.z + BOMB_RADIUSa)
+				{
+					if (bombPos.x - BOMB_RADIUSa <= PlayerPos.x + PLAYER_RADIUSa &&
+						PlayerPos.x <= bombPos.x - BOMB_RADIUSa)
+					{//BOXの-X面にぶつかったので座標の補正
+						hit = COLLISION_HIT::HIT_WALL_3;
+						touch = true;
+					}
+					else if (bombPos.x + BOMB_RADIUSa >= PlayerPos.x - PLAYER_RADIUSa &&
+						PlayerPos.x >= bombPos.x + BOMB_RADIUSa)
+					{//BOXの+X面にぶつかった
+						hit = COLLISION_HIT::HIT_WALL_1;
+						touch = true;
+					}
+				}
+				else if (bombPos.x - BOMB_RADIUSa <= PlayerPos.x &&
+					PlayerPos.x <= bombPos.x + BOMB_RADIUSa)
+				{
+					if (bombPos.z - BOMB_RADIUSa <= PlayerPos.z + PLAYER_RADIUSa &&
+						PlayerPos.z <= bombPos.z - BOMB_RADIUSa)
+					{//BOXの-Z面にぶつかったので座標の補正
+						hit = COLLISION_HIT::HIT_WALL_0;
+						touch = true;
+					}
+					else if (bombPos.z + BOMB_RADIUSa >= PlayerPos.z - PLAYER_RADIUSa &&
+						PlayerPos.z >= bombPos.z + BOMB_RADIUSa)
+					{//BOXの+Z面にぶつかった
+						hit = COLLISION_HIT::HIT_WALL_2;
+						touch = true;
+					}
+				}
+			}
+			
+
+
 			if (!pPlayer->GetPlayerTransBombFlag() || !touch)
 			{
 				touch = false;
@@ -1931,14 +1973,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -1984,14 +2026,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -2037,14 +2079,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -2089,14 +2131,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									pBombSource[i].BombSource_SetCount(0.0f);
 									pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
@@ -2138,14 +2180,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									pBombSource[i].BombSource_SetCount(0.0f);
 									pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
@@ -2186,14 +2228,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS+0.5f;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									pBombSource[i].BombSource_SetCount(0.0f);
 									pBombSource[i].BombSource_SetState(BOMB_STATE::BOMB_EXPLOSION);
@@ -2237,14 +2279,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -2290,14 +2332,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -2342,14 +2384,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									test = true;//死亡フラグ
 								}
@@ -2390,14 +2432,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									RunBomb[i].Runbombsource_SetCount(0.0f);
 									RunBomb[i].Runbombsource_SetState(RUNBOMB_STATE::RUNBOMB_EXPLOSION);
@@ -2435,11 +2477,11 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
 								if (BombPos.z + 1 > EnemyPos.z &&
 									BombPos.z - 1 < EnemyPos.z)
@@ -2478,14 +2520,14 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						BoxTop = EnemyPos.y + BOX_RADIUS;
 
 						// 壁としての判定処理
-						if (BombPos.x + 1 > EnemyPos.x &&
-							BombPos.x - 1 < EnemyPos.x)
+						if (BombPos.x + 1.5f > EnemyPos.x &&
+							BombPos.x - 1.5f < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
-								if (BombPos.z + 1 > EnemyPos.z &&
-									BombPos.z - 1 < EnemyPos.z)
+								if (BombPos.z + 1.5f > EnemyPos.z &&
+									BombPos.z - 1.5f < EnemyPos.z)
 								{
 									RunBomb[i].Runbombsource_SetCount(0.0f);
 									RunBomb[i].Runbombsource_SetState(RUNBOMB_STATE::RUNBOMB_EXPLOSION);
@@ -2533,8 +2575,8 @@ float	COLLISION::BombEnemyCollision(BOMB* pBomb, ENEMYSPAWNER* pEnemy)
 						if (BombPos.x + 1 > EnemyPos.x &&
 							BombPos.x - 1 < EnemyPos.x)
 						{
-							if (BombPos.y + 1 > EnemyPos.y &&
-								BombPos.y - 1 < EnemyPos.y)
+							if (BombPos.y + 1.5f > EnemyPos.y &&
+								BombPos.y - 1.5f < EnemyPos.y)
 							{
 								if (BombPos.z + 1 > EnemyPos.z &&
 									BombPos.z - 1 < EnemyPos.z)
