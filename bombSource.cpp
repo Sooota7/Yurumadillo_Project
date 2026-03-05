@@ -273,7 +273,7 @@ void BOMBSOURCE::BombSource_Active_Throw_Boss()
 void BOMBSOURCE::BombSource_Cool()
 {
 	m_Count += 1.0f / 60.0f;
-	if (m_Count > 5.0f)
+	if (m_Count > 3.0f)
 	{
 		m_State = BOMB_STATE::BOMB_ITEM;
 		m_Count = 0;

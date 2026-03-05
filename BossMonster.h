@@ -27,6 +27,8 @@ using namespace DirectX;
 #define BOSS_START_POS_Y (5.0f)     //BOSSの初期位置Y
 #define BOSS_START_POS_Z (50.0f)     //BOSSの初期位置Z
 
+#define BOSS_BUTTERFLY (5.0f)        //フェーズで蝶の数
+
 #include "enemySpawner.h" // 参照: 敵生成用
 // forward declare BOMB to avoid heavy include in header
 class BOMB;
@@ -61,6 +63,8 @@ private:
 	MODEL * m_Model[5];
 
 	float m_Hp;
+
+	int ButterflyCounter; // フェーズ1で蝶を出すためのカウンター
 
 	BOSSANIMATION m_BossAnim;
 
