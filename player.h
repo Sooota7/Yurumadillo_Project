@@ -75,6 +75,8 @@ private:
 	PLAYER_ANIM m_anim[PLAYER_STATE_MAX];
 	MODEL* m_ModelData[PARTS_MAX];
 
+	FIELD_NO m_No;
+
 	bool BombHave;
 
 	bool TransBombFlag;
