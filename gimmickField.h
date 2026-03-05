@@ -21,6 +21,7 @@ public:
     int      m_Channel;           // 連動チャンネル（下1桁）
     XMFLOAT3 m_TargetPosition;    // ON時の目標
     float    m_MoveSpeed;         // unit/sec
+	bool	 m_IsOn;              // ON/OFF状態
 
 public:
     void     GimmickField_Initialize(XMFLOAT3 pos);

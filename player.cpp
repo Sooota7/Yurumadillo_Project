@@ -21,6 +21,7 @@ static ID3D11ShaderResourceView* g_Texture = NULL;
 static bool inputP = InputKeyKonCheck();
 
 static XMFLOAT3 SpawnPos = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);	// プレイヤーのスポーン位置	
+static XMFLOAT3 SpawnPos2 = XMFLOAT3(FIELD_WIDTH_X / 2, PLAYER_START_POS_Y, PLAYER_START_POS_Z);	// プレイヤーのスポーン位置	
 
 float g_StopTime = 0.0f;	// ボールが制止するまでの時間
 
@@ -154,7 +155,9 @@ void	PLAYER::Player_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 						case P:
 							m_Position = XMFLOAT3(l, q, i);
 							SpawnPos = XMFLOAT3(l, q, i);
-							return;
+							break;
+						case Q:
+							SpawnPos2 = XMFLOAT3(l, q, i);
 							break;
 						default:
 							break;
@@ -265,6 +268,14 @@ void	PLAYER::Player_Update()
 		m_EDamage.SpawnEffectDamage(m_Position);
 		isDamage = false;
 	}
+
+	if (m_No == FIELD_NO::NO_2) {
+		if (m_Position.z >= 35)
+		{
+			SpawnPos = SpawnPos2;
+		}
+	}
+
 }
 
 void	PLAYER::Player_Draw(BillboardManager* billboardManager)
